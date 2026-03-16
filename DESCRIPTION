@@ -1,0 +1,32 @@
+Package: arbuilder
+Title: Interactive Builder for Submission-Ready Clinical Tables
+Version: 0.1.0
+Authors@R:
+    person("Vignesh", "Thanikachalam", email = "about.vignesh@gmail.com", role = c("aut", "cre"))
+Description: Local Shiny application for building submission-ready tables,
+    listings, and figures (TLFs) from ADaM clinical trial data. Provides a
+    point-and-click interface that generates reproducible R scripts using
+    'arframe' as the rendering engine. No server infrastructure required.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.3
+Depends:
+    R (>= 4.1.0)
+Imports:
+    arframe,
+    shiny (>= 1.8.0),
+    bslib (>= 0.6.0),
+    DT,
+    shinyAce,
+    htmltools,
+    shinyjs,
+    dplyr,
+    tidyr,
+    purrr,
+    stringr,
+    tibble,
+    readr,
+    forcats,
+    glue,
+    reactable

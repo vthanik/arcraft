@@ -1,0 +1,2128 @@
+================================================================================
+                        ARFRAME + ARBUILDER — COMPLETE PLAN
+                        Analysis Results Framework for Pharma
+                        Date: 2026-03-15
+================================================================================
+
+
+================================================================================
+1. PRODUCT VISION
+================================================================================
+
+THE PROBLEM
+-----------
+Small pharma statistician has:
+  X  No SAS license ($$$)
+  X  No Shiny Server / Posit Connect
+  X  No IT team to deploy teal/tern
+  X  Limited R coding confidence
+
+They need:
+  +  Submission-ready RTF/PDF tables
+  +  Point-and-click configuration
+  +  Runs on their laptop
+  +  Reproducible R script for audit trail
+
+THE SOLUTION
+------------
+Two packages working together:
+
+  arframe      = the engine (pure R, no UI, CRAN package)
+  arbuilder    = the workshop (local Shiny app, separate package)
+
+  arbuilder::launch()  -->  browser opens  -->  build tables  -->  export RTF/PDF
+                             locally            visually          + R script
+
+
+WHY "ARFRAME"?
+--------------
+  AR  = Analysis Results (CDISC ARS standard term)
+  fr  = frame / framework
+  fr_ = function prefix (unchanged from tlframe)
+
+  Every statistical programmer in pharma knows "Analysis Results."
+  Maps directly to the CDISC Analysis Results Standard (ARS).
+  Available on CRAN as of 2026-03-15.
+
+
+================================================================================
+2. COMPETITIVE LANDSCAPE
+================================================================================
+
+  +------------------+--------------+--------------+--------------+
+  |                  | teal + tern  | SAS          | arframe +    |
+  |                  |              |              | arbuilder    |
+  +------------------+--------------+--------------+--------------+
+  | Server needed    | Yes          | No           | No           |
+  | License cost     | Free         | $$$$$        | Free         |
+  | IT setup         | Heavy        | Medium       | Zero         |
+  | Coding needed    | Some R       | SAS          | Optional     |
+  | Audit trail      | Shiny logs   | .sas + .log  | .R script    |
+  | RTF quality      | Basic        | Gold std     | Submission   |
+  | PDF support      | Limited      | Yes          | Yes          |
+  | Reproducible     | Needs server | Yes          | Yes          |
+  | Pagination       | No           | Yes          | Yes          |
+  | Page tokens      | No           | Yes          | Yes          |
+  | Time to first    | Days         | Hours        | Minutes      |
+  | table            | (setup)      | (if expert)  |              |
+  +------------------+--------------+--------------+--------------+
+
+TARGET MARKET:
+  - Small pharma / biotech (1-3 statisticians)
+  - CROs like Clinimetrics
+  - Teams without Shiny Server infrastructure
+  - Shops migrating from SAS to R
+
+
+================================================================================
+3. SYSTEM ARCHITECTURE
+================================================================================
+
+  +-------------------------------------------------------------------+
+  |                        USER'S LAPTOP                              |
+  |                                                                   |
+  |   +-----------------------------------------------------------+   |
+  |   |                    arbuilder (Shiny app)                   |   |
+  |   |                                                           |   |
+  |   |  +-------------+    +-------------+    +--------------+   |   |
+  |   |  |  DATA LAYER |    |  ARD LAYER  |    | FORMAT LAYER |   |   |
+  |   |  |             |    |             |    |              |   |   |
+  |   |  | Load ADaM   |--->| Summarize   |--->| fr_table()   |   |   |
+  |   |  | (adsl,adae) |    | to ARD wide |    | fr_titles()  |   |   |
+  |   |  | Filter pop  |    | (dplyr)     |    | fr_cols()    |   |   |
+  |   |  +-------------+    +-------------+    | fr_render()  |   |   |
+  |   |                                        +--------------+   |   |
+  |   |                                             |              |   |
+  |   |                                     uses arframe API       |   |
+  |   +-----------------------------------------------------------+   |
+  |                         |                       |                  |
+  |                         v                       v                  |
+  |                  +--------------+    +----------------------+      |
+  |                  |   Browser    |    |   Output Files       |      |
+  |                  |  localhost   |    |  - report.rtf        |      |
+  |                  |  :3838       |    |  - report.pdf        |      |
+  |                  +--------------+    |  - pipeline.R        |      |
+  |                                      +----------------------+      |
+  +-------------------------------------------------------------------+
+
+  KEY RULE: arbuilder knows about arframe.
+            arframe knows NOTHING about arbuilder.
+
+  THE PIPELINE:
+
+    ADaM data  -->  Population  -->  ARD wide  -->  arframe  -->  RTF/PDF
+    (raw)          filter            (summary)     (format)      (output)
+
+    adsl.csv       SAFFL=="Y"       tbl_demog      fr_table()    t_14_1_1.rtf
+    adae.csv       ITTFL=="Y"       tbl_ae_soc     fr_titles()   t_14_2_1.rtf
+    adtte.csv                       tbl_tte        fr_render()   t_14_3_1.rtf
+
+
+================================================================================
+4. PACKAGE STRUCTURE — arbuilder
+================================================================================
+
+  arbuilder/
+  +-- DESCRIPTION          # Depends: arframe, shiny, bslib, tidyverse
+  +-- NAMESPACE
+  +-- LICENSE
+  +-- R/
+  |   +-- launch.R                 # Entry point: arbuilder::launch()
+  |   +-- app_ui.R                 # Top-level UI assembly
+  |   +-- app_server.R             # Top-level server wiring
+  |   |
+  |   |-- # -- DATA LAYER ---------------------------------
+  |   +-- mod_data.R               # Load ADaM datasets (upload/bundled)
+  |   +-- mod_data_filter.R        # Population filter (SAFFL, ITTFL, etc.)
+  |   +-- mod_data_preview.R       # Raw ADaM data browser
+  |   |
+  |   |-- # -- ARD LAYER (NEW) ----------------------------
+  |   |-- # This layer transforms raw ADaM into ARD wide
+  |   |-- # format that arframe can render.
+  |   +-- mod_analysis.R           # Analysis type picker (demog, AE, TTE...)
+  |   +-- mod_grouping.R           # Treatment var, by-vars, strata
+  |   +-- mod_stats.R              # Which statistics (n, mean, SD, %)
+  |   +-- mod_ard_preview.R        # Preview the generated ARD wide table
+  |   |
+  |   +-- ard_demog.R              # Demographics summary builder
+  |   +-- ard_ae.R                 # AE summary (SOC/PT) builder
+  |   +-- ard_disp.R               # Disposition summary builder
+  |   +-- ard_tte.R                # Time-to-event summary builder
+  |   +-- ard_cm.R                 # Conmed summary builder
+  |   +-- ard_vitals.R             # Vital signs (ADVS) — BDS continuous
+  |   +-- ard_labs.R               # Laboratory results (ADLB) — BDS continuous
+  |   +-- ard_efficacy_cont.R     # Efficacy continuous (ADEFF/ADQS) — BDS
+  |   +-- ard_efficacy_cat.R      # Efficacy categorical/binary (ADRS) — response
+  |   +-- ard_shift.R             # Shift tables (labs, ECG, ECOG, efficacy)
+  |   +-- ard_exposure.R           # Exposure / dosing summary
+  |   +-- ard_pk.R                 # Pharmacokinetic summary (ADPC/ADPPK)
+  |   +-- ard_ecg.R                # Cardiac safety QTcF (ADEG) — BDS
+  |   +-- ard_custom.R             # Custom analysis (user-defined)
+  |   |
+  |   |-- # -- FORMAT LAYER (arframe config) ---------------
+  |   +-- mod_titles.R             # Titles + footnotes
+  |   +-- mod_cols.R               # Column widths, labels, alignment
+  |   +-- mod_header.R             # Header styling + N-counts
+  |   +-- mod_styles.R             # Row / col / cell conditional styles
+  |   +-- mod_rules.R              # Hlines + vlines
+  |   +-- mod_page.R               # Margins, orientation, page head/foot
+  |   +-- mod_spans.R              # Column spanning headers
+  |   +-- mod_theme.R              # Save / load theme presets
+  |   |
+  |   |-- # -- OUTPUT LAYER -------------------------------
+  |   +-- mod_preview.R            # Live HTML table preview
+  |   +-- mod_codegen.R            # Assembles full pipeline (data + arframe)
+  |   +-- mod_export.R             # Render RTF / PDF + download R script
+  |   |
+  |   |-- # -- BATCH LAYER --------------------------------
+  |   +-- mod_batch.R              # Multi-TFL project manager
+  |   |
+  |   |-- # -- UTILITIES ----------------------------------
+  |   +-- utils_ui.R               # Shared UI helpers
+  |   +-- utils_reactive.R         # Shared reactive helpers
+  |   +-- utils_codegen.R          # Code string builders (glue templates)
+  |   +-- utils_ard.R              # Shared ARD computation helpers
+  |   +-- utils_adam.R             # ADaM variable detection & validation
+  |
+  +-- inst/
+  |   +-- specs/
+  |   |   +-- demog_default.yml    # Default analysis spec for demographics
+  |   |   +-- ae_default.yml       # Default analysis spec for AE summary
+  |   |   +-- disp_default.yml     # Default analysis spec for disposition
+  |   |   +-- tte_default.yml      # Default analysis spec for TTE
+  |   +-- www/
+  |       +-- styles.css           # Custom theme
+  |       +-- logo.svg             # arbuilder branding
+  |       +-- tutorial.js          # First-run guided tour
+  |
+  +-- tests/
+  |   +-- testthat/
+  |       +-- test-mod_codegen.R   # Code generation is correct
+  |       +-- test-mod_data.R      # Data loading works
+  |       +-- test-ard_demog.R     # Demographics ARD is correct
+  |       +-- test-ard_ae.R        # AE ARD is correct
+  |       +-- test-utils.R         # Utility functions
+  |
+  +-- man/
+  +-- vignettes/
+      +-- getting-started.Rmd
+
+
+================================================================================
+5. DEPENDENCY STACK
+================================================================================
+
+  arbuilder
+  +-- arframe          # The engine -- builds and renders TLFs
+  +-- shiny            # App framework
+  +-- bslib            # Modern Bootstrap 5 UI
+  +-- DT               # Interactive data table preview
+  +-- shinyAce         # Code editor (view generated R script)
+  +-- htmltools        # HTML construction
+  +-- shinyjs          # JS helpers (toggle, show/hide)
+  |
+  +-- # -- TIDYVERSE (app only, NOT in arframe) ------
+  +-- dplyr            # Data manipulation in modules
+  +-- tidyr            # Reshape data for preview/codegen
+  +-- purrr            # Iterate over module configs, map reactives
+  +-- stringr          # String ops for codegen template building
+  +-- tibble           # Tidy data structures throughout app
+  +-- readr            # CSV import in mod_data
+  +-- forcats          # Factor handling in mod_styles filters
+  +-- glue             # Code string interpolation in mod_codegen
+
+  IMPORTANT: tidyverse is used ONLY in the Shiny app (arbuilder).
+  arframe (the engine) stays tidyverse-free for validation.
+
+  Why tidyverse in the app?
+  - mod_codegen builds code strings -- glue + stringr are ideal
+  - mod_data needs to wrangle uploaded CSVs -- dplyr + readr
+  - mod_styles needs to filter/transform rule lists -- purrr + dplyr
+  - mod_batch needs to map over multiple TFL configs -- purrr
+  - mod_preview needs to reshape data for HTML display -- tidyr
+  - Overall: faster development, cleaner code, better maintained
+
+
+================================================================================
+6. UI LAYOUT — MAIN SCREEN
+================================================================================
+
+  +---------------------------------------------------------------------+
+  |  * arbuilder                              [Save Project] [Help]     |
+  +-------------+-------------------------------------------------------+
+  |             |                                                       |
+  |  DATA       |  +- PREVIEW -----------------------------------+     |
+  |  > Source   |  |                                              |     |
+  |  > Filter   |  |  Table 14.1.1                               |     |
+  |  > Browse   |  |  Summary of Demographic and                  |     |
+  |             |  |  Baseline Characteristics                    |     |
+  |  ANALYSIS   |  |  Safety Population                           |     |
+  |  > Type     |  |                                              |     |
+  |  > Grouping |  |  +----------+---------+---------+---------+ |     |
+  |  > Stats    |  |  |          | Drug A  | Drug B  |  Total  | |     |
+  |  > ARD View |  |  |          | (N=45)  | (N=45)  | (N=135) | |     |
+  |             |  |  +----------+---------+---------+---------+ |     |
+  |  FORMAT     |  |  | Age (yr) |         |         |         | |     |
+  |  > Titles   |  |  |  Mean    |  52.3   |  54.1   |  53.1   | |     |
+  |  > Columns  |  |  |  SD     |  12.1   |  11.8   |  12.0   | |     |
+  |  > Header   |  |  | Sex      |         |         |         | |     |
+  |  > Spans    |  |  |  Male    | 25 (56%)| 23 (51%)| 73 (54%)| |     |
+  |  > Styles   |  |  |  Female  | 20 (44%)| 22 (49%)| 62 (46%)| |     |
+  |  > Rules    |  |  +----------+---------+---------+---------+ |     |
+  |  > Page     |  |                                              |     |
+  |             |  |  Source: ADSL                                |     |
+  |  THEME      |  |  Program: t_14_1_1.R  Date: 2026-03-15      |     |
+  |  > Presets  |  +----------------------------------------------+     |
+  |             |                                                       |
+  |  EXPORT     |  +- R CODE ------------------------------------+     |
+  |  [RTF]      |  |  library(arframe)                            |     |
+  |  [PDF]      |  |  library(dplyr)                              |     |
+  |  [R Script] |  |  library(readr)                              |     |
+  |             |  |                                              |     |
+  |             |  |  # --- Load & filter ADaM ---                |     |
+  |             |  |  adsl <- read_csv("data/adsl.csv") |>        |     |
+  |             |  |    filter(SAFFL == "Y")                      |     |
+  |             |  |                                              |     |
+  |             |  |  # --- Build ARD wide ---                    |     |
+  |             |  |  tbl_demog <- adsl |>                        |     |
+  |             |  |    group_by(TRT01A) |>                       |     |
+  |             |  |    summarise(                                |     |
+  |             |  |      n = n(),                                |     |
+  |             |  |      age_mean = mean(AGE),                   |     |
+  |             |  |      age_sd = sd(AGE),                       |     |
+  |             |  |      ...                                     |     |
+  |             |  |    ) |>                                      |     |
+  |             |  |    pivot_wider(...)                           |     |
+  |             |  |                                              |     |
+  |             |  |  # --- Format & render ---                   |     |
+  |             |  |  tbl_demog |>                                |     |
+  |             |  |    fr_table() |>                             |     |
+  |             |  |    fr_titles(                                |     |
+  |             |  |      "Table 14.1.1",                         |     |
+  |             |  |      "Summary of Demographic and ...",       |     |
+  |             |  |      population = "Safety Population"        |     |
+  |             |  |    ) |>                                      |     |
+  |             |  |    fr_cols(...) |>                            |     |
+  |             |  |    fr_render("t_14_1_1.rtf")                 |     |
+  |             |  |                                     [Copy]  |     |
+  |             |  +----------------------------------------------+     |
+  +-------------+-------------------------------------------------------+
+
+
+================================================================================
+7. MODULE DETAIL — EACH PANEL
+================================================================================
+
+--- mod_data — ADaM Data Source ----------------------------------------------
+
+  +- DATA SOURCE -----------------------------------------+
+  |                                                       |
+  |  Source:  ( ) Upload ADaM datasets                    |
+  |          ( ) Upload pre-summarized data               |
+  |          ( ) Bundled sample data                      |
+  |                                                       |
+  |  -- ADaM Datasets (upload multiple) ---------------  |
+  |  [+ Upload files]                                     |
+  |                                                       |
+  |  +--------+--------+------+---------+                 |
+  |  | Name   | Rows   | Cols | Status  |                 |
+  |  +--------+--------+------+---------+                 |
+  |  | adsl   | 135    | 28   | Loaded  |                 |
+  |  | adae   | 1,247  | 35   | Loaded  |                 |
+  |  | adtte  | 405    | 22   | Loaded  |                 |
+  |  +--------+--------+------+---------+                 |
+  |                                                       |
+  |  -- Population Filter ----------------------------   |
+  |  Flag variable: [SAFFL   v]                           |
+  |  Filter:        [== "Y"  v]                           |
+  |  Resulting N:   135 subjects                          |
+  |                                                       |
+  |  -- Browse Raw Data (DT table) -------------------   |
+  |  Dataset: [adsl v]                                    |
+  |  +----------------------------------------------+    |
+  |  | USUBJID  TRT01A  AGE  SEX  RACE  SAFFL       |    |
+  |  | SUBJ001  Drug A  52   M    White Y            |    |
+  |  | SUBJ002  Drug B  48   F    Asian Y            |    |
+  |  | ...                             135 rows     |    |
+  |  +----------------------------------------------+    |
+  +-+-----------------------------------------------------+
+
+
+--- mod_analysis — Analysis Type Picker --------------------------------------
+
+  +- ANALYSIS TYPE -----------------------------------+
+  |                                                   |
+  |  Table type:                                      |
+  |  +---------------------------------------------+  |
+  |  | (*) Demographics          (adsl)            |  |
+  |  | ( ) AE Summary by SOC/PT  (adae)            |  |
+  |  | ( ) Disposition           (adsl)             |  |
+  |  | ( ) Time-to-Event         (adtte)            |  |
+  |  | ( ) Concomitant Meds      (adcm)             |  |
+  |  | ( ) Vital Signs           (advs)             |  |
+  |  | ( ) Custom Analysis       (any)              |  |
+  |  +---------------------------------------------+  |
+  |                                                   |
+  |  Each type auto-configures:                       |
+  |    - Which ADaM dataset to use                    |
+  |    - Default grouping variables                   |
+  |    - Default statistics                           |
+  |    - Default row structure                        |
+  |    - Default titles/footnotes template            |
+  +---------------------------------------------------+
+
+
+--- mod_grouping — Treatment & Stratification --------------------------------
+
+  +- GROUPING ----------------------------------------+
+  |                                                   |
+  |  Treatment variable: [TRT01A        v]            |
+  |                                                   |
+  |  Treatment values (auto-detected):                |
+  |  [x] Drug A    (n=45)                             |
+  |  [x] Drug B    (n=45)                             |
+  |  [x] Placebo   (n=45)                             |
+  |                                                   |
+  |  Include Total column: [x]                        |
+  |                                                   |
+  |  -- Analysis Variables (Demographics) ---------   |
+  |  [x] AGE     Continuous   (mean, SD, median, range)|
+  |  [x] SEX     Categorical  (n, %)                  |
+  |  [x] RACE    Categorical  (n, %)                  |
+  |  [x] ETHNIC  Categorical  (n, %)                  |
+  |  [x] BMIBL   Continuous   (mean, SD, median, range)|
+  |  [ ] HEIGHTBL Continuous                           |
+  |  [ ] WEIGHTBL Continuous                           |
+  |                                                   |
+  |  Auto-detect type: Numeric = continuous,           |
+  |                    Character/Factor = categorical  |
+  +---------------------------------------------------+
+
+
+--- mod_stats — Statistics Configuration -------------------------------------
+
+  +- STATISTICS --------------------------------------+
+  |                                                   |
+  |  -- Continuous Variables ----------------------   |
+  |  [x] N                                            |
+  |  [x] Mean (SD)    Format: [{mean} ({sd})]        |
+  |  [x] Median       Format: [{median}]             |
+  |  [x] Min, Max     Format: [{min}, {max}]         |
+  |  [ ] Q1, Q3                                       |
+  |  [ ] CV%                                          |
+  |                                                   |
+  |  Decimal places: [1 v]                            |
+  |                                                   |
+  |  -- Categorical Variables ---------------------   |
+  |  [x] n (%)        Format: [{n} ({pct}%)]         |
+  |  [ ] n only                                       |
+  |  [ ] % only                                       |
+  |                                                   |
+  |  Denominator: ( ) Big N  ( ) Column N  ( ) Row N  |
+  |  Decimal for %: [1 v]                             |
+  +---------------------------------------------------+
+
+
+--- mod_ard_preview — ARD Wide Preview ---------------------------------------
+
+  +- ARD WIDE TABLE (generated from ADaM) ---------------------+
+  |                                                            |
+  |  Status: [Generated 12 rows x 4 cols from adsl]           |
+  |                                                            |
+  |  +----------+-----------+-----------+-----------+          |
+  |  | param    | Drug A    | Drug B    | Total     |          |
+  |  |          | (N=45)    | (N=45)    | (N=135)   |          |
+  |  +----------+-----------+-----------+-----------+          |
+  |  | Age (yr) |           |           |           |          |
+  |  |   N      | 45        | 45        | 135       |          |
+  |  |   Mean   | 52.3      | 54.1      | 53.1      |          |
+  |  |   (SD)   | (12.1)    | (11.8)    | (12.0)    |          |
+  |  |   Median | 51.0      | 53.0      | 52.0      |          |
+  |  |   Range  | 22, 78    | 25, 81    | 22, 81    |          |
+  |  | Sex      |           |           |           |          |
+  |  |   Male   | 25 (55.6%)| 23 (51.1%)| 73 (54.1%)|         |
+  |  |   Female | 20 (44.4%)| 22 (48.9%)| 62 (45.9%)|         |
+  |  +----------+-----------+-----------+-----------+          |
+  |                                                            |
+  |  [Edit manually]  [Refresh]  [Export as CSV]               |
+  |                                                            |
+  |  This is the data that will be passed to arframe.          |
+  |  You can edit cells directly if needed.                    |
+  +------------------------------------------------------------+
+
+
+--- mod_titles — Titles & Footnotes -----------------------------------------
+
+  +- TITLES & FOOTNOTES -------------------------+
+  |                                              |
+  |  Title 1:  [Table 14.1.1                 ]   |
+  |  Title 2:  [Summary of Demographic        ]  |
+  |  Title 3:  [Baseline Characteristics      ]  |
+  |  + Add title line                            |
+  |                                              |
+  |  Population: [Safety Population           ]  |
+  |  Align:      [center v]                      |
+  |                                              |
+  |  -- Footnotes ----------------------------   |
+  |  1: [Percentages based on N            ]     |
+  |  2: [P-values from Fisher's exact      ]     |
+  |  + Add footnote                              |
+  |                                              |
+  |  Source:  [ADSL                          ]   |
+  +----------------------------------------------+
+
+
+--- mod_cols — Column Configuration ------------------------------------------
+
+  +- COLUMNS ------------------------------------------------+
+  |                                                          |
+  |  +--------+------------------+-------+--------+------+  |
+  |  | Column | Label            | Width | Align  | Show |  |
+  |  +--------+------------------+-------+--------+------+  |
+  |  | col1   | [Parameter    ]  | [2.0] | [left] | [x]  |  |
+  |  | col2   | [Drug A       ]  | [auto]| [ctr ] | [x]  |  |
+  |  | col3   | [Drug B       ]  | [auto]| [ctr ] | [x]  |  |
+  |  | col4   | [Total        ]  | [auto]| [ctr ] | [x]  |  |
+  |  +--------+------------------+-------+--------+------+  |
+  |                                                          |
+  |  Width mode:  ( ) Auto (font metrics)                    |
+  |               ( ) Equal                                  |
+  |               ( ) Custom (edit above)                    |
+  +----------------------------------------------------------+
+
+
+--- mod_header — Header Configuration ----------------------------------------
+
+  +- HEADER ---------------------------------+
+  |                                          |
+  |  Bold:       [x]                         |
+  |  Background: [......] #4472C4            |
+  |  Foreground: [######] #FFFFFF            |
+  |  Font size:  [9 v]                       |
+  |  Align:      [center v]                  |
+  |  V-align:    [bottom v]                  |
+  |                                          |
+  |  -- N-Counts --------------------------  |
+  |  Show N in header: [x]                   |
+  |  Format: [(N={n}) v]                     |
+  |  Source: [adsl         v]                |
+  |  By var: [TRT01A       v]                |
+  +------------------------------------------+
+
+
+--- mod_spans — Column Spanning Headers --------------------------------------
+
+  +- COLUMN SPANS ----------------------------------------+
+  |                                                       |
+  |  Preview:                                             |
+  |  +----------+-------------------+----------+          |
+  |  |          |   Treatment       |          |          |
+  |  |          +---------+---------+          |          |
+  |  |          | Drug A  | Drug B  |  Total   |          |
+  |  +----------+---------+---------+----------+          |
+  |                                                       |
+  |  Span 1:                                              |
+  |    Label:   [Treatment               ]                |
+  |    Columns: [x] col2  [x] col3  [ ] col4              |
+  |                                                       |
+  |  [+ Add Span]                                         |
+  +-------------------------------------------------------+
+
+
+--- mod_styles — Conditional Styling -----------------------------------------
+
+  +- STYLES --------------------------------------------------+
+  |                                                           |
+  |  +- Rule 1 ------------------------------------------+   |
+  |  | Apply to: ( ) Rows  ( ) Columns  ( ) Cells        |   |
+  |  | Where:    [col1 == "Age"              v]           |   |
+  |  | Bold:     [x]  Indent: [0 v]  Bg: [none]          |   |
+  |  |                                        [X Del]    |   |
+  |  +----------------------------------------------------+   |
+  |                                                           |
+  |  +- Rule 2 ------------------------------------------+   |
+  |  | Apply to: ( ) Rows  ( ) Columns  ( ) Cells        |   |
+  |  | Where:    [col1 == "  Mean"           v]           |   |
+  |  | Bold:     [ ]  Indent: [2 v]  Bg: [none]          |   |
+  |  |                                        [X Del]    |   |
+  |  +----------------------------------------------------+   |
+  |                                                           |
+  |  [+ Add Style Rule]                                       |
+  +-----------------------------------------------------------+
+
+
+--- mod_rules — Lines & Borders ----------------------------------------------
+
+  +- HORIZONTAL & VERTICAL LINES ---------------------+
+  |                                                   |
+  |  -- Presets ------------------------------------  |
+  |  [Standard ICH]  [Minimal]  [Grid]  [Custom]     |
+  |                                                   |
+  |  -- Horizontal Lines --------------------------   |
+  |  Header top:     [single v]  width: [1pt]        |
+  |  Header bottom:  [single v]  width: [1pt]        |
+  |  Body bottom:    [single v]  width: [1pt]        |
+  |  Row groups:     [none   v]                       |
+  |                                                   |
+  |  -- Vertical Lines ----------------------------   |
+  |  Between cols:   [none   v]                       |
+  |  Left border:    [none   v]                       |
+  |  Right border:   [none   v]                       |
+  +---------------------------------------------------+
+
+
+--- mod_page — Page Layout ---------------------------------------------------
+
+  +- PAGE LAYOUT -----------------------------------------+
+  |                                                       |
+  |  Paper:       [Letter v]                              |
+  |  Orientation: ( ) Portrait  ( ) Landscape             |
+  |                                                       |
+  |  -- Margins (inches) ---                              |
+  |  +----------------------------+                       |
+  |  |      Top: [1.0  ]          |                       |
+  |  | L       +--------+      R  |                       |
+  |  | [1.0 ]  | content|  [1.0] |                       |
+  |  |         +--------+        |                       |
+  |  |    Bottom: [1.0  ]         |                       |
+  |  +----------------------------+                       |
+  |                                                       |
+  |  -- Page Header -----------------------------------   |
+  |  Left:   [Sponsor Name                         ]     |
+  |  Right:  [Page {thepage} of {total_pages}       ]    |
+  |                                                       |
+  |  -- Page Footer -----------------------------------   |
+  |  Left:   [{program}                            ]     |
+  |  Right:  [{datetime}                           ]     |
+  +-+-----------------------------------------------------+
+
+
+--- mod_theme — Presets ------------------------------------------------------
+
+  +- THEME -----------------------------------+
+  |                                           |
+  |  Current: [FDA Standard v]                |
+  |                                           |
+  |  Available:                               |
+  |  +-------------------------------------+  |
+  |  | * FDA Standard                      |  |
+  |  | o EMA Submission                    |  |
+  |  | o PMDA Japan                        |  |
+  |  | o Company Default                   |  |
+  |  | o Minimal                           |  |
+  |  +-------------------------------------+  |
+  |                                           |
+  |  [Save Current as Theme]                  |
+  |  [Import Theme YAML]                      |
+  |  [Export Theme YAML]                      |
+  +-------------------------------------------+
+
+
+================================================================================
+8. DATA FLOW — HOW MODULES TALK
+================================================================================
+
+  +----------+
+  | mod_data |-->  reactiveValues$datasets  (list of ADaM tibbles)
+  +----------+     reactiveValues$pop_flag  (e.g. "SAFFL")
+                   reactiveValues$pop_n     (big N per treatment)
+                          |
+                          v
+    +------------------------------------------------------+
+    |                  ARD LAYER                            |
+    |                                                      |
+    |  +-------------+  +------------+  +--------------+   |
+    |  |mod_analysis |  |mod_grouping|  | mod_stats    |   |
+    |  | type picker |  | trt var    |  | n, mean, %   |   |
+    |  | (demog, AE) |  | by vars    |  | formats      |   |
+    |  +------+------+  +-----+------+  +------+-------+   |
+    |         |               |                |            |
+    |         +-------+-------+-------+--------+            |
+    |                 |                                     |
+    |                 v                                     |
+    |         +---------------+                             |
+    |         | ard_demog.R   |  (or ard_ae.R, etc.)        |
+    |         | dplyr pipeline|                             |
+    |         | group_by() |> |                             |
+    |         | summarise()|> |                             |
+    |         | pivot_wider() |                             |
+    |         +-------+-------+                             |
+    |                 |                                     |
+    |                 v                                     |
+    |         +----------------+                            |
+    |         |mod_ard_preview |-->  ARD wide tibble         |
+    |         | (editable DT)  |    (what arframe receives) |
+    |         +----------------+                            |
+    +------------------------------------------------------+
+                          |
+            +-------------+-------------+-------------+
+            |             |             |             |
+            v             v             v             v
+      +----------+  +----------+  +----------+  +----------+
+      |mod_titles|  | mod_cols |  |mod_header|  |mod_styles|  ...
+      +----+-----+  +----+-----+  +----+-----+  +----+-----+
+           |             |             |              |
+           v             v             v              v
+        reactive()    reactive()    reactive()     reactive()
+        list(         tibble(       list(          tibble(
+          title,        column,       bold,          target,
+          subtitle,     label,        bg, fg,        where,
+          footnotes,    width,        n_counts       bold,
+          population    align,      )               indent
+        )               show                       )
+                      )
+           |             |             |              |
+           +-------------+------+------+--------------+
+                                |
+                                v
+                        +-------------+
+                        | mod_codegen |
+                        |             |
+                        | Builds TWO  |--> reactive$spec  (fr_spec object)
+                        | sections:   |--> reactive$code  (R script string)
+                        |             |
+                        | 1. Data prep (dplyr/tidyr pipeline)
+                        | 2. arframe pipeline (fr_table |> ...)
+                        +------+------+
+                               |
+                        +------+------+
+                        |             |
+                        v             v
+                  +-----------+ +-----------+
+                  |mod_preview| |mod_export |
+                  |           | |           |
+                  | HTML table| | [v RTF]   |
+                  | rendered  | | [v PDF]   |
+                  | live      | | [v .R]    |
+                  +-----------+ +-----------+
+
+
+================================================================================
+9. ARD BUILDERS — ADaM TO WIDE FORMAT
+================================================================================
+
+Each analysis type has a dedicated builder function (ard_*.R) that takes
+raw ADaM data + user config and produces an ARD wide tibble for arframe.
+
+ALL stat formats from csr_stat_formats.txt are covered. No cards/cardx
+dependency — plain dplyr/tidyr code, readable by any programmer.
+
+
+================================================================================
+9A. COMPLETE STATISTICAL FORMAT COVERAGE
+================================================================================
+
+The ARD builder must generate ALL of these format types. Each format has a
+corresponding formatter function in utils_formats.R inside arbuilder.
+The generated R script inlines the formatting (sprintf/paste), not helpers.
+
+  CATEGORY                       FORMAT ID       EXAMPLE OUTPUT
+  ========                       =========       ==============
+
+  -- COUNTS & FREQUENCIES -------------------------------------------
+
+  Count only                     cnt             120
+  N (%) Style A                  npct_a           12 ( 10.0)
+  N (%) Style D (zero=n only)    npct_d            0
+  N/N (%) Style A                nn_pct_a         12/120 ( 10.0)
+  N/N (%) Style D                nn_pct_d          0/120
+  N/N (%) [95% CI] Style A       nn_pct_ci_a      12/120 ( 10.0) [  5.6,  16.9]
+  N/N (%) [95% CI] Style D       nn_pct_ci_d       0/120
+  AE Grade N (%)                 ae_npct          16 ( 13.3)
+  Response Rate N/N (%) [CI]     resp_rate        62/118 ( 52.5) [ 43.2,  61.7]
+
+  -- CONTINUOUS SUMMARIES -------------------------------------------
+
+  Mean (SD) 1 dec               mean_sd_1        52.4 ( 11.2)
+  Mean (SD) 2 dec               mean_sd_2        52.43 ( 11.23)
+  Mean (SD) 3 dec               mean_sd_3         0.124 (  0.034)
+  Mean only                     mean_only        52.4
+  Median only                   median_only      53.0
+  Median [Q1, Q3] integer       med_iqr_0        53 [ 45,  60]
+  Median [Q1, Q3] 1 dec         med_iqr_1        53.0 [ 45.0,  60.0]
+  Median [Q1, Q3] 2 dec         med_iqr_2        53.00 [ 45.00,  60.00]
+  Min, Max                      min_max           22.0,  78.0
+  Stacked block (N/Mean/Med/R)  stack_cont       120 / 52.4 (11.2) / 53.0 / ...
+
+  -- CHANGE FROM BASELINE -------------------------------------------
+
+  CFB Mean (SD)                  cfb_mean_sd      -4.1 (  1.2)
+  % CFB Mean (SD)                pct_cfb          -8.6 (  5.9)
+  Baseline + Change stacked      cfb_stack       142.4 (18.6) / -12.3 (8.4)
+
+  -- GEOMETRIC / PK --------------------------------------------------
+
+  Geometric Mean (CV%)           gmean_cv         52.43 ( 23.4%)
+  Geometric Mean Ratio (90% CI)  gmr_ci           1.024 (0.987, 1.063)
+  PK Geo Mean (CV%) + 90% CI     pk_gmean_ci     144.2 ( 32.1%)  (124.8, 166.7)
+  PK Tmax Median [Q1, Q3]       pk_tmax           2.0 [  1.0,   4.0]
+  PK T1/2 Mean (SD)             pk_thalf         12.4 (  2.3)
+
+  -- LS MEANS / TREATMENT COMPARISONS --------------------------------
+
+  LS Mean (SE)                   lsmean_se        48.7 (  1.18)
+  LS Mean Diff (95% CI)          lsmean_diff       3.70 (  1.24,  6.16)
+  LS Mean Chg (SE) + CI + p      lsmean_full       3.70 (1.24)  (1.24, 6.16)  0.003
+  Trt Diff (95% CI) + p          trt_diff          3.70 (1.24, 6.16)  0.003
+
+  -- RISK / ODDS / HAZARD -------------------------------------------
+
+  Risk Difference (95% CI)       risk_diff         0.120 ( 0.042,  0.198)
+  Relative Risk (95% CI)         rel_risk          1.240 (1.021, 1.506)
+  Odds Ratio (95% CI)            odds_ratio        2.140 (1.340, 3.420)
+  CMH OR (95% CI) + p            cmh_or            2.140 (1.340, 3.420)  0.001
+  Hazard Ratio (95% CI)          haz_ratio         0.724 (0.580, 0.904)
+  Hazard Ratio (95% CI) + p      haz_ratio_p       0.724 (0.580, 0.904)  0.006
+
+  -- SURVIVAL / TIME-TO-EVENT ----------------------------------------
+
+  KM Median (95% CI)             km_median        14.3 ( 11.2,  18.6)
+  KM Median (CI) with NR         km_median_nr       NR ( 22.4,    NR)
+  KM Rate at timepoint (CI)      km_rate           0.724 (0.641, 0.795)
+  Log-rank p-value               logrank_p         0.006
+
+  -- P-VALUES ---------------------------------------------------------
+
+  P-value (general)              pval              0.043
+  P-value with <0.001            pval_low         <0.001
+  P-value with >0.999            pval_high        >0.999
+  Adjusted p-value               pval_adj          0.086
+
+  -- EXPOSURE / DOSE --------------------------------------------------
+
+  Exposure duration stacked      exp_dur          120 / 182.4 (42.1) / 195.0 / ...
+  Cumulative dose stacked        cum_dose         120 / 3648.0 (820.4) / 3900.0 / ...
+  Dose intensity (%) stacked     dose_int         120 / 94.2 (8.4) / 98.0 / ...
+
+  -- SAFETY SPECIFIC --------------------------------------------------
+
+  TEAE incidence rate            teae_rate        42.3
+  SAE N (%) + rate/100 PY        sae_rate         12 (10.0)  5.12
+  Events/subject-years           events_py        12/234.6
+  QTcF stacked block             qtcf_stack       402.4 (18.6) / 4.2 (8.3) / ...
+  QTcF threshold N (%)           qtcf_thresh       8 (  6.7)
+  Lab shift cell count           lab_shift        13
+
+  -- MISSING / SPECIAL VALUES ----------------------------------------
+
+  All CIs handle:  NR, NE, NC, NA, -, INF, -INF, BLQ
+  Missing percent shows:  <0.1 and >99.9 at boundaries
+  Zero handling:  Style A (show 0.0) vs Style D (show n only)
+
+
+================================================================================
+9B. FORMAT FUNCTIONS — utils_formats.R
+================================================================================
+
+These are INTERNAL helpers used by arbuilder to compute stats.
+The GENERATED R SCRIPT inlines the logic as sprintf() calls.
+
+  # utils_formats.R (inside arbuilder, not exported)
+
+  fmt_count <- function(n) {
+    sprintf("%d", n)
+  }
+
+  fmt_npct <- function(n, N, style = "A", decimals = 1) {
+    pct <- n / N * 100
+    if (n == 0 && style == "D") return(sprintf("%3d", n))
+    if (pct < 0.1 && n > 0)    return(sprintf("%3d ( <0.1)", n))
+    if (pct > 99.9 && n < N)   return(sprintf("%3d (>99.9)", n))
+    sprintf(paste0("%3d (%", decimals + 4, ".", decimals, "f)"), n, pct)
+  }
+
+  fmt_nn_pct <- function(n, N, style = "A", decimals = 1) {
+    pct <- n / N * 100
+    if (n == 0 && style == "D") return(sprintf("%3d/%d", n, N))
+    sprintf(paste0("%3d/%d (%", decimals + 4, ".", decimals, "f)"), n, N, pct)
+  }
+
+  fmt_mean_sd <- function(mean, sd, decimals = 1) {
+    f <- paste0("%.", decimals, "f")
+    sprintf(paste0(f, " (", f, ")"), mean, sd)
+  }
+
+  fmt_median_iqr <- function(med, q1, q3, decimals = 1) {
+    f <- paste0("%.", decimals, "f")
+    sprintf(paste0(f, " [", f, ", ", f, "]"), med, q1, q3)
+  }
+
+  fmt_min_max <- function(min, max, decimals = 1) {
+    f <- paste0("%.", decimals, "f")
+    sprintf(paste0(f, ", ", f), min, max)
+  }
+
+  fmt_ci <- function(est, lower, upper, decimals = 3, ci_level = "95%") {
+    f <- paste0("%.", decimals, "f")
+    # Handle NR/NE/NC for incomplete CIs
+    fmt_val <- function(x, token = "NR") {
+      if (is.na(x) || is.infinite(x)) return(sprintf(paste0("%", decimals + 4, "s"), token))
+      sprintf(paste0("%", decimals + 4, ".", decimals, "f"), x)
+    }
+    sprintf("%s (%s, %s)", sprintf(f, est), fmt_val(lower), fmt_val(upper))
+  }
+
+  fmt_pval <- function(p, decimals = 3) {
+    if (is.na(p))      return("    -")
+    if (p < 0.001)     return("<0.001")
+    if (p > 0.999)     return(">0.999")
+    sprintf(paste0("%.", decimals, "f"), p)
+  }
+
+  fmt_gmean_cv <- function(gmean, cv, decimals = 2) {
+    sprintf(paste0("%.", decimals, "f (%4.1f%%)"), gmean, cv)
+  }
+
+--- ard_demog.R — Demographics Summary --------------------------------------
+
+  Input:   adsl (filtered by population flag)
+  Config:  treatment var, analysis vars, stats, formats
+  Output:  Wide tibble ready for fr_table()
+
+  Example generated dplyr code:
+
+    library(dplyr)
+    library(tidyr)
+    library(readr)
+
+    adsl <- read_csv("data/adsl.csv") |>
+      filter(SAFFL == "Y")
+
+    # Big N per treatment
+    big_n <- adsl |>
+      count(TRT01A, name = "N") |>
+      bind_rows(tibble(TRT01A = "Total", N = nrow(adsl)))
+
+    # Continuous: AGE
+    age_stats <- adsl |>
+      bind_rows(adsl |> mutate(TRT01A = "Total")) |>
+      group_by(TRT01A) |>
+      summarise(
+        N      = as.character(n()),
+        Mean   = sprintf("%.1f", mean(AGE, na.rm = TRUE)),
+        SD     = sprintf("(%.2f)", sd(AGE, na.rm = TRUE)),
+        Median = sprintf("%.1f", median(AGE, na.rm = TRUE)),
+        Range  = sprintf("%g, %g", min(AGE), max(AGE))
+      ) |>
+      pivot_longer(-TRT01A, names_to = "stat", values_to = "value") |>
+      pivot_wider(names_from = TRT01A, values_from = value) |>
+      mutate(param = "Age (yr)", .before = 1)
+
+    # Categorical: SEX
+    sex_stats <- adsl |>
+      bind_rows(adsl |> mutate(TRT01A = "Total")) |>
+      group_by(TRT01A, SEX) |>
+      summarise(n = n(), .groups = "drop") |>
+      left_join(big_n, by = "TRT01A") |>
+      mutate(value = sprintf("%d (%.1f%%)", n, n / N * 100)) |>
+      select(TRT01A, stat = SEX, value) |>
+      pivot_wider(names_from = TRT01A, values_from = value) |>
+      mutate(param = "Sex", .before = 1)
+
+    # Stack all parameters
+    tbl_demog <- bind_rows(age_stats, sex_stats)
+
+
+--- ard_ae.R — AE Summary by SOC/PT ----------------------------------------
+
+  Input:   adae + adsl (for big N denominators)
+  Config:  treatment var, grouping (SOC, PT), thresholds
+  Output:  Wide tibble with SOC/PT rows, treatment columns
+
+  Stat formats used:
+    npct_a / npct_d    — subject counts per SOC and PT
+    ae_npct            — by AE grade if requested
+    teae_rate          — incidence rate per 100 PY
+    sae_rate           — SAE N (%) with rate/100 PY
+    events_py          — events / subject-years
+
+  Example generated dplyr code:
+
+    adae <- read_csv("data/adae.csv")
+    adsl <- read_csv("data/adsl.csv") |> filter(SAFFL == "Y")
+
+    big_n <- adsl |> count(TRT01A, name = "N")
+
+    # Subjects with any TEAE
+    any_ae <- adae |>
+      filter(TRTEMFL == "Y") |>
+      distinct(USUBJID, TRT01A) |>
+      count(TRT01A, name = "n") |>
+      left_join(big_n, by = "TRT01A") |>
+      mutate(value = sprintf("%3d (%5.1f)", n, n / N * 100))
+
+    # By SOC
+    by_soc <- adae |>
+      filter(TRTEMFL == "Y") |>
+      distinct(USUBJID, TRT01A, AESOC) |>
+      count(TRT01A, AESOC, name = "n") |>
+      left_join(big_n, by = "TRT01A") |>
+      mutate(value = sprintf("%3d (%5.1f)", n, n / N * 100))
+
+    # By SOC + PT
+    by_pt <- adae |>
+      filter(TRTEMFL == "Y") |>
+      distinct(USUBJID, TRT01A, AESOC, AEDECOD) |>
+      count(TRT01A, AESOC, AEDECOD, name = "n") |>
+      left_join(big_n, by = "TRT01A") |>
+      mutate(value = sprintf("%3d (%5.1f)", n, n / N * 100))
+
+
+--- ard_disp.R — Disposition Summary ----------------------------------------
+
+  Input:   adsl
+  Config:  treatment var, disposition variables (EOSSTT, DCSREAS)
+  Output:  Wide tibble: Completed/Discontinued/Reasons
+
+  Stat formats used:
+    cnt               — subject counts
+    npct_a / npct_d   — N (%) for each disposition category
+
+  Example generated dplyr code:
+
+    adsl <- read_csv("data/adsl.csv") |> filter(ITTFL == "Y")
+
+    big_n <- adsl |> count(TRT01A, name = "N")
+
+    # Completion status
+    disp <- adsl |>
+      count(TRT01A, EOSSTT) |>
+      left_join(big_n, by = "TRT01A") |>
+      mutate(value = sprintf("%3d (%5.1f)", n, n / N * 100))
+
+    # Discontinuation reasons (only for discontinued)
+    reasons <- adsl |>
+      filter(EOSSTT == "DISCONTINUED") |>
+      count(TRT01A, DCSREAS) |>
+      left_join(big_n, by = "TRT01A") |>
+      mutate(value = sprintf("%3d (%5.1f)", n, n / N * 100))
+
+
+--- ard_tte.R — Time-to-Event Summary --------------------------------------
+
+  Input:   adtte
+  Config:  treatment var, parameter (AVAL, CNSR), time unit
+  Output:  Wide tibble: N, Events, Median, 95% CI, HR
+  Note:    Uses survival::survfit() / survival::coxph()
+
+  Stat formats used:
+    cnt                — N, Events, Censored counts
+    km_median          — KM median survival (95% CI)
+    km_median_nr       — with NR for not reached
+    km_rate            — KM rate at timepoint (95% CI)
+    haz_ratio          — Hazard ratio (95% CI)
+    haz_ratio_p        — HR + p-value
+    logrank_p          — Log-rank p-value
+    pval               — general p-value
+
+  Example generated dplyr code:
+
+    library(survival)
+
+    adtte <- read_csv("data/adtte.csv") |>
+      filter(PARAMCD == "OS")
+
+    # KM fit
+    km_fit <- survfit(Surv(AVAL, 1 - CNSR) ~ TRT01A, data = adtte)
+    km_summary <- broom::tidy(km_fit)
+
+    # Median survival
+    km_median <- surv_median(km_fit)  # or extract from summary
+
+    # Cox model for HR
+    cox_fit <- coxph(Surv(AVAL, 1 - CNSR) ~ TRT01A, data = adtte)
+    hr <- exp(coef(cox_fit))
+    hr_ci <- exp(confint(cox_fit))
+
+    # Log-rank test
+    lr_test <- survdiff(Surv(AVAL, 1 - CNSR) ~ TRT01A, data = adtte)
+    lr_pval <- 1 - pchisq(lr_test$chisq, df = 1)
+
+
+--- ard_vitals.R — Vital Signs Summary (ADVS) --------------------------------
+
+  ADaM class:  BDS (Basic Data Structure)
+  Input:       ADVS — one row per subject per parameter per visit
+  Key vars:    AVAL, BASE, CHG, PCHG, PARAMCD, AVISIT, ABLFL, ANL01FL
+  Config:      treatment var, parameters (SYSBP, DIABP, PULSE, TEMP, etc.),
+               timepoints, change from baseline
+  Output:      Wide tibble: baseline, post-baseline, change stats
+
+  Non-standard vars to handle:
+    - Custom PARAMCD values (study-specific vital signs)
+    - DTYPE (LOCF, WOCF) — user picks which derivation type
+    - CRITyFL — marked abnormality flags (e.g., CRIT1FL for SYSBP > 140)
+    - AVALCATy — categorized values (Normal/Abnormal)
+
+  Stat formats: mean_sd, med_iqr, min_max, stack_cont, cfb_mean_sd,
+                pct_cfb, cfb_stack, lsmean_se, lsmean_diff, trt_diff
+
+  Example generated dplyr code:
+
+    advs <- read_csv("data/advs.csv") |>
+      filter(SAFFL == "Y", PARAMCD == "SYSBP", is.na(DTYPE))
+
+    # Baseline
+    bl_stats <- advs |>
+      filter(ABLFL == "Y") |>
+      bind_rows(advs |> filter(ABLFL == "Y") |> mutate(TRT01A = "Total")) |>
+      group_by(TRT01A) |>
+      summarise(
+        N      = as.character(n()),
+        Mean   = sprintf("%.1f", mean(AVAL, na.rm = TRUE)),
+        SD     = sprintf("(%.2f)", sd(AVAL, na.rm = TRUE)),
+        Median = sprintf("%.1f", median(AVAL, na.rm = TRUE)),
+        Range  = sprintf("%.1f, %.1f", min(AVAL), max(AVAL))
+      )
+
+    # Change from baseline
+    cfb_stats <- advs |>
+      filter(AVISITN > 0, !is.na(CHG)) |>
+      bind_rows(advs |> filter(AVISITN > 0, !is.na(CHG)) |>
+                  mutate(TRT01A = "Total")) |>
+      group_by(TRT01A, AVISIT) |>
+      summarise(
+        N      = as.character(n()),
+        Mean   = sprintf("%.1f", mean(CHG, na.rm = TRUE)),
+        SD     = sprintf("(%.2f)", sd(CHG, na.rm = TRUE))
+      )
+
+
+--- ard_labs.R — Laboratory Results Summary (ADLB) --------------------------
+
+  ADaM class:  BDS (Basic Data Structure)
+  Input:       ADLB — one row per subject per lab parameter per visit
+  Key vars:    AVAL, BASE, CHG, PARAMCD, AVISIT, ABLFL, ANRIND, BNRIND,
+               ATOXGR, BTOXGR (CTCAE grades)
+  Config:      treatment var, lab parameters (hematology, chemistry, other),
+               timepoints/cycles, normal range handling
+  Output:      Wide tibble: results + CFB by treatment and cycle
+
+  Non-standard vars to handle:
+    - PARCAT1 (Hematology, Chemistry, Urinalysis, Other)
+    - ANRIND (HIGH, NORMAL, LOW) — lab-specific range indicator
+    - ATOXGR / BTOXGR — CTCAE toxicity grades (0-4)
+    - CRITyFL — marked abnormality flags (e.g., ALT > 3xULN)
+    - LBSTNRHI, LBSTNRLO — standard normal range high/low
+    - Custom lab panel groupings
+
+  Stat formats: mean_sd, med_iqr, min_max, stack_cont, cfb_mean_sd
+
+  Differs from ard_vitals:
+    - Has toxicity grading (CTCAE)
+    - Has normal range indicators (ANRIND)
+    - Often summarized by cycle, not visit
+    - Marked abnormality analysis is lab-specific
+
+
+--- ard_efficacy_cont.R — Continuous Efficacy Endpoints (ADEFF/ADQS) ---------
+
+  ADaM class:  BDS (Basic Data Structure)
+  Input:       ADEFF, ADQS, or any efficacy BDS dataset
+  Key vars:    AVAL, BASE, CHG, PCHG, PARAMCD, AVISIT, ABLFL
+  Config:      treatment var, efficacy parameters, timepoints,
+               LS mean model specification (ANCOVA covariates)
+  Output:      Wide tibble: results + CFB + LS means + treatment comparison
+
+  Non-standard vars to handle:
+    - Study-specific PARAMCD (e.g., HAMD17, MADRS, FEV1, eGFR)
+    - DTYPE (LOCF, WOCF, MMRM) — imputation method
+    - ANL01FL — analysis record flag for specific analyses
+    - Custom scoring algorithms
+    - Multiple BASETYPE (e.g., screening vs day 1 baseline)
+
+  Stat formats: mean_sd, cfb_mean_sd, lsmean_se, lsmean_diff,
+                lsmean_full, trt_diff, pval
+
+  Differs from ard_vitals:
+    - Focuses on treatment comparison (LS means, p-values)
+    - Multiple imputation methods common
+    - Often the primary endpoint — needs extra precision
+
+
+--- ard_cm.R — Concomitant Medications Summary ------------------------------
+
+  Input:   adcm + adsl
+  Config:  treatment var, ATC class grouping
+  Output:  Wide tibble: ATC class / preferred name rows
+
+  Stat formats used:
+    npct_a / npct_d   — subject counts N (%)
+
+  Same pattern as AE summary but grouped by:
+    - ATC Level 2 (CMCLAS)
+    - Preferred Name (CMDECOD)
+
+
+--- ard_exposure.R — Exposure / Dosing Summary ------------------------------
+
+  Input:   adsl (or adex if available)
+  Config:  treatment var, duration/dose variables
+  Output:  Wide tibble: exposure duration, cumulative dose, dose intensity
+
+  Stat formats used:
+    stack_cont         — N / Mean (SD) / Median / Min, Max
+    exp_dur            — Exposure duration stacked block
+    cum_dose           — Cumulative dose stacked block
+    dose_int           — Dose intensity (%) stacked block
+
+
+--- ard_pk.R — Pharmacokinetic Summary --------------------------------------
+
+  Input:   adpc (or PK dataset)
+  Config:  treatment var, PK parameters (Cmax, AUC, Tmax, T1/2)
+  Output:  Wide tibble: PK parameters by treatment
+
+  Stat formats used:
+    gmean_cv           — Geometric Mean (CV%)
+    gmr_ci             — Geometric Mean Ratio (90% CI)
+    pk_gmean_ci        — Full PK line: Geo Mean (CV%) + 90% CI
+    pk_tmax            — Tmax Median [Q1, Q3]
+    pk_thalf           — T1/2 Mean (SD)
+    med_iqr_1          — Median [Q1, Q3]
+
+
+--- ard_ecg.R — Cardiac Safety / ECG Summary (ADEG) -----------------------
+
+  ADaM class:  BDS (Basic Data Structure)
+  Input:       ADEG — one row per subject per ECG parameter per visit
+  Key vars:    AVAL, BASE, CHG, PARAMCD (QTCF, QT, HR, PR, QRS),
+               AVISIT, ABLFL, ANRIND, AVALCATy
+  Config:      treatment var, ECG parameters, thresholds,
+               timepoints, categorical thresholds
+  Output:      Wide tibble: QTcF stats + threshold crossings
+
+  Non-standard vars to handle:
+    - PARAMCD: QTCF, QTCB, QT, HR, PR, QRS, RR (varies by study)
+    - AVALCATy: QTcF categories (<=450, >450-480, >480-500, >500 ms)
+    - CHGCATy: Change categories (<=30, >30-60, >60 ms)
+    - APERIOD: Analysis period (for crossover studies)
+    - ECG overall interpretation (NORMAL, ABNORMAL CS, ABNORMAL NCS)
+
+  Stat formats used:
+    qtcf_stack         — QTcF stacked block (baseline, change, CI)
+    qtcf_thresh        — QTcF threshold crossing N (%)
+    cfb_mean_sd        — Change from baseline
+    lsmean_diff        — LS Mean difference + CI
+
+
+--- ard_shift.R — Shift Table Summary (Labs, ECG, ECOG, Efficacy) -----------
+
+  ADaM class:  BDS (any dataset with ANRIND/BNRIND or categorical baseline/post)
+  Input:       ADLB, ADEG, ADQS — any BDS with baseline + post categories
+  Key vars:    ANRIND (post-baseline), BNRIND (baseline), or
+               ATOXGR/BTOXGR (CTCAE grades), or
+               AVALCATy (custom categories)
+  Config:      treatment var, parameters, shift categories,
+               timepoints/cycles
+  Output:      Wide tibble: shift matrix (baseline rows × post-baseline cols)
+
+  Covers ALL shift tables across domains:
+    - Lab CTCAE grade shifts (High/Low)     — 14.3.4.2.x, 14.3.4.3.x
+    - Lab abnormality category shifts       — 14.3.4.4
+    - Lab marked abnormalities              — 14.3.4.5, 14.3.4.6
+    - ECG overall interpretation shifts     — 14.3.5.3
+    - ECOG shift from baseline              — 14.3.5.5
+    - Efficacy categorical parameter shifts — 14.2.3.4
+
+  Non-standard vars to handle:
+    - Custom shift categories (sponsor-defined Normal/Abnormal/Missing)
+    - CTCAE grade mapping (0-4, varies by parameter)
+    - Multiple baseline definitions (BASETYPE)
+    - Marked abnormality thresholds (CRITyFL)
+
+  Stat formats used:
+    lab_shift          — Cell count (N)
+    npct_a             — N (%) within each shift cell
+
+
+--- ard_efficacy_cat.R — Categorical/Binary Efficacy Endpoints (ADRS) -------
+
+  ADaM class:  BDS or OCCDS (depends on sponsor)
+  Input:       ADRS, ADEFF — response/categorical endpoints
+  Key vars:    AVALC (response category), AVAL (0/1 for binary),
+               PARAMCD, AVISIT, ANL01FL
+  Config:      treatment var, response variable, CI method,
+               response categories (CR, PR, SD, PD for oncology)
+  Output:      Wide tibble: response rates + comparisons
+
+  Non-standard vars to handle:
+    - AVALC with study-specific response categories
+    - RSCONFFL — confirmed response flag
+    - Best overall response derivations
+    - Multiple analysis flags (ANL01FL, ANL02FL)
+    - Cumulative response categories
+
+  Stat formats used:
+    resp_rate          — N/N (%) [95% CI]
+    nn_pct_ci_a        — N/N (%) [CI] Style A
+    risk_diff          — Risk Difference (95% CI)
+    rel_risk           — Relative Risk (95% CI)
+    odds_ratio         — Odds Ratio (95% CI)
+    cmh_or             — CMH OR (95% CI) + p-value
+    pval               — P-value
+
+
+--- ard_custom.R — User-Defined Analysis ------------------------------------
+
+  Input:   any uploaded dataset
+  Config:  user picks: group var, row var, stat type, value var
+  Output:  Wide tibble built from user selections
+
+  All stat formats available — user selects which ones to apply.
+  This is the escape hatch when none of the preset analysis types fit.
+
+
+================================================================================
+10. MOD_CODEGEN — THE HEART (TIDYVERSE-POWERED)
+================================================================================
+
+This is the most important module. It translates UI state into arframe code.
+Uses glue for string interpolation, stringr for cleanup, purrr for iteration.
+
+  INPUT (from modules)                    OUTPUT (R code string)
+  ---------------------                   ----------------------
+
+  titles_r() = list(                      library(arframe)
+    title = c("Table 14.1.1",
+      "Summary of Demographics"),         tbl_demog |>
+    population = "Safety",                  fr_table() |>
+    footnotes = c("Based on N")             fr_titles(
+  )                                           "Table 14.1.1",
+                                              "Summary of Demographics",
+  cols_r() = tibble(                          population = "Safety"
+    column = c("col1","col2",...),           ) |>
+    label  = c("Param","Drug A",...),        fr_footnotes(
+    width  = c("2","auto",...),                "Based on N"
+    align  = c("left","center",...)          ) |>
+  )                                         fr_cols(
+                                              col1 = fr_col(
+  header_r() = list(                            label = "Param",
+    bold = TRUE,                                width = 2,
+    bg = "#4472C4"                              align = "left"
+  )                                           ),
+                                              .align = "center"
+  rules_r() = list(                         ) |>
+    preset = "standard"                     fr_header(
+  )                                           bold = TRUE,
+                                              bg = "#4472C4"
+  page_r() = list(                          ) |>
+    orientation = "landscape",             fr_hlines("standard") |>
+    margins = c(1,1,1,1)                   fr_page(
+  )                                           orientation = "landscape",
+                                              margins = 1
+                                            ) |>
+                                            fr_render("t_14_1_1.rtf")
+
+
+  HOW CODEGEN BUILDS THE STRING (using glue + purrr):
+
+  codegen_server <- function(id, data_r, titles_r, cols_r, header_r,
+                             spans_r, styles_r, rules_r, page_r, theme_r) {
+    moduleServer(id, function(input, output, session) {
+
+      code <- reactive({
+        t <- titles_r()
+        c <- cols_r()        # This is a tibble now
+        h <- header_r()
+        r <- rules_r()
+        p <- page_r()
+
+        # Build fr_cols() block from column tibble using purrr + glue
+        col_entries <- c |>
+          dplyr::filter(show) |>
+          purrr::pmap_chr(function(column, label, width, align, ...) {
+            w <- if (width == "auto") NULL else as.numeric(width)
+            parts <- c(
+              glue::glue('label = "{label}"'),
+              if (!is.null(w)) glue::glue("width = {w}"),
+              glue::glue('align = "{align}"')
+            )
+            glue::glue("    {column} = fr_col({paste(parts, collapse = ', ')})")
+          })
+
+        # Build fr_titles() args
+        title_args <- t$title |>
+          purrr::keep(~ nzchar(.x)) |>
+          purrr::map_chr(~ glue::glue('    "{.x}"')) |>
+          paste(collapse = ",\n")
+
+        # Assemble full pipeline with glue — TWO SECTIONS
+        # Section 1: data prep (ADaM -> ARD wide)
+        # Section 2: arframe formatting pipeline
+
+        data_code <- ard_r$code  # Generated dplyr pipeline from ARD layer
+
+        glue::glue('
+          library(arframe)
+          library(dplyr)
+          library(tidyr)
+          library(readr)
+
+          # --- Load & filter ADaM ---
+          {data_code}
+
+          # --- Format & render ---
+          {ard_r$table_name} |>
+            fr_table() |>
+            fr_titles(
+          {title_args},
+              population = "{t$population}"
+            ) |>
+            fr_cols(
+          {paste(col_entries, collapse = ",\\n")}
+            ) |>
+            fr_header(
+              bold = {h$bold},
+              bg = "{h$bg}"
+            ) |>
+            fr_hlines("{r$preset}") |>
+            fr_page(
+              orientation = "{p$orientation}",
+              margins = {p$margins}
+            ) |>
+            fr_render("{data_r$name()}.rtf")
+        ') |> stringr::str_trim()
+      })
+
+      # Live spec -- also build the actual arframe object
+      spec <- reactive({
+        # Evaluate the code string in a clean environment
+        # to produce the fr_spec for preview
+        tryCatch(
+          eval(parse(text = code()), envir = new.env(parent = globalenv())),
+          error = function(e) NULL
+        )
+      })
+
+      list(spec = spec, code = code)
+    })
+  }
+
+
+================================================================================
+10. SHINY MODULE PATTERN (TIDYVERSE STYLE)
+================================================================================
+
+Every module follows this standard pattern, using tidyverse idioms:
+
+  # mod_titles.R
+
+  titles_ui <- function(id) {
+    ns <- NS(id)
+    tagList(
+      textAreaInput(ns("title"), "Title", rows = 2),
+      textAreaInput(ns("subtitle"), "Subtitle", rows = 2),
+      textAreaInput(ns("footnotes"), "Footnotes", rows = 3),
+      selectInput(ns("title_align"), "Alignment",
+                  c("center", "left", "right"))
+    )
+  }
+
+  titles_server <- function(id) {
+    moduleServer(id, function(input, output, session) {
+      # Returns a reactive tibble-friendly list
+      reactive(list(
+        title     = input$title,
+        subtitle  = input$subtitle,
+        footnotes = input$footnotes,
+        align     = input$title_align
+      ))
+    })
+  }
+
+
+  # mod_data.R — uses readr + dplyr
+
+  data_server <- function(id) {
+    moduleServer(id, function(input, output, session) {
+      uploaded <- reactive({
+        req(input$file)
+        ext <- tools::file_ext(input$file$name)
+        switch(ext,
+          csv = readr::read_csv(input$file$datapath, show_col_types = FALSE),
+          rds = readRDS(input$file$datapath),
+          validate("Unsupported file type")
+        )
+      })
+
+      # Expose data as tibble with column metadata
+      list(
+        data    = reactive(tibble::as_tibble(uploaded())),
+        name    = reactive(tools::file_path_sans_ext(input$file$name)),
+        columns = reactive(names(uploaded()))
+      )
+    })
+  }
+
+
+  # mod_cols.R — uses dplyr to build column config tibble
+
+  cols_server <- function(id, data_r) {
+    moduleServer(id, function(input, output, session) {
+      reactive({
+        cols <- data_r$columns()
+        tibble::tibble(
+          column = cols,
+          label  = purrr::map_chr(cols, ~ input[[paste0("label_", .x)]] %||% .x),
+          width  = purrr::map_chr(cols, ~ input[[paste0("width_", .x)]] %||% "auto"),
+          align  = purrr::map_chr(cols, ~ input[[paste0("align_", .x)]] %||% "center"),
+          show   = purrr::map_lgl(cols, ~ input[[paste0("show_", .x)]] %||% TRUE)
+        )
+      })
+    })
+  }
+
+
+  # mod_styles.R — uses purrr to manage dynamic style rules
+
+  styles_server <- function(id, data_r) {
+    moduleServer(id, function(input, output, session) {
+      rules <- reactiveVal(list())
+
+      observeEvent(input$add_rule, {
+        new_rule <- list(
+          id     = as.character(Sys.time()),
+          target = input$target,
+          where  = input$where,
+          bold   = input$bold,
+          indent = input$indent,
+          bg     = input$bg
+        )
+        rules(c(rules(), list(new_rule)))
+      })
+
+      # Return rules as a tibble for codegen
+      reactive({
+        purrr::map_dfr(rules(), ~ tibble::as_tibble(.x))
+      })
+    })
+  }
+
+
+================================================================================
+11. APP WIRING — HOW IT ALL CONNECTS
+================================================================================
+
+  # app.R
+  launch <- function() {
+    ui <- bslib::page_sidebar(
+      title = "arbuilder",
+      sidebar = bslib::sidebar(
+        bslib::accordion(
+          bslib::accordion_panel("Data",      data_ui("data")),
+          bslib::accordion_panel("Titles",    titles_ui("titles")),
+          bslib::accordion_panel("Columns",   cols_ui("cols")),
+          bslib::accordion_panel("Header",    header_ui("header")),
+          bslib::accordion_panel("Spans",     spans_ui("spans")),
+          bslib::accordion_panel("Styles",    styles_ui("styles")),
+          bslib::accordion_panel("Rules",     rules_ui("rules")),
+          bslib::accordion_panel("Page",      page_ui("page")),
+          bslib::accordion_panel("Theme",     theme_ui("theme"))
+        )
+      ),
+      preview_ui("preview"),
+      export_ui("export")
+    )
+
+    server <- function(input, output, session) {
+      data_r    <- data_server("data")
+      titles_r  <- titles_server("titles")
+      cols_r    <- cols_server("cols", data_r)
+      header_r  <- header_server("header", data_r)
+      spans_r   <- spans_server("spans", data_r)
+      styles_r  <- styles_server("styles", data_r)
+      rules_r   <- rules_server("rules")
+      page_r    <- page_server("page")
+      theme_r   <- theme_server("theme")
+
+      codegen_r <- codegen_server("codegen",
+        data_r, titles_r, cols_r, header_r,
+        spans_r, styles_r, rules_r, page_r, theme_r
+      )
+
+      preview_server("preview", codegen_r$spec)
+      export_server("export", codegen_r$spec, codegen_r$code)
+    }
+
+    shiny::runApp(shiny::shinyApp(ui, server), launch.browser = TRUE)
+  }
+
+
+================================================================================
+12. MOD_BATCH — MULTI-TFL PROJECT MANAGER
+================================================================================
+
+  +- BATCH MANAGER -------------------------------------------------------+
+  |                                                                       |
+  |  Project: [STUDY-2024-001 Phase III CSR v]                            |
+  |                                                                       |
+  |  +----+--------------+------------------+--------+------------+       |
+  |  | #  | Output ID    | Title            | Status | Actions    |       |
+  |  +----+--------------+------------------+--------+------------+       |
+  |  | 1  | t_14_1_1     | Demographics     | Done   | [Edit][v]  |       |
+  |  | 2  | t_14_2_1     | AE Summary       | Done   | [Edit][v]  |       |
+  |  | 3  | t_14_3_1     | Disposition      | WIP    | [Edit][v]  |       |
+  |  | 4  | l_16_1_1     | AE Listing       | New    | [Edit]     |       |
+  |  | 5  | f_14_1_1     | KM Plot          | New    | [Edit]     |       |
+  |  +----+--------------+------------------+--------+------------+       |
+  |                                                                       |
+  |  [+ New Table] [+ New Listing] [+ New Figure]                        |
+  |                                                                       |
+  |  [> Render All]  [v Download All (.zip)]  [v Export All Scripts]      |
+  +-----------------------------------------------------------------------+
+
+
+================================================================================
+13. USER WORKFLOW — END TO END
+================================================================================
+
+  STEP 1              STEP 2              STEP 3
+  Install             Launch              Load Data
+  -------             ------              ---------
+                      arbuilder::launch() Pick bundled dataset
+  install.packages(   --> browser opens   or upload CSV/RDS
+    "arbuilder"            at localhost
+  )
+
+          |                   |                   |
+          v                   v                   v
+
+  STEP 4              STEP 5              STEP 6
+  Configure           Preview             Export
+  ---------           -------             ------
+  Click through       See live HTML       Download:
+  sidebar panels:     table update        + report.rtf
+  - Titles            in real-time        + report.pdf
+  - Columns           as you change       + pipeline.R
+  - Header            settings
+  - Styles                                R script is
+  - Rules                                 reproducible
+  - Page                                  and auditable
+
+          |                   |                   |
+          v                   v                   v
+
+  STEP 7              STEP 8
+  Batch               Submit
+  -----               ------
+  Add more TLFs       Hand the RTFs
+  to the project.     + R scripts to
+  Render all at once. regulatory team.
+  Export as .zip       Pipeline.R goes
+                      into eCTD package.
+
+
+================================================================================
+14. BUILD PHASES
+================================================================================
+
+  PHASE 1 — MVP (Demographics table, end-to-end)
+  ====================================
+    DATA LAYER:
+      mod_data        ->  upload ADaM CSVs + bundled sample data
+      mod_data_filter ->  population flag filter (SAFFL, ITTFL)
+      mod_data_preview->  browse raw ADaM with DT
+
+    ARD LAYER (demographics only):
+      mod_analysis    ->  type picker (only "Demographics" in Phase 1)
+      mod_grouping    ->  treatment var, analysis variables
+      mod_stats       ->  pick statistics (n, mean, SD, %)
+      mod_ard_preview ->  view generated ARD wide table
+      ard_demog.R     ->  dplyr pipeline: adsl -> tbl_demog
+
+    FORMAT LAYER:
+      mod_titles      ->  titles, footnotes, population
+      mod_cols        ->  labels, widths, alignment
+      mod_header      ->  bold, background color
+      mod_rules       ->  presets only (standard, minimal, grid)
+      mod_page        ->  orientation, margins
+
+    OUTPUT LAYER:
+      mod_preview     ->  live HTML preview
+      mod_codegen     ->  generates full R script (data prep + arframe)
+      mod_export      ->  RTF download + R script download
+
+  PHASE 2 — Safety tables (AE, Disposition, Exposure)
+  ====================================
+    NEW ARD BUILDERS:
+      ard_ae.R        ->  AE summary by SOC/PT (adae + adsl)
+                          Formats: npct, ae_npct, teae_rate, sae_rate
+      ard_disp.R      ->  Disposition summary (adsl)
+                          Formats: cnt, npct
+      ard_exposure.R  ->  Exposure / dosing (adsl or adex)
+                          Formats: stack_cont, exp_dur, cum_dose, dose_int
+
+    FORMAT ENHANCEMENTS:
+      mod_styles      ->  conditional row/col/cell styles
+      mod_spans       ->  column spanning headers
+      mod_header      ->  N-counts, font size, valign
+      mod_theme       ->  save/load presets, YAML import/export
+      mod_page        ->  page header/footer with tokens
+      mod_export      ->  PDF support
+
+  PHASE 3 — Labs + Vitals + Shifts + Efficacy
+  ====================================
+    NEW ARD BUILDERS:
+      ard_vitals.R       ->  Vital signs (ADVS)
+                              Formats: mean_sd, med_iqr, cfb, marked abnormalities
+      ard_labs.R          ->  Laboratory results (ADLB)
+                              Formats: mean_sd, cfb by cycle, CTCAE grades
+      ard_shift.R         ->  Shift tables (ADLB, ADEG, ADQS)
+                              Formats: lab_shift, npct, CTCAE grade shifts
+      ard_efficacy_cont.R ->  Continuous efficacy (ADEFF/ADQS)
+                              Formats: cfb, lsmean, trt_diff, pval
+      ard_efficacy_cat.R  ->  Categorical/binary efficacy (ADRS)
+                              Formats: resp_rate, risk_diff, odds_ratio, cmh_or
+      ard_tte.R           ->  Time-to-event (ADTTE + survival)
+                              Formats: km_median, km_rate, haz_ratio, logrank_p
+      ard_cm.R            ->  Concomitant medications (ADCM + ADSL)
+                              Formats: npct
+
+  PHASE 4 — ECG, PK, Custom + Batch
+  ====================================
+    NEW ARD BUILDERS:
+      ard_ecg.R       ->  Cardiac safety QTcF (ADEG)
+                          Formats: qtcf_stack, qtcf_thresh, lsmean_diff
+      ard_pk.R        ->  Pharmacokinetic summary (ADPC/ADPPK)
+                          Formats: gmean_cv, gmr_ci, pk_gmean_ci, pk_tmax
+      ard_custom.R    ->  User-defined analysis (any dataset)
+                          All formats available
+
+    BATCH & PROJECT:
+      mod_batch       ->  multi-TFL project manager
+      Render all      ->  batch RTF/PDF generation
+      Project save    ->  save/reload entire project state (.arproj)
+      Shell import    ->  import TFL shells from Excel/Word specs
+
+  PHASE 5 — Listings & figures
+  ====================================
+    mod_listing     ->  listing-specific config (long tables, adae rows)
+    mod_figure      ->  fr_figure() wrapper with ggplot2
+    mod_batch       ->  mixed tables + listings + figures
+
+
+================================================================================
+15. KEY DESIGN PRINCIPLES
+================================================================================
+
+  1. arframe is just a library
+     arbuilder calls fr_table(), fr_cols(), etc. like any user would.
+     No special internal APIs. No backdoors.
+
+  2. Modules are independent
+     Each module owns its UI + server, returns a reactive.
+     Modules don't talk to each other directly.
+     Modules return tibbles or lists — codegen consumes them.
+
+  3. mod_codegen is the single integration point
+     It consumes all module reactives and assembles the pipeline.
+     Uses glue for string interpolation, purrr for iteration.
+     Every other output module reads from codegen.
+
+  4. Two outputs ALWAYS
+     Every table produces:
+       a) The rendered file (RTF or PDF)
+       b) The reproducible R script
+     The R script IS the audit trail.
+
+  5. No server needed
+     launch() opens in local browser.
+     Zero deployment, zero IT, zero infrastructure.
+
+  6. Code generator, not a black box
+     The app is transparent. Users can see exactly what R code
+     produces their output. They can take that code, modify it,
+     run it outside arbuilder. No lock-in.
+
+  7. Tidyverse boundary
+     arframe (engine)   = NO tidyverse (base R + rlang + vctrs)
+     arbuilder (app)    = YES tidyverse
+     Generated scripts  = YES tidyverse (readr, dplyr for data prep)
+
+     The goal: arframe stays lean with minimal deps for validation.
+     The Shiny app and its generated scripts can freely use tidyverse
+     since end users at small pharma will have it installed anyway.
+
+     +-----------------------------------------------+
+     |              arbuilder (Shiny app)             |
+     |  dplyr, purrr, glue, stringr, readr, tidyr    |
+     |                                                |
+     |  Generates R scripts that use:                 |
+     |  +------------------------------------------+  |
+     |  |  library(arframe)                        |  |
+     |  |  library(dplyr)                          |  |
+     |  |  library(readr)                          |  |
+     |  |                                          |  |
+     |  |  read_csv("data/adsl.csv") |>            |  |
+     |  |    filter(SAFFL == "Y") |>               |  |
+     |  |    count(TRT01A, SEX) |>                 |  |
+     |  |    fr_table() |>                         |  |
+     |  |    fr_titles(...) |>                     |  |
+     |  |    fr_render("t_14_1_1.rtf")             |  |
+     |  +------------------------------------------+  |
+     +-----------------------------------------------+
+
+
+================================================================================
+16. NAMING SUMMARY
+================================================================================
+
+  Package       Full Name                  Role
+  ----------    -------------------------  ---------------------------
+  arframe       Analysis Results Frame     Engine (pure R, no UI)
+  [TBD]         [TBD]                      Shiny app (local, modular)
+
+  Candidates for Shiny app name:
+    - arstudio    (concern: sounds like RStudio/Posit)
+    - arbuilder   (safe, descriptive)
+    - ardesk      (desktop tool feel)
+    - arworks     (workshop vibe)
+    - [open to new ideas]
+
+  Function prefix: fr_  (unchanged)
+  CRAN status:     arframe confirmed available (checked 2026-03-15)
+
+  Target audience: Small pharma, CROs, teams without server infra
+  Competitor gap:  teal/tern need Shiny Server; SAS costs $$$
+
+  NOTE: "arbuilder" is used as placeholder throughout this document.
+        Find-and-replace once final Shiny app name is decided.
+
+
+================================================================================
+17. MASTER TFL CATALOG — ALL STANDARD OUTPUTS
+================================================================================
+
+Complete mapping of every standard TFL from pharma reference materials to
+the ARD builder that handles it. Sources:
+  - Standard Safety TFLs.txt (Celgene/BMS standard shells)
+  - Standard Efficacy Tables.txt (Celgene standard shells)
+  - Global CSR DPP.txt (BMS Global Data Presentation Plan)
+  - DSUR/IND/PBRER DPP v1.0 & v2.0 (BMS regulatory periodic reports)
+
+
+--- MODULE 1: GENERAL STUDY INFORMATION (14.1) --------- ARD Builder --------
+
+  14.1.1  Screen Failures / Reasons Not Enrolling       ard_demog
+  14.1.2  Analysis Populations                          ard_demog
+  14.1.3  Subject Disposition                           ard_disp
+  14.1.4  Number of Subjects by Treatment and Site      ard_demog
+  14.1.5  Demographics (Age, Sex, Race, Ethnicity,      ard_demog
+          Weight, Height, BMI, BSA)
+  14.1.6  Protocol Violations                           ard_demog (categorical)
+  14.1.7  Medical History by SOC/PT                     ard_ae (MedDRA hierarchy)
+  14.1.8  Prior Medication by ATC/Preferred Name        ard_cm
+  14.1.9  Concomitant Medication by ATC/Preferred Name  ard_cm
+
+
+--- MODULE 2: EXPOSURE (14.3.1.1) ---------------------- ARD Builder --------
+
+  14.3.1.1.1   Treatment Exposure (Duration)            ard_exposure
+  14.3.1.1.1A  Treatment Exposure (Alt layout)          ard_exposure
+  14.3.1.1.2   Cumulative Exposure & Dose Intensity     ard_exposure
+  14.3.1.1.3   Dose Modifications                       ard_exposure
+  14.3.1.1.4   Treatment Compliance                     ard_exposure
+
+
+--- MODULE 3: TEAE TABLES (14.3.1) --------------------- ARD Builder --------
+
+  14.3.1.2     TEAE Summary                             ard_ae
+  14.3.1.3     TEAE by SOC/PT                           ard_ae
+  14.3.1.3A    TEAE + Exposure-Adjusted Rate by SOC/PT  ard_ae
+  14.3.1.4     TEAE Related to Study Drug by SOC/PT     ard_ae
+  14.3.1.5     Grade 3/4 TEAE by SOC/PT                 ard_ae
+  14.3.1.6     TEAE by SOC/PT and Max Severity          ard_ae
+  14.3.1.6A    TEAE + Adj Rate by SOC/PT/Max Severity   ard_ae
+  14.3.1.6B    TEAE by SOC/PT and Max Intensity         ard_ae
+  14.3.1.6C    TEAE + Adj Rate by SOC/PT/Max Intensity  ard_ae
+  14.3.1.7     TEAE by SOC/PT and Age Group             ard_ae
+  14.3.1.7A    TEAE + Adj Rate by SOC/PT/Age Group      ard_ae
+  14.3.1.8     TEAE by SOC/PT and Sex                   ard_ae
+  14.3.1.8A    TEAE + Adj Rate by SOC/PT/Sex            ard_ae
+  14.3.1.9     TEAE by Decreasing Frequency of PT       ard_ae
+  14.3.1.9A    TEAE + Adj Rate by Dec Freq of PT        ard_ae
+  14.3.1.10    TEAE by Decreasing Frequency of SOC      ard_ae
+  14.3.1.11    TEAE by SOC/PT and Exposure Interval     ard_ae
+  14.3.1.11A   TEAE + Adj Rate by Exposure Interval     ard_ae
+  14.3.1.12    Pre-treatment AE by SOC/PT               ard_ae
+  14.3.1.13    Non-serious Common TEAE by SOC/PT        ard_ae
+
+
+--- MODULE 4: SERIOUS AE / DEATHS (14.3.2) ------------- ARD Builder --------
+
+  14.3.2.1     Serious TEAE by SOC/PT                   ard_ae
+  14.3.2.2     Serious TEAE Related by SOC/PT           ard_ae
+  14.3.2.3     TEAE Leading to Death by SOC/PT          ard_ae
+  14.3.2.4     TEAE Leading to Dose Reduction by SOC/PT ard_ae
+  14.3.2.5     TEAE Leading to Dose Interruption        ard_ae
+  14.3.2.6     TEAE Leading to Discontinuation          ard_ae
+  14.3.2.7     Summary of Deaths and Causes             ard_ae
+  14.3.2.8     Serious TEAE by Seriousness Criteria     ard_ae
+  14.3.2.9     Serious TEAE by Seriousness/SOC/PT       ard_ae
+  14.3.2.10    Serious TEAE Related by Seriousness/SOC  ard_ae
+  14.3.2.11    Serious AESI by Seriousness/Category/PT  ard_ae
+
+
+--- MODULE 5: AESI (14.3.2.8) -------------------------- ARD Builder --------
+
+  14.3.2.8.1   AESI Summary by Category                 ard_ae
+  14.3.2.8.2   AESI by Category/PT                      ard_ae
+  14.3.2.8.3   Duration of AESI                         ard_ae
+  14.3.2.8.4   Onset Day of AESI                        ard_ae
+
+
+--- MODULE 6: SPM (14.3.1.14) -------------------------- ARD Builder --------
+
+  14.3.1.14.1  SPM Frequency                            ard_ae
+  14.3.1.14.2  SPM Frequency Among Subjects Who Died    ard_ae
+  14.3.1.14.3  SPM Frequency Among Survivors            ard_ae
+  14.3.1.14.4  SPM Incidence Rate per 100 PY            ard_ae
+
+
+--- MODULE 7: LABORATORY (14.3.4) ---------------------- ARD Builder --------
+
+  14.3.4.1.1   Hematology Results + CFB by Cycle        ard_labs
+  14.3.4.1.1A  Hematology Results + CFB (Alt layout)    ard_labs
+  14.3.4.1.2   Serum Chemistry Results + CFB by Cycle   ard_labs
+  14.3.4.1.2A  Serum Chemistry (Alt layout)             ard_labs
+  14.3.4.1.3   Other Lab Results + CFB by Cycle         ard_labs
+  14.3.4.1.3A  Other Lab (Alt layout)                   ard_labs
+  14.3.4.2.1   Shifts Max CTCAE Grade (High) Heme       ard_lab
+  14.3.4.2.2   Shifts Max CTCAE Grade (Low) Heme        ard_lab
+  14.3.4.3.1   Shifts Max CTCAE Grade (High) Chem       ard_lab
+  14.3.4.3.2   Shifts Max CTCAE Grade (Low) Chem        ard_lab
+  14.3.4.4     Shifts in Abnormality Category Chem      ard_lab
+  14.3.4.5     Lab Marked Abnormalities                 ard_lab
+  14.3.4.6     Lab Marked Abnormalities by Baseline     ard_lab
+
+
+--- MODULE 8: VITAL SIGNS / ECG / ECOG (14.3.5) -------- ARD Builder --------
+
+  14.3.5.1     Vital Signs CFB by Cycle                 ard_vitals
+  14.3.5.1A    Vital Signs CFB (Alt layout)             ard_vitals
+  14.3.5.2     Vital Signs Marked Abnormalities         ard_vitals
+  14.3.5.3     ECG Shift in Overall Interpretation      ard_ecg
+  14.3.5.5     ECOG Shift from Baseline by Cycle        ard_shift
+
+
+--- MODULE 9: EFFICACY — TIME-TO-EVENT (14.2.1) -------- ARD Builder --------
+
+  14.2.1.1     Time to Event (KM, HR, Log-rank)         ard_tte
+  14.2.1.2     Event-Free Inference by Timepoint         ard_tte
+  14.2.1.3     Follow-up Time (All + Surviving)          ard_tte
+  14.2.1.4     Events and Censoring for TTE              ard_tte
+
+
+--- MODULE 10: EFFICACY — CATEGORICAL (14.2.2) --------- ARD Builder --------
+
+  14.2.2.1     Ordinal and Binary Response               ard_efficacy
+  14.2.2.2     Categorical/Binary by Timepoint           ard_efficacy
+  14.2.2.3     Binomial Response by Timepoint            ard_efficacy
+  14.2.2.4     Binomial Response + CI by Timepoint       ard_efficacy
+  14.2.2.5     Ordinal Response by Subgroup/Timepoint    ard_efficacy
+  14.2.2.6     Responder Analysis                        ard_efficacy
+
+
+--- MODULE 11: EFFICACY — CONTINUOUS (14.2.3) ----------- ARD Builder --------
+
+  14.2.3.1     Efficacy Results + CFB by Timepoint       ard_efficacy_cont
+  14.2.3.2     CFB in Continuous Endpoint by Timepoint   ard_efficacy_cont
+  14.2.3.3     CFB at Single Timepoint + LS Means        ard_efficacy_cont
+  14.2.3.4     Shifts in Categorical Efficacy Parameter  ard_shift
+  14.2.3.5.1   Time to Loss of Response                  ard_tte
+  14.2.3.5.2   Time to Response                          ard_tte
+
+
+--- MODULE 12: EFFICACY — BAYESIAN (14.2.4) ------------ ARD Builder --------
+
+  14.2.4.1     Bayesian Analysis for Events of Interest  ard_custom
+
+
+--- MODULE 13: DSUR / IND / PBRER ---------------------- ARD Builder --------
+
+  GS_DSUR_DM_T_001  Cumulative Subject Exposure          ard_exposure
+  GS_DSUR_DM_T_002  Cumulative Exposure by Category      ard_exposure
+  GS_DSUR_DM_T_003  Number of Treated Subjects           ard_exposure
+  GS_CSR_DM_T_003   Demographics (integrated)            ard_demog
+  GS_CSR_AE_T_001   AE Summary (integrated)              ard_ae
+  GS_AE_L_004       AE Listing with Time                 mod_listing
+  PS_DT_L_001       Death Listing                        mod_listing
+  GS_PBRER_EXP_T_001 Exposure by Demographics/Sex        ard_exposure
+
+
+================================================================================
+18. COVERAGE SUMMARY — ARD BUILDER vs TFL COUNT
+================================================================================
+
+  ARD Builder        ADaM Source    # TFLs  Covers
+  ================   ===========    ======  =======================================
+  ard_demog          ADSL            6      14.1.1-2, 14.1.4-6, GS_CSR_DM_T_003
+  ard_disp           ADSL            1      14.1.3
+  ard_ae             ADAE+ADSL      35      14.3.1.2-13, 14.3.2.1-11, AESI, SPM
+  ard_cm             ADCM+ADSL       3      14.1.7-9 (MedHx, Prior/Conmed)
+  ard_exposure       ADSL/ADEX       8      14.3.1.1.1-4, DSUR exposure tables
+  ard_vitals         ADVS             3      14.3.5.1-1A, 14.3.5.2
+  ard_labs           ADLB             6      14.3.4.1.1-3, 14.3.4.1.1A-3A
+  ard_efficacy_cont  ADEFF/ADQS      3      14.2.3.1-3
+  ard_efficacy_cat   ADRS             6      14.2.2.1-6
+  ard_shift          ADLB/ADEG/ADQS 10      14.3.4.2-6, 14.2.3.4, 14.3.5.3, 14.3.5.5
+  ard_tte            ADTTE            6      14.2.1.1-4, 14.2.3.5.1-2
+  ard_ecg            ADEG             1      14.3.5.3 (continuous QTcF summary)
+  ard_pk             ADPC/ADPPK      0*     (PK tables are study-specific)
+  ard_custom         any              1      14.2.4.1 (Bayesian, other custom)
+  mod_listing        any              2      GS_AE_L_004, PS_DT_L_001
+  -----------------------------------------------------------------------
+  TOTAL              8 ADaM classes   91     All standard CSR + DSUR/IND/PBRER TFLs
+
+  * PK tables are highly study-specific (Cmax, AUC, Tmax etc.)
+    and will be covered by ard_pk in Phase 4.
+
+  With 15 ARD builders + 1 listing module, the app covers every
+  standard TFL in a pharma submission. Custom analysis handles
+  anything that falls outside the standard catalog.
+
+
+================================================================================
+19. ADaM AUTO-DETECTION & NON-STANDARD VARIABLE HANDLING
+================================================================================
+
+The Shiny app auto-detects ADaM dataset class when the user uploads data.
+This drives which ARD builders are available and which variables to expect.
+
+--- Auto-Detection Logic (utils_adam.R) --------------------------------------
+
+  detect_adam_class <- function(data) {
+    cols <- names(data)
+    n_per_subj <- data |> count(USUBJID) |> pull(n) |> max()
+
+    if (n_per_subj == 1)                          return("ADSL")
+    if ("CNSR" %in% cols && "STARTDT" %in% cols)  return("ADTTE")
+    if ("EVID" %in% cols && "MDV" %in% cols)      return("ADPPK")
+    if ("AEBODSYS" %in% cols || "AEDECOD" %in% cols) return("ADAE")
+    if ("CMCLAS" %in% cols || "CMDECOD" %in% cols)   return("ADCM")
+    if ("AVAL" %in% cols && "PARAMCD" %in% cols)     return("BDS")
+    return("UNKNOWN")
+  }
+
+  For BDS datasets, further classify by name or content:
+
+  detect_bds_domain <- function(data, dataset_name) {
+    name <- toupper(dataset_name)
+    if (grepl("^ADVS", name))  return("ADVS")    # Vital Signs
+    if (grepl("^ADLB", name))  return("ADLB")    # Laboratory
+    if (grepl("^ADEG", name))  return("ADEG")     # ECG
+    if (grepl("^ADRS", name))  return("ADRS")     # Response
+    if (grepl("^ADQS", name))  return("ADQS")     # Questionnaire
+    if (grepl("^ADEFF", name)) return("ADEFF")    # Efficacy
+    if (grepl("^ADPC", name))  return("ADPC")     # PK Concentrations
+    if (grepl("^ADEX", name))  return("ADEX")     # Exposure
+
+    # Fallback: detect by variable presence
+    cols <- names(data)
+    if ("ATOXGR" %in% cols || "ANRIND" %in% cols) return("ADLB")
+    if ("AEBODSYS" %in% cols)                      return("ADAE")
+    return("BDS_GENERIC")
+  }
+
+
+--- ADaM Class to ARD Builder Mapping ----------------------------------------
+
+  ADaM Class    Datasets         Available ARD Builders
+  ==========    ==============   =================================
+  ADSL          adsl             ard_demog, ard_disp, ard_exposure
+  ADAE (OCCDS)  adae             ard_ae
+  ADCM (OCCDS)  adcm             ard_cm
+  ADTTE         adtte            ard_tte
+  ADVS (BDS)    advs             ard_vitals
+  ADLB (BDS)    adlb             ard_labs, ard_shift
+  ADEG (BDS)    adeg             ard_ecg, ard_shift
+  ADRS (BDS)    adrs             ard_efficacy_cat
+  ADEFF (BDS)   adeff, adqs      ard_efficacy_cont, ard_shift
+  ADPC (BDS)    adpc, adppk      ard_pk
+  ADEX (BDS)    adex             ard_exposure
+  ANY           any              ard_custom
+
+
+--- Standard Variables by ADaM Class -----------------------------------------
+
+  ADSL (Subject-Level — 1 row per subject):
+    Required:   STUDYID, USUBJID, SITEID, SUBJID
+    Treatment:  TRT01P, TRT01PN, TRT01A, TRT01AN (TRTxxP/A for multi-period)
+    Dates:      TRTSDT, TRTENDT, RANDDT
+    Demographics: AGE, SEX, RACE, ETHNIC
+    Pop flags:  SAFFL, ITTFL, EFFFL, FASFL, PPROTFL
+    Completers: COMP##FL (COMP8FL, COMP16FL, etc.)
+    Disposition: EOSSTT, DCSREAS, DSRAEFL
+
+  BDS (Basic Data Structure — ADVS, ADLB, ADEG, ADEFF, ADQS):
+    Required:   STUDYID, USUBJID, PARAMCD, PARAM, AVAL
+    Optional:   AVALC, BASE, CHG, PCHG
+    Timing:     AVISIT, AVISITN, ADT, ADY, APERIOD
+    Flags:      ABLFL (baseline), ANL01FL (analysis), DTYPE (derivation)
+    Range:      ANRIND, BNRIND (Normal/High/Low)
+    Toxicity:   ATOXGR, BTOXGR (CTCAE 0-4)
+    Categories: AVALCATy, CRITy, CRITyFL
+    Treatment:  TRTP, TRTPN, TRTA, TRTAN
+
+  OCCDS (Occurrence Data — ADAE, ADCM):
+    Required:   STUDYID, USUBJID
+    AE hierarchy: AEBODSYS (SOC), AEHLT, AEHLGT, AEDECOD (PT)
+    CM hierarchy: CMCLAS (ATC), CMDECOD (preferred name)
+    AE flags:   TRTEMFL, AOCCFL, AOCCSFL, AOCCPFL
+    AE severity: AESEV, AEREL, AESERI, AESDTH, AEOUT, AEACN
+    AE queries: SMQzzNAM, CQzzNAM (standardized/custom queries)
+    Timing:     ASTDT, AENDT, ASTDY
+
+  ADTTE (Time-to-Event — 1 row per subject per TTE parameter):
+    Required:   STUDYID, USUBJID, PARAMCD, PARAM, AVAL, CNSR
+    Supporting: STARTDT, ADT, EVNTDESC
+    CNSR codes: 0 = event, 1+ = censored (sponsor-defined reasons)
+
+
+--- Non-Standard Variable Handling -------------------------------------------
+
+  The app handles non-standard variables through these patterns:
+
+  1. CUSTOM PARAMETERS (PARAMCD):
+     - BDS datasets can have any PARAMCD values
+     - App auto-detects all unique PARAMCD values and shows them
+       in mod_grouping for the user to select
+     - No hardcoded parameter lists — always driven by data
+
+  2. CUSTOM FLAGS (--FL pattern):
+     - Population flags: any variable ending in FL with Y/N values
+     - App scans ADSL for *FL columns, presents them in mod_data_filter
+     - User picks which flag to use as population filter
+
+  3. CUSTOM CATEGORIES (AVALCATy, PARCATy):
+     - App detects columns matching AVALCATn or PARCATn pattern
+     - Presents them as grouping options in mod_grouping
+
+  4. NON-STANDARD TREATMENT VARIABLES:
+     - Some studies use TRT01P/TRT01A, others use TRTP/TRTA
+     - App checks for both patterns, prefers TRT01A if present
+     - User can override in mod_grouping
+
+  5. CUSTOM ANALYSIS FLAGS (ANLzzFL):
+     - App detects ANL01FL, ANL02FL, etc.
+     - User selects which analysis flag to apply in mod_stats
+
+  6. MULTIPLE BASELINE DEFINITIONS (BASETYPE):
+     - If BASETYPE exists, app shows dropdown to select which baseline
+     - Affects BASE, CHG, PCHG, ABLFL for the selected type
+
+  7. DERIVATION TYPES (DTYPE):
+     - App detects DTYPE values (LOCF, WOCF, AVERAGE, etc.)
+     - User selects: observed only (DTYPE is NA) or specific imputation
+     - Drives which records are included in summary
+
+  8. SPONSOR-DEFINED VARIABLES:
+     - Any column not in the standard list is treated as "custom"
+     - App shows them in an "Additional Variables" section
+     - User can use them as by-variables or subgroup filters
+
+
+================================================================================
+                              END OF PLAN
+================================================================================
