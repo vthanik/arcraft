@@ -1,0 +1,859 @@
+<?xml version="1.0" ?>
+<!-- |*******************************************************************************-->
+<!-- |                                                                               -->
+<!-- | XML Fileand Table Name: tr_lang_BRENG.xml, LOCAL                              -->
+<!-- |                                                                               -->
+<!-- | Table Version:    9                                                           -->
+<!-- |                                                                               -->
+<!-- | SAS Version:      v9.3                                                        -->
+<!-- |                                                                               -->
+<!-- | Created By:       David Ward                                                  -->
+<!-- |                                                                               -->
+<!-- | Date:             24JUL2003                                                   -->
+<!-- |                                                                               -->
+<!-- | Table Purpose:    Language dataset, for specifying localised phrases          -->
+<!-- |                                                                               -->
+<!-- |*******************************************************************************-->
+<!-- | Change Log                                                                    -->
+<!-- |                                                                               -->
+<!-- | Modified By:           Wilhelmina Busby                                       -->
+<!-- | Date of Modification:  August 28, 2003                                        -->
+<!-- | New version number:    1/2                                                    -->
+<!-- | Modification ID:                                                              -->
+<!-- | Reason For Modification:  Added TRTMNT = Treatment variable                   -->
+<!-- |                                                                               -->
+<!-- ********************************************************************************-->
+<!-- | Modified By:           Andrew Ratcliffe                                       -->
+<!-- | Date of Modification:  September 1, 2003                                      -->
+<!-- | New version number:    1/3                                                    -->
+<!-- | Modification ID:                                                              -->
+<!-- | Reason For Modification:  Re-order rows so that rows for same format are      -->
+<!-- |                            together.                                          -->
+<!-- |                                                                               -->
+<!-- ********************************************************************************-->
+<!-- |                                                                               -->
+<!-- | Modified By:           Wilhelmina Busby                                       -->
+<!-- | Date of Modification:  October 9, 2003                                        -->
+<!-- | New version number:    1/4                                                    -->
+<!-- | Modification ID:                                                              -->
+<!-- | Reason For Modification:  Added variables RACEALL, RACEDEF, RACEHISP, and     -->
+<!-- |                           RACEJAP to ensure that all possible races appear    -->
+<!-- |                           on the dm1 and dm3 table displays.                  -->
+<!-- |                                                                               -->
+<!-- ********************************************************************************-->
+<!-- |                                                                               -->
+<!-- | Modified By:           Wilhelmina Busby                                       -->
+<!-- | Date of Modification:  October 24, 2003                                       -->
+<!-- | New version number:    1/5                                                    -->
+<!-- | Modification ID:                                                              -->
+<!-- | Reason For Modification:  Added format $YESNO where key=x.                    -->
+<!-- |                                                                               -->
+<!-- ********************************************************************************-->
+<!-- | Modified By:           Wilhelmina Busby                                       -->
+<!-- | Date of Modification:  November 14, 2003                                      -->
+<!-- | New version number:    1/6                                                    -->
+<!-- | Modification ID:                                                              -->
+<!-- | Reason For Modification:  Added LBTEST (Lab Test) entry.                      -->
+<!-- |                                                                               -->
+<!-- ********************************************************************************-->
+<!-- | Modified By:           Wilhelmina Busby                                       -->
+<!-- | Date of Modification:  December 1, 2003                                       -->
+<!-- | New version number:    1/7                                                    -->
+<!-- | Modification ID:                                                              -->
+<!-- | Reason For Modification: Added VISIT and VSTEST entries.                      -->
+<!-- |                                                                               -->
+<!-- ********************************************************************************-->
+<!-- | Modified By:           Yongwei Wang                                           -->
+<!-- | Date of Modification:  May 3, 2004                                            -->
+<!-- | New version number:    2/1                                                    -->
+<!-- | Modification ID:                                                              -->
+<!-- | Reason For Modification: Added $SDREAS, $SDSTOP, $EGINTPCD and $EGCHBL        -->
+<!-- |                          entries                                              -->
+<!-- |                                                                               -->
+<!-- ********************************************************************************-->
+<!-- | Modified By:           Yongwei Wang                                           -->
+<!-- | Date of Modification:  Sep 30, 2004                                           -->
+<!-- | New version number:    2/2                                                    -->
+<!-- | Modification ID:                                                              -->
+<!-- | Reason For Modification: Added $AESEV entry                                   -->
+<!-- |                                                                               -->
+<!-- ********************************************************************************-->
+<!-- | Modified By:           Yongwei Wang                                           -->
+<!-- | Date of Modification:  Sep 30, 2004                                           -->
+<!-- | New version number:    2/3                                                    -->
+<!-- | Modification ID:                                                              -->
+<!-- | Reason For Modification: Removed 'X' from the $AESEV entry. Added $AESEVX     -->
+<!-- |                          entry.                                               -->
+<!-- |                                                                               -->
+<!-- ********************************************************************************-->
+<!-- | Modified By:           Yongwei Wang                                           -->
+<!-- | Date of Modification:  Dec 15, 2004                                           -->
+<!-- | New version number:    3/1                                                    -->
+<!-- | Modification ID:                                                              -->
+<!-- | Reason For Modification: 1. Added $RACEHL, $RACEAHL, $RACESL, $RACEASL and    -->
+<!-- |                             $ethnic entry                                     -->
+<!-- |                          2. Added <!ENTITY nbsp "&#160;">, so that &#160;     -->
+<!-- |                             can be converted to space in SAS program.         -->
+<!-- |                                                                               -->
+<!-- ********************************************************************************-->
+<!-- | Modified By:           Paul Jarrett                                           -->
+<!-- | Date of Modification:  01 JUL 05                                              -->
+<!-- | New version number:    3/2                                                    -->
+<!-- | Modification ID:                                                              -->
+<!-- | Reason For Modification:  Changed "Europe" to "European" and capitalised      -->
+<!-- |                           "Heritage" in all instances.                        -->
+<!-- |                                                                               -->
+<!-- ********************************************************************************-->
+<!-- | Modified By:           Yongwei Wang                                           -->
+<!-- | Date of Modification:  29 Jul 05                                              -->
+<!-- | New version number:    4/1                                                    -->
+<!-- | Modification ID:                                                              -->
+<!-- | Reason For Modification:  Changed "Asian - Mixed Asian Heritage"              -->
+<!-- |                           "Asian - Mixed Race".                               -->
+<!-- |                                                                               -->
+<!-- ********************************************************************************-->
+<!-- | Modified By:           Paul Jarrett                                           -->
+<!-- | Date of Modification:  30 Jan 06                                              -->
+<!-- | New version number:    5/1                                                    -->
+<!-- | Modification ID:                                                              -->
+<!-- | Reason For Modification: Added '<!ENTITY amp "&#38;">' line and               -->
+<!-- |                            changed all "&" to "&amp;"                         -->
+<!-- |                          to W3C specifications.                               -->
+<!-- |                                                                               -->
+<!-- |                          file compatible with both SAS v8.2 and SAS v9.1.3.   -->
+<!-- |                                                                               -->
+<!-- ********************************************************************************-->
+<!-- | Modified By:             Shan Lee                                             -->
+<!-- | Date of Modification:    18-May-06                                            -->
+<!-- | New version number:      5/2                                                  -->
+<!-- | Modification ID:         None: do not want to insert mod.ID within XML code   -->
+<!-- | Reason For Modification: As requested in HRT0104: create formats for ordering -->
+<!-- |                          and decoding Yes/No variables                        -->
+<!-- |                                                                               -->
+<!-- ********************************************************************************-->
+<!-- | Modified By:             Shan Lee                                             -->
+<!-- | Date of Modification:    12-Sep-06                                            -->
+<!-- | New version number:      6/1                                                  -->
+<!-- | Modification ID:         None: do not want to insert mod.ID within XML code   -->
+<!-- | Reason For Modification: As requested in HRT0129, remove blank codes in the   -->
+<!-- |                          formats for ordering and decoding Yes/No variables.  -->
+<!-- |                          The blank codes need to be removed from the formats  -->
+<!-- |                          to avoid backwards compatibility issues, because the -->
+<!-- |                          an old version of the tu_localisation macro, which   -->
+<!-- |                          does not allow blank codes, might be used, but the   -->
+<!-- |                          most recent version of this XML file is always       -->
+<!-- |                          obtained from /arenv/artools/sas/macros, regardless  -->
+<!-- |                          of which version of tu_localisation is used.         -->
+<!-- |                                                                               -->
+<!-- ********************************************************************************-->
+<!-- | Modified By:           Yongwei Wang                                           -->
+<!-- | Date of Modification:  Jun 20, 2007                                           -->
+<!-- | New version number:    7/1                                                    -->
+<!-- | Modification ID:                                                              -->
+<!-- | Reason For Modification: Added $DSFAIL, $DSFAILE and $DSFAILS                 -->
+<!-- ********************************************************************************-->
+<!-- | Modified By:             Shan Lee                                             -->
+<!-- | Date of Modification:    20-Jun-07                                            -->
+<!-- | New version number:      7/2                                                  -->
+<!-- | Modification ID:         None: do not want to insert mod.ID within XML code   -->
+<!-- | Reason For Modification: Add "Method" for $local format.                      -->
+<!-- ********************************************************************************-->
+<!-- | Modified By:           Yongwei Wang                                           -->
+<!-- | Date of Modification:  Jun 20, 2007                                           -->
+<!-- | New version number:    7/3                                                    -->
+<!-- | Modification ID:                                                              -->
+<!-- | Reason For Modification: Added format for td_liver1:$YESNOYN $RUSTRP          -->
+<!-- ********************************************************************************-->
+<!-- | Modified By:           Shan Lee                                               -->
+<!-- | Date of Modification:  Nov 24, 2008                                           -->
+<!-- | New version number:    8/1                                                    -->
+<!-- | Reason For Modification: HRTnnnn: define formats for 'HWE P-value' and        -->
+<!-- |                          'Count (%)', which are required for the td_gn4 macro.-->
+<!-- ********************************************************************************-->
+<!-- | Modified By:           Lee Seymour                                            -->
+<!-- | Date of Modification:  Nov 24, 2013                                           -->
+<!-- | New version number:    9/1                                                    -->
+<!-- | Reason For Modification: Removed ENTITY and replaced &nbsp with &#160         -->
+<!-- |                          Code compatible with SAS 9.13 and 9.3                -->
+<!-- ********************************************************************************-->
+<localisationxls>
+    <Local>
+        <KEY>PAGE</KEY>
+        <PHRASE>Page</PHRASE>
+        <FMTNAME>$local</FMTNAME>
+    </Local>
+    <Local>
+        <KEY>OF</KEY>
+        <PHRASE>of</PHRASE>
+        <FMTNAME>$local</FMTNAME>
+    </Local>
+    <Local>
+        <KEY>NODATA</KEY>
+        <PHRASE>No data to report</PHRASE>
+        <FMTNAME>$local</FMTNAME>
+    </Local>
+    <Local>
+        <KEY>USER ID</KEY>
+        <PHRASE>USER ID</PHRASE>
+        <FMTNAME>$local</FMTNAME>
+    </Local>
+    <Local>
+        <KEY>FIGURE</KEY>
+        <PHRASE>Figure</PHRASE>
+        <FMTNAME>$local</FMTNAME>
+    </Local>
+    <Local>
+        <KEY>TABLE</KEY>
+        <PHRASE>Table</PHRASE>
+        <FMTNAME>$local</FMTNAME>
+    </Local>
+    <Local>
+        <KEY>LISTING</KEY>
+        <PHRASE>Listing</PHRASE>
+        <FMTNAME>$local</FMTNAME>
+    </Local>
+    <Local>
+        <KEY>DATA AS OF</KEY>
+        <PHRASE>Data as of </PHRASE>
+        <FMTNAME>$local</FMTNAME>
+    </Local>
+    <Local>
+        <KEY>ALL SUBJECTS</KEY>
+        <PHRASE>All Subjects</PHRASE>
+        <FMTNAME>$local</FMTNAME>
+    </Local>
+    <Local>
+        <KEY>PROTOCOL</KEY>
+        <PHRASE>Protocol</PHRASE>
+        <FMTNAME>$local</FMTNAME>
+    </Local>
+    <Local>
+        <KEY>POPULATION</KEY>
+        <PHRASE>Population</PHRASE>
+        <FMTNAME>$local</FMTNAME>
+    </Local>
+    <Local>
+        <KEY>CELL INDEX</KEY>
+        <PHRASE>Cell Index</PHRASE>
+        <FMTNAME>$local</FMTNAME>
+    </Local>
+    <Local>
+        <KEY>N</KEY>
+        <PHRASE>N</PHRASE>
+        <FMTNAME>$local</FMTNAME>
+    </Local>
+    <Local>
+        <KEY>TRTMNT</KEY>
+        <PHRASE>Treatment</PHRASE>
+        <FMTNAME>$local</FMTNAME>
+    </Local>
+    <Local>
+        <KEY>LBTEST</KEY>
+        <PHRASE>Lab Test</PHRASE>
+        <FMTNAME>$local</FMTNAME>
+    </Local>
+    <Local>
+        <KEY>VISIT</KEY>
+        <PHRASE>Visit</PHRASE>
+        <FMTNAME>$local</FMTNAME>
+    </Local>
+    <Local>
+        <KEY>VSTEST</KEY>
+        <PHRASE>Parameter</PHRASE>
+        <FMTNAME>$local</FMTNAME>
+    </Local>    
+    <Local>
+        <KEY>METHOD</KEY>
+        <PHRASE>Method</PHRASE>
+        <FMTNAME>$local</FMTNAME>
+    </Local>
+    <Local>
+        <KEY>HWEPVALUE</KEY>
+        <PHRASE>HWE~P-value</PHRASE>
+        <FMTNAME>$local</FMTNAME>
+    </Local>
+    <Local>
+        <KEY>COUNT_PERCENT</KEY>
+        <PHRASE>Count (%)</PHRASE>
+        <FMTNAME>$local</FMTNAME>
+    </Local>
+    <Local>
+        <KEY>M</KEY>
+        <PHRASE>Male</PHRASE>
+        <FMTNAME>$sex</FMTNAME>
+    </Local>
+    <Local>
+        <KEY>F</KEY>
+        <PHRASE>Female</PHRASE>
+        <FMTNAME>$sex</FMTNAME>
+    </Local>
+    <Local>
+        <KEY>Y</KEY>
+        <PHRASE>Yes</PHRASE>
+        <FMTNAME>$yesno</FMTNAME>
+    </Local>
+    <Local>
+        <KEY>N</KEY>
+        <PHRASE>No</PHRASE>
+        <FMTNAME>$yesno</FMTNAME>
+    </Local>
+    <Local>
+        <KEY>X</KEY>
+        <PHRASE>n/a</PHRASE>
+        <FMTNAME>$yesno</FMTNAME>
+    </Local>
+    <Local>
+        <KEY>Y</KEY>
+        <PHRASE>Yes</PHRASE>
+        <FMTNAME>$yndecod</FMTNAME>
+    </Local>
+    <Local>
+        <KEY>N</KEY>
+        <PHRASE>No</PHRASE>
+        <FMTNAME>$yndecod</FMTNAME>
+    </Local>
+    <Local>
+        <KEY>X</KEY>
+        <PHRASE>Not Applicable</PHRASE>
+        <FMTNAME>$yndecod</FMTNAME>
+    </Local>
+    <Local>
+        <KEY>U</KEY>
+        <PHRASE>Unknown</PHRASE>
+        <FMTNAME>$yndecod</FMTNAME>
+    </Local>
+    <Local>
+        <KEY>Y</KEY>
+        <PHRASE>1</PHRASE>
+        <FMTNAME>$ynorder</FMTNAME>
+    </Local>
+    <Local>
+        <KEY>N</KEY>
+        <PHRASE>2</PHRASE>
+        <FMTNAME>$ynorder</FMTNAME>
+    </Local>
+    <Local>
+        <KEY>X</KEY>
+        <PHRASE>3</PHRASE>
+        <FMTNAME>$ynorder</FMTNAME>
+    </Local>
+    <Local>
+        <KEY>U</KEY>
+        <PHRASE>4</PHRASE>
+        <FMTNAME>$ynorder</FMTNAME>
+    </Local>
+    <Local>
+        <KEY>1</KEY>
+        <PHRASE>American Hispanic</PHRASE>
+        <FMTNAME>$raceall</FMTNAME>
+    </Local>
+    <Local>
+        <KEY>2</KEY>
+        <PHRASE>Arabic/North African</PHRASE>
+        <FMTNAME>$raceall</FMTNAME>
+    </Local>
+    <Local>
+        <KEY>3</KEY>
+        <PHRASE>Black</PHRASE>
+        <FMTNAME>$raceall</FMTNAME>
+    </Local>
+    <Local>
+        <KEY>4</KEY>
+        <PHRASE>East &amp; South East Asian</PHRASE>
+        <FMTNAME>$raceall</FMTNAME>
+    </Local>
+    <Local>
+        <KEY>5</KEY>
+        <PHRASE>Japanese</PHRASE>
+        <FMTNAME>$raceall</FMTNAME>
+    </Local>
+    <Local>
+        <KEY>6</KEY>
+        <PHRASE>South Asian</PHRASE>
+        <FMTNAME>$raceall</FMTNAME>
+    </Local>
+    <Local>
+        <KEY>7</KEY>
+        <PHRASE>White/Caucasian</PHRASE>
+        <FMTNAME>$raceall</FMTNAME>
+    </Local>
+    <Local>
+        <KEY>Z</KEY>
+        <PHRASE>Other</PHRASE>
+        <FMTNAME>$raceall</FMTNAME>
+    </Local>
+    <Local>
+        <KEY>2</KEY>
+        <PHRASE>Arabic/North African</PHRASE>
+        <FMTNAME>$racedef</FMTNAME>
+    </Local>
+    <Local>
+        <KEY>3</KEY>
+        <PHRASE>Black</PHRASE>
+        <FMTNAME>$racedef</FMTNAME>
+    </Local>
+    <Local>
+        <KEY>4</KEY>
+        <PHRASE>East &amp; South East Asian</PHRASE>
+        <FMTNAME>$racedef</FMTNAME>
+    </Local>
+    <Local>
+        <KEY>6</KEY>
+        <PHRASE>South Asian</PHRASE>
+        <FMTNAME>$racedef</FMTNAME>
+    </Local>
+    <Local>
+        <KEY>7</KEY>
+        <PHRASE>White/Caucasian</PHRASE>
+        <FMTNAME>$racedef</FMTNAME>
+    </Local>
+    <Local>
+        <KEY>Z</KEY>
+        <PHRASE>Other</PHRASE>
+        <FMTNAME>$racedef</FMTNAME>
+    </Local>
+    <Local>
+        <KEY>1</KEY>
+        <PHRASE>American Hispanic</PHRASE>
+        <FMTNAME>$racehisp</FMTNAME>
+    </Local>
+    <Local>
+        <KEY>2</KEY>
+        <PHRASE>Arabic/North African</PHRASE>
+        <FMTNAME>$racehisp</FMTNAME>
+    </Local>
+    <Local>
+        <KEY>3</KEY>
+        <PHRASE>Black</PHRASE>
+        <FMTNAME>$racehisp</FMTNAME>
+    </Local>
+    <Local>
+        <KEY>4</KEY>
+        <PHRASE>East &amp; South East Asian</PHRASE>
+        <FMTNAME>$racehisp</FMTNAME>
+    </Local>
+    <Local>
+        <KEY>6</KEY>
+        <PHRASE>South Asian</PHRASE>
+        <FMTNAME>$racehisp</FMTNAME>
+    </Local>
+    <Local>
+        <KEY>7</KEY>
+        <PHRASE>White/Caucasian</PHRASE>
+        <FMTNAME>$racehisp</FMTNAME>
+    </Local>
+    <Local>
+        <KEY>Z</KEY>
+        <PHRASE>Other</PHRASE>
+        <FMTNAME>$racehisp</FMTNAME>
+    </Local>
+    <Local>
+        <KEY>2</KEY>
+        <PHRASE>Arabic/North African</PHRASE>
+        <FMTNAME>$racejap</FMTNAME>
+    </Local>
+    <Local>
+        <KEY>3</KEY>
+        <PHRASE>Black</PHRASE>
+        <FMTNAME>$racejap</FMTNAME>
+    </Local>
+    <Local>
+        <KEY>4</KEY>
+        <PHRASE>East &amp; South East Asian</PHRASE>
+        <FMTNAME>$racejap</FMTNAME>
+    </Local>
+    <Local>
+        <KEY>5</KEY>
+        <PHRASE>Japanese</PHRASE>
+        <FMTNAME>$racejap</FMTNAME>
+    </Local>
+    <Local>
+        <KEY>6</KEY>
+        <PHRASE>South Asian</PHRASE>
+        <FMTNAME>$racejap</FMTNAME>
+    </Local>
+    <Local>
+        <KEY>7</KEY>
+        <PHRASE>White/Caucasian</PHRASE>
+        <FMTNAME>$racejap</FMTNAME>
+    </Local>
+    <Local>
+        <KEY>Z</KEY>
+        <PHRASE>Other</PHRASE>
+        <FMTNAME>$racejap</FMTNAME>
+    </Local>
+    <Local>
+        <KEY>1</KEY>
+        <PHRASE>Adverse event</PHRASE>
+        <FMTNAME>$SDREAS</FMTNAME>
+    </Local>
+    <Local>
+        <KEY>2</KEY>
+        <PHRASE>Lost to follow-up</PHRASE>
+        <FMTNAME>$SDREAS</FMTNAME>
+    </Local>
+    <Local>
+        <KEY>3</KEY>
+        <PHRASE>Protocol violation</PHRASE>
+        <FMTNAME>$SDREAS</FMTNAME>
+    </Local>
+    <Local>
+        <KEY>4</KEY>
+        <PHRASE>Subject decided to withdraw</PHRASE>
+        <FMTNAME>$SDREAS</FMTNAME>
+    </Local>
+    <Local>
+        <KEY>5</KEY>
+        <PHRASE>Lack of efficacy</PHRASE>
+        <FMTNAME>$SDREAS</FMTNAME>
+    </Local>
+    <Local>
+        <KEY>6</KEY>
+        <PHRASE>Sponsor terminated study</PHRASE>
+        <FMTNAME>$SDREAS</FMTNAME>
+    </Local>
+    <Local>
+        <KEY>7</KEY>
+        <PHRASE>Disease progression</PHRASE>
+        <FMTNAME>$SDREAS</FMTNAME>
+    </Local>
+    <Local>
+        <KEY>Z</KEY>
+        <PHRASE>Other, specify</PHRASE>
+        <FMTNAME>$SDREAS</FMTNAME>
+    </Local>
+    <Local>
+        <KEY>Y</KEY>
+        <PHRASE>Prematurely discontinued</PHRASE>
+        <FMTNAME>$SDSTOP</FMTNAME>
+    </Local>
+    <Local>
+        <KEY>N</KEY>
+        <PHRASE>Completed</PHRASE>
+        <FMTNAME>$SDSTOP</FMTNAME>
+    </Local>
+    <Local>
+        <KEY>1</KEY>
+        <PHRASE>Normal</PHRASE>
+        <FMTNAME>$EGINTPCD</FMTNAME>
+    </Local>
+    <Local>
+        <KEY>2</KEY>
+        <PHRASE>Abnormal - not clinically significant</PHRASE>
+        <FMTNAME>$EGINTPCD</FMTNAME>
+    </Local>
+    <Local>
+        <KEY>3</KEY>
+        <PHRASE>Abnormal - clinically significant</PHRASE>
+        <FMTNAME>$EGINTPCD</FMTNAME>
+    </Local>
+    <Local>
+        <KEY>4</KEY>
+        <PHRASE>Not available</PHRASE>
+        <FMTNAME>$EGINTPCD</FMTNAME>
+    </Local>
+    <Local>
+        <KEY>Y</KEY>
+        <PHRASE>Clinically significant change from baseline</PHRASE>
+        <FMTNAME>$EGCHBL</FMTNAME>
+    </Local>
+    <Local>
+        <KEY>N</KEY>
+        <PHRASE>Not a clinically significant change</PHRASE>
+        <FMTNAME>$EGCHBL</FMTNAME>
+    </Local>
+    <Local>
+        <KEY>X</KEY>
+        <PHRASE>Not applicable</PHRASE>
+        <FMTNAME>$EGCHBL</FMTNAME>
+    </Local>
+    <Local>
+        <KEY>1</KEY>
+        <PHRASE>Mild</PHRASE>
+        <FMTNAME>$AESEV</FMTNAME>
+    </Local>
+    <Local>
+        <KEY>2</KEY>
+        <PHRASE>Moderate</PHRASE>
+        <FMTNAME>$AESEV</FMTNAME>
+    </Local>
+    <Local>
+        <KEY>3</KEY>
+        <PHRASE>Severe</PHRASE>
+        <FMTNAME>$AESEV</FMTNAME>
+    </Local>
+    <Local>
+        <KEY>1</KEY>
+        <PHRASE>Mild</PHRASE>
+        <FMTNAME>$AESEVX</FMTNAME>
+    </Local>
+    <Local>
+        <KEY>2</KEY>
+        <PHRASE>Moderate</PHRASE>
+        <FMTNAME>$AESEVX</FMTNAME>
+    </Local>
+    <Local>
+        <KEY>3</KEY>
+        <PHRASE>Severe</PHRASE>
+        <FMTNAME>$AESEVX</FMTNAME>
+    </Local>
+    <Local>
+        <KEY>X</KEY>
+        <PHRASE>Not applicable</PHRASE>
+        <FMTNAME>$AESEVX</FMTNAME>
+    </Local>
+    <!-- Format $RACEHL: Highest Level Race Categories and Racial Combinations -->
+    <Local>
+        <KEY>01</KEY>
+        <PHRASE>African American/African Heritage</PHRASE>
+        <FMTNAME>$RACEHL</FMTNAME>
+    </Local>
+    <Local>
+        <KEY>02</KEY>
+        <PHRASE>American Indian or Alaska Native</PHRASE>
+        <FMTNAME>$RACEHL</FMTNAME>
+    </Local>
+    <Local>
+        <KEY>03</KEY>
+        <PHRASE>Asian</PHRASE>
+        <FMTNAME>$RACEHL</FMTNAME>
+    </Local>
+    <Local>
+        <KEY>03A</KEY>
+        <PHRASE>&#160;&#160;Central/South Asian Heritage</PHRASE>
+        <FMTNAME>$RACEHL</FMTNAME>
+    </Local>
+    <Local>
+        <KEY>03B</KEY>
+        <PHRASE>&#160;&#160;Japanese/East Asian Heritage/~   South East Asian Heritage</PHRASE>
+        <FMTNAME>$RACEHL</FMTNAME>
+    </Local>
+    <Local>
+        <KEY>03C</KEY>
+        <PHRASE>&#160;&#160;Mixed Asian Heritage</PHRASE>
+        <FMTNAME>$RACEHL</FMTNAME> 
+    </Local>
+    <Local>
+        <KEY>04</KEY>
+        <PHRASE>Native Hawaiian or other Pacific Islander</PHRASE>
+        <FMTNAME>$RACEHL</FMTNAME>
+    </Local>
+    <Local>
+        <KEY>05</KEY>
+        <PHRASE>White</PHRASE>
+        <FMTNAME>$RACEHL</FMTNAME>
+    </Local>    
+    <!-- Format $RACEAHL: All Indicated Races by Highest Level Race Categories -->
+    <Local>
+        <KEY>01</KEY>
+        <PHRASE>African American/African Heritage</PHRASE>
+        <FMTNAME>$RACEAHL</FMTNAME>
+    </Local>
+    <Local>
+        <KEY>02</KEY>
+        <PHRASE>American Indian or Alaska Native</PHRASE>
+        <FMTNAME>$RACEAHL</FMTNAME>
+    </Local>
+    <Local>
+        <KEY>03</KEY>
+        <PHRASE>Asian</PHRASE>
+        <FMTNAME>$RACEAHL</FMTNAME>
+    </Local>
+    <Local>
+        <KEY>03A</KEY>
+        <PHRASE>&#160;&#160;Central/South Asian Heritage</PHRASE>
+        <FMTNAME>$RACEAHL</FMTNAME>
+    </Local>
+    <Local>
+        <KEY>03B</KEY>
+        <PHRASE>&#160;&#160;Japanese/East Asian Heritage/~   South East Asian Heritage</PHRASE>
+        <FMTNAME>$RACEAHL</FMTNAME>
+    </Local>
+    <Local>
+        <KEY>04</KEY>
+        <PHRASE>Native Hawaiian or other Pacific Islander</PHRASE>
+        <FMTNAME>$RACEAHL</FMTNAME>
+    </Local>
+    <Local>
+        <KEY>05</KEY>
+        <PHRASE>White</PHRASE>
+        <FMTNAME>$RACEAHL</FMTNAME>
+    </Local>
+    <!-- Format $RACESL: Second-Level Race Categories and Racial Combinations -->
+    <Local>
+        <KEY>01</KEY>
+        <PHRASE>African American/African Heritage</PHRASE>
+        <FMTNAME>$RACESL</FMTNAME>
+    </Local>
+    <Local>
+        <KEY>02</KEY>
+        <PHRASE>American Indian or Alaska Native</PHRASE>
+        <FMTNAME>$RACESL</FMTNAME>
+    </Local>
+    <Local>
+        <KEY>03</KEY>
+        <PHRASE>Asian - Central/South Asian Heritage</PHRASE>
+        <FMTNAME>$RACESL</FMTNAME>
+    </Local>
+    <Local>
+        <KEY>04</KEY>
+        <PHRASE>Asian - East Asian Heritage</PHRASE>
+        <FMTNAME>$RACESL</FMTNAME>
+    </Local>
+    <Local>
+        <KEY>05</KEY>
+        <PHRASE>Asian - Japanese Heritage</PHRASE>
+        <FMTNAME>$RACESL</FMTNAME>
+    </Local>
+    <Local>
+        <KEY>06</KEY>
+        <PHRASE>Asian - South East Asian Heritage</PHRASE>
+        <FMTNAME>$RACESL</FMTNAME>
+    </Local>
+    <Local>
+        <KEY>07</KEY>
+        <PHRASE>Asian - Mixed Race</PHRASE>
+        <FMTNAME>$RACESL</FMTNAME>
+    </Local>
+    <Local>
+        <KEY>08</KEY>
+        <PHRASE>Native Hawaiian or other Pacific Islander</PHRASE>
+        <FMTNAME>$RACESL</FMTNAME>
+    </Local>
+    <Local>
+        <KEY>09</KEY>
+        <PHRASE>White - Arabic/North African Heritage</PHRASE>
+        <FMTNAME>$RACESL</FMTNAME>
+    </Local>
+    <Local>
+        <KEY>10</KEY>
+        <PHRASE>White - White/Caucasian/European Heritage</PHRASE>
+        <FMTNAME>$RACESL</FMTNAME>
+    </Local>
+    <Local>
+        <KEY>11</KEY>
+        <PHRASE>White - Mixed Race</PHRASE>
+        <FMTNAME>$RACESL</FMTNAME>
+    </Local>
+    <Local>
+        <KEY>12</KEY>
+        <PHRASE>Mixed Race</PHRASE>
+        <FMTNAME>$RACESL</FMTNAME>
+    </Local>
+    <!-- Format $RACEASL: All Indicated Races by Second-Level Race -->
+    <Local>
+        <KEY>11</KEY>
+        <PHRASE>African American/African Heritage</PHRASE>
+        <FMTNAME>$RACEASL</FMTNAME>
+    </Local>
+    <Local>
+        <KEY>12</KEY>
+        <PHRASE>American Indian or Alaska Native</PHRASE>
+        <FMTNAME>$RACEASL</FMTNAME>
+    </Local>
+    <Local>
+        <KEY>13</KEY>
+        <PHRASE>Asian - Central/South Asian Heritage</PHRASE>
+        <FMTNAME>$RACEASL</FMTNAME>
+    </Local>
+    <Local>
+        <KEY>14</KEY>
+        <PHRASE>Asian - East Asian Heritage</PHRASE>
+        <FMTNAME>$RACEASL</FMTNAME>
+    </Local>
+    <Local>
+        <KEY>15</KEY>
+        <PHRASE>Asian - Japanese Heritage</PHRASE>
+        <FMTNAME>$RACEASL</FMTNAME>
+    </Local>
+    <Local>
+        <KEY>16</KEY>
+        <PHRASE>Asian - South East Asian Heritage</PHRASE>
+        <FMTNAME>$RACEASL</FMTNAME>
+    </Local>
+    <Local>
+        <KEY>17</KEY>
+        <PHRASE>Native Hawaiian or other Pacific Islander</PHRASE>
+        <FMTNAME>$RACEASL</FMTNAME>
+    </Local>
+    <Local>
+        <KEY>18</KEY>
+        <PHRASE>White - Arabic/North African Heritage</PHRASE>
+        <FMTNAME>$RACEASL</FMTNAME>
+    </Local>
+    <Local>
+        <KEY>19</KEY>
+        <PHRASE>White - White/Caucasian/European Heritage</PHRASE>
+        <FMTNAME>$RACEASL</FMTNAME>
+    </Local>
+    <!-- Format $ETHNIC: Ethnicity -->
+    <Local>
+        <KEY>1</KEY>
+        <PHRASE>Hispanic/Latino</PHRASE>
+        <FMTNAME>$ethnic</FMTNAME>
+    </Local>
+    <Local>
+        <KEY>2</KEY>
+        <PHRASE>Not Hispanic/Latino</PHRASE>
+        <FMTNAME>$ethnic</FMTNAME>
+    </Local>
+    <!-- Format $DSFAIL: Withdrawn (DS) -->
+    <Local>
+        <KEY>Y</KEY>
+        <PHRASE>Withdrawn</PHRASE>
+        <FMTNAME>$DSFAIL</FMTNAME>
+    </Local>
+    <Local>
+        <KEY>N</KEY>
+        <PHRASE>Completed</PHRASE>
+        <FMTNAME>$DSFAIL</FMTNAME>
+    </Local>
+    <!-- Format $DSFAIL: Withdrawn (DS) including total enrolled -->
+    <Local>
+        <KEY>Y</KEY>
+        <PHRASE>Withdrawn</PHRASE>
+        <FMTNAME>$DSFAILE</FMTNAME>
+    </Local>
+    <Local>
+        <KEY>N</KEY>
+        <PHRASE>Completed</PHRASE>
+        <FMTNAME>$DSFAILE</FMTNAME>
+    </Local>
+    <Local>
+        <KEY>E</KEY>
+        <PHRASE>Entered</PHRASE>
+        <FMTNAME>$DSFAILE</FMTNAME>
+    </Local>
+    <!-- Format $DSFAIL: Withdrawn (DS) for screening -->
+    <Local>
+        <KEY>Y</KEY>
+        <PHRASE>FAILED</PHRASE>
+        <FMTNAME>$DSFAILS</FMTNAME>
+    </Local>
+    <Local>
+        <KEY>N</KEY>
+        <PHRASE>Enrolled</PHRASE>
+        <FMTNAME>$DSFAILS</FMTNAME>
+    </Local>
+    <!-- Formats for TD_LIVER1 -->
+    <Local>
+       <KEY> AFTER </KEY>
+       <PHRASE> Subject with events occurring after stopping study treatment </PHRASE>
+       <FMTNAME> $RUSTRPT </FMTNAME>
+    </Local>
+    <Local>
+       <KEY> BEFORE </KEY>
+       <PHRASE> Subject with events occurring while receiving study treatment </PHRASE>
+       <FMTNAME> $RUSTRPT </FMTNAME>
+    </Local>
+    <Local>
+       <KEY> N </KEY>
+       <PHRASE> No </PHRASE>
+       <FMTNAME> $YESNOYN </FMTNAME>
+    </Local>
+    <Local>
+       <KEY> Y </KEY>
+       <PHRASE> Yes </PHRASE>
+       <FMTNAME> $YESNOYN </FMTNAME>
+    </Local>    
+</localisationxls>

@@ -1,0 +1,346 @@
+<?xml version="1.0" encoding="iso-8859-1" ?>
+<TABLE>
+   <ES1A>
+      <TDMACRO> TD_ES1A </TDMACRO>
+      <TYPE> SEGMENT1 </TYPE>
+      <NAME> COMPLETETYPESVARS </NAME>
+      <VALUE> &amp;G_TRTCD </VALUE>
+   </ES1A>
+   <ES1A>
+      <TDMACRO> TD_ES1A </TDMACRO>
+      <TYPE> SEGMENT1 </TYPE>
+      <NAME> PSFORMAT </NAME>
+      <VALUE> &amp;G_TRTCD &amp;G_TRTFMT dsfail $dsfail. </VALUE>
+   </ES1A>
+   <ES1A>
+      <TDMACRO> TD_ES1A </TDMACRO>
+      <TYPE> SEGMENT2 </TYPE>
+      <NAME> COMPLETETYPESVARS </NAME>
+      <VALUE> dsrscd &amp;G_TRTCD </VALUE>
+   </ES1A>
+   <ES1A>
+      <TDMACRO> TD_ES1A </TDMACRO>
+      <TYPE> SEGMENT2 </TYPE>
+      <NAME> PSFORMAT </NAME>
+      <VALUE> dsrscd dsrss. &amp;G_TRTCD &amp;G_TRTFMT </VALUE>
+   </ES1A>
+   <ES1A>
+      <TDMACRO> TD_ES1A </TDMACRO>
+      <TYPE> SEGMENT3 </TYPE>
+      <NAME> COMPLETETYPESVARS </NAME>
+      <VALUE> &amp;G_TRTCD </VALUE>
+   </ES1A>
+   <ES1A>
+      <TDMACRO> TD_ES1A </TDMACRO>
+      <TYPE> SEGMENT3 </TYPE>
+      <NAME> PSFORMAT </NAME>
+      <VALUE> &amp;G_TRTCD &amp;G_TRTFMT </VALUE>
+   </ES1A>
+   <ES1A>
+      <TDMACRO> TD_ES1A </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <NAME> ACROSSCOLLISTNAME </NAME>
+      <VALUE Missing=" " />
+   </ES1A>
+   <ES1A>
+      <TDMACRO> TD_ES1A </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <NAME> ACROSSCOLVARPREFIX </NAME>
+      <VALUE Missing=" " />
+   </ES1A>
+   <ES1A>
+      <TDMACRO> TD_ES1A </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <NAME> ACROSSVAR </NAME>
+      <VALUE Missing=" " />
+   </ES1A>
+   <ES1A>
+      <TDMACRO> TD_ES1A </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <NAME> ACROSSVARDECODE </NAME>
+      <VALUE Missing=" " />
+   </ES1A>
+   <ES1A>
+      <TDMACRO> TD_ES1A </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <NAME> ADDBIGNYN </NAME>
+      <VALUE> Y </VALUE>
+   </ES1A>
+   <ES1A>
+      <TDMACRO> TD_ES1A </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <NAME> BIGNVARNAME </NAME>
+      <VALUE> tt_bnnm </VALUE>
+   </ES1A>
+   <ES1A>
+      <TDMACRO> TD_ES1A </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <NAME> CODEDECODEVARPAIRS </NAME>
+      <VALUE> dsrscd dsrs dssbrscd dssbrs &amp;G_TRTCD &amp;G_TRTGRP </VALUE>
+   </ES1A>
+   <ES1A>
+      <TDMACRO> TD_ES1A </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <NAME> COMPLETETYPESVARS </NAME>
+      <VALUE> &amp;G_TRTCD </VALUE>
+   </ES1A>
+   <ES1A>
+      <TDMACRO> TD_ES1A </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <NAME> COUNTDISTINCTWHATVAR </NAME>
+      <VALUE> &amp;G_CENTID &amp;G_SUBJID </VALUE>
+   </ES1A>
+   <ES1A>
+      <TDMACRO> TD_ES1A </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <NAME> DENORMYN </NAME>
+      <VALUE> N </VALUE>
+   </ES1A>
+   <ES1A>
+      <TDMACRO> TD_ES1A </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <NAME> DISPLAY </NAME>
+      <VALUE> N </VALUE>
+   </ES1A>
+   <ES1A>
+      <TDMACRO> TD_ES1A </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <NAME> DSETINDENOM </NAME>
+      <VALUE> ARDATA.POP </VALUE>
+   </ES1A>
+   <ES1A>
+      <TDMACRO> TD_ES1A </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <NAME> DSETOUT </NAME>
+      <VALUE Missing=" " />
+   </ES1A>
+   <ES1A>
+      <TDMACRO> TD_ES1A </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <NAME> GROUPBYVARPOP </NAME>
+      <VALUE> &amp;G_TRTCD </VALUE>
+   </ES1A>
+   <ES1A>
+      <TDMACRO> TD_ES1A </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <NAME> GROUPBYVARSDENOM </NAME>
+      <VALUE> &amp;G_TRTCD </VALUE>
+   </ES1A>
+   <ES1A>
+      <TDMACRO> TD_ES1A </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <NAME> GROUPBYVARSNUMER </NAME>
+      <VALUE> &amp;G_TRTCD dsrscd dssbrscd </VALUE>
+   </ES1A>
+   <ES1A>
+      <TDMACRO> TD_ES1A </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <NAME> GROUPMINMAXVAR </NAME>
+      <VALUE Missing=" " />
+   </ES1A>
+   <ES1A>
+      <TDMACRO> TD_ES1A </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <NAME> LABELVARSYN </NAME>
+      <VALUE> Y </VALUE>
+   </ES1A>
+   <ES1A>
+      <TDMACRO> TD_ES1A </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <NAME> POSTSUBSET </NAME>
+      <VALUE Missing=" " />
+   </ES1A>
+   <ES1A>
+      <TDMACRO> TD_ES1A </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <NAME> PSBYVARS </NAME>
+      <VALUE Missing=" " />
+   </ES1A>
+   <ES1A>
+      <TDMACRO> TD_ES1A </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <NAME> PSCLASS </NAME>
+      <VALUE Missing=" " />
+   </ES1A>
+   <ES1A>
+      <TDMACRO> TD_ES1A </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <NAME> PSCLASSOPTIONS </NAME>
+      <VALUE> PRELOADFMT </VALUE>
+   </ES1A>
+   <ES1A>
+      <TDMACRO> TD_ES1A </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <NAME> PSFORMAT </NAME>
+      <VALUE> &amp;G_TRTCD &amp;G_TRTFMT </VALUE>
+   </ES1A>
+   <ES1A>
+      <TDMACRO> TD_ES1A </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <NAME> PSFREQ </NAME>
+      <VALUE Missing=" " />
+   </ES1A>
+   <ES1A>
+      <TDMACRO> TD_ES1A </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <NAME> PSID </NAME>
+      <VALUE Missing=" " />
+   </ES1A>
+   <ES1A>
+      <TDMACRO> TD_ES1A </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <NAME> PSOPTIONS </NAME>
+      <VALUE> COMPLETETYPES NWAY MISSING </VALUE>
+   </ES1A>
+   <ES1A>
+      <TDMACRO> TD_ES1A </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <NAME> PSOUTPUT </NAME>
+      <VALUE Missing=" " />
+   </ES1A>
+   <ES1A>
+      <TDMACRO> TD_ES1A </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <NAME> PSOUTPUTOPTIONS </NAME>
+      <VALUE Missing=" " />
+   </ES1A>
+   <ES1A>
+      <TDMACRO> TD_ES1A </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <NAME> PSTYPES </NAME>
+      <VALUE Missing=" " />
+   </ES1A>
+   <ES1A>
+      <TDMACRO> TD_ES1A </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <NAME> PSWAYS </NAME>
+      <VALUE Missing=" " />
+   </ES1A>
+   <ES1A>
+      <TDMACRO> TD_ES1A </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <NAME> PSWEIGHT </NAME>
+      <VALUE Missing=" " />
+   </ES1A>
+   <ES1A>
+      <TDMACRO> TD_ES1A </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <NAME> REMSUMMARYPCTYN </NAME>
+      <VALUE> N </VALUE>
+   </ES1A>
+   <ES1A>
+      <TDMACRO> TD_ES1A </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <NAME> RESULTPCTDPS </NAME>
+      <VALUE> 0 </VALUE>
+   </ES1A>
+   <ES1A>
+      <TDMACRO> TD_ES1A </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <NAME> RESULTSTYLE </NAME>
+      <VALUE> NUMERPCT </VALUE>
+   </ES1A>
+   <ES1A>
+      <TDMACRO> TD_ES1A </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <NAME> RESULTVARNAME </NAME>
+      <VALUE> tt_result </VALUE>
+   </ES1A>
+   <ES1A>
+      <TDMACRO> TD_ES1A </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <NAME> ROWLABELVARNAME </NAME>
+      <VALUE> tt_grplabel </VALUE>
+   </ES1A>
+   <ES1A>
+      <TDMACRO> TD_ES1A </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <NAME> SPLITCHAR </NAME>
+      <VALUE> ~ </VALUE>
+   </ES1A>
+   <ES1A>
+      <TDMACRO> TD_ES1A </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <NAME> SPSORT2GROUPBYVARSDENOM </NAME>
+      <VALUE Missing=" " />
+   </ES1A>
+   <ES1A>
+      <TDMACRO> TD_ES1A </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <NAME> SPSORT2GROUPBYVARSNUMER </NAME>
+      <VALUE Missing=" " />
+   </ES1A>
+   <ES1A>
+      <TDMACRO> TD_ES1A </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <NAME> SPSORT2RESULTSTYLE </NAME>
+      <VALUE Missing=" " />
+   </ES1A>
+   <ES1A>
+      <TDMACRO> TD_ES1A </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <NAME> SPSORT2RESULTVARNAME </NAME>
+      <VALUE Missing=" " />
+   </ES1A>
+   <ES1A>
+      <TDMACRO> TD_ES1A </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <NAME> SPSORTGROUPBYVARSDENOM </NAME>
+      <VALUE Missing=" " />
+   </ES1A>
+   <ES1A>
+      <TDMACRO> TD_ES1A </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <NAME> SPSORTGROUPBYVARSNUMER </NAME>
+      <VALUE Missing=" " />
+   </ES1A>
+   <ES1A>
+      <TDMACRO> TD_ES1A </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <NAME> SPSORTRESULTSTYLE </NAME>
+      <VALUE Missing=" " />
+   </ES1A>
+   <ES1A>
+      <TDMACRO> TD_ES1A </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <NAME> SPSORTRESULTVARNAME </NAME>
+      <VALUE Missing=" " />
+   </ES1A>
+   <ES1A>
+      <TDMACRO> TD_ES1A </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <NAME> SUMMARYLEVELVARNAME </NAME>
+      <VALUE> tt_summaryLevel </VALUE>
+   </ES1A>
+   <ES1A>
+      <TDMACRO> TD_ES1A </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <NAME> TOTALDECODE </NAME>
+      <VALUE> Total </VALUE>
+   </ES1A>
+   <ES1A>
+      <TDMACRO> TD_ES1A </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <NAME> TOTALFORVAR </NAME>
+      <VALUE Missing=" " />
+   </ES1A>
+   <ES1A>
+      <TDMACRO> TD_ES1A </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <NAME> TOTALID </NAME>
+      <VALUE Missing=" " />
+   </ES1A>
+   <ES1A>
+      <TDMACRO> TD_ES1A </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <NAME> VARLABELSTYLE </NAME>
+      <VALUE> STD </VALUE>
+   </ES1A>
+   <ES1A>
+      <TDMACRO> TD_ES1A </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <NAME> VARSTODENORM </NAME>
+      <VALUE Missing=" " />
+   </ES1A>
+</TABLE>
+

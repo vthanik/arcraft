@@ -1,0 +1,2253 @@
+<?xml version="1.0" ?>
+<!-- |*******************************************************************************-->
+<!-- |                                                                               -->
+<!-- | XML File and Table Name: tr_idsl_labels_BRENG.xml, LABELS                     -->
+<!-- |                                                                               -->
+<!-- | Table Version:    6                                                           -->
+<!-- |                                                                               -->
+<!-- | SAS Version:      v8.2                                                        -->
+<!-- |                                                                               -->
+<!-- | Created By:       Wilhelmina Busby                                            -->
+<!-- |                                                                               -->
+<!-- | Date:             01AUG2003                                                   -->
+<!-- |                                                                               -->
+<!-- | Table Purpose:    Label lookup dataset, for standardising labels              -->
+<!-- |                                                                               -->
+<!-- |*******************************************************************************-->
+<!-- | Change Log                                                                    -->
+<!-- |                                                                               -->
+<!-- | Modified By:             Wilhelmina Busby                                     -->
+<!-- | Date of Modification:    August 4, 2003                                       -->
+<!-- | New version number:      1/2                                                  -->
+<!-- | Modification ID:         WB002                                                -->
+<!-- | Reason For Modification: Remove all units on std. and short labels.           -->
+<!-- |                                                                               -->
+<!-- | Modified By:             Wilhelmina Busby                                     -->
+<!-- | Date of Modification:    August 30, 2003                                      -->
+<!-- | New version number:      1/3                                                  -->
+<!-- | Modification ID:         WB003                                                -->
+<!-- | Reason For Modification: Testing labels.XML as input to %tu_labelvars, and    -->
+<!-- |        clarifying variables with IDSL made the following changes necessary:   -->
+<!-- |        1) Remove RTGRP with stype-al                                          -->
+<!-- |        2) Add ST_AE_ASR8 = 'Age(y)/Sex/Race'.                                 -->
+<!-- |        3) Add ST_AR_SSW8= 'Maximum Intensity/Serious/Withdrawal'              -->
+<!-- |        4) Add BMI = 'Body Mass Index'.                                        -->
+<!-- |        5) Change label for TRTGRP, STYPE=PG, to 'Treatment Group' and         -->
+<!-- |           'Treatment'                                                         -->
+<!-- |        6) Change label for PTRTGRP, STYPE=ALL, to 'Period treatment group'    -->
+<!-- |        7) Change label for ST_AE_ASWR8 to same for std and short              -->
+<!-- |        8) Remove all occurences of 'Randomized' and 'Actual' with treatment   -->
+<!-- |           labels.                                                             -->
+<!-- |        9) Add a label for the following statistics: - N, Mean, STD, MEDIAN,   -->
+<!-- |           MIN, MAX.  The short and long labels should be n, Mean, SD,         -->
+<!-- |           Median, Min., Max.                                                  -->
+<!-- |       10) Change all 'Age(Yrs)' label to 'Age(y)'.                            -->
+<!-- |       11) Change all 'centid' to 'Investigator'.                              -->
+<!-- |       12) Change std label of ST_AE_PT8 from 'aept/aeterm' to 'Preferred      -->
+<!-- |           term'.                                                              -->
+<!-- |       13) Add missing var label '1st Period Dose' to ST_AE_TPT9.              -->
+<!-- |       14) Change short label of CMTERM to 'Reported Term'.                    -->
+<!-- |       15) Change std and short labels of CMDECOD to 'Collection generic       -->
+<!-- |           term' and 'Generic term'.                                           -->
+<!-- |       16) Add missing var 'ECG Date' to short label of  ST_EG_PDA4.           -->
+<!-- |       17) Separate dose form & route to ST_EX_DR3 and ST_EX_DR4.              -->
+<!-- |       18) Remove 'Actual' in short label of LBACTTM and LBACTDM.              -->
+<!-- |       19) Change std label of LBTESTUN into something more descriptive.       -->
+<!-- |       20) Change std label of ST_LB_PP6 to 'Period Treatment group/           -->
+<!-- |           Period'.                                                            -->
+<!-- |       21) Change std. label of ST_LB_AP6 to 'Study Day/Period Day'.           -->
+<!-- |       22) Change short label of AESSC to 'MedDRA SSC'.                        -->
+<!-- |       23) Change short label of AEMAG to 'MedDRA MAG'.                        -->
+<!-- |       24) Fix all spelling of MedDra to MedDRA.                               -->
+<!-- |       25) Change short label of MHSEQ to 'Sequence'.                          -->
+<!-- |       26) Change short label of SDREAS to 'Reason for Stopping'.              -->
+<!-- |       27) Change std and short label of ST_SD_EE2 and ST_SD_EE3 to            -->
+<!-- |           'Date/time of last dose'.                                           -->
+<!-- |       28) Change short label of VSFLAG to 'Flag'.                             -->
+<!-- |       29) Change std label of ST_VS_PTMN4 to 'Planned relative time/          -->
+<!-- |           Planned relative time number'.                                      -->
+<!-- |       30) Change std label of ST_VS_DA4 to 'Visit date/Visit time'.           -->
+<!-- |       31) Change std label of ST_VS_PP5 to 'Period treatment group/period'.   -->
+<!-- |           and short label to 'Period~Treat~ment~Group/Period'.                -->
+<!-- |       32) Change stdlabel of ST_VS_DA5 to 'Visit date/visit time'.            -->
+<!-- |       33) Change stdlabel of ST_VS_PTMN5 to 'Planned relative time/           -->
+<!-- |           planned relative time number'.                                      -->
+<!-- |       34) Changed ST_CM_CST2 to ST_CM_CS2 and removed Seq. var.               -->
+<!-- |       35) Added ST_CM_CST4 and ST_CM_CST5.                                    -->
+<!-- |       36) Added ST_CM_SAP5 and ST_CM_EAP5.                                    -->
+<!-- |       37) Changed ST_CM_ATDR5 to ST_CM_ADTR5.                                 -->
+<!-- |       38) Capitalised first letters of 'reported term' std. labels.           -->
+<!-- |       39) Changed short labels 'VERBATIM TEXT' to 'Reported Term'.            -->
+<!-- |                                                                               -->
+<!-- | Modified By:             Andrew Ratcliffe                                     -->
+<!-- | Date of Modification:    September 2, 2003                                    -->
+<!-- | New version number:      1/4                                                  -->
+<!-- | Modification ID:                                                              -->
+<!-- | Reason For Modification: Remove duplicates of aept, aesoc, dosecum, ptm, and  -->
+<!-- |                           ptrtgrp.                                            -->
+<!-- |                                                                               -->
+<!-- | Modified By:             Wilhelmina Busby                                     -->
+<!-- | Date of Modification:    September 3, 2003                                    -->
+<!-- | New version number:      1/5                                                  -->
+<!-- | Modification ID:                                                              -->
+<!-- | Reason For Modification: - Due to a revision to the IDSL CM tables the        -->
+<!-- |                            following changes are made:                        -->
+<!-- |                          1) On ST_CM_ADT2 and ST_CM_ADT4, replaced            -->
+<!-- |                             'Preferred term' to 'Ingredient'.                 -->
+<!-- |                          2) Changed ST_CM_ATDR3 to ST_CM_ADT3 and replaced    -->
+<!-- |                             'Preferred term' to 'Ingredient.'                 -->
+<!-- |                          3) Changed ST_CM_ADTR5 to ST_CM_ADT5 and replaced    -->
+<!-- |                             'Preferred Term' to 'Ingredient'.                 -->
+<!-- |                          - AE tables should show 'Verbatim Text' instead      -->
+<!-- |                            of 'Reported Text' when AETERM is displayed, so    -->
+<!-- |                            labels of the following variables are changed.     -->
+<!-- |                          1) On AETERM, replaced 'Reported Term' std and short -->
+<!-- |                             labels to 'Verbatim Text'.                        -->
+<!-- |                          2) On ST_AE_PT8, replaced 'Reported Term' to         -->
+<!-- |                             'Verbatim Text' on both std and short labels.     -->
+<!-- |                          - Corrected short label of ST_CM_SA2 to include      -->
+<!-- |                            separator '~' between 'Date' and 'Started'.        -->
+<!-- |                          - Placed separators, ~ on short labels of stacked    -->
+<!-- |                            variables:                                         -->
+<!-- |                            ST_AE_ASWR8, _ASR8, _SSW8, _STSW8, and _STSW8.     -->
+<!-- |                            ST_AE_CST9, _PP9, _AR9, _STSW9, _TPT9.             -->
+<!-- |                                                                               -->
+<!-- | Modified By:             Wilhelmina Busby                                     -->
+<!-- | Date of Modification:    September 5, 2003                                    -->
+<!-- | New version number:      1/6                                                  -->
+<!-- | Modification ID:                                                              -->
+<!-- | Reason For Modification: - Added ST_AE_ASR9 and ST_AE_SSW9 for 3rd and 6th    -->
+<!-- |                            columns of AE9 table listing.                      -->
+<!-- |                          - Added ST_CM_ADTR5 to conform with unit specs of    -->
+<!-- |                            CM5 table listing.                                 -->
+<!-- |                          - Corrected ST_AE_SSW9 by adding </LABELS> tag.      -->
+<!-- |                          - Added CMEND_ for td_cm2 table listing.             -->
+<!-- |                          - Removed 'Indication' on ST_CM_ADT5.                -->
+<!-- |                                                                               -->
+<!-- | Modified By:             Wilhelmina Busby                                     -->
+<!-- | Date of Modification:    September 15, 2003                                   -->
+<!-- | New version number:      1/7                                                  -->
+<!-- | Modification ID:                                                              -->
+<!-- | Reason For Modification: - Changed labels of TRTGRP (stype=XO) such that      -->
+<!-- |                            stdlabel is "Treatment~Sequence" and shortlabel is -->
+<!-- |                            "Seq.".                                            -->
+<!-- |                                                                               -->
+<!-- | Modified By:             Wilhelmina Busby                                     -->
+<!-- | Date of Modification:    September 19, 2003                                   -->
+<!-- | New version number:      1/8                                                  -->
+<!-- | Modification ID:                                                              -->
+<!-- | Reason For Modification: - Changed shortlabel of LBTEST variable to 'Lab      -->
+<!-- |                            Test'                                              -->
+<!-- |                          - Added new variables: TT_AVNM, TT_BNNM, EXDURC,     -->
+<!-- |                            EXDURCD.                                           -->
+<!-- |                                                                               -->
+<!-- | Modified By:             Paul Jarrett                                         -->
+<!-- | Date of Modification:    September 23, 2003                                   -->
+<!-- | New version number:      1/9                                                  -->
+<!-- | Modification ID:                                                              -->
+<!-- | Reason For Modification: - Changed 'Blood~Pressure' to 'BP' in the            -->
+<!-- |                            shortlabel of the SYSBP and DIABP variables.       -->
+<!-- |                                                                               -->
+<!-- | Modified By:             Wilhelmina Busby                                     -->
+<!-- | Date of Modification:    September 24, 2003                                   -->
+<!-- | New version number:      1/10                                                 -->
+<!-- | Modification ID:                                                              -->
+<!-- | Reason For Modification: - Added DOSETOT, EXDUR, AND TT_SVNM variables for    -->
+<!-- |                            td_ex1.                                            -->
+<!-- |                          - Changed stdlabels of SYSBP and DIABP from          -->
+<!-- |                            'Blood Pressure' to 'BP'.                          -->
+<!-- |                                                                               -->
+<!-- | Modified By:             Wilhelmina Busby                                     -->
+<!-- | Date of Modification:    September 26, 2003                                   -->
+<!-- | New version number:      1/11                                                 -->
+<!-- | Modification ID:                                                              -->
+<!-- | Reason For Modification:   To correct an error found in round 1 of UAT:       -->
+<!-- |                          - Changed stdlabels and shortlabels of ST_AE_PT8     -->
+<!-- |                            and ST_AE_PT9 to 'Preferred Term/~VERBATIM TEXT'.  -->
+<!-- |                          - Change stype of ATRTGRP from 'ALL' to 'PG'.        -->
+<!-- |                          - Added ATRTGRP with stype='XO', stdlabel="Treatment -->
+<!-- |                            ~Sequence, shortlabel='Seq.'.                      -->
+<!-- |                                                                               -->
+<!-- | Modified By:             Wilhelmina Busby                                     -->
+<!-- | Date of Modification:    October 7, 2003                                      -->
+<!-- | New version number:      1/12                                                 -->
+<!-- | Modification ID:                                                              -->
+<!-- | Reason For Modification: Added new label variables, tt_grplabel and           -->
+<!-- |                          tt_decode1 needed by td_dm1/dm3 table listings.      -->
+<!-- |                                                                               -->
+<!-- | Modified By:             Wilhelmina Busby                                     -->
+<!-- | Date of Modification:    October 21, 2003                                     -->
+<!-- | New version number:      1/13                                                 -->
+<!-- | Modification ID:                                                              -->
+<!-- | Reason For Modification: Changed stdlabels of AGE and ST_AE_CST9 and          -->
+<!-- |                          shortlabels of ATRTGRP, PATRTGRP, and PTRTGRP.       -->
+<!-- |                                                                               -->
+<!-- | Modified By:             Wilhelmina Busby                                     -->
+<!-- | Date of Modification:    October 27, 2003                                     -->
+<!-- | New version number:      1/14                                                 -->
+<!-- | Modification ID:                                                              -->
+<!-- | Reason For Modification: -Changed stdlabel and shortlabel of ST_EG_PP6 to     -->
+<!-- |                           'Treatment/~Period'.                                -->
+<!-- |                          -Added varnames:  SDACTTRT, DSDT, ST_EG_VDA6,        -->
+<!-- |                           EGCHGBL, ST_EG_VDA5, ST_EG_DA3, QTCB, QTCF,         -->
+<!-- |                           ST_EG_CS3, ST_EG_VDA4, ST_CM_SA3, ST_VS_CS4,        -->
+<!-- |                           ST_LB_DA5, WDSTAT, and WDSTATCD.                    -->
+<!-- |                          -Changed labels of CMDECOD to 'Ingredient'.          -->
+<!-- |                          -Changed labels of SDENDT to 'Date of Discont'.      -->
+<!-- |                          -Changed shortlabels of LBNRCD, LBCCCD, LBCHGCD and  -->
+<!-- |                           LBSTRESN to NR, CC, BL, and Value (respectively).   -->
+<!-- |                          -Removed varname EGCHBL.                             -->
+<!-- |                                                                               -->
+<!-- |                                                                               -->
+<!-- | Modified By:             Wilhelmina Busby                                     -->
+<!-- | Date of Modification:    November 14, 2003                                    -->
+<!-- | New version number:      1/15                                                 -->
+<!-- | Modification ID:                                                              -->
+<!-- | Reason For Modification: -Changed shortlabel and stdlabel of ST_LB_PP6.       -->
+<!-- |                          -Added ST_LB_VD6.                                    -->
+<!-- |                          -Added LBCHGIND, LBCCIND, LBNRIND.                   -->
+<!-- |                                                                               -->
+<!-- |                                                                               -->
+<!-- | Modified By:             Wilhelmina Busby                                     -->
+<!-- | Date of Modification:    December 1, 2003                                     -->
+<!-- | New version number:      1/16                                                 -->
+<!-- | Modification ID:                                                              -->
+<!-- | Reason For Modification: -Added SDSTAT, SDSTATCD, WDREAS, WDREASCD, SDREASCD. -->
+<!-- |                          -Changed stdlabel and shortlabel of SDREAS.          -->
+<!-- |                          -Added _CHANGE_CATEGORY, TT_DENOMCNT1, and           -->
+<!-- |                           _BASELINE_IND_.                                     -->
+<!-- |                          -Added VSCCIND.                                      -->
+<!-- |                                                                               -->
+<!-- | Modified By:             Yongwei Wang                                         -->
+<!-- | Date of Modification:    May 03, 2004                                         -->
+<!-- | New version number:      2/1                                                  -->
+<!-- | Modification ID:                                                              -->
+<!-- | Reason For Modification: -Added TT_AENUM, TT_AESUBJS, TT_CATVALUE, TT_INTP    -->
+<!-- |                          -Added ST_EG_VD4, ST_EG_VD5, ST_EG_VD6, EGDT         -->
+<!-- |                          -Modified ST_EG_PP4 to add ~ in.                     -->
+<!-- |                          -Added _BASELINE_IND - please note that this         -->
+<!-- |                           variable, unlike _BASELINE_IND_, does not include   -->
+<!-- |                           a "~" in the short label.		             -->
+<!-- |                          -Added unit (mmHg) to SYSBP and DIABP                -->
+<!-- |                                                                               -->
+<!-- | Modified By:             Wilhelmina Busby                                     -->
+<!-- | Date of Modification:    August 26, 2004                                      -->
+<!-- | New version number:      2/2                                                  -->
+<!-- | Modification ID:                                                              -->
+<!-- | Reason For Modification: Changes made accdg to Change Request HRT0020:        -->
+<!-- |                          -Replaced EGCHGBL with EGCHBL.                       -->
+<!-- |                          -Changed short and std. labels for ECG DATE to       -->
+<!-- |                           ECG Date.                                           -->
+<!-- |                          -Changed shortlabel of ST_CM_CS3 to 'Inv./~Subj.'.   -->
+<!-- |                          -Added label SDREASON with Short and Std. label of   -->
+<!-- |                           'Reason For Discontinuation'.                       -->
+<!-- |                          -Added label MHSTAT with Short and Std. label of     -->
+<!-- |                           'Status'.                                           -->
+<!-- |                                                                               -->
+<!-- | Modified By:             Shan Lee                                             -->
+<!-- | Date of Modification:    December 16, 2004                                    -->
+<!-- | New version number:      3/1                                                  -->
+<!-- | Modification ID:                                                              -->
+<!-- | Reason For Modification: Add labels for PK variables and labels required for  -->
+<!-- |                          new demography data displays, as requested in change -->
+<!-- |                          control form HRT0068.                                -->
+<!-- |                                                                               -->
+<!-- | Modified By:             Yongwei Wang                                         -->
+<!-- | Date of Modification:    Feburary 21, 2005                                    -->
+<!-- | New version number:      3/2                                                  -->
+<!-- | Modification ID:                                                              -->
+<!-- | Reason For Modification: Modified labels for PK variables and labels, as      -->
+<!-- |                          requested in change control form HRT0068             -->
+<!-- |                                                                               -->
+<!-- | Modified By:             Yongwei Wang                                         -->
+<!-- | Date of Modification:    August 21, 2005                                      -->
+<!-- | New version number:      4/1                                                  -->
+<!-- | Modification ID:                                                              -->
+<!-- | Reason For Modification: Added labels for CLM CLMLOG CVB CVBLOG GEOMEAN       -->
+<!-- |                          GEOMEANCLM LCLMLOG MEANCLM STDERRLOG STDLOG UCLMLOG  -->
+<!-- |                          for %tu_sumstatsinrows version 2                     -->
+<!-- |                                                                               -->
+<!-- | Modified By:             Yongwei Wang                                         -->
+<!-- | Date of Modification:    June 20, 2007                                        --> 
+<!-- | New version number:      5/1                                                  -->
+<!-- | Modification ID:                                                              -->
+<!-- | Reason For Modification: Added labels for DSSTDT, DSSTDY, ACTDY, PERDY,       -->
+<!-- |                          ST_ALL_CS, ST_ALL_PTP and ST_ALL_SPD ST_ALL_ASR      -->
+<!-- |                          ST_LIVER_DSD7 ST_LIVER_DSD8                          -->
+<!-- |                                                                               -->
+<!-- | Modified By:             Yongwei Wang                                         -->
+<!-- | Date of Modification:    Jan 08, 2008                                         --> 
+<!-- | New version number:      5/2                                                  -->
+<!-- | Modification ID:                                                              -->
+<!-- | Reason For Modification: Added labels for ST_LIVER_DSD5                       -->
+<!-- |                                                                               -->
+<!-- | Modified By:             Shan Lee                                             -->
+<!-- | Date of Modification:    Jun 17, 2008                                         --> 
+<!-- | New version number:      6/1                                                  -->
+<!-- | Reason For Modification: HRT0207 - remove redundant labels for attype,        -->
+<!-- |                                    atttypecd, ptm and ptmnum.                 -->
+<!-- |                                    Replace 'Labels' tags with 'LABELS' tags.  -->
+<!-- ********************************************************************************-->
+<varnamelst4xls>
+    <LABELS>
+        <VARNAME>STUDYID</VARNAME>
+        <STDLABEL>Study ID</STDLABEL>
+        <SHORTLABEL>Protocol</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>INVID</VARNAME>
+        <STDLABEL>Investigator ID</STDLABEL>
+        <SHORTLABEL>Inv.</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>CENTREID</VARNAME>
+        <STDLABEL>Centre ID</STDLABEL>
+        <SHORTLABEL>Centre</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>SUBJID</VARNAME>
+        <STDLABEL>Subject ID</STDLABEL>
+        <SHORTLABEL>Subj.</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>AGE</VARNAME>
+        <STDLABEL>Age (y)</STDLABEL>
+        <SHORTLABEL>Age (y)</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>SEX</VARNAME>
+        <STDLABEL>Sex</STDLABEL>
+        <SHORTLABEL>Sex</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>RACE</VARNAME>
+        <STDLABEL>Race</STDLABEL>
+        <SHORTLABEL>Race</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>TRTGRP</VARNAME>
+        <STDLABEL>Treatment Group</STDLABEL>
+        <SHORTLABEL>Treatment</SHORTLABEL>
+        <STYPE>PG</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>TRTGRP</VARNAME>
+        <STDLABEL>Treatment~Sequence</STDLABEL>
+        <SHORTLABEL>Seq.</SHORTLABEL>
+        <STYPE>XO</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>PERIOD</VARNAME>
+        <STDLABEL>Period</STDLABEL>
+        <SHORTLABEL>Period</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>BMI</VARNAME>
+        <STDLABEL>Body Mass Index</STDLABEL>
+        <SHORTLABEL>Body Mass Index</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>N</VARNAME>
+        <STDLABEL>n</STDLABEL>
+        <SHORTLABEL>n</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>MEAN</VARNAME>
+        <STDLABEL>Mean</STDLABEL>
+        <SHORTLABEL>Mean</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>STD</VARNAME>
+        <STDLABEL>SD</STDLABEL>
+        <SHORTLABEL>SD</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>MEDIAN</VARNAME>
+        <STDLABEL>Median</STDLABEL>
+        <SHORTLABEL>Median</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>MIN</VARNAME>
+        <STDLABEL>Min.</STDLABEL>
+        <SHORTLABEL>Min.</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>MAX</VARNAME>
+        <STDLABEL>Max.</STDLABEL>
+        <SHORTLABEL>Max.</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>AETERM</VARNAME>
+        <STDLABEL>Verbatim Text</STDLABEL>
+        <SHORTLABEL>Verbatim Text</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>AESTDT</VARNAME>
+        <STDLABEL>Start date of event</STDLABEL>
+        <SHORTLABEL>Onset Date</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>AEENDT</VARNAME>
+        <STDLABEL>End date of event</STDLABEL>
+        <SHORTLABEL>Date of Resolution</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>AESEV</VARNAME>
+        <STDLABEL>Maximum intensity of event</STDLABEL>
+        <SHORTLABEL>Maximum Intensity</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>AETOX</VARNAME>
+        <STDLABEL>Maximum toxicity grade of event</STDLABEL>
+        <SHORTLABEL>Maximum Toxicity</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>AESER</VARNAME>
+        <STDLABEL>Seriousness criteria</STDLABEL>
+        <SHORTLABEL>Serious</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>AEACTTRT</VARNAME>
+        <STDLABEL>Action taken with study treatment</STDLABEL>
+        <SHORTLABEL>Action Taken</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>AEOUT</VARNAME>
+        <STDLABEL>Outcome of event</STDLABEL>
+        <SHORTLABEL>Outcome</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>AEREL</VARNAME>
+        <STDLABEL>Relationship to treatment</STDLABEL>
+        <SHORTLABEL>Relation to Study Drug</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>AEWD</VARNAME>
+        <STDLABEL>Withdraw due to AE?</STDLABEL>
+        <SHORTLABEL>Withdrawal</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>AESOC</VARNAME>
+        <STDLABEL>System Organ Class</STDLABEL>
+        <SHORTLABEL>System Organ Class</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>ST_AE_CS8</VARNAME>
+        <STDLABEL>Investigator/Subject</STDLABEL>
+        <SHORTLABEL>Inv./~Subj</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>ST_AE_ASWR8</VARNAME>
+        <STDLABEL>Age(y)/Sex/Race/Weight</STDLABEL>
+        <SHORTLABEL>Age(y)/~Sex/~Race/~Weight</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>ST_AE_ASR8</VARNAME>
+        <STDLABEL>Age(y)/Sex/Race </STDLABEL>
+        <SHORTLABEL>Age(y)/~Sex/~Race </SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>ST_AE_PT8</VARNAME>
+        <STDLABEL>Preferred Term/~VERBATIM TEXT</STDLABEL>
+        <SHORTLABEL>Preferred Term/~VERBATIM TEXT</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>ST_AE_OSED8</VARNAME>
+        <STDLABEL>Outcome/~Onset Date/~Date of Resolution/~Duration</STDLABEL>
+        <SHORTLABEL>Outcome/~Onset Date/~Date of~Resolution/~Duration</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>ST_AE_TT8</VARNAME>
+        <STDLABEL>Time Since 1st Dose/~Time Since Last Dose</STDLABEL>
+        <SHORTLABEL>Time Since~1st Dose/~Time Since~Last Dose</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>ST_AE_STSW8</VARNAME>
+        <STDLABEL>Maximum Intensity/~Maximum Toxicity/~Serious/~Withdrawal</STDLABEL>
+        <SHORTLABEL>Maximum~Intensity/~Maximum~Toxicity/~Serious/~Withdrawal</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>ST_AE_SSW8</VARNAME>
+        <STDLABEL>Maximum Intensity/Serious/Withdrawal</STDLABEL>
+        <SHORTLABEL>Maximum~Intensity/~Serious/~Withdrawal</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>ST_AE_AR8</VARNAME>
+        <STDLABEL>Action Taken/~Relation to Study Drug</STDLABEL>
+        <SHORTLABEL>Action~Taken/~Relation to~Study Drug</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>ST_AE_CST9</VARNAME>
+        <STDLABEL>Inv./Subj./Seq.</STDLABEL>
+        <SHORTLABEL>Inv./~Subj./~Seq.</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>ST_AE_PP9</VARNAME>
+        <STDLABEL>Treatment/Period</STDLABEL>
+        <SHORTLABEL>Treat~ment/~Period</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>ST_AE_ASR9</VARNAME>
+        <STDLABEL>Age(y)/Sex/Race</STDLABEL>
+        <SHORTLABEL>Age(y)/~Sex/~Race/ </SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>ST_AE_ASRW9</VARNAME>
+        <STDLABEL>Age(y)/Sex/Race/Weight</STDLABEL>
+        <SHORTLABEL>Age(y)/~Sex/~Race/~Weight </SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>ST_AE_PT9</VARNAME>
+        <STDLABEL>Preferred Term/~VERBATIM TEXT</STDLABEL>
+        <SHORTLABEL>Preferred Term/~VERBATIM TEXT</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>ST_AE_OSED9</VARNAME>
+        <STDLABEL>Outcome/Onset Date/Resolve Date/Duration</STDLABEL>
+        <SHORTLABEL>Outcome/~Onset~Date/~Resolve~Date/~Duration</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>ST_AE_TPT9</VARNAME>
+        <STDLABEL>Time since Study 1st Dose/Period 1st Dose/Last Dose</STDLABEL>
+        <SHORTLABEL>Time Since~Study 1st~Dose/~Period 1st~Dose/~Last Dose</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>ST_AE_SSW9</VARNAME>
+        <STDLABEL>Maximum Intensity/Serious/Withdrawal</STDLABEL>
+        <SHORTLABEL>Maximum~Intensity/~Serious/~Withdrawal</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>ST_AE_STSW9</VARNAME>
+        <STDLABEL>Maximum Intensity/Maximum Toxicity/Serious/Withdrawal</STDLABEL>
+        <SHORTLABEL>Maximum~Intensity/~Maximum~Toxicity/~Serious/~Withdrawal</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>ST_AE_AR9</VARNAME>
+        <STDLABEL>Action Taken/Relation to Study Drug</STDLABEL>
+        <SHORTLABEL>Action~Taken/~Relation to~Study Drug</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>BLDT</VARNAME>
+        <STDLABEL>Date treatment blind~broken</STDLABEL>
+        <SHORTLABEL>Date~Blind~Broken</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>BLTM</VARNAME>
+        <STDLABEL>Time treatment blind broken</STDLABEL>
+        <SHORTLABEL>Time~Blind~Broken</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>BLACTDY</VARNAME>
+        <STDLABEL>Actual study day blind was broken</STDLABEL>
+        <SHORTLABEL>Study~Day</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>REASON</VARNAME>
+        <STDLABEL>Reason</STDLABEL>
+        <SHORTLABEL>Reason</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>ST_BL_TA2</VARNAME>
+        <STDLABEL>Sequence/Treatment When Blind Broken</STDLABEL>
+        <SHORTLABEL>Sequence/~Treatment~When Blind~Broken</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>BLPERDY</VARNAME>
+        <STDLABEL>Actual day in period blind was broken</STDLABEL>
+        <SHORTLABEL>Period~Day</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>SDACTTRT</VARNAME>
+        <STDLABEL>Treatment at Time of Discontinuation</STDLABEL>
+        <SHORTLABEL>Treatment at Time of Discont.</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>DSDT</VARNAME>
+        <STDLABEL>Date of Premature Withdrawal</STDLABEL>
+        <SHORTLABEL>Date of Premature Withdrawal</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>ST_CM_CS2</VARNAME>
+        <STDLABEL>Inv./~Subj.</STDLABEL>
+        <SHORTLABEL>Inv./~Subj.</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>ST_CM_ADT2</VARNAME>
+        <STDLABEL>ATC Level 1/Ingredient/Verbatim Text</STDLABEL>
+        <SHORTLABEL>ATC Level 1/~Ingredient/~Verbatim Text</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>ST_CM_SA2</VARNAME>
+        <STDLABEL>Date Started/Study Day</STDLABEL>
+        <SHORTLABEL>Date~Started/~Study Day</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>CMATC1_1</VARNAME>
+        <STDLABEL>ATC level 1 text # 1</STDLABEL>
+        <SHORTLABEL>ATC Level 1</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>CMTERM</VARNAME>
+        <STDLABEL>Reported name of drug, med, or therapy</STDLABEL>
+        <SHORTLABEL>Verbatim Text</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>CMDECOD</VARNAME>
+        <STDLABEL>Ingredient</STDLABEL>
+        <SHORTLABEL>Ingredient</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>CMEND_</VARNAME>
+        <STDLABEL>End date of medication</STDLABEL>
+        <SHORTLABEL>Date~Stopped</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>CMENDT</VARNAME>
+        <STDLABEL>End date of medication</STDLABEL>
+        <SHORTLABEL>Date~Stopped</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>CMONGO</VARNAME>
+        <STDLABEL>Ongoing Medication?</STDLABEL>
+        <SHORTLABEL>Ongoing~Medi-~cation?</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>CMREAS</VARNAME>
+        <STDLABEL>Reason for medication</STDLABEL>
+        <SHORTLABEL>Indication</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>ST_CM_CS3</VARNAME>
+        <STDLABEL>Inv./Subj.</STDLABEL>
+        <SHORTLABEL>Inv./~Subj.</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>ST_CM_ADT3</VARNAME>
+        <STDLABEL>ATC Level 1/Ingredient/Verbatim Text</STDLABEL>
+        <SHORTLABEL>ATC Level 1/~Ingredient/~Verbatim Text</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>ST_CM_ADTR3</VARNAME>
+        <STDLABEL>ATC Level 1/Ingredient/Verbatim Text/Indication</STDLABEL>
+        <SHORTLABEL>ATC Level 1/~Ingredient/~Verbatim Text/~Indication</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>ST_CM_UUFR3</VARNAME>
+        <STDLABEL>Dose/Units/Freq/Route</STDLABEL>
+        <SHORTLABEL>Dose/~Units/~Freq/~Route</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>ST_CM_SA3</VARNAME>
+        <STDLABEL>Date Started/~Study Day</STDLABEL>
+        <SHORTLABEL>Date Started/~Study Day</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>ST_CM_SSA3</VARNAME>
+        <STDLABEL>Date Started/Time Started/Study Day</STDLABEL>
+        <SHORTLABEL>Date~Started/~Time~Started/~Study Day</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>ST_CM_EE3</VARNAME>
+        <STDLABEL>Date Stopped/Time Stopped</STDLABEL>
+        <SHORTLABEL>Date~Stopped/~Time~Stopped</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>CMPRIOR</VARNAME>
+        <STDLABEL>Taken prior to study?</STDLABEL>
+        <SHORTLABEL>Started~Pre-~Trial?</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>ST_CM_CS4</VARNAME>
+        <STDLABEL>Inv./Subj.</STDLABEL>
+        <SHORTLABEL>Inv./~Subj.</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>ST_CM_CST4</VARNAME>
+        <STDLABEL>Inv./Subj./Seq.</STDLABEL>
+        <SHORTLABEL>Inv./~Subj./~Seq.</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>ST_CM_PP4</VARNAME>
+        <STDLABEL>Treatment/Period</STDLABEL>
+        <SHORTLABEL>Treat~ment/~Period</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>ST_CM_ADT4</VARNAME>
+        <STDLABEL>ATC Level 1/Ingredient/Verbatim Text</STDLABEL>
+        <SHORTLABEL>ATC Level 1/~Ingredient/~Verbatim Text</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>ST_CM_SAP4</VARNAME>
+        <STDLABEL>Start Date/Study Day/Period Day</STDLABEL>
+        <SHORTLABEL>Start Date/~Study Day/~Period Day</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>ST_CM_CS5</VARNAME>
+        <STDLABEL>Inv./Subj.</STDLABEL>
+        <SHORTLABEL>Inv./~Subj</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>ST_CM_CST5</VARNAME>
+        <STDLABEL>Inv./Subj./Seq.</STDLABEL>
+        <SHORTLABEL>Inv./~Subj./~Seq.</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>ST_CM_PP5</VARNAME>
+        <STDLABEL>Treatment/Period</STDLABEL>
+        <SHORTLABEL>Treat~ment/~Period</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>ST_CM_ADT5</VARNAME>
+        <STDLABEL>ATC Level 1/Ingredient/Verbatim Text</STDLABEL>
+        <SHORTLABEL>ATC Level 1/~Ingredient/~Verbatim Text</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>ST_CM_ADTR5</VARNAME>
+        <STDLABEL>ATC Level 1/Ingredient/Verbatim Text/Indication</STDLABEL>
+        <SHORTLABEL>ATC Level 1/~Ingredient/~Verbatim Text/~Indication</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>ST_CM_UUFR5</VARNAME>
+        <STDLABEL>Dose/Units/Freq/Route</STDLABEL>
+        <SHORTLABEL>Dose/~Units/~Freq/~Route</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>ST_CM_SAP5</VARNAME>
+        <STDLABEL>Start Date/Study Day/Period Day</STDLABEL>
+        <SHORTLABEL>Start~Date/~Study Day/~Period Day</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>ST_CM_SSAP5</VARNAME>
+        <STDLABEL>Start Date/Time/Study Day/Period Day</STDLABEL>
+        <SHORTLABEL>Start~Date/Time~Study Day/~Period Day</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>ST_CM_EAP5</VARNAME>
+        <STDLABEL>Stop Date/Study Day/Period Day</STDLABEL>
+        <SHORTLABEL>Stop~Date/~Study Day/~Period Day</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>ST_CM_EEAP5</VARNAME>
+        <STDLABEL>Stop Date/Time/Study Day/Period Day</STDLABEL>
+        <SHORTLABEL>Stop~Date/Time~Study Day/~Period Day</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>DMDT</VARNAME>
+        <STDLABEL>Date of collection</STDLABEL>
+        <SHORTLABEL>Assessment~Date</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>BIRTHDT</VARNAME>
+        <STDLABEL>Date of birth</STDLABEL>
+        <SHORTLABEL>Date of~Birth</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>HEIGHT</VARNAME>
+        <STDLABEL>Height</STDLABEL>
+        <SHORTLABEL>Height</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>WEIGHT</VARNAME>
+        <STDLABEL>Weight</STDLABEL>
+        <SHORTLABEL>Weight</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>EGCHBL</VARNAME>
+        <STDLABEL>Clinically Significant Change from Baseline</STDLABEL>
+        <SHORTLABEL>Clinically Significant Change from Baseline</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>ST_EG_ASR3</VARNAME>
+        <STDLABEL>Age(y)/~Sex/~Race</STDLABEL>
+        <SHORTLABEL>Age(y)/~Sex/~Race</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>ST_EG_AA3</VARNAME>
+        <STDLABEL>ECG~Date/Time</STDLABEL>
+        <SHORTLABEL>ECG~Date/Time</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>ST_EG_DA3</VARNAME>
+        <STDLABEL>ECG Date/Time</STDLABEL>
+        <SHORTLABEL>ECG Date/Time</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>ST_EG_CS3</VARNAME>
+        <STDLABEL>Inv./~Subj.</STDLABEL>
+        <SHORTLABEL>Inv./~Subj.</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>EGACTDY</VARNAME>
+        <STDLABEL>Study Day</STDLABEL>
+        <SHORTLABEL>Study~Day</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>EGDT</VARNAME>
+        <STDLABEL>ECG Date</STDLABEL>
+        <SHORTLABEL>ECG Date</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>EGHR</VARNAME>
+        <STDLABEL>Heart Rate</STDLABEL>
+        <SHORTLABEL>Heart~Rate</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>RR</VARNAME>
+        <STDLABEL>RR Interval</STDLABEL>
+        <SHORTLABEL>RR~Inter~val</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>PR</VARNAME>
+        <STDLABEL>PR Interval</STDLABEL>
+        <SHORTLABEL>PR~Inter~val</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>QRS</VARNAME>
+        <STDLABEL>QRS Duration</STDLABEL>
+        <SHORTLABEL>QRS~Dura~tion</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>QT</VARNAME>
+        <STDLABEL>QT Interval</STDLABEL>
+        <SHORTLABEL>QT~Inter~val</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>QTC</VARNAME>
+        <STDLABEL>QTc Interval</STDLABEL>
+        <SHORTLABEL>QTc~Inter~val</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>QTCB</VARNAME>
+        <STDLABEL>QTc~(Baz-~ett)</STDLABEL>
+        <SHORTLABEL>QTc~(Baz-~ett)</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>QTCF</VARNAME>
+        <STDLABEL>QTc~(Frid-~ericia)</STDLABEL>
+        <SHORTLABEL>QTc~(Frid-~ericia)</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>ST_EG_VDA4</VARNAME>
+        <STDLABEL>Visit/~ECG Date/Time</STDLABEL>
+        <SHORTLABEL>Visit/~ECG Date/Time</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>ST_EG_VD4</VARNAME>
+        <STDLABEL>Visit/~ECG Date</STDLABEL>
+        <SHORTLABEL>Visit/~ECG Date</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>ST_EG_CS4</VARNAME>
+        <STDLABEL>Inv./~Subj.</STDLABEL>
+        <SHORTLABEL>Inv./~Subj.</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>ST_EG_ASR4</VARNAME>
+        <STDLABEL>Age(y)/~Sex/~Race</STDLABEL>
+        <SHORTLABEL>Age(y)/~Sex/~Race</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>ST_EG_PP4</VARNAME>
+        <STDLABEL>Treatment/Period</STDLABEL>
+        <SHORTLABEL>Treatment/~Period</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>ST_EG_PDA4</VARNAME>
+        <STDLABEL>Planned Rel Time/~ECG Date/~Time</STDLABEL>
+        <SHORTLABEL>Planned~Relative~Time/~ECG Date/~Time</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>ST_EG_AP4</VARNAME>
+        <STDLABEL>Study~Day/~Period~Day</STDLABEL>
+        <SHORTLABEL>Study~Day/~Period~Day</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>ST_EG_VDA5</VARNAME>
+        <STDLABEL>Visit/~ECG Date/Time</STDLABEL>
+        <SHORTLABEL>Visit/~ECG Date/Time</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>ST_EG_VD5</VARNAME>
+        <STDLABEL>Visit/~ECG Date</STDLABEL>
+        <SHORTLABEL>Visit/~ECG Date</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>ST_EG_ASR5</VARNAME>
+        <STDLABEL>Age(y)/~Sex/~Race</STDLABEL>
+        <SHORTLABEL>Age(y)/~Sex/~Race</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>ST_EG_PDA5</VARNAME>
+        <STDLABEL>Planned~Rel Time/~Date/Time</STDLABEL>
+        <SHORTLABEL>Planned~Rel Time/~Date/Time</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>EGINTP</VARNAME>
+        <STDLABEL>Result</STDLABEL>
+        <SHORTLABEL>Result</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>EGFIND</VARNAME>
+        <STDLABEL>Clinically~Significant~Abnormality</STDLABEL>
+        <SHORTLABEL>Clinically~Significant~Abnormality</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>ST_EG_VDA6</VARNAME>
+        <STDLABEL>Visit/~ECG Date/Time</STDLABEL>
+        <SHORTLABEL>Visit/~ECG Date/Time</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>ST_EG_VD6</VARNAME>
+        <STDLABEL>Visit/~ECG Date</STDLABEL>
+        <SHORTLABEL>Visit/~ECG Date</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>ST_EG_CS6</VARNAME>
+        <STDLABEL>Inv./~Subj.</STDLABEL>
+        <SHORTLABEL>Inv./~Subj.</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>ST_EG_ASR6</VARNAME>
+        <STDLABEL>Age(y)/~Sex/~Race</STDLABEL>
+        <SHORTLABEL>Age(y)/~Sex/~Race</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>ST_EG_PP6</VARNAME>
+        <STDLABEL>Treatment/~Period</STDLABEL>
+        <SHORTLABEL>Treatment/~Period</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>ST_EG_PDA6</VARNAME>
+        <STDLABEL>Planned Rel Time/~ECG Date/~Time</STDLABEL>
+        <SHORTLABEL>Planned Rel Time/~ECG Date/~Time</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>ST_EG_AP6</VARNAME>
+        <STDLABEL>Study Day/~Period Day</STDLABEL>
+        <SHORTLABEL>Study Day/~Period Day</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>DWSDDM</VARNAME>
+        <STDLABEL>Date/Time of Completion or Withdrawal</STDLABEL>
+        <SHORTLABEL>Date/Time of~Premature~Withdrawal</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>DSACTDY</VARNAME>
+        <STDLABEL>Study day of completion or withdrawal</STDLABEL>
+        <SHORTLABEL>Study~Day</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>DSREA</VARNAME>
+        <STDLABEL>Primary reason for withdrawal</STDLABEL>
+        <SHORTLABEL>Reason for Premature Withdrawal</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>DSACTTRT</VARNAME>
+        <STDLABEL>Treatment at time of withdrawal</STDLABEL>
+        <SHORTLABEL>Treatment~at Time of~Withdrawal</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>DSPERDY</VARNAME>
+        <STDLABEL>Period day of completion or withdrawal</STDLABEL>
+        <SHORTLABEL>Period~Day</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>EXSTDM</VARNAME>
+        <STDLABEL>Dose Start Date/Time</STDLABEL>
+        <SHORTLABEL>Start Date/~Start Time~of Dose</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>EXDUR</VARNAME>
+        <STDLABEL>Duration</STDLABEL>
+        <SHORTLABEL>Duration</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>EXDURC</VARNAME>
+        <STDLABEL>Duration</STDLABEL>
+        <SHORTLABEL>Duration</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>EXDURCD</VARNAME>
+        <STDLABEL>Duration</STDLABEL>
+        <SHORTLABEL>Duration</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>DOSE</VARNAME>
+        <STDLABEL>Dose per administration</STDLABEL>
+        <SHORTLABEL>Dose</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>DOSEUNIT</VARNAME>
+        <STDLABEL>Dose units</STDLABEL>
+        <SHORTLABEL>Dose~Unit</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>DOSETOT</VARNAME>
+        <STDLABEL>Daily Dose</STDLABEL>
+        <SHORTLABEL>Daily Dose</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>DOSEFREQ</VARNAME>
+        <STDLABEL>Frequency of Dosing</STDLABEL>
+        <SHORTLABEL>Freq~uency</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>ST_EX_DR3</VARNAME>
+        <STDLABEL>Dose_form/ Route</STDLABEL>
+        <SHORTLABEL>Formu~lation/~Route</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>ST_EX_DR4</VARNAME>
+        <STDLABEL>Dose_form/ Route</STDLABEL>
+        <SHORTLABEL>Formu~lation/~Route</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>TRTCD</VARNAME>
+        <STDLABEL>Treatment Code</STDLABEL>
+        <SHORTLABEL>Treatment Code</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>ATRTCD</VARNAME>
+        <STDLABEL>Treatment Code</STDLABEL>
+        <SHORTLABEL>Treatment Code</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>ATRTGRP</VARNAME>
+        <STDLABEL>Treatment Group</STDLABEL>
+        <SHORTLABEL>Treatment</SHORTLABEL>
+        <STYPE>PG</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>ATRTGRP</VARNAME>
+        <STDLABEL>Treatment~Sequence</STDLABEL>
+        <SHORTLABEL>Seq.</SHORTLABEL>
+        <STYPE>XO</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>IECRTNUM</VARNAME>
+        <STDLABEL>Entry Criteria Code</STDLABEL>
+        <SHORTLABEL>Entry Criteria Code</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>IETEXT</VARNAME>
+        <STDLABEL>Entry Criteria Text</STDLABEL>
+        <SHORTLABEL>Criterion</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>IECRTTYP</VARNAME>
+        <STDLABEL>Entry Criteria Type</STDLABEL>
+        <SHORTLABEL>Type</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>RACECD</VARNAME>
+        <STDLABEL>Race Code</STDLABEL>
+        <SHORTLABEL>Race</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>PERNUM</VARNAME>
+        <STDLABEL>Period Number</STDLABEL>
+        <SHORTLABEL>Period Number</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>PTRTGRP</VARNAME>
+        <STDLABEL>Period Treatment Group</STDLABEL>
+        <SHORTLABEL>Treatment</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>PTRTCD</VARNAME>
+        <STDLABEL>Period Treatment Code</STDLABEL>
+        <SHORTLABEL>Period Treatment Code</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>PATRTCD</VARNAME>
+        <STDLABEL>Period Treatment Code</STDLABEL>
+        <SHORTLABEL>Period Treatment Code</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>PATRTGRP</VARNAME>
+        <STDLABEL>Period Treatment Group</STDLABEL>
+        <SHORTLABEL>Treatment</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>VISITNUM</VARNAME>
+        <STDLABEL>Visit Number</STDLABEL>
+        <SHORTLABEL>Visit Number</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>VISIT  </VARNAME>
+        <STDLABEL>Visit   </STDLABEL>
+        <SHORTLABEL>Visit   </SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>STAGENUM</VARNAME>
+        <STDLABEL>Stage Number</STDLABEL>
+        <SHORTLABEL>Stage Number</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>STAGE </VARNAME>
+        <STDLABEL>Stage   </STDLABEL>
+        <SHORTLABEL>Stage Number</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>LBACTDY</VARNAME>
+        <STDLABEL>Actual Study Day of Collection</STDLABEL>
+        <SHORTLABEL>Study~Day </SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>LBPERDY</VARNAME>
+        <STDLABEL>Day of Collection from Start of Period</STDLABEL>
+        <SHORTLABEL>Per~iod~Day</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>LBDT</VARNAME>
+        <STDLABEL>Date of Collection</STDLABEL>
+        <SHORTLABEL>Date</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>LBACTTM</VARNAME>
+        <STDLABEL>Actual Time of Measurement</STDLABEL>
+        <SHORTLABEL>Time Measured</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>LBACTDM</VARNAME>
+        <STDLABEL>Actual Date &amp; Time of Measurement</STDLABEL>
+        <SHORTLABEL>Date/Time Meas.</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>LBTESTCD</VARNAME>
+        <STDLABEL>Lab Test Code</STDLABEL>
+        <SHORTLABEL>Lab Test code</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>LBTEST</VARNAME>
+        <STDLABEL>Lab Test Name</STDLABEL>
+        <SHORTLABEL>Lab Test</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>LBSTRESN</VARNAME>
+        <STDLABEL>Analysis Numeric Result in STD Units</STDLABEL>
+        <SHORTLABEL>Value</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>LBSTUNIT</VARNAME>
+        <STDLABEL>Standard Units</STDLABEL>
+        <SHORTLABEL>Standard Units</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>LBORUNIT</VARNAME>
+        <STDLABEL>Original Units</STDLABEL>
+        <SHORTLABEL>Original Units</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>LBORNRLO</VARNAME>
+        <STDLABEL>Normal Range Lower Limit in Orig. Units</STDLABEL>
+        <SHORTLABEL>Normal Rng LL Orig. Units</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>LBORNRHI</VARNAME>
+        <STDLABEL>Normal Range Upper Limit in Orig. Units</STDLABEL>
+        <SHORTLABEL>Normal Rng UL Orig. Units</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>LBNRCD </VARNAME>
+        <STDLABEL>Normal Range Indicator Code</STDLABEL>
+        <SHORTLABEL>NR</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>LBCCCD</VARNAME>
+        <STDLABEL>Clinical Concern Range Indicator Code</STDLABEL>
+        <SHORTLABEL>CC</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>LBCHGCD</VARNAME>
+        <STDLABEL>Change from Baseline Indicator Code</STDLABEL>
+        <SHORTLABEL>BL</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>LBAGE</VARNAME>
+        <STDLABEL>Age in years at time of lab test</STDLABEL>
+        <SHORTLABEL>Lab age</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>LBID</VARNAME>
+        <STDLABEL>Laboratory ID</STDLABEL>
+        <SHORTLABEL>Lab ID</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>LBIDCD</VARNAME>
+        <STDLABEL>Laboratory ID Code</STDLABEL>
+        <SHORTLABEL>Lab Code</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>LBCAT</VARNAME>
+        <STDLABEL>Lab Category</STDLABEL>
+        <SHORTLABEL>Lab Category</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>LBFLAG</VARNAME>
+        <STDLABEL>Lab Flag</STDLABEL>
+        <SHORTLABEL>Flag</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>LBCHGIND</VARNAME>
+        <STDLABEL>Change Category</STDLABEL>
+        <SHORTLABEL>Change Category</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>LBCCIND</VARNAME>
+        <STDLABEL>Clinical Concern Category</STDLABEL>
+        <SHORTLABEL>Clinical Concern~Category</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>LBNRIND</VARNAME>
+        <STDLABEL>Normal Range Category</STDLABEL>
+        <SHORTLABEL>Normal Range~Category</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>ST_LB_CS5</VARNAME>
+        <STDLABEL>Inv./~Subj.</STDLABEL>
+        <SHORTLABEL>Inv./~Subj.</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>ST_LB_ASR5</VARNAME>
+        <STDLABEL>Age(y)/~Sex/~Race</STDLABEL>
+        <SHORTLABEL>Age(y)/~Sex/~Race</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>ST_LB_AP5</VARNAME>
+        <STDLABEL>Study Day/Period Day</STDLABEL>
+        <SHORTLABEL>Study Day/~Period Day</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>ST_LB_DA5</VARNAME>
+        <STDLABEL>Date of Collection/~Study Day</STDLABEL>
+        <SHORTLABEL>Date of Collection/~Study Day</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>LBTESTUN</VARNAME>
+        <STDLABEL>Lab test/Planned Relative Time</STDLABEL>
+        <SHORTLABEL>Lab test/~Planned Relative~Time</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>ST_LB_CS6</VARNAME>
+        <STDLABEL>Inv./~Subj.</STDLABEL>
+        <SHORTLABEL>Inv./~Subj.</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>ST_LB_ASR6</VARNAME>
+        <STDLABEL>Age(y)/~Sex/~Race </STDLABEL>
+        <SHORTLABEL>Age(y)/~Sex/~Race </SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>ST_LB_PP6</VARNAME>
+        <STDLABEL>Treatment/~Period</STDLABEL>
+        <SHORTLABEL>Treat-~ment/~Period</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>ST_LB_AP6</VARNAME>
+        <STDLABEL>Study Day/Period Day</STDLABEL>
+        <SHORTLABEL>Study Day/~Period Day</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>ST_LB_VD6</VARNAME>
+        <STDLABEL>Visit/~Date</STDLABEL>
+        <SHORTLABEL>Visit/~Date</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>AESSC</VARNAME>
+        <STDLABEL>MedDRA special search category text</STDLABEL>
+        <SHORTLABEL>MedDRA SSC</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>AEMAG</VARNAME>
+        <STDLABEL>MedDRA analysis group text</STDLABEL>
+        <SHORTLABEL>MedDRA MAG</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>AEPT</VARNAME>
+        <STDLABEL>Preferred Term Text</STDLABEL>
+        <SHORTLABEL>Preferred Term</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>MHBODSCD</VARNAME>
+        <STDLABEL> Body system (SOC) code</STDLABEL>
+        <SHORTLABEL>SOC Code</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>MHBODSYS</VARNAME>
+        <STDLABEL>Body System (SOC)</STDLABEL>
+        <SHORTLABEL>System Organ Class</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>MHTERM</VARNAME>
+        <STDLABEL>Reported Term for Condition</STDLABEL>
+        <SHORTLABEL>Condition </SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>MHSEQ</VARNAME>
+        <STDLABEL>Sequence Number</STDLABEL>
+        <SHORTLABEL>Sequence</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>MHSTAT</VARNAME>
+        <STDLABEL>Status</STDLABEL>
+        <SHORTLABEL>Status</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>SDACTDY</VARNAME>
+        <STDLABEL>Actual Study Day inv product was stopped</STDLABEL>
+        <SHORTLABEL>Study~Day</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>SDPERDY</VARNAME>
+        <STDLABEL>Actual day in Pd inv product was stopped</STDLABEL>
+        <SHORTLABEL>Period~Day</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>SDENDT</VARNAME>
+        <STDLABEL>Date of Discontinuation</STDLABEL>
+        <SHORTLABEL>Date of Discont.</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>SDENTM</VARNAME>
+        <STDLABEL>Time of Last Dose</STDLABEL>
+        <SHORTLABEL>Time of Last Dose</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>SDSTAT</VARNAME>
+        <STDLABEL>Completion Status</STDLABEL>
+        <SHORTLABEL>Completion Status</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>SDSTATCD</VARNAME>
+        <STDLABEL>Completion Status</STDLABEL>
+        <SHORTLABEL>Completion Status</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>WDREAS</VARNAME>
+        <STDLABEL>Reason for Premature Withdrawal</STDLABEL>
+        <SHORTLABEL>Reason for Premature Withdrawal</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>WDREASCD</VARNAME>
+        <STDLABEL>Reason for Premature Withdrawal</STDLABEL>
+        <SHORTLABEL>Reason for Premature Withdrawal</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>SDREAS</VARNAME>
+        <STDLABEL>Reason for Discontinuation</STDLABEL>
+        <SHORTLABEL>Reason for Discontinuation</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>SDREASCD</VARNAME>
+        <STDLABEL>Reason for Discontinuation</STDLABEL>
+        <SHORTLABEL>Reason for Discontinuation</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>SDREASON</VARNAME>
+        <STDLABEL>Reason for Discontinuation</STDLABEL>
+        <SHORTLABEL>Reason for Discontinuation</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>DOSECUM</VARNAME>
+        <STDLABEL>Cumulative Dose</STDLABEL>
+        <SHORTLABEL>Cumu~lative~Dose</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>ST_SD_EE2</VARNAME>
+        <STDLABEL>Date/time of last dose</STDLABEL>
+        <SHORTLABEL>Date/Time of~Withdrawal</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>ST_SD_EE3</VARNAME>
+        <STDLABEL>Date/time of last dose</STDLABEL>
+        <SHORTLABEL>Date/Time~of~Withdrawal</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>VSACTDY</VARNAME>
+        <STDLABEL>Actual Study Day of Collection</STDLABEL>
+        <SHORTLABEL>Study~Day</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>SYSBP</VARNAME>
+        <STDLABEL>Systolic BP (mmHg)</STDLABEL>
+        <SHORTLABEL>Systolic~BP~(mmHg)</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>DIABP</VARNAME>
+        <STDLABEL>Diastolic BP (mmHg)</STDLABEL>
+        <SHORTLABEL>Diastolic~BP~(mmHg)</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>VSFLAG</VARNAME>
+        <STDLABEL>Flag</STDLABEL>
+        <SHORTLABEL>Flag</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>ST_VS_PTMN4</VARNAME>
+        <STDLABEL>Planned relative time/planned relative time number</STDLABEL>
+        <SHORTLABEL>Planned~Relative~Time</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>ST_VS_ASR4</VARNAME>
+        <STDLABEL>Age(y)/sex/race</STDLABEL>
+        <SHORTLABEL>Age(y)/~Sex/~Race</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>ST_VS_DA4</VARNAME>
+        <STDLABEL>Visit date/visit time</STDLABEL>
+        <SHORTLABEL>Actual~Date/~Time</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>ST_VS_CS4</VARNAME>
+        <STDLABEL>Inv./~Subj.</STDLABEL>
+        <SHORTLABEL>Inv./~Subj.</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>ST_VS_CS5</VARNAME>
+        <STDLABEL>Investigator/subjid</STDLABEL>
+        <SHORTLABEL>Inv./~Subj.</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>ST_VS_PP5</VARNAME>
+        <STDLABEL>Period treatment group</STDLABEL>
+        <SHORTLABEL>Treat~ment/~Period</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>ST_VS_ASR5</VARNAME>
+        <STDLABEL>Age(y)/sex/race</STDLABEL>
+        <SHORTLABEL>Age(y)/~Sex/~Race</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>ST_VS_DA5</VARNAME>
+        <STDLABEL>Visit date/visit time</STDLABEL>
+        <SHORTLABEL>Actual~Date/Time</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>ST_VS_AP5</VARNAME>
+        <STDLABEL>Study day/ period day</STDLABEL>
+        <SHORTLABEL>Study~Day/~Period~Day</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>ST_VS_PTMN5</VARNAME>
+        <STDLABEL>Planned relative time/planned relative time number</STDLABEL>
+        <SHORTLABEL>Planned~Relative~Time</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>TT_AVNM</VARNAME>
+        <STDLABEL>~</STDLABEL>
+        <SHORTLABEL>~</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>TT_SVNM</VARNAME>
+        <STDLABEL>~</STDLABEL>
+        <SHORTLABEL>~</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>TT_BNNM</VARNAME>
+        <STDLABEL>N</STDLABEL>
+        <SHORTLABEL>N</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>TT_GRPLABEL</VARNAME>
+        <STDLABEL>~</STDLABEL>
+        <SHORTLABEL>~</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>TT_DECODE1</VARNAME>
+        <STDLABEL>~</STDLABEL>
+        <SHORTLABEL>~</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>WDSTAT</VARNAME>
+        <STDLABEL>Completion Status</STDLABEL>
+        <SHORTLABEL>Completion Status</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>WDSTATCD</VARNAME>
+        <STDLABEL>Completion Status</STDLABEL>
+        <SHORTLABEL>Completion Status</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>_CHANGE_CATEGORY</VARNAME>
+        <STDLABEL>Parameter/Change Category</STDLABEL>
+        <SHORTLABEL>Parameter/~  Category</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>TT_DENOMCNT1</VARNAME>
+        <STDLABEL>n</STDLABEL>
+        <SHORTLABEL>n</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>_BASELINE_IND_</VARNAME>
+        <STDLABEL>Baseline Value</STDLABEL>
+        <SHORTLABEL>Baseline~Value</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>VSCCIND</VARNAME>
+        <STDLABEL>Category</STDLABEL>
+        <SHORTLABEL>Category</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>TT_AENUM</VARNAME>
+        <STDLABEL>Number with Event</STDLABEL>
+        <SHORTLABEL>No. with Event</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>TT_AESUBJS</VARNAME>
+        <STDLABEL>Subject Numbers</STDLABEL>
+        <SHORTLABEL>Subject Numbers</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>TT_CATVALUE</VARNAME>
+        <STDLABEL>~</STDLABEL>
+        <SHORTLABEL> </SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>TT_INTP</VARNAME>
+        <STDLABEL>~</STDLABEL>
+        <SHORTLABEL> </SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>_BASELINE_IND</VARNAME>
+        <STDLABEL>Baseline Value</STDLABEL>
+        <SHORTLABEL>Baseline Value</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+    <LABELS>
+	<VARNAME>ATTYPECD</VARNAME>
+	    <STDLABEL>Time in relation to treatment - code</STDLABEL>
+	    <SHORTLABEL>Trt Related Time - Code</SHORTLABEL>
+	    <STYPE>All</STYPE>
+    </LABELS>
+    <LABELS>
+	<VARNAME>ATTYPE</VARNAME>
+	    <STDLABEL>Time in relation to treatment</STDLABEL>
+	    <SHORTLABEL>Trt Related Time</SHORTLABEL>
+	    <STYPE>All</STYPE>
+    </LABELS>
+    <LABELS>
+	<VARNAME>TPTREFN</VARNAME>
+	    <STDLABEL>Timepoint reference sequence number</STDLABEL>
+	    <SHORTLABEL>Time Ref Seq No.</SHORTLABEL>
+	    <STYPE>All</STYPE>
+    </LABELS>
+    <LABELS>
+	    <VARNAME>TPTREF</VARNAME>
+	    <STDLABEL>Timepoint reference description</STDLABEL>
+	    <SHORTLABEL>Time Ref Desc</SHORTLABEL>
+	<STYPE>All</STYPE>
+    </LABELS>
+    <LABELS>
+	    <VARNAME>ELTMNUM</VARNAME>
+	    <STDLABEL>Elapsed time from reference point</STDLABEL>
+	    <SHORTLABEL>Elapsed Time Ref</SHORTLABEL>
+	<STYPE>All</STYPE>
+    </LABELS>
+    <LABELS>
+	<VARNAME>ELTMUNIT</VARNAME>
+	   <STDLABEL>Elapsed time from reference point unit</STDLABEL>
+	   <SHORTLABEL>Elapsed Time Ref Unit</SHORTLABEL>
+	   <STYPE>All</STYPE>
+    </LABELS>
+    <LABELS>
+       <VARNAME> PCSMPID </VARNAME>
+       <STDLABEL> Sample ID </STDLABEL>
+       <SHORTLABEL> Samp ID </SHORTLABEL>
+       <STYPE> All </STYPE>
+    </LABELS>
+    <LABELS>
+       <VARNAME> PCPERDY </VARNAME>
+       <STDLABEL> Period Day </STDLABEL>
+       <SHORTLABEL> Day </SHORTLABEL>
+       <STYPE> All </STYPE>
+    </LABELS>
+    <LABELS>
+       <VARNAME> PERSTADY </VARNAME>
+       <STDLABEL> Pl. Period Day </STDLABEL>
+       <SHORTLABEL> Pl. Day </SHORTLABEL>
+       <STYPE> All </STYPE>
+    </LABELS>
+    <LABELS>
+       <VARNAME> PTM </VARNAME>
+       <STDLABEL> Planned Time </STDLABEL>
+       <SHORTLABEL> Pl. Time </SHORTLABEL>
+       <STYPE> All </STYPE>
+    </LABELS>
+    <LABELS>
+       <VARNAME> PTMNUM </VARNAME>
+       <STDLABEL> Seq No. </STDLABEL>
+       <SHORTLABEL> Seq. </SHORTLABEL>
+       <STYPE> All </STYPE>
+    </LABELS>
+    <LABELS>
+       <VARNAME> PCPTMEN </VARNAME>
+       <STDLABEL> Planned End Time </STDLABEL>
+       <SHORTLABEL> Pl. End Time </SHORTLABEL>
+       <STYPE> All </STYPE>
+    </LABELS>
+    <LABELS>
+       <VARNAME> PCSTDT </VARNAME>
+       <STDLABEL> Start Date </STDLABEL>
+       <SHORTLABEL> Date </SHORTLABEL>
+       <STYPE> All </STYPE>
+    </LABELS>
+    <LABELS>
+       <VARNAME> PCENDT </VARNAME>
+       <STDLABEL> End Date </STDLABEL>
+       <SHORTLABEL> End Date </SHORTLABEL>
+       <STYPE> All </STYPE>
+    </LABELS>
+    <LABELS>
+       <VARNAME> PCSTTM </VARNAME>
+       <STDLABEL> Start Time </STDLABEL>
+       <SHORTLABEL> Actual Time </SHORTLABEL>
+       <STYPE> All </STYPE>
+    </LABELS>
+    <LABELS>
+       <VARNAME> PCSTDM </VARNAME>
+       <STDLABEL> Start DateTime </STDLABEL>
+       <SHORTLABEL> DateTime </SHORTLABEL>
+       <STYPE> All </STYPE>
+    </LABELS>
+    <LABELS>
+       <VARNAME> PCENTM </VARNAME>
+       <STDLABEL> End Time </STDLABEL>
+       <SHORTLABEL> End Time </SHORTLABEL>
+       <STYPE> All </STYPE>
+    </LABELS>
+    <LABELS>
+       <VARNAME> PCENDM </VARNAME>
+       <STDLABEL> End DateTime </STDLABEL>
+       <SHORTLABEL> End DateTime </SHORTLABEL>
+       <STYPE> All </STYPE>
+    </LABELS>
+    <LABELS>
+       <VARNAME> PCRFDSDT </VARNAME>
+       <STDLABEL> Actual Dose Ref. Date </STDLABEL>
+       <SHORTLABEL> Dose Date </SHORTLABEL>
+       <STYPE> All </STYPE>
+    </LABELS>
+    <LABELS>
+       <VARNAME> PCRFDSTM </VARNAME>
+       <STDLABEL> Actual Dose Ref. Time </STDLABEL>
+       <SHORTLABEL> Dose Time </SHORTLABEL>
+       <STYPE> All </STYPE>
+    </LABELS>
+    <LABELS>
+       <VARNAME> PCRFDSDM </VARNAME>
+       <STDLABEL> Actual Dose Ref. DateTime </STDLABEL>
+       <SHORTLABEL> Dose DateTime </SHORTLABEL>
+       <STYPE> All </STYPE>
+    </LABELS>
+    <LABELS>
+       <VARNAME> PCATMNUM </VARNAME>
+       <STDLABEL> Actual Rel. Time (Hrs) </STDLABEL>
+       <SHORTLABEL> Rel. Time </SHORTLABEL>
+       <STYPE> All </STYPE>
+    </LABELS>
+    <LABELS>
+       <VARNAME> PCATMEN </VARNAME>
+       <STDLABEL> Actual Elapsed End Time (Hrs) </STDLABEL>
+       <SHORTLABEL> Elasped End Time </SHORTLABEL>
+       <STYPE> All </STYPE>
+    </LABELS>
+    <LABELS>
+       <VARNAME> PCATMU </VARNAME>
+       <STDLABEL> Actual Elapsed Time Units </STDLABEL>
+       <SHORTLABEL> Elasped Time Units </SHORTLABEL>
+       <STYPE> All </STYPE>
+    </LABELS>
+    <LABELS>
+       <VARNAME> PCSTTMDV </VARNAME>
+       <STDLABEL> Actual from Planned Time </STDLABEL>
+       <SHORTLABEL> Time dev. </SHORTLABEL>
+       <STYPE> All </STYPE>
+    </LABELS>
+    <LABELS>
+       <VARNAME> PCENTMDV </VARNAME>
+       <STDLABEL> Actual from Planned End Time </STDLABEL>
+       <SHORTLABEL> End Time Dev. </SHORTLABEL>
+       <STYPE> All </STYPE>
+    </LABELS>
+    <LABELS>
+       <VARNAME> PCTMDVU </VARNAME>
+       <STDLABEL> Actual from Planned Time Units </STDLABEL>
+       <SHORTLABEL> Time Dev. Units </SHORTLABEL>
+       <STYPE> All </STYPE>
+    </LABELS>
+    <LABELS>
+       <VARNAME> PCDUR </VARNAME>
+       <STDLABEL> Duration </STDLABEL>
+       <SHORTLABEL> Dur. </SHORTLABEL>
+       <STYPE> All </STYPE>
+    </LABELS>
+    <LABELS>
+       <VARNAME> PCDURU </VARNAME>
+       <STDLABEL> Duration Units </STDLABEL>
+       <SHORTLABEL> Dur. Units </SHORTLABEL>
+       <STYPE> All </STYPE>
+    </LABELS>
+    <LABELS>
+       <VARNAME> PCTYPCD </VARNAME>
+       <STDLABEL> Sample Type - Code </STDLABEL>
+       <SHORTLABEL> Samp. Type </SHORTLABEL>
+       <STYPE> All </STYPE>
+    </LABELS>
+    <LABELS>
+       <VARNAME> PCTYP </VARNAME>
+       <STDLABEL> Sample Type </STDLABEL>
+       <SHORTLABEL> Samp. Type </SHORTLABEL>
+       <STYPE> All </STYPE>
+    </LABELS>
+    <LABELS>
+       <VARNAME> PCSPEC </VARNAME>
+       <STDLABEL> Specimen Type </STDLABEL>
+       <SHORTLABEL> Spec. Type </SHORTLABEL>
+       <STYPE> All </STYPE>
+    </LABELS>
+    <LABELS>
+       <VARNAME> PCAN </VARNAME>
+       <STDLABEL> Analyte </STDLABEL>
+       <SHORTLABEL> Analyte </SHORTLABEL>
+       <STYPE> All </STYPE>
+    </LABELS>
+    <LABELS>
+       <VARNAME> PCCOM </VARNAME>
+       <STDLABEL> Comments </STDLABEL>
+       <SHORTLABEL> Comments </SHORTLABEL>
+       <STYPE> All </STYPE>
+    </LABELS>
+    <LABELS>
+       <VARNAME> PCORRES </VARNAME>
+       <STDLABEL> Original Result </STDLABEL>
+       <SHORTLABEL> Result </SHORTLABEL>
+       <STYPE> All </STYPE>
+    </LABELS>
+    <LABELS>
+       <VARNAME> PCORRESU </VARNAME>
+       <STDLABEL> Result Units </STDLABEL>
+       <SHORTLABEL> Units </SHORTLABEL>
+       <STYPE> All </STYPE>
+    </LABELS>
+    <LABELS>
+       <VARNAME> PCSTRESN </VARNAME>
+       <STDLABEL> Standardised Result </STDLABEL>
+       <SHORTLABEL> Result </SHORTLABEL>
+       <STYPE> All </STYPE>
+    </LABELS>
+    <LABELS>
+       <VARNAME> PCSTIMPN </VARNAME>
+       <STDLABEL> Imputed Result </STDLABEL>
+       <SHORTLABEL> Result </SHORTLABEL>
+       <STYPE> All </STYPE>
+    </LABELS>
+    <LABELS>
+       <VARNAME> PCSTRESC </VARNAME>
+       <STDLABEL> Original Result </STDLABEL>
+       <SHORTLABEL> Result </SHORTLABEL>
+       <STYPE> All </STYPE>
+    </LABELS>
+    <LABELS>
+       <VARNAME> PCSTRESU </VARNAME>
+       <STDLABEL> Result Units </STDLABEL>
+       <SHORTLABEL> Units </SHORTLABEL>
+       <STYPE> All </STYPE>
+    </LABELS>
+    <LABELS>
+       <VARNAME> PCRESIMP </VARNAME>
+       <STDLABEL> Result Imputed? </STDLABEL>
+       <SHORTLABEL> Imputed? </SHORTLABEL>
+       <STYPE> All </STYPE>
+    </LABELS>
+    <LABELS>
+       <VARNAME> PCLLQC </VARNAME>
+       <STDLABEL> Limit of Quantitation </STDLABEL>
+       <SHORTLABEL> LLQ </SHORTLABEL>
+       <STYPE> All </STYPE>
+    </LABELS>
+    <LABELS>
+       <VARNAME> PCLLQN </VARNAME>
+       <STDLABEL> Limit of Quantitation </STDLABEL>
+       <SHORTLABEL> LLQ (Num) </SHORTLABEL>
+       <STYPE> All </STYPE>
+    </LABELS>
+    <LABELS>
+       <VARNAME> PCVOL </VARNAME>
+       <STDLABEL> Total Volume </STDLABEL>
+       <SHORTLABEL> Volume </SHORTLABEL>
+       <STYPE> All </STYPE>
+    </LABELS>
+    <LABELS>
+       <VARNAME> PCUAE </VARNAME>
+       <STDLABEL> Amount Excreted </STDLABEL>
+       <SHORTLABEL> Amount </SHORTLABEL>
+       <STYPE> All </STYPE>
+    </LABELS>
+    <LABELS>
+       <VARNAME> PCVOLU </VARNAME>
+       <STDLABEL> Volume Units </STDLABEL>
+       <SHORTLABEL> Units </SHORTLABEL>
+       <STYPE> All </STYPE>
+    </LABELS>
+    <LABELS>
+       <VARNAME> PCPH </VARNAME>
+       <STDLABEL> pH </STDLABEL>
+       <SHORTLABEL> pH </SHORTLABEL>
+       <STYPE> All </STYPE>
+    </LABELS>
+    <LABELS>
+       <VARNAME> PCWT </VARNAME>
+       <STDLABEL> Weight </STDLABEL>
+       <SHORTLABEL> Weight </SHORTLABEL>
+       <STYPE> All </STYPE>
+    </LABELS>
+    <LABELS>
+       <VARNAME> PCWTU </VARNAME>
+       <STDLABEL> Weight Units </STDLABEL>
+       <SHORTLABEL> Unit </SHORTLABEL>
+       <STYPE> All </STYPE>
+    </LABELS>
+    <LABELS>
+       <VARNAME> PCPROX </VARNAME>
+       <STDLABEL> Excluded from PK Analysis? </STDLABEL>
+       <SHORTLABEL> Excluded? </SHORTLABEL>
+       <STYPE> All </STYPE>
+    </LABELS>
+    <LABELS>
+       <VARNAME> PCNUMCOM </VARNAME>
+       <STDLABEL> Result Comments </STDLABEL>
+       <SHORTLABEL> Comments </SHORTLABEL>
+       <STYPE> All </STYPE>
+    </LABELS>
+    <LABELS>
+       <VARNAME> PCALLCOL </VARNAME>
+       <STDLABEL>  All Collected? </STDLABEL>
+       <SHORTLABEL> All Collected? </SHORTLABEL>
+       <STYPE> All </STYPE>
+    </LABELS>
+    <LABELS>
+       <VARNAME> PCSEQ </VARNAME>
+       <STDLABEL> Sequence number </STDLABEL>
+       <SHORTLABEL> Seq. </SHORTLABEL>
+       <STYPE> All </STYPE>
+    </LABELS>
+    <LABELS>
+       <VARNAME> PCWNLN </VARNAME>
+       <STDLABEL> WinNonlin Result </STDLABEL>
+	   <SHORTLABEL> Result </SHORTLABEL>
+       <STYPE> All </STYPE>
+    </LABELS>
+    <LABELS>
+       <VARNAME> PCWNLRT </VARNAME>
+       <STDLABEL> WinNonlin Result </STDLABEL>
+       <SHORTLABEL> Rel. Time </SHORTLABEL>
+       <STYPE> All </STYPE>
+    </LABELS>
+    <LABELS>
+       <VARNAME> ELTMSTN </VARNAME>
+       <STDLABEL> St. Elapsed Time </STDLABEL>
+       <SHORTLABEL> Elap. Time </SHORTLABEL>
+       <STYPE> All </STYPE>
+    </LABELS>
+    <LABELS>
+       <VARNAME> ELTMSTU </VARNAME>
+       <STDLABEL> St. Elapsed Time Unit </STDLABEL>
+       <SHORTLABEL> Unit </SHORTLABEL>
+       <STYPE> All </STYPE>
+    </LABELS>
+    <LABELS>
+        <VARNAME>RACEC</VARNAME>
+        <STDLABEL>Collected Race</STDLABEL>
+        <SHORTLABEL>Race</SHORTLABEL>
+        <STYPE>ALL</STYPE>
+    </LABELS>
+   <LABELS>
+       <VARNAME>CLM</VARNAME>
+       <STDLABEL>95% CI</STDLABEL>
+       <SHORTLABEL>95% CI</SHORTLABEL>
+       <STYPE>ALL</STYPE>
+   </LABELS>
+   <LABELS>
+       <VARNAME>CLMLOG</VARNAME>
+	      <STDLABEL>95% CI</STDLABEL>
+       <SHORTLABEL>95% CI</SHORTLABEL>
+       <STYPE>ALL</STYPE>
+   </LABELS>
+   <LABELS>
+       <VARNAME>CVB</VARNAME>
+       <STDLABEL>%CVb</STDLABEL>
+       <SHORTLABEL>%CVb</SHORTLABEL>
+       <STYPE>ALL</STYPE>
+   </LABELS>
+   <LABELS>
+       <VARNAME>CVBLOG</VARNAME>
+       <STDLABEL>%CVb</STDLABEL>
+       <SHORTLABEL>%CVb</SHORTLABEL>
+       <STYPE>ALL</STYPE>
+   </LABELS>
+   <LABELS>
+       <VARNAME>GEOMEANCLM</VARNAME>
+       <STDLABEL>Geom. mean~%95 CI</STDLABEL>
+       <SHORTLABEL>Geometric mean %95 CI</SHORTLABEL>
+       <STYPE>ALL</STYPE>
+   </LABELS>
+   <LABELS>
+       <VARNAME>GEOMEAN</VARNAME>
+       <STDLABEL>Geom. Mean</STDLABEL>
+       <SHORTLABEL>Geometric Mean</SHORTLABEL>
+       <STYPE>ALL</STYPE>
+   </LABELS>
+   <LABELS>
+       <VARNAME>MEANCLM</VARNAME>
+       <STDLABEL>Arith. mean~%95 CI</STDLABEL>
+       <SHORTLABEL>Arithmetic mean %95 CI</SHORTLABEL>
+       <STYPE>ALL</STYPE>
+   </LABELS>
+   <LABELS>
+       <VARNAME>LCLMLOG</VARNAME>
+	   <STDLABEL>Lower CL</STDLABEL>
+       <SHORTLABEL>Lower Confident Limit</SHORTLABEL>
+       <STYPE>ALL</STYPE>
+   </LABELS>
+   <LABELS>
+       <VARNAME>STDERRLOG</VARNAME>
+       <STDLABEL>SD Logs</STDLABEL>
+       <SHORTLABEL>SD Logs</SHORTLABEL>
+       <STYPE>ALL</STYPE>
+   </LABELS>
+   <LABELS>
+       <VARNAME>STDLOG</VARNAME>
+       <STDLABEL>SD Logs</STDLABEL>
+       <SHORTLABEL>SD Logs</SHORTLABEL>
+       <STYPE>ALL</STYPE>
+   </LABELS>
+   <LABELS>
+       <VARNAME>UCLMLOG</VARNAME>
+       <STDLABEL>Upper CL</STDLABEL>
+       <SHORTLABEL>Upper Confident Limit</SHORTLABEL>
+       <STYPE>ALL</STYPE>
+   </LABELS>
+   <LABELS>
+       <VARNAME>DSSTDT</VARNAME>
+       <STDLABEL>Date of Withdrawal</STDLABEL>
+       <SHORTLABEL>Date of Withdrawal</SHORTLABEL>
+       <STYPE>ALL</STYPE>
+   </LABELS>
+   <LABELS>
+       <VARNAME>DSSTDY</VARNAME>
+       <STDLABEL>Study Day</STDLABEL>
+       <SHORTLABEL>Study Day</SHORTLABEL>
+       <STYPE>ALL</STYPE>
+   </LABELS>
+   <LABELS>
+       <VARNAME>ACTDY</VARNAME>
+       <STDLABEL>Study Day</STDLABEL>
+       <SHORTLABEL>Study Day</SHORTLABEL>
+       <STYPE>ALL</STYPE>
+   </LABELS>
+   <LABELS>
+       <VARNAME>PERDY</VARNAME>
+       <STDLABEL>Period Day</STDLABEL>
+       <SHORTLABEL>Period Day</SHORTLABEL>
+       <STYPE>ALL</STYPE>
+   </LABELS>
+   <LABELS>
+       <VARNAME>ST_ALL_CS </VARNAME>
+       <STDLABEL>Inv./Subj.</STDLABEL>
+       <SHORTLABEL>Inv./~Subj.</SHORTLABEL>
+       <STYPE>ALL</STYPE>
+   </LABELS>
+   <LABELS>
+       <VARNAME>ST_ALL_SPD</VARNAME>
+       <STDLABEL>Study Day/Period Day</STDLABEL>
+       <SHORTLABEL>Study Day/~Period Day</SHORTLABEL>
+       <STYPE>ALL</STYPE>
+   </LABELS>
+   <LABELS>
+       <VARNAME>ST_ALL_PTP</VARNAME>
+       <STDLABEL>Treatment Sequence/Period</STDLABEL>
+       <SHORTLABEL>Treatment Sequence/~Period</SHORTLABEL>
+       <STYPE>ALL</STYPE>
+   </LABELS>
+   <LABELS>
+       <VARNAME>ST_ALL_ASR</VARNAME>
+       <STDLABEL>Age(y)/Sex/Race </STDLABEL>
+       <SHORTLABEL>Age(y)/~Sex/~Race </SHORTLABEL>
+       <STYPE>ALL</STYPE>
+   </LABELS>
+   <LABELS>
+       <VARNAME>ST_LIVER_DSD5</VARNAME>
+       <STDLABEL>Event Date/~Study Day</STDLABEL>
+       <SHORTLABEL>Event Date/~Study Day</SHORTLABEL>
+       <STYPE>ALL</STYPE>
+   </LABELS>
+   <LABELS>
+       <VARNAME>ST_LIVER_DSD7</VARNAME>
+       <STDLABEL>Biopsy Date/~Study Day</STDLABEL>
+       <SHORTLABEL>Biopsy Date/~Study Day</SHORTLABEL>
+       <STYPE>ALL</STYPE>
+   </LABELS>
+   <LABELS>
+       <VARNAME>ST_LIVER_DSD8</VARNAME>
+       <STDLABEL>Imaging Date/~Study Day</STDLABEL>
+       <SHORTLABEL>Imaging Date/~Study Day</SHORTLABEL>
+       <STYPE>ALL</STYPE>
+   </LABELS>
+   <LABELS>
+       <VARNAME>DSRS</VARNAME>
+       <STDLABEL>Primary Reason</STDLABEL>
+       <SHORTLABEL>Primary Reason</SHORTLABEL>
+       <STYPE>ALL</STYPE>
+   </LABELS>
+   <LABELS>
+       <VARNAME>DSSBRS</VARNAME>
+       <STDLABEL>Subreason</STDLABEL>
+       <SHORTLABEL>Subreason</SHORTLABEL>
+       <STYPE>ALL</STYPE>
+   </LABELS>
+
+</varnamelst4xls>
+   
+   
+   
+

@@ -1,0 +1,655 @@
+     Analysis Data Model Metadata Submission
+             Guidelines (ADaM MSG):
+               Human Clinical Trials
+                                      Version 1.0 (Final)
+
+
+                          Developed by the CDISC ADaM MSG Team
+
+
+
+
+                                               Notes to Readers
+       •   This is Version 1.0 of the Analysis Data Model Metadata Submission Guidelines (ADaM MSG):
+           Human Clinical Trials.
+       •   This document is based on the principles, structures, and standards described in the CDISC Define-
+           XML v2.1 and the Analysis Data Model Version 2.1 and Implementation Guide v1.2.
+
+
+
+Revision History
+Date               Version
+2023-04-18         1.0 Final
+
+
+
+
+See Appendix C for Representations and Warranties, Limitations of Liability, and Disclaimers.
+
+CDISC Analysis Data Model Metadata Submission Guidelines: Human Clinical Trials (Version 1.0 Final)
+
+
+
+                                                                       CONTENTS
+1       INTRODUCTION ................................................................................................................. 3
+1.1 PURPOSE ................................................................................................................................................................ 3
+1.2 ORGANIZATION OF THIS DOCUMENT ..................................................................................................................... 4
+
+2       DEFINE-XML DOCUMENT ............................................................................................... 5
+2.1 ANALYSIS RESULTS METADATA (ARM) ............................................................................................................... 6
+
+3       ANALYSIS DATA REVIEWER'S GUIDE ........................................................................ 7
+3.1 CONFORMANCE, VALIDATION, AND TOOLS ........................................................................................................... 7
+
+4       SUBMISSION DATASETS .................................................................................................. 9
+4.1 ADSL - SUBJECT-LEVEL ANALYSIS DATASET ...................................................................................................... 9
+4.2 ALL OTHER ANALYSIS DATASETS ......................................................................................................................... 9
+  4.2.1    ADAE – Adverse Events Analysis Data ................................................................................................ 9
+  4.2.2    ADLBC – Analysis Dataset Lab Blood Chemistry .............................................................................. 10
+  4.2.3    ADLBH – Analysis Dataset Lab Hematology...................................................................................... 10
+  4.2.4    ADLBHY – Analysis Dataset Lab Hy's Law ....................................................................................... 10
+  4.2.5    ADADAS – ADAS-Cog Analysis........................................................................................................ 10
+  4.2.6    ADCIBC – CIBIC+ Analysis ............................................................................................................... 10
+  4.2.7    ADNPIX – NPI-X Item Analysis Data................................................................................................. 10
+  4.2.8    ADVS - Vital Signs Analysis Dataset .................................................................................................. 11
+  4.2.9    ADTTE - AE Time To 1st Derm. Event Analysis................................................................................ 11
+  4.2.10   ADLBCPV - Analysis Dataset Lab Blood Chemistry (Previous Visit)................................................ 11
+  4.2.11   ADLBHPV - Analysis Dataset Lab Hematology (Previous Visit) ....................................................... 11
+
+5       SUPPLEMENTAL DOCUMENTS ................................................................................... 12
+
+6       PROGRAMS ........................................................................................................................ 13
+6.1 ADAM DATASET CREATION PROGRAMS............................................................................................................. 13
+6.2 TFL CREATION PROGRAMS ................................................................................................................................. 13
+
+7       APPENDICES ...................................................................................................................... 14
+APPENDIX A: GLOSSARY .............................................................................................................................................. 14
+APPENDIX B: REFERENCES ........................................................................................................................................... 15
+APPENDIX C: REPRESENTATIONS AND WARRANTIES, LIMITATIONS OF LIABILITY, AND DISCLAIMERS........................ 16
+
+
+
+
+© 2023 Clinical Data Interchange Standards Consortium, Inc. All rights reserved                                                                                     Page 2
+2023-04-18
+
+CDISC Analysis Data Model Metadata Submission Guidelines: Human Clinical Trials (Version 1.0 Final)
+
+
+
+
+1 Introduction
+1.1 Purpose
+The purpose of the Analysis Data Model Metadata Submission Guidelines: Human Clinical Trials (ADaM-MSG) is
+to provide guidance for preparing the components of the International Conference on Harmonisation (ICH)
+electronic Common Technical Document (eCTD) Module 5 (M5): Clinical Study Reports "adam" folder. This
+document and the associated example submission package illustrate the components recommended for electronic
+submission of ADaM data for an individual study, but can be used as a template for integrated studies as well. These
+guidelines are based on Define-XML v2.1, ADaM v2.1, and the ADaM Implementation Guide (ADaMIG) v1.1.
+
+Example Submission Package
+The example files included with the ADaM-MSG package are intended to illustrate regulatory submission best
+practices from a CDISC standpoint. The example package is therefore considered fictitious and not indicative of an
+actual regulatory submission. The supporting example submission package includes the following:
+     •    Define-XML document describing the metadata of the submitted ADaM datasets (define.xml)
+               o    Note: The Define-XML document was evaluated manually and programmatically by the CDISC
+                    ADaM MSG Team. At the time ADaM-MSG v1.0 was prepared for internal review, the CDISC
+                    Define-XML v2.1 conformance rules were not published, nor available by any publicly available
+                    validation tools to validate. Please ensure that any official regulatory submission of an Define-
+                    XML v2.1 document is done in accordance with the respective regulatory health authority's
+                    requirements/guidance.
+     •    Analysis Data Reviewer's Guide (adrg.pdf)
+     •    ADaM datasets in SAS Version 5 transport file format (*.xpt, where the asterisk (*) represents the ADaM
+          dataset name expressed in lower case, e.g., adsl)
+               o    Note: The ADaM v2.1/ADaMIG v1.1 datasets were evaluated manually and programmatically
+                    by the CDISC ADaM MSG Team. At the time ADaM-MSG v1.0 was prepared for internal
+                    review, the CDISC ADaM v2.1/ADaMIG v1.1 conformance rules were recently published and
+                    not yet incorporated into any publicly available validation tools to validate.
+     •    Supplemental documents
+     •    Programs
+
+
+
+Best Practice
+Developing the Define-XML and the analysis data reviewer's guide (ADRG) early in the study development life
+cycle aids in overall efficiency, allowing study teams to manage potential incremental changes during the course of
+a study's development, and ensuring alignment between the various components. This is especially important when
+those components are intended for regulatory submission, thereby helping propagate a more expedited submission
+package compilation process.
+
+
+
+General Note
+Regulatory health authority requirements may evolve after publication of this version of the ADaM-MSG.
+Therefore, when compiling a regulatory submission package, it is always advisable to reference each respective
+regulatory health authority's most up-to-date requirement(s) and/or guidance (e.g., US FDA via Study Data
+Standards Resources, https://www.fda.gov/industry/; Japan Pharmaceuticals and Medical Devices Agency
+(PMDA) via New Drug Review with Electronic Data, https://www.pmda.go.jp/english/review-services/).
+
+
+© 2023 Clinical Data Interchange Standards Consortium, Inc. All rights reserved                                Page 3
+2023-04-18
+
+CDISC Analysis Data Model Metadata Submission Guidelines: Human Clinical Trials (Version 1.0 Final)
+
+
+
+It should be noted that the MSG package is based on ADaMIG v1.1 and Define-XML 2.1. The principles provided
+within can be applied to other versions of these standards until future versions of the ADaM-MSG are developed.
+
+1.2 Organization of this Document
+This document is organized into the following sections:
+     •    Section 1, Introduction, describes the purpose and organization of this document.
+     •    Section 2, Define-XML Document, explains the metadata definition portion of the submission datasets.
+     •    Section 3, Analysis Data Reviewer's Guide, explains the ADRG preparation in support of the sample
+          submission.
+     •    Section 4, Submission Datasets, outlines the ADaM datasets contained in the sample submission.
+     •    Section 5, Supplemental Documents, describes documents that can be included as separate hyperlinked
+          PDF files at a sponsor's discretion.
+     •    Section 6, Programs, describes how to reference the specific software and software versions utilized in the
+          analysis.
+     •    Appendices
+
+
+
+
+© 2023 Clinical Data Interchange Standards Consortium, Inc. All rights reserved                                 Page 4
+2023-04-18
+
+CDISC Analysis Data Model Metadata Submission Guidelines: Human Clinical Trials (Version 1.0 Final)
+
+
+
+
+2 Define-XML Document
+The Define-XML document (actual filename used in the Define-XML package: "define.xml") is the metadata
+intended to describe the format and content of the data for a study, including datasets, variables, value-level
+metadata, and codelists. In addition, the Define-XML document contains metadata describing the analysis
+results. Please see the Define-XML specification (available at https://www.cdisc.org/standards/data-
+exchange/define-xml/) for all necessary details. This document will contain only a small subset of the necessary
+information to implement define.xml.
+
+General Note
+A Define-XML document is a machine-readable document containing only plain text. It contains no formatting for
+viewing or printing. Instead, formatting is handled by a stylesheet which controls how the Define-XML document
+is displayed and what values are displayed.
+
+Define-XML Display
+The stylesheet in the sample submission (define2-1.xsl) is the stylesheet included with the Define-XML v2.1
+package. There are no specific requirements regarding which stylesheet should be included in a submission, but
+sponsors should ensure the file renders properly, including any hyperlinks. Depending on the PDF viewer and the
+browser and its settings, users may encounter differences in display and functionality in the rendered
+XML. Adjusting browser settings can rectify this, but due to so many combinations it is not possible for this
+document to describe them all.
+Codelists
+No definitive guidance exists as to whether codelists in Define-XML should contain all of the possible values for a
+given study. The ADaM MSG Team recommends that, for all Study Data Tabulation Model (SDTM) predecessor
+variables which are incorporated into analysis datasets, the entire range of possible values in from the corresponding
+SDTM codelist used in the study be included. For all other variables, the sponsor should decide whether to include
+all possible values or only those present in the data. For example, suppose only mild adverse events have been
+reported for a study where the data collection instrument collected AE severity as Mild, Moderate, or Severe. In this
+case, the recommendation is to include all 3 possible terms in the codelist, as shown in the example submission in
+this guide. However, in the case of AVISIT where the total range of possible values is not necessarily known ahead
+of time, the sponsor could choose whether or not it is reasonable to include all values in the codelist.
+Also included in the sample submission:
+     •    If there is a codelist for the variable coming from the SDTM dataset, then applicable values from the same
+          codelist must be carried forward into ADaM.
+          Example:
+          Variable Label/Description Type Controlled Terms Origin / Source / Method / Comment
+          AESEV      Severity/Intensity   text   AESEV              Predecessor: AE.AESEV
+
+     •    If the same variable exists in multiple ADaM datasets and has an associated codelist, then the associated
+          codelist name should be differentiated if the list of allowed values is different from one dataset to another.
+          Example:
+          The codelist name for PARAMCD in ADLB could be PARAMCD_ADLB. The codelist name for
+          PARAMCD in ADVS could be PARAMCD_ADVS.
+Dataset Order
+All analysis datasets must be included in the dataset-level metadata. A standard order of display has not been
+established for regulatory submissions of ADaM datasets.
+
+
+
+
+© 2023 Clinical Data Interchange Standards Consortium, Inc. All rights reserved                                    Page 5
+2023-04-18
+
+CDISC Analysis Data Model Metadata Submission Guidelines: Human Clinical Trials (Version 1.0 Final)
+
+
+
+Derivations
+Derivations should be represented as human-readable descriptions or pseudocode as opposed to executable
+programming statements. Long, complex algorithms can be described in a supplemental complex algorithms
+document hyperlinked from the Define-XML document.
+
+2.1 Analysis Results Metadata (ARM)
+Analysis results metadata (ARM) provide traceability for a given analysis result to the specific ADaM data that were
+used as input to generating the analysis result. They also provide information about the analysis method used and the
+reason the analysis was performed. Although ARM are an optional ADaM metadata component according to ADaM
+v2.1, they can be provided to assist the reviewer by identifying the critical analyses; providing links between results,
+documentation, and datasets; and documenting the analyses performed. The PMDA is the first agency to request
+ARM on primary endpoints and key safety tables for submissions starting from October 2016 onward. Therefore,
+ARM should be included as requested by the appropriate regulatory agencies.
+When submitting ARM, it is preferred to include ARM in the Define-XML document. When ARM cannot be
+included directly into the Define-XML document, these should be made part of the ADRG and included in an
+appendix subsection (e.g., 8.1 Analysis Results Metadata).
+For descriptive statistics and frequency analyses (e.g., safety tables), the focus should be on variables used for data
+selection. For example: standardized MedDRA query (SMQ) details (SMQzzNAM/CD/SC), complex query
+(CQzzNAM) specifications, or multi-response criteria (MCRITy/ML) for treatment-emergent adverse events
+(TEAEs) of particular interest (as per PMDA requirement).
+For incidence and event rates, more details should be added regarding the time-at-risk determination. For example, it
+should be clarified where the day of event onset is considered (time at risk/non-risk) as well as details on risk
+censoring at the end of analysis period, especially where this is not explicitly and comprehensively specified in the
+statistical analysis plan (SAP).
+For more information and examples on submission of ARM, see Analysis Results Metadata (ARM) v1.0 for Define-
+XML v2.0 (available at https://www.cdisc.org/standards/foundational/define-xml/).
+
+
+
+
+© 2023 Clinical Data Interchange Standards Consortium, Inc. All rights reserved                                   Page 6
+2023-04-18
+
+CDISC Analysis Data Model Metadata Submission Guidelines: Human Clinical Trials (Version 1.0 Final)
+
+
+
+
+3 Analysis Data Reviewer's Guide
+The ADRG provides additional information and clarification for reviewers about the submitted data that is not
+present in the Define-XML document and/or the SAP. The US FDA Study Data Technical Conformance Guide[1]
+recommends the inclusion of the ADRG, whereas the PMDA Technical Conformance Guide on Electronic Study
+Data Submissions[2] requires it. The ADRG should help to facilitate the review process by describing any special
+considerations, such as derivations that are used across several datasets (e.g., visit windowing, date imputation),
+dataset dependencies, and complex algorithms that are incompatible with the Define-XML from a presentation point
+of view. Although the specific format of the reviewer's guide is not explicitly addressed by regulatory health
+authorities (e.g., the FDA or the PMDA), there may be references to the PHUSE template. See the PHUSE website
+for the latest ADRG version (https://phuse.global/Deliverables/1).
+
+General Note
+At the time of publication of ADaM-MSG v1.0, the US FDA specifies that the ADRG should be named
+"adrg.pdf." The PMDA prefers it be named "analysis-data-reviewers-guide.pdf", "adrg.pdf", or something similar,
+so that the contents are identifiable. The ADaM MSG Team named the reviewer's guide in the sample submission
+"adrg.pdf", but sponsors should check for the latest recommendation from their regulatory health authority.
+
+
+3.1 Conformance, Validation, and Tools
+It is expected that sponsors will perform conformance checks on the study data package throughout the submission
+development life cycle in order to identify issues related to data and programming as early as possible. Conformance
+checks are discussed here in the context of the reviewer's guide, as that is where conformance issues should be
+explained in the submission study data package.
+     •    The ADaM data should be checked for conformance to ADaM and the ADaMIG (available at
+          https://www.cdisc.org/standards/foundational/adam/).
+     •    The ADaM data should be checked for consistency with SDTM datasets.
+     •    The Define-XML document should be checked against the Define-XML conformance rules (available at
+          https://www.cdisc.org/standards/foundational/define-xml/).
+     •    The ADaM data should be checked for consistency with Define-XML.
+     •    When the ADaM data and the Define-XML document are reviewed for conformance to standards, any
+          findings must be evaluated.
+          o    All conformance findings that are generally within the sponsor's control should be corrected. However,
+               the goal is not to get a "clean" report. Tools sometimes flag content that is allowable (e.g., controlled
+               terminology that is extensible can be extended). There are also often data issues resulting in
+               conformance findings that should not be corrected just to avoid the findings.
+          o    Any conformance findings that cannot be resolved should be explained in the ADRG.
+          o    Regulatory health authorities may have their own sets of business requirements for evaluating
+               conformance and validation, as well as the scope of findings to be documented in the ADRG.
+               ▪    Third-party tools may be used to evaluate ADaM data for conformance. These tools may have
+                    their own interpretation of the requirements for properly formed ADaM datasets. Sponsors should
+                    understand and evaluate these interpretations.
+               ▪    Validation issues related to an interpretation of a requirement should be noted in the ADRG.
+     •    Sponsors should explain their conformance-check findings.
+          o    Sponsors should be careful to avoid generic explanations, or explanations which simply repeat the
+               wording of the conformance check, when providing explanations for the conformance check finding.
+               For example, in response to a conformance check finding indicating "BASE or BASEC is populated
+               for a unique USUBJID, PARAMCD but no baseline record exists," simply explaining that baseline
+               values were not collected with the data is not sufficient. Instead, a response such as "Baseline values
+
+
+© 2023 Clinical Data Interchange Standards Consortium, Inc. All rights reserved                                    Page 7
+2023-04-18
+
+CDISC Analysis Data Model Metadata Submission Guidelines: Human Clinical Trials (Version 1.0 Final)
+
+
+
+               were obtained from historical information collected on the CRF and stored in Findings About" should
+               be provided.
+          o    Providing greater detail can help the regulatory health authority and the corresponding review division
+               understand the reasons for the identified conformance-check findings.
+
+
+
+
+© 2023 Clinical Data Interchange Standards Consortium, Inc. All rights reserved                                 Page 8
+2023-04-18
+
+CDISC Analysis Data Model Metadata Submission Guidelines: Human Clinical Trials (Version 1.0 Final)
+
+
+
+
+4 Submission Datasets
+The ADaM Subject-Level Analysis Dataset (ADSL) is required for all CDISC submissions. Additionally, all
+datasets used for analysis purposes or referenced in the metadata should be included in the submission, in the
+appropriate eCTD folder. This section describes the datasets in the sample ADaM-MSG package, which are limited
+to a few examples for illustration purposes only. Because these are examples, the subsections that follow describe
+implementation choices made by the ADaM MSG Team. This information would typically be included in the
+ADRG.
+
+4.1 ADSL - Subject-Level Analysis Dataset
+The ADSL contains all subject-level variables for demographics, subject characteristics, treatment assignments, and
+population flags. The population indicator variables, treatment variables, and variables used for subgroups analyses
+are copied into other datasets for statistical analysis. The population indicator variables include: Safety Population
+Flag (SAFFL), Intent-To-Treat Population Flag (ITTFL), Efficacy Population Flag (EFFFL), Completers of Week 8
+Population Flag (COMP8FL), Completers of Week 16 Population Flag (COMP16FL), and Completers of Week 24
+Population Flag (COMP24FL). All subjects in SDTM.DM were included in ADSL.
+In the sample submission, the subjects were assigned USUBJID values of "01-701-XXXX" to "01-718-XXXX" and
+STUDYID values as "CDISCPILOT01" in SDTM. This should not be perceived as a recommended format, but
+rather illustrates that sponsors are free to assign USUBJID and STUDYID values in whatever format they wish.
+
+4.2 All Other Analysis Datasets
+This subsection describes the datasets with ADaM Basic Data Structure (BDS), Structure for Occurrence Data
+(OCCDS), and ADAM OTHER structures provided in the sample ADaM-MSG package.
+
+4.2.1 ADAE – Adverse Events Analysis Data
+The Adverse Events Analysis Dataset (ADAE) contains 1 record per subject per adverse event. Subjects who did not
+report any adverse events are not represented in this dataset. The data reference for ADAE is the SDTM Adverse
+Events (AE) domain and there is a 1:1 correspondence between records in the source and this analysis dataset. These
+records can be linked uniquely by STUDYID, USUBJID, and AESEQ. As with the SDTM AE dataset, all MedDRA
+code variables (i.e., those variables that end in CD) have missing values and dummy terms have been applied to the
+MedDRA High-Level Term (HLT) and High-Level Group Term (HLGT). This is due to the proprietary nature of
+the MedDRA and the fact that the data with this project will be made available to the public. In a standard
+submission, these codes and terms should be non-missing and properly populated.
+Events of particular interest (dermatologic) are captured in the customized query variable (CQ01NAM) in this
+dataset. Because the ADAE is a source for the Time to Event Analysis Dataset (ADTTE), the first chronological
+occurrence based on the start dates (and sequence numbers) of the treatment emergent dermatological events are
+flagged (AOCC01FL) to facilitate traceability between these 2 analysis datasets. The ADAE also contains additional
+occurrence flags to facilitate traceability, reviewability, and ease of reporting between the analysis dataset and the
+unique counts in the summary tables. For treatment-emergent adverse events, refer to the Define-XML
+documentation (https://www.cdisc.org/standards/data-exchange/define-xml) for the following variables: AOCCFL,
+AOCCSFL, and AOCCPFL (for summarization at the subject, system organ class (SOC), and preferred term levels,
+respectively). Similarly, refer to the Define-XML documentation for AOCC02FL, AOCC03FL, and AOCC04FL for
+summarization of serious adverse events at the subject, SOC, and preferred term levels.
+The 3 deaths reported during the conduct of this study are captured in the Results in Death Flag (AESDTH = "Y")
+and Outcome of Adverse Event (AEOUT = "FATAL"). The start date of the adverse event in ADAE is imputed to
+the first of the month if the day is missing. The Study Day of Event Start (ASTDY) and the Treatment Emergent
+Analysis Flag (TRTEMFL) are derived based on this imputation and may differ from their corresponding SDTM
+AE/SUPPAE variables Study Day of Start of Adverse Event (AESTDY) and Treatment Emergent Flag
+(AETRTEM).
+
+
+
+
+© 2023 Clinical Data Interchange Standards Consortium, Inc. All rights reserved                                 Page 9
+2023-04-18
+
+CDISC Analysis Data Model Metadata Submission Guidelines: Human Clinical Trials (Version 1.0 Final)
+
+
+
+4.2.2 ADLBC – Analysis Dataset Lab Blood Chemistry
+The ADLBC contains 1 record per subject per parameter per analysis visit. The ADLBC consists of lab chemistry
+parameters, with standardized lab values derived from the SDTM LB (Laboratory Tests) domain. In some of the
+summaries, the derived end-of-treatment visit (AVISITN = 99) is also presented.
+
+4.2.3 ADLBH – Analysis Dataset Lab Hematology
+The ADLBH contains 1 record per subject per parameter per analysis visit. The ADLBH consists of lab hematology
+parameters, with standardized lab values derived from the SDTM LB domain. In some of the summaries, the derived
+end-of-treatment visit (AVISITN = 99) is also presented.
+
+4.2.4 ADLBHY – Analysis Dataset Lab Hy's Law
+The ADLBHY contains 1 record per subject per parameter per analysis visit. The ADLBHY is derived from the
+ADLBC analysis dataset. It contains derived parameters based on Hy’s law.
+
+4.2.5 ADADAS – ADAS-Cog Analysis
+The ADADAS contains analysis data from the ADAS-Cog scale, one of the primary efficacy endpoints. It contains 1
+record per subject per parameter (ADAS-Cog questionnaire item) per analysis visit per analysis date. Visits are
+placed into analysis visits (represented by AVISIT and AVISITN) based on the date of the visit and the visit
+windows. If multiple visits fall into the same visit window, then the one closest to the target date is chosen for
+analysis. Records where ANL01FL = "Y" are those that were used for analysis. The last observation carried forward
+(LOCF) algorithm only considered records used for analysis as candidates to carry forward. Records where DTYPE
+= "LOCF" signify those where AVAL was imputed using the LOCF algorithm. Source data can be traced back to
+the SDTM Questionnaires (QS) domain using USUBJID and QSSEQ. Details on how to derive the primary efficacy
+result based on ADAS-Cog data can be found in the ARM in the define.xml.
+
+4.2.6 ADCIBC – CIBIC+ Analysis
+The ADCIBC contains analysis data from the from CIBIC+ questionnaire, one of the primary efficacy endpoints. It
+contains 1 record per subject per parameter per analysis visit per analysis date. Note that for all records, PARAM =
+"CIBIC Score". Visits are placed into analysis visits (represented by AVISIT and AVISITN) based on the date of the
+visit and the visit windows. If multiple visits fall into the same visit window, then the one closest to the target date is
+chosen for analysis. Records where ANL01FL = "Y" are those that were used for analysis. The LOCF algorithm
+only considered records used for analysis as candidates to carry forward. Records where DTYPE = "LOCF" signify
+those where AVAL was imputed using the LOCF algorithm. Source data can be traced back to the SDTM QS
+domain using USUBJID and QSSEQ. Details on how to derive the primary efficacy result based on CIBIC+ data
+can be found in the analysis results metadata in the define.xml.
+
+4.2.7 ADNPIX – NPI-X Item Analysis Data
+The ADNPIX contains 1 record per subject per parameter (NPI-X questionnaire item, total score, and mean total
+score from week 4 through week 24) per analysis visit (AVISIT) per analysis date. The analysis visits (represented
+by AVISIT and AVISITN) are derived from days between assessment date and randomization date and based on the
+visit windows specified in the SAP. If multiple assessments fall into the same visit window, then the one closest to
+the target day is chosen for analysis. Records where ANL01FL = "Y" are those that were used for analysis. The
+LOCF algorithm was not used for these data. Source data can be traced back to the SDTM QS domain using
+USUBJID and QSSEQ. All the NPI-X parameters, except for the mean total score from week 4 through week 24
+(NPTOTMN), are from the SDTM QS domain. The value of parameter (NPTOTMN) contains the mean total score
+for each patient who had any assessments from week 4 through week 24. The baseline value of the parameter
+(NPTOTMN) is the same as the baseline value of total score. The baseline value is a covariate in the analysis of
+covariance (ANCOVA) model.
+
+
+
+
+© 2023 Clinical Data Interchange Standards Consortium, Inc. All rights reserved                                    Page 10
+2023-04-18
+
+CDISC Analysis Data Model Metadata Submission Guidelines: Human Clinical Trials (Version 1.0 Final)
+
+
+
+4.2.8 ADVS - Vital Signs Analysis Dataset
+The Vital Signs Analysis Dataset (ADVS) contains 1 record per subject per parameter. It contains the vital sign
+results from the SDTM VS domain. The baseline results (BASE) and change from baseline (CHG) are provided.
+Different baselines are identified using the BASETYPE variable. Records used for analysis are identified using the
+analysis record flag (ANL01FL).
+
+4.2.9 ADTTE - AE Time To 1st Derm. Event Analysis
+The ADTTE dataset contains 1 record per subject per parameter (the Time to First Dermatologic Event analysis
+parameter). It contains the necessary variables (ADT, CNSR, EVNTDESC) to identify the occurrence of the event.
+The records in ADTTE are derived from the ADSL and the ADAE.
+
+4.2.10 ADLBCPV - Analysis Dataset Lab Blood Chemistry (Previous
+      Visit)
+The ADLBCPV contains 1 record per subject per parameter per analysis visit. The ADLBCPV is derived from the
+ADLBC. These laboratory parameters hold "change from the previous visit, relative to normal range".
+
+4.2.11         ADLBHPV - Analysis Dataset Lab Hematology (Previous Visit)
+The ADLBHPV contains 1 record per subject per parameter per analysis visit. The ADLBHPV is derived from the
+ADLBH. These laboratory parameters hold "change from the previous visit, relative to normal range".
+
+
+
+
+© 2023 Clinical Data Interchange Standards Consortium, Inc. All rights reserved                             Page 11
+2023-04-18
+
+CDISC Analysis Data Model Metadata Submission Guidelines: Human Clinical Trials (Version 1.0 Final)
+
+
+
+
+5 Supplemental Documents
+Additional documents can be included as separate hyperlinked PDF files at a sponsor's discretion. Examples of
+appropriate materials to represent in a separate PDF file include complex algorithms or derivation methods such as
+scoring material provided in support of a questionnaire or oncology-related derivations that are too extensive to be
+displayed in a readable manner in the Define-XML. Please note that some regulatory agencies have specific
+requirements regarding PDF files (e.g., version, file size) and file-naming conventions. As an alternative to a
+separate complex algorithms document, such information could instead be included as an appendix to the ADRG.
+Sponsors that choose to submit a separate complex algorithms document should consider including language in the
+ADRG describing why this information was included in a separate document instead of the ADRG.
+The ADaM-MSG v1.0 sample submission package includes an example of these supplemental documents. The
+Define-XML document should contain explicit references to these documents; sponsors may refer to the Define-
+XML documentation (https://www.cdisc.org/standards/data-exchange/define-xml) for further details.
+
+
+
+
+© 2023 Clinical Data Interchange Standards Consortium, Inc. All rights reserved                               Page 12
+2023-04-18
+
+CDISC Analysis Data Model Metadata Submission Guidelines: Human Clinical Trials (Version 1.0 Final)
+
+
+
+
+6 Programs
+Discussion should take place with the relevant agency as to what programs are expected to be included in the
+submission. In addition, sponsors should consult the relevant technical conformance guide (e.g., FDA,[1]
+PMDA[2]) for current guidance. The specific software and software versions utilized should be noted in the ADRG.
+In general, the main purpose of requesting the submission of these programs is to understand the process by which
+the variables for the respective analyses were created and to confirm the analysis algorithms and results. Macros
+important to this understanding should also be included in the submission.
+
+6.1 ADaM Dataset Creation Programs
+This is a list of all the programs used to create the ADaM datasets in the submission. File types would be dependent
+on the agency to which sponsors are submitting (e.g., text, SAS). Relevant technical conformance guides should be
+reviewed to understand program submission expectations.
+
+6.2 TFL Creation Programs
+This is a list of the TFL creation programs included in the submission. File types would be dependent on the agency
+to which sponsors are submitting (e.g., text, SAS). Relevant technical conformance guides should be reviewed to
+understand program submission expectations.
+
+
+
+
+© 2023 Clinical Data Interchange Standards Consortium, Inc. All rights reserved                              Page 13
+2023-04-18
+
+CDISC Analysis Data Model Metadata Submission Guidelines: Human Clinical Trials (Version 1.0 Final)
+
+
+
+
+7 Appendices
+
+Appendix A: Glossary
+The following table lists some of the abbreviations and terms are used in this document. Additional definitions can
+be found in the text, and in the CDISC Glossary (available at https://www.cdisc.org/standards/glossary).
+
+ADAE                Adverse Events Analysis Dataset
+ADaM                CDISC Analysis Dataset Model
+ADaMIG              ADaM Implementation Guide
+ADaM-MSG            Analysis Data Model Metadata Submission Guidelines (Human Clinical Trials)
+ADAS-Cog            Alzheimer's Disease Assessment Scale–Cognitive Subscale
+ADLB                Laboratory Analysis Dataset
+ADRG                Analysis data reviewer’s guide
+ADSL                (ADaM) Subject-Level Analysis Dataset
+ADTTE               Time to Event Analysis Dataset
+ADVS                Vital Signs Analysis Dataset
+ANCOVA              Analysis of covariance (model)
+ARM                 Analysis results metadata
+BDS                 (ADaM) Basic Data Structure
+CDISC               Clinical Data Interchange Standards Consortium
+CIBIC+              Clinician's Interview-Based Impression of Change with Caregiver Input
+eCTD                (ICH) electronic Common Technical Document
+Define-XML          CDISC metadata standard that describes any tabular dataset structure
+FDA                 (US) Food & Drug Administration
+HLGT                High-Level Group Term (MedDRA)
+HLT                 High-Level Term (MedDRA)
+ICH                 International Conference on Harmonisation of Technical Requirements for Registration of
+                    Pharmaceuticals for Human Use
+LOCF                Last observation carried forward (algorithm)
+MedDRA              Medical Dictionary for Regulatory Activities
+MSG                 Metadata Submission Guidelines
+NPI-X               Neuropsychiatric Inventory
+OCCDS               (ADaM) Structure for Occurrence Data
+PDF                 Portable document format
+PMDA                (Japan) Pharmaceuticals and Medical Devices Agency
+SAP                 Statistical analysis plan
+SDTM                Study Data Tabulation Model
+SDTMIG              Study Data Tabulation Model Implementation Guide: Human Clinical Trials
+SMQ                 Standardized MedDRA Query
+SOC                 System organ class
+TEAE                Treatment-emergent adverse event
+XML                 Extensible Markup Language
+
+
+
+© 2023 Clinical Data Interchange Standards Consortium, Inc. All rights reserved                               Page 14
+2023-04-18
+
+CDISC Analysis Data Model Metadata Submission Guidelines: Human Clinical Trials (Version 1.0 Final)
+
+
+
+Appendix B: References
+1.   US Food & Drug Administration. Study Data Technical Conformance Guide - Technical Specifications
+     Document. US Department of Health and Human Services; 2022. Accessed November 4, 2022.
+     https://www.fda.gov/media/153632/download
+2.   Pharmaceuticals and Medical Devices Agency. Technical Conformance Guide on Electronic Study Data
+     Submissions. PMDA; 2022. Accessed November 4, 2022. https://www.pmda.go.jp/files/000247157.pdf
+
+
+
+
+© 2023 Clinical Data Interchange Standards Consortium, Inc. All rights reserved                         Page 15
+2023-04-18
+
+CDISC Analysis Data Model Metadata Submission Guidelines: Human Clinical Trials (Version 1.0 Final)
+
+
+
+
+Appendix C: Representations and Warranties, Limitations of
+  Liability, and Disclaimers
+CDISC Patent Disclaimers
+It is possible that implementation of and compliance with this standard may require use of subject matter covered by
+patent rights. By publication of this standard, no position is taken with respect to the existence or validity of any
+claim or of any patent rights in connection therewith. CDISC, including the CDISC Board of Directors, shall not be
+responsible for identifying patent claims for which a license may be required in order to implement this standard or
+for conducting inquiries into the legal validity or scope of those patents or patent claims that are brought to its
+attention.
+Representations and Warranties
+“CDISC grants open public use of this User Guide (or Final Standards) under CDISC’s copyright.”
+Each Participant in the development of this standard shall be deemed to represent, warrant, and covenant, at the time
+of a Contribution by such Participant (or by its Representative), that to the best of its knowledge and ability: (a) it
+holds or has the right to grant all relevant licenses to any of its Contributions in all jurisdictions or territories in
+which it holds relevant intellectual property rights; (b) there are no limits to the Participant’s ability to make the
+grants, acknowledgments, and agreements herein; and (c) the Contribution does not subject any Contribution, Draft
+Standard, Final Standard, or implementations thereof, in whole or in part, to licensing obligations with additional
+restrictions or requirements inconsistent with those set forth in this Policy, or that would require any such
+Contribution, Final Standard, or implementation, in whole or in part, to be either: (i) disclosed or distributed in
+source code form; (ii) licensed for the purpose of making derivative works (other than as set forth in Section 4.2 of
+the CDISC Intellectual Property Policy (“the Policy”)); or (iii) distributed at no charge, except as set forth in
+Sections 3, 5.1, and 4.2 of the Policy. If a Participant has knowledge that a Contribution made by any Participant or
+any other party may subject any Contribution, Draft Standard, Final Standard, or implementation, in whole or in
+part, to one or more of the licensing obligations listed in Section 9.3, such Participant shall give prompt notice of the
+same to the CDISC President who shall promptly notify all Participants.
+No Other Warranties/Disclaimers. ALL PARTICIPANTS ACKNOWLEDGE THAT, EXCEPT AS PROVIDED
+UNDER SECTION 9.3 OF THE CDISC INTELLECTUAL PROPERTY POLICY, ALL DRAFT STANDARDS
+AND FINAL STANDARDS, AND ALL CONTRIBUTIONS TO FINAL STANDARDS AND DRAFT
+STANDARDS, ARE PROVIDED “AS IS” WITH NO WARRANTIES WHATSOEVER, WHETHER EXPRESS,
+IMPLIED, STATUTORY, OR OTHERWISE, AND THE PARTICIPANTS, REPRESENTATIVES, THE CDISC
+PRESIDENT, THE CDISC BOARD OF DIRECTORS, AND CDISC EXPRESSLY DISCLAIM ANY
+WARRANTY OF MERCHANTABILITY, NONINFRINGEMENT, FITNESS FOR ANY PARTICULAR OR
+INTENDED PURPOSE, OR ANY OTHER WARRANTY OTHERWISE ARISING OUT OF ANY PROPOSAL,
+FINAL STANDARDS OR DRAFT STANDARDS, OR CONTRIBUTION.
+Limitation of Liability
+IN NO EVENT WILL CDISC OR ANY OF ITS CONSTITUENT PARTS (INCLUDING, BUT NOT LIMITED
+TO, THE CDISC BOARD OF DIRECTORS, THE CDISC PRESIDENT, CDISC STAFF, AND CDISC
+MEMBERS) BE LIABLE TO ANY OTHER PERSON OR ENTITY FOR ANY LOSS OF PROFITS, LOSS OF
+USE, DIRECT, INDIRECT, INCIDENTAL, CONSEQUENTIAL, OR SPECIAL DAMAGES, WHETHER
+UNDER CONTRACT, TORT, WARRANTY, OR OTHERWISE, ARISING IN ANY WAY OUT OF THIS
+POLICY OR ANY RELATED AGREEMENT, WHETHER OR NOT SUCH PARTY HAD ADVANCE NOTICE
+OF THE POSSIBILITY OF SUCH DAMAGES.
+
+
+Note: The CDISC Intellectual Property Policy can be found at
+http://www.cdisc.org/system/files/all/article/application/pdf/cdisc_20ip_20policy_final.pdf
+
+
+
+
+© 2023 Clinical Data Interchange Standards Consortium, Inc. All rights reserved                                  Page 16
+2023-04-18
+

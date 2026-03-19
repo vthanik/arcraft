@@ -1,0 +1,86 @@
+<?xml version="1.0" ?>
+<!-- |*******************************************************************************-->
+<!-- |                                                                               -->
+<!-- | XML File and Table Name: tr_es1_formats.xml, ES1                              -->
+<!-- |                                                                               -->
+<!-- | Table Version:    1                                                           -->
+<!-- |                                                                               -->
+<!-- | SAS Version:      v8.2                                                        -->
+<!-- |                                                                               -->
+<!-- | Created By:       Lee Seymour                                                 -->
+<!-- |                                                                               -->
+<!-- | Date:             28OCT2003                                                   -->
+<!-- |                                                                               -->
+<!-- | Table Purpose:    Format for reasons for withdrawal for TD_ES1 display macro  -->
+<!-- |                                                                               -->
+<!-- |*******************************************************************************-->
+<!-- | Modified By:                                                                  -->
+<!-- | Date of Modification:                                                         -->
+<!-- | New version number:                                                           -->
+<!-- | Modification ID:                                                              -->
+<!-- | Reason For Modification:                                                      -->
+<!-- |                                                                               -->
+<!-- ********************************************************************************-->
+<tridsles1formatsxls>
+  <ES1>
+    <FMTNAME>wdreas</FMTNAME>
+    <START>1</START>
+    <LABEL>Adverse Event</LABEL>
+    <TYPE>C</TYPE>
+  </ES1>
+  <ES1>
+    <FMTNAME>wdreas</FMTNAME>
+    <START>2</START>
+    <LABEL>Lost to follow-up</LABEL>
+    <TYPE>C</TYPE>
+  </ES1>
+  <ES1>
+    <FMTNAME>wdreas</FMTNAME>
+    <START>3</START>
+    <LABEL>Protocol Violation</LABEL>
+    <TYPE>C</TYPE>
+  </ES1>
+  <ES1>
+    <FMTNAME>wdreas</FMTNAME>
+    <START>4</START>
+    <LABEL>Subject decided to withdraw from study</LABEL>
+    <TYPE>C</TYPE>
+  </ES1>
+  <ES1>
+    <FMTNAME>wdreas</FMTNAME>
+    <START>Z</START>
+    <LABEL>Other</LABEL>
+    <TYPE>C</TYPE>
+  </ES1>
+  <ES1>
+    <FMTNAME>wdstat</FMTNAME>
+    <START>1</START>
+    <LABEL>Completed</LABEL>
+    <TYPE>C</TYPE>
+  </ES1>
+  <ES1>
+    <FMTNAME>wdstat</FMTNAME>
+    <START>2</START>
+    <LABEL>Prematurely Withdrawn</LABEL>
+    <TYPE>C</TYPE>
+  </ES1>
+    <ES1>
+    <FMTNAME>wdstatm</FMTNAME>
+    <START>1</START>
+    <LABEL>Completed</LABEL>
+    <TYPE>C</TYPE>
+  </ES1>
+  <ES1>
+    <FMTNAME>wdstatm</FMTNAME>
+    <START>2</START>
+    <LABEL>Prematurely Withdrawn</LABEL>
+    <TYPE>C</TYPE>
+  </ES1>
+  <ES1>
+   <FMTNAME>wdstatm</FMTNAME>
+   <START>3</START>
+   <LABEL>Missing</LABEL>
+   <TYPE>C</TYPE>
+ </ES1>
+
+</tridsles1formatsxls>

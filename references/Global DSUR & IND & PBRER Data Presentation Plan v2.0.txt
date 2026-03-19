@@ -1,0 +1,645 @@
+Global Biometric & Data Sciences
+Analysis Data Presentation Plan
+BMS-xxxxxx
+TAXXX
+DSUR/IND/PBRER 
+Document Revision:2.0
+Revision History
+Table of Contents
+Analysis Data Presentation Plan	1
+Table of Contents	3
+Table of Contents: Templates	4
+1	List of Data Presentations	4
+1.1	Codes Used for Deliverables	4
+1.2	List	4
+2	Introduction	4
+2.1	Guidance for DPP Users and Reviewers	4
+2.2	Referenced Documents	5
+3	General Criteria/Conventions	5
+3.1	Exceptions to Global and/or Departmental Standards	5
+3.2	Populations	6
+3.3	Conventions	6
+3.4	Group Information	7
+3.5	Graph Criteria/Conventions	7
+4	Presentation Plan Templates and Metadata	8
+4.1	DSUR	8
+4.2	IND	21
+4.3	PBRER	30
+Table of Contents: Templates
+Estimated Cumulative Subject Exposure (GS_DSUR_DM_T_001)	10
+Cumulative Exposure to BMS Drug by Category (GS_DSUR_DM_T_002)	12
+Number of Treated Subjects (GS_DSUR_DM_T_003)	19
+Adverse Event Summary (GS_AE_T_001)	22
+Adverse Event with Time by Treatment Group (GS_AE_L_004)	25
+Death Listing (PS_DT_L_001)	28
+Clinical Exposure in Person and Person Time by Demographic Characteristics	30
+List of Data Presentations 
+Codes Used for Deliverables 
+List
+Introduction
+Guidance for DPP Users and Reviewers
+The Analysis Data Presentation Plan (DPP) contains comprehensive specifications for the development of data displays for an analysis. 
+Templates and Metadata Tables:
+Within the Analysis DPP, the following templates will reside:
+Global Standard Templates (GS): The layout of these templates is a Global Standard. Global Standard templates will be placed into the DPP without modifications. 
+Project Specific Templates (PS): The layout of these templates is constructed and described in the Core DPP. Project Specific templates will be placed into the DPP without modifications.
+For Early Development Only - Model Document Specific Template (MS): The layout of these templates is constructed and described in the Early Development Standardized DPP Template.
+Study SpecificTemplates (SS): The layout of these templates is constructed for and described in the Analysis DPP. 
+A Metadata Table will contain information on the exact layout for a table, listing or graph.
+DPP Conventions:
+Text presented within a template and highlighted in grey:
+is a generic indicator for the type of endpoint or phrase that should replace it (Measure or Period for example) 
+represents an optional item for a particular template presentation (P-value or Tablets/Capsules, for example). 
+The highlighted text in grey will remain as such in the template and the appropriate endpoint or phrase and the specifications to include within a specific table or listing in lieu of the highlighted text in grey will be described in the metadata tables. This will allow multiple tables to refer to the same table template.
+Referenced Documents
+The following documents were referenced in the creation of this document.
+General Criteria/Conventions
+Exceptions to Global and/or Departmental Standards
+Populations
+Conventions
+Conventions for treated subjects without treatment information when generating integrated tables 4A, 4B, and 6: the dummy treatment arms will be assigned and used following protocol randomization ratio.
+Conventions for treated subjects without treatment information when generating study-level tables: 
+For partial blinded studies, both Groups and Total column will be displayed. For subjects without treatment information, group should be presented as ‘Blinded’.  
+For fully blinded studies, only Total column will be displayed.
+Group Information 
+Graph Criteria/Conventions 
+Presentation Plan Templates and Metadata
+DSUR
+Guidance for generating DSUR:
+Table 4A, 4B and 4B-pediactric:
+All previously completed clinical trials and ongoing and newly completed clinical trials for the drug under the reporting period needs to be included
+For blinded studies or open-label studies but treated as blinded, the subject exposure should be based on blinded data (i.e. dummy treatment assignments based on protocol defined randomization schema) until the studies are unblinded
+DO NOT count a study into multiple indication categories, eg, if a study has more than one indication, classify this study into ‘OTHER OR MULTIPLE INDICATION’ category.
+For studies with crossover design (i.e. crossover from non-BMS drug arm to BMS drug arm), crossover subjects should be presented in both “BMS Drug” and “Comparator Treatment Arms”. In ‘Total Study Exposure to Any Treatment Arm’, crossover subjects will be only counted once. 
+In special cases where a study has crossover design from BMS drug A (Control Arm) to BMS drug combo drug A + drug B (Experimental Arm), if drug B is under current reporting period, the same rule will be applied. However, if drug A is under current reporting period and this study was included in the study list, the following rule should be applied: both arms will be presented under ‘BMS Drug’; subjects assigned to BMS drug A will be allocated to ‘Group 1’ as ‘Mono therapy’ and subjects assigned to BMS drug A+B will be allocated to ‘Group 2’ as ‘Combo therapy’. In ‘Total Study Exposure to Any Treatment Arm’, crossover subjects will be only counted once.
+Number of subjects in ‘Total’ from Table 4B should be equal to ‘Total’ under BMS Drug section from Table 4A
+Table 4B-pediatric only generate if at least one study have pediatric population exposed 
+Table 4C:
+All previously completed clinical trials as well as ongoing and newly completed clinical trials for the drug under the reporting period needs to be included
+For studies with crossover design (i.e. crossover from non-BMS drug arm / placebo to BMS drug arm), crossover subjects should be presented in both “BMS Drug” and “Active Comparator” / ”Placebo”. In ‘Total’, crossover subjects will be only counted once. It‘s also applicable for extension studies, i.e. subjects who received treatments in both main and extension periods are only counted once in the total  
+Number of subjects in ‘Total’ from Table 4C should be equal to ‘Total Study Exposure to Any Treatment Arm’  from Table 4A
+Subjects in blinded arms or cohorts at the DLP will be grouped under “Blinded” treatment group 
+EU Region-Specific Information for the Annual Safety Report (ASR)
+EU region requires “List of subjects who died during the reporting period” and “List of subjects who dropped out of clinical trials association with an AE during the reporting period” in the ASR. See Guidance #5 in IND section on bringing such information into DSUR.
+Estimated Clinical Exposure:
+“Estimated clinical Exposure to BMS Drug -- BMS-sponsored Clinical Studies in Person and Person Time by Age Group and Sex” is needed for Table 6.3 within the body of the DSUR. Please refer to PBRER section for more details.
+Estimated Cumulative Subject Exposure (GS_DSUR_DM_T_001)
+  ------------------------------------------------------------------------------------------------------------------------------
+                                    BMS Drug                                    Comparator Treatment Arms          Total Study    
+   Indication            ------------------------------------     --------------------------------------------     Exposure to Any
+     Study (n)           Group 1   Group X      Total              Group X+1    Group X+N        Total             Treatment Arm  
+  ------------------------------------------------------------------------------------------------------------------------------
+   INDICATION 1                                                                                                                   
+     STUDY 1              264         NA         264                  95            100            195                459         
+     STUDY X               97         NA          97                  14             NA             14                111         
+     SUBTOTAL             361         NA         361                 109            100            209                570         
+   INDICATION 2                                                                                                                   
+     STUDY 1              264         NA         264                  95             NA             95                288         
+     STUDY X               97         10         107                  NA             NA             NA                107         
+     SUBTOTAL             549        112         661                  95             NA             95                685         
+   CLINICAL
+   PHARMACOLOGY
+   PHARMACOKINETIC                                                                                                                
+     STUDY 1               NA         59          59                  NA             NA             NA                 60         
+     STUDY X               42         NA          42                  14             NA             14                 56         
+     SUBTOTAL             214        162         344                  14             NA             14                359         
+   OTHER OR
+   MULTIPLE
+   INDICATION                                                                                                                     
+     STUDY X               80         NA          80                  NA             NA             NA                 80         
+     SUBTOTAL              80         NA          80                  NA             NA             NA                 80         
+   OVERALL TOTAL         1204        274        1478                 218            100            536               1694         
+  ------------------------------------------------------------------------------------------------------------------------------
+Cumulative Exposure to BMS Drug by Category (GS_DSUR_DM_T_002)
+-------------------------------------------------------------------------------------------------------------------------------
+   Indication                                                                                           
+     Study (%)                Category 1         Category X        Not Reported              Total                        
+------------------------------------------------------------------------------------------------------
+   INDICATION 1                                                                                                                
+     STUDY 1                  152( 57.6)         112( 42.4)            0                     264                               
+     STUDY X                   53( 54.6)          44( 45.4)            0                      97                               
+     SUBTOTAL                 205( 56.8)         156( 43.2)            0                     361                               
+   INDICATION 2                                                                                                                
+     STUDY 1                  132( 50.0)         120( 45.5)           12(  5.5)              264                               
+     STUDY X                   50( 46.7)          57( 53.3)            0                     107                               
+     SUBTOTAL                 300( 45.4)         349( 52.8)           12(  1.8)              661                               
+   CLINICAL
+   PHARMACOLOGY
+   PHARMACOKINETIC                                                                                                             
+     STUDY 1                   30( 50.8)          29( 49.2)            0                      59                               
+     STUDY X                   20( 47.6)          22( 52.4)            0                      42                               
+     SUBTOTAL                 170( 49.4)         174( 50.6)            0                     344                               
+   OTHER OR
+   MULTIPLE
+   INDICATION                                                                                                                  
+     STUDY X                   40( 50.0)          40( 50.0)            0                      80                               
+     SUBTOTAL                  40( 50.0)          40( 50.0)            0                      80                               
+   OVERALL TOTAL              720( 48.7)         746( 50.5)           12(  0.8)             1478                               
+-------------------------------------------------------------------------------------------------------
+Number of Treated Subjects (GS_DSUR_DM_T_003)
+  ------------------------------------------------------------------------------------------------------------------------------
+   Indication            BMS Drug              Blinded            Active               Placebo                Total
+     Study (n)                                                    Comparator 
+  ------------------------------------------------------------------------------------------------------------------------------
+   INDICATION 1                                                                                                                   
+     STUDY 1              264                  NA                   95                  100                    459         
+     STUDY X               97                  NA                   14                   NA                    111         
+     SUBTOTAL             361                  NA                  109                  100                    570         
+   INDICATION 2                                                                                                                   
+     STUDY 1              264                  NA                   95                   NA                    288         
+     STUDY X               97                  10                   NA                   NA                    107         
+     SUBTOTAL             549                 112                   95                   NA                    685         
+   CLINICAL
+   PHARMACOLOGY
+   PHARMACOKINETIC                                                                                                                
+     STUDY 1               NA                  59                   NA                   NA                     60         
+     STUDY X               42                  NA                   14                   NA                     56         
+     SUBTOTAL             214                 162                   14                   NA                    359         
+   OTHER OR
+   MULTIPLE
+   INDICATION                                                                                                                     
+     STUDY X               80                  NA                   NA                   NA                     80         
+     SUBTOTAL              80                  NA                   NA                   NA                     80         
+   OVERALL TOTAL         1204                 274                  218                  100                   1694         
+  ------------------------------------------------------------------------------------------------------------------------------
+IND
+Guidance for generating IND tables:
+IND tables only generate for ongoing studies.
+Table numbering of outputs for ongoing studies (i.e. TEAE, treatment emergent SAE, AE leading to drug discontinuation, death):
+“Table 1.FULLSTUDYNUMBER” will be used as Table No of “Treatment-emergent Adverse Event Identifier Summary”. 
+“Table 2.FULLSTUDYNUMBER” will be used as Table No of “Treatment-emergent Serious Adverse Event Identifier Summary”.
+“Table 3.FULLSTUDYNUMBER” will be used as Table No of “Listing of Subjects with Treatment Emergent Adverse Events Leading to Discontinuation of Study Medication”.
+“Table 4.FULLSTUDYNUMBER” will be used as Table No of “Death Listing”.
+For Table 1, 2 and 3, the footnote 3 & 4 for the definition of Treatment emergent adverse events should be added. It could be “Treatment emergent adverse events are defined as any event that begins after the start of study medication through X days after the last dose”.
+The final deliverables to DSUR or IND reporting team should combine all ongoing studies for each unique table into one file. i.e. total 2 files to be submitted for DSUR,  total 4 files to be submitted for IND.
+EU Region-specific information requires “list of subjects who died during the reporting period” and “list of subjects who dropped out of clinical trials in association with an AE during the reporting period” in the ASR. Therefore, Table 3 and Table 4 listed above will be generated for such purpose based on study list to be included in DSUR if DSUR and IND reports do not occur concurrently. If DSUR and IND report occur concurrently, Table 3 and Table 4 will be generated based on the maximum of the study list (i.e. union of the two study list sets) and served for both purposes (i.e. IND requirement and EU region-specific information requirement in ASR).
+Adverse Event Summary (GS_CSR_AE_T_001)
+           -------------------------------------------------------------------------------------------------------
+           System Organ Class (%)                  Group 1           Group 2         Group X           Total
+            Preferred Term (%)                     N = 200           N = 959         N = 482          N = 1641
+           -------------------------------------------------------------------------------------------------------
+           TOTAL SUBJECTS WITH AN EVENT          100 ( 50.0)       866 ( 90.3)     417 ( 86.5)     1383 ( 89.0)
+           Blood and lymphatic system disorders    6 (  3.0)        51 (  5.3)      39 (  8.1)       96 (  5.9)
+             Anaemia                               0                17 (  1.8)      16 (  3.3)       33 (  2.3)
+             Leukopenia                            0                17 (  1.8)       5 (  1.0)       22 (  1.5)
+             Eosinophilia                          0                 5 (  0.5)       3 (  0.6)        8 (  0.6)
+             Lymphadenopathy                       2 (  1.0)         0               7 (  1.5)        7 (  0.5)
+             Leukocytosis                          0                 1 (  0.1)       5 (  1.0)        6 (  0.4)
+             Thrombocytopenia                      4 (  2.0)         4 (  0.4)       1 (  0.2)        9 (  0.5)
+             Monocytosis                           0                 0               1 (  0.2)        1 ( <0.1)
+             Neutropenia                           0                 1 (  0.1)       0                1 ( <0.1)
+             Essential thrombocythaemia            0                 1 (  0.1)       0                1 ( <0.1)
+           Cardiac disorders                      10 (  5.0)        54 (  5.6)      36 (  7.5)      100 (  6.1)
+             Palpitations                          0                21 (  2.2)       8 (  1.7)       29 (  2.0)
+             Tachycardia                           5 (  2.5)        13 (  1.4)       4 (  0.8)       22 (  1.3)
+             Cardiac failure congestive            5 (  2.5)         3 (  0.3)       3 (  0.6)       11 (  0.7)
+             Bradycardia                           0                 4 (  0.4)       1 (  0.2)        5 (  0.3)
+             Sinus bradycardia                     0                 1 (  0.1)       4 (  0.8)        5 (  0.3)
+             Arrhythmia                            0                 1 (  0.1)       3 (  0.6)        4 (  0.3)
+             Atrial fibrillation                   0                 2 (  0.2)       2 (  0.4)        4 (  0.3)
+           UNCODED                                 1 (  0.5)         0               0                1 ( <0.1)
+             UNCODED                               1 (  0.5)         0               0                1 ( <0.1)
+------------------------------------------------------------------------------------------------------------------------------------
+Guidance: if it is a legacy or heritage study, utilize the appropriate heritage GS TL - eg. GS_AE_L_001 and update the metadata table accordingly.
+Adverse Event with Time by Subject (GS_CSR_AE_L_001)
+Group: Group X
+--------------------------------------------------------------------------------------------------------------------------------------
+                             Onset D/T             DUR            System Organ Class                            REL           OUT
+Unique Subject ID Period       Resolution D/T        TRD            Preferred Term                                ACT           CAT  
+  (Age/Sex/Race)    Visit        Day                   Type           Reported Term                          (D1/D2/Dx)           TRT 
+--------------------------------------------------------------------------------------------------------------------------------------
+IM101031-2-1      SCREENING   03JUN2003/08:00       1D             Gastrointestinal disorders                                  2                                     
+  (55/F/C)          SCREENING   03JUN2003/10:00                      Nausea                                                      1   
+                                 -2                     SAE            NAUSEA                                                      1      
+                  INDUCTION   05JUN2003/04:30       1D             Skin and subcutaneous tissue disorders        2/-/2         2    
+                    C1D1        05JUN2003/05:00       5H             Night sweats                                  3/-/3         1  
+                                  1                     AE             NIGHT SWEAT                                                 1
+                  INDUCTION   20JUL2003/U           10D            Gastrointestinal disorders                    2/-/1         1    
+                    C1D15       29JUL2003/U           14H            Stomatitis                                    5/-/3         1  
+                                  16                    AE             MOUTH SORES                                                 1
+                  INDUCTION   20AUG2003/                           Gastrointestinal disorders                    1/-/1         3    
+                    C2D15       CONTINUE              4D             Stomatitis                                    6/-/1         2  
+                                  65                    AE             MOUTH SORES                                                 1
+                                 
+                  MAINTAIN    08DEC2003/            4D             Gastrointestinal disorders                 
+                    C6          11DEC2003/            45M            Stomatitis                                  1/-/2         1    
+                                 157                    AE             MOUTH SORES                                 3/-/3         2  
+                                                                                                                                   1
+IM101031-3-2      INDUCTION   21FEB2003/12:57       1D             Musculoskeletal and connective tissue      
+  (60/M/C)          C4D15      :00       10H          disorders                                      2/-/2        1   
+                                 100                    AE           Back pain                                      3/-/3        2  
+                                                                       PAIN IN BACK                                                1                          
+                  FOLLOWUP    21NOV2003                            Infections and infestation      
+                    30-DAY FU   CONTINUE              26D            Nasopharyngitis                                           1   
+                                374                     AE             COMMON COLD                                               2  
+                                                                                                                                   1
+                  FOLLOWUP    20JAN2004                            Infections and infestation      
+                    30-100      CONTINUE              86D            Peritonitis                                               1   
+                     DAYS FU     374                    AE             ACUTE PERITONITIS                                         1  
+                                                                                                                                   1
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Guidance: Select table and/or listing based on number of patients treated and etiology of death events (e.g. other specify vs. malignant neoplasm progression in Oncology). Example below from Oncology.
+Death Listing (PS_DT_L_001)
+Group: Group X
+------------------------------------------------------------------------------------------------------------------------------------
+Unique Subject ID    Randomization First Dose  Last dose   Death Date   Days Since  CRF Source        Cause of Death     Specify
+  (Age/Sex/          Date          Date        Date                     Last Dose
+------------------------------------------------------------------------------------------------------------------------------------
+CV131148-6-9        18AUG2006     18AUG2006   19OCT2006   23OCT2006         5       DEATH             DISEASE            PROGRESSION
+  (80/M/C)
+                                                                                    STATUS
+CV131148-6-5        18AUG2006     18AUG2006   19OCT2006                             STATUS
+  (81/M/C)
+CV131148-6-6        18AUG2006     18AUG2006   19OCT2006                             AE/SAE                              AE/SAE: HYPOXIA
+  (82/f/C)
+CV131148-6-7        18AUG2006     18AUG2006   19OCT2006                             SURVIVAL
+  (83/M/B)
+                                                                                    FOLLOW-UP
+CV131148-6-17       18AUG2006     18AUG2006   19OCT2006   23NOV2007     386       DEATH            DISEASE
+  (84/F/C) 
+------------------------------------------------------------------------------------------------------------------------------------
+PBRER
+Guidance for generating PBRER:
+All previously completed clinical trials and ongoing and newly completed clinical trials for the drug under the reporting period needs to be included
+For blinded studies or open-label studies but treated as blinded, the subject exposure should be based on blinded data (i.e. dummy treatment assignments based on protocol defined randomization schema) until the studies are unblinded
+DO NOT count a study into multiple indication categories, eg, if a study has more than one indication, classify this study into ‘OTHER OR MULTIPLE INDICATION’ category.
+Clinical Exposure in Person and Person Time by Demographic Characteristics and Sex (GS_PBRER_EXP_T_001)
+------------------------------------------------------------------------------------------------------------------------------------
+                                          Persons (%)                           Persons Time of Exposure (Units)                         
+Indication                      ------------------------------------------------------------------------------------------               
+  Study                           Male           Female        Total              Male          Female        Total                      
+             <CATEGORY>           N = xxx        N = xxx       N = xxx            N = xxx       N = xxx       N = xxx                    
+------------------------------------------------------------------------------------------------------------------------------------
+Indication 1
+  STUDY 1     SUBCAT 1           0              0              0                    0.0            0.0           0.0                     
+              SUBCAT 2         128 ( 46.4)     67 ( 59.3)    195 ( 50.1)         1281.3          715.3        1996.6                     
+              SUBCAT X         148 ( 53.6)     46 ( 40.7)    194 ( 49.9)         1373.7          499.4        1873.1                     
+              STUDY TOTAL      276 (100.0)    113 (100.0)    389 (100.0)         2655.0         1214.7        3869.7                     
+  STUDY X     SUBCAT 1           0              0              0                    0.0            0.0           0.0                     
+              SUBCAT 2          38 ( 63.3)     28 ( 62.2)     66 ( 62.9)          321.6          289.2         610.9                     
+              SUBCAT x          22 ( 36.7)     17 ( 37.8)     39 ( 37.1)          119.1           50.1         169.2                     
+              STUDY TOTAL       60 (100.0)     45 (100.0)    105 (100.0)          440.7          339.3         780.1                     
+  SUBTOTAL    SUBCAT 1           0              0              0                    0.0            0.0           0.0                     
+              SUBCAT 2         166 ( 49.4)     95 ( 60.1)    261 ( 52.8)         1602.9         1004.5        2607.5                     
+              SUBCAT x         170 ( 50.6)     63 ( 39.9)    233 ( 47.2)         1492.8          549.5        2042.3                     
+              INDICATION TOTAL 336 (100.0)    158 (100.0)    494 (100.0)         3095.7         1554.0        4649.8                     
+Indication X
+  STUDY 1     SUBCAT 1           0              0              0                    0.0            0.0            0.0                    
+              SUBCAT 2          88 ( 59.5)     94 ( 67.6)    182 ( 63.4)         1176.0          894.2         2070.1                    
+              SUBCAT X          60 ( 40.5)     45 ( 32.4)    105 ( 36.6)          778.8          349.9         1128.7                    
+              STUDY TOTAL      148 (100.0)    139 (100.0)    287 (100.0)         1954.7         1244.1         3198.8                    
+  STUDY X     SUBCAT 1           0              0              0                    0.0            0.0            0.0                    
+              SUBCAT 2         116 ( 58.0)     80 ( 70.8)    196 ( 62.6)         2450.2         1353.5         3803.6                    
+              SUBCAT X          84 ( 42.0)     33 ( 29.2)    117 ( 37.4)         1726.1          361.9         2088.0                    
+              STUDY TOTAL      200 (100.0)    113 (100.0)    313 (100.0)         4176.3         1715.4         5891.6                    
+  SUBTOTAL    SUBCAT 1           0              0              0                    0.0            0.0            0.0                    
+              SUBCAT 2         204 ( 58.6)    174 ( 69.0)    378 ( 63.0)         3626.2         2247.7         5873.7                    
+              SUBCAT x         144 ( 41.4)     78 ( 31.0)    222 ( 37.0)         2504.9          711.8         3216.7                    
+              INDICATION TOTAL 348 (100.0)    252 (100.0)    600 (100.0)         6131.1         2959.5         9090.4                    
+OVERALL TOTAL SUBCAT 1           0              0              0                    0.0            0.0            0.0                
+              SUBCAT 2         370 ( 54.1)    269 ( 65.6)    639 ( 58.4)         5229.1         3252.2         8481.2                
+              SUBCAT X         314 ( 45.9)    141 ( 34.4)    455 ( 41.6)         3997.7         1261.3         5259.0                
+              TOTAL            684 (100.0)    410 (100.0)   1094 (100.0)         9226.8         4513.5        13740.2                
+------------------------------------------------------------------------------------------------------------------------------------
+[TABLE ROW] Revision | Date | Revised By | Changes Made -- Reasons for the Change
+[TABLE ROW] 1.0 | 20JAN2022 | Wei Shao | Original issue
+[TABLE ROW] 2.0 | 14MAR2022 | Wei Shao | 1. Deleted individual study Demographics table rt-dm-demchar[SDSUR].lst.
+2. Added integrated Exposure table rt-ex-ptage.lst.
+3. Deleted individual study Exposure table rt-ex-ptage[SPBRER][SPBRER_suffix].lst.
+4. Added integrated Treated Subjects table rt-dm-cumtrt.lst.
+5. Updated table numbers for the tables under IND section. 
+6. Added guidance for  tables rt-ex-ptage.lst and rt-dm-cumtrt.lst.
+7. Removed footnote 3 and footnote 4 from rt-ae-bysoc[SIND].lst, rt-ae-sae[SIND].lst, and rl-ae-disc[SIND].lst
+[TABLE ROW] Code | Description
+[TABLE ROW] DSUR | Development Safety Update Report
+[TABLE ROW] IND | Investigational New Drug
+[TABLE ROW] PBRER | Periodic Benefit-Risk Evaluation Report
+[TABLE ROW] No. | Table No. | Output File Name | Template ID | Title and Population | Purpose
+[TABLE ROW] Document | Revision
+[TABLE ROW] GBS General Requirements for Statistical Outputs | v 2.4.3
+[TABLE ROW] ICH Guideline E2F Note for Guidance on Development Safety Update Report | September 2010
+[TABLE ROW] Global Standards Table Reporting Requirements.docx | v 4.0
+[TABLE ROW] Global Standards Listing Reporting Requirements.docx | v 6.0
+[TABLE ROW] GBDS Global Standard Requirements for Tables Listings and Graphs (soon to be released) | v 1.0
+[TABLE ROW] Location of Documentation | Standards Document | Exception
+[TABLE ROW] Name as to Appear on Output | Name used in SAP (if different) | Definition when no SAP available
+[TABLE ROW] Drug Name | Column Headers to use in Tables | Order Of Column | Label to use in Listings (if different)
+[TABLE ROW] Attribute | Parameter | Value/Line
+[TABLE ROW] Parameter | Values
+[TABLE ROW] Repeat
+[TABLE ROW] Template ID | GS_DSUR_DM_T_001
+[TABLE ROW] Output File Name | rt-dm-cumexp.lst
+[TABLE ROW] Purpose | DSUR
+[TABLE ROW] Table No. | Table 4A
+[TABLE ROW] Title 1 | Estimated Cumulative Subject Exposure -- BMS-sponsored Clinical Studies
+[TABLE ROW] Title 2 | Based on Information up to Data Cutoff Date DDMMMYYY
+[TABLE ROW] Title 3 | All Treated Subjects
+[TABLE ROW] Footnote 1 | Data Lock Point (DLP) Date: DDMMMYYYY
+[TABLE ROW] Footnote 2 | Exposure was based on safety populations defined by protocol
+[TABLE ROW] Footnote 3 | Exposure for blinded studies are estimated from randomization schema specified in the protocol for study xxx
+[TABLE ROW] Footnote 4
+[TABLE ROW] Footnote 5
+[TABLE ROW] Layout notes | Include/Not include Indication
+Include/Not include SUBTOTAL
+Under BMS Drug section, if applicable, the following grouping is suggested:
+Group 1 = BMS drug monotherapy
+Group X could include BMS drug combo 1, BMS drug combo 2, BMS drug combo other
+
+Under Comparator Treatment Arms, the following grouping is suggested:
+Group X+1 = Placebo/BSC Only/No Treatment
+Group X+N could include Active Treatment 
+Note: BSC = Best Supportive Care
+[TABLE ROW] Programming notes | This table should include all data from both completed and ongoing studies sponsored by BMS.
+This table should be sorted by indication by alphabetic order, within indication, sorted by study ID. 
+Split BMS Drug and Comparator Treatment Arm spanning columns into two pages if the spanning columns cannot fit on a single page. 
+BMS Drug and Comparator Treatment Arm spanning columns will not break across pages unless the number of groups within spanning columns by itself will not fit on a single page .
+For indication categories, each category will only be displayed if at least one occurrence was reported (i.e. count greater than 0 in at least one group).
+[TABLE ROW] Parameter | Values
+[TABLE ROW] Repeat
+[TABLE ROW] Template ID | GS_DSUR_DM_T_002
+[TABLE ROW] Output File Name | rt-dm-cumsex.lst
+[TABLE ROW] Purpose | DSUR
+[TABLE ROW] Table No. | Table 4B.1
+[TABLE ROW] Title 1 | Cumulative Exposure to BMS Drug by Sex -- BMS-sponsored Clinical Studies
+[TABLE ROW] Title 2 | Based on Information up to Data Cutoff Date DDMMMYYY
+[TABLE ROW] Title 3 | All Treated Subjects
+[TABLE ROW] Footnote 1 | Data Lock Point (DLP) Date: DDMMMYYYY
+[TABLE ROW] Footnote 2
+[TABLE ROW] Footnote 3
+[TABLE ROW] Footnote 4
+[TABLE ROW] Layout notes | Include/Not include Indication
+Include/Not include SUBTOTAL
+Display Category 1 - Category X:
+Male
+Female
+[TABLE ROW] Programming notes | This table should include all data from both completed and ongoing studies sponsored by BMS.
+This table should be sorted by indication by alphabetic order, within indication, sorted by study ID.
+For indication categories, each category will only be displayed if at least one occurrence was reported (i.e. count greater than 0 in at least one group).
+‘NOT REPORTED’ column will only be displayed if at least one occurrence was reported (i.e. count greater than 0 in at least one group) for each category.
+[TABLE ROW] Parameter | Values
+[TABLE ROW] Repeat
+[TABLE ROW] Template ID | GS_DSUR_DM_T_002
+[TABLE ROW] Output File Name | rt-dm-pcumsex.lst
+[TABLE ROW] Purpose | DSUR
+[TABLE ROW] Table No. | Table 4B.1-pediatric
+[TABLE ROW] Title 1 | Cumulative Exposure to BMS Drug by Sex -- Pediatric Studies -- BMS-sponsored Clinical Studies
+[TABLE ROW] Title 2 | Based on Information up to Data Cutoff Date DDMMMYYY
+[TABLE ROW] Title 3 | All Treated Subjects
+[TABLE ROW] Footnote 1 | Data Lock Point (DLP) Date: DDMMMYYYY
+[TABLE ROW] Footnote 2
+[TABLE ROW] Footnote 3
+[TABLE ROW] Footnote 4
+[TABLE ROW] Layout notes | Include/Not include Indication
+Include/Not include SUBTOTAL
+Display Category 1 - Category X:
+Male
+Female
+[TABLE ROW] Programming notes | This table should include all data from both completed and ongoing studies sponsored by BMS.
+This table should be sorted by indication by alphabetic order, within indication, sorted by study ID.
+For indication categories, each category will only be displayed if at least one occurrence was reported (i.e. count greater than 0 in at least one group).
+‘NOT REPORTED’ column will only be displayed if at least one occurrence was reported (i.e. count greater than 0 in at least one group) for each category..
+[TABLE ROW] Parameter | Values
+[TABLE ROW] Repeat
+[TABLE ROW] Template ID | GS_DSUR_DM_T_002
+[TABLE ROW] Output File Name | rt-dm-cumrace.lst
+[TABLE ROW] Purpose | DSUR
+[TABLE ROW] Table No. | Table 4B.2
+[TABLE ROW] Title 1 | Cumulative Exposure to BMS Drug by Race -- BMS-sponsored Clinical Studies
+[TABLE ROW] Title 2 | Based on Information up to Data Cutoff Date DDMMMYYY
+[TABLE ROW] Title 3 | All Treated Subjects
+[TABLE ROW] Footnote 1 | Data Lock Point (DLP) Date: DDMMMYYYY
+[TABLE ROW] Footnote 2
+[TABLE ROW] Footnote 3
+[TABLE ROW] Footnote 4
+[TABLE ROW] Layout notes | Include/Not include Indication
+Include/Not include SUBTOTAL
+Display Category 1 - Category X:
+White,
+Black or African American 
+American Indian or Alaska native
+Asian,
+Native Hawaiian or Other Pacific Islander
+Other
+[TABLE ROW] Programming notes | This table should include all data from both completed and ongoing studies sponsored by BMS.
+This table should be sorted by indication by alphabetic order, within indication, sorted by study ID.
+For indication categories, each category will only be displayed if at least one occurrence was reported (i.e. count greater than 0 in at least one group).
+‘NOT REPORTED’ column will only be displayed if at least one occurrence was reported (i.e. count greater than 0 in at least one group) for each category.
+[TABLE ROW] Parameter | Values
+[TABLE ROW] Repeat
+[TABLE ROW] Template ID | GS_DSUR_DM_T_002
+[TABLE ROW] Output File Name | rt-dm-pcumrace.lst
+[TABLE ROW] Purpose | DSUR
+[TABLE ROW] Table No. | Table 4B.2-pediatric
+[TABLE ROW] Title 1 | Cumulative Exposure to BMS Drug by Race -- Pediatric Studies -- BMS-sponsored Clinical Studies
+[TABLE ROW] Title 2 | Based on Information up to Data Cutoff Date DDMMMYYY
+[TABLE ROW] Title 3 | All Treated Subjects
+[TABLE ROW] Footnote 1 | Data Lock Point (DLP) Date: DDMMMYYYY
+[TABLE ROW] Footnote 2
+[TABLE ROW] Footnote 3
+[TABLE ROW] Footnote 4
+[TABLE ROW] Layout notes | Include/Not include Indication
+Include/Not include SUBTOTAL
+Display Category 1 - Category X:
+White,
+Black or African American 
+American Indian or Alaska native
+Asian,
+Native Hawaiian or Other Pacific Islander
+Other
+[TABLE ROW] Programming notes | This table should include all data from both completed and ongoing studies sponsored by BMS.
+This table should be sorted by indication by alphabetic order, within indication, sorted by study ID.
+For indication categories, each category will only be displayed if at least one occurrence was reported (i.e. count greater than 0 in at least one group).
+‘NOT REPORTED’ column will only be displayed if at least one occurrence was reported (i.e. count greater than 0 in at least one group) for each category..
+[TABLE ROW] Parameter | Values
+[TABLE ROW] Repeat
+[TABLE ROW] Template ID | GS_DSUR_DM_T_002
+[TABLE ROW] Output File Name | rt-dm-cumage.lst
+[TABLE ROW] Purpose | DSUR
+[TABLE ROW] Table No. | Table 4B.3
+[TABLE ROW] Title 1 | Cumulative Exposure to BMS Drug by Age Group -- BMS-sponsored Clinical Studies
+[TABLE ROW] Title 2 | Based on Information up to Data Cutoff Date DDMMMYYY
+[TABLE ROW] Title 3 | All Treated Subjects
+[TABLE ROW] Footnote 1 | Data Lock Point (DLP) Date: DDMMMYYYY
+[TABLE ROW] Footnote 2
+[TABLE ROW] Footnote 3
+[TABLE ROW] Footnote 4
+[TABLE ROW] Layout notes | Include/Not include Indication
+Include/Not include SUBTOTAL
+Display Category 1 - Category X:
+<18
+≥18 to <65
+≥65
+[TABLE ROW] Programming notes | This table should include all data from both completed and ongoing studies sponsored by BMS.
+This table should be sorted by indication by alphabetic order, within indication, sorted by study ID.
+For indication categories, each category will only be displayed if at least one occurrence was reported (i.e. count greater than 0 in at least one group).
+‘NOT REPORTED’ column will only be displayed if at least one occurrence was reported (i.e. count greater than 0 in at least one group) for each category..
+[TABLE ROW] Parameter | Values
+[TABLE ROW] Repeat
+[TABLE ROW] Template ID | GS_DSUR_DM_T_002
+[TABLE ROW] Output File Name | rt-dm-pcumage.lst
+[TABLE ROW] Purpose | DSUR
+[TABLE ROW] Table No. | Table 4B.3-pediatric
+[TABLE ROW] Title 1 | Cumulative Exposure to BMS Drug by Age Group -- Pediatric Studies -- BMS-sponsored Clinical Studies
+[TABLE ROW] Title 2 | Based on Information up to Data Cutoff Date DDMMMYYY
+[TABLE ROW] Title 3 | All Treated Subjects
+[TABLE ROW] Footnote 1 | Data Lock Point (DLP) Date: DDMMMYYYY
+[TABLE ROW] Footnote 2
+[TABLE ROW] Footnote 3
+[TABLE ROW] Footnote 4
+[TABLE ROW] Layout notes | Include/Not include Indication
+Include/Not include SUBTOTAL
+Display Category 1 - Category X:
+<28 days 
+≥28 days to <2 years 
+≥2 years to <12 years 
+≥12 years to <18 years
+[TABLE ROW] Programming notes | This table should include all data from both completed and ongoing studies sponsored by BMS.
+This table should be sorted by indication by alphabetic order, within indication, sorted by study ID.
+For indication categories, each category will only be displayed if at least one occurrence was reported (i.e. count greater than 0 in at least one group).
+‘NOT REPORTED’ column will only be displayed if at least one occurrence was reported (i.e. count greater than 0 in at least one group) for each category.
+[TABLE ROW] Parameter | Values
+[TABLE ROW] Repeat
+[TABLE ROW] Template ID | GS_DSUR_DM_T_003
+[TABLE ROW] Output File Name | rt-dm-cumtrt.lst
+[TABLE ROW] Purpose | DSUR
+[TABLE ROW] Table No. | Table 4C
+[TABLE ROW] Title 1 | Number of Treated Subjects -- BMS-sponsored Clinical Studies
+[TABLE ROW] Title 2 | Based on Information up to Data Cutoff Date DDMMMYYY
+[TABLE ROW] Title 3 | All Treated Subjects
+[TABLE ROW] Footnote 1 | Data Lock Point (DLP) Date: DDMMMYYYY
+[TABLE ROW] Footnote 2
+[TABLE ROW] Footnote 3
+[TABLE ROW] Footnote 4
+[TABLE ROW] Layout notes | Include/Not include Indication
+Include/Not include SUBTOTAL
+[TABLE ROW] Programming notes | This table should include all data from both completed and ongoing studies sponsored by BMS.
+BMS Drug is the drug under current reporting period, could include BMS drug monotherapy and BMS drug combo.
+This table should be sorted by indication by alphabetic order, within indication, sorted by study ID. 
+For indication categories, each category will only be displayed if at least one occurrence was reported (i.e. count greater than 0 in at least one group).
+[TABLE ROW] Repeat 2
+[TABLE ROW] SIND | SIND_T1 | SIND_F1 | SIND_F2 | SIND_F3 | SIND_F4 | SIND_F5 | SIND_F6
+[TABLE ROW] Study 1 | Investigators Choice Randomized Subjects Who Crossed Over to Nivolumab | Investigators choice options: cetuximab, methotrexate, docetaxel.
+[TABLE ROW] Study 2
+[TABLE ROW] Study 3
+[TABLE ROW] …
+[TABLE ROW] Parameter | Values
+[TABLE ROW] Repeat 2 | SIND=ALL
+[TABLE ROW] Template ID | GS_CSR_AE_T_001
+[TABLE ROW] Output File Name | rt-ae-bysoc[SIND].lst
+[TABLE ROW] Purpose | IND
+[TABLE ROW] Table No. | Table 1.[SIND]
+[TABLE ROW] Title 1 | Treatment-emergent Adverse Event Identifier Summary
+[TABLE ROW] Title 2 | Based On Information between DDMMMYYYY and DDMMMYYYY for [SIND] Study
+[TABLE ROW] Title 3 | All Treated Subjects
+[TABLE ROW] Title 4 | [SIND_T1]
+[TABLE ROW] Footnote 1 | Data Lock Point (DLP) Date: DDMMMYYYY.
+[TABLE ROW] Footnote 2 | MedDRA: <version>
+[TABLE ROW] Footnote 3
+[TABLE ROW] Footnote 4
+[TABLE ROW] Footnote 5 | [SIND_F1]
+[TABLE ROW] Layout notes | Display Groups and Total *See all column display options in Conventions*
+[TABLE ROW] Programming notes | Subjects shall be counted only once at the System Organ Class (SOC), Preferred Term (PT) and overall levels
+Descending incidence row sorting by Total
+SOC will be sorted by descending incidence then alphabetically 
+PT will be sorted within SOC by descending incidence then alphabetically
+[TABLE ROW] Parameter | Values
+[TABLE ROW] Repeat 2 | SIND=ALL
+[TABLE ROW] Template ID | GS_CSR_AE_T_001
+[TABLE ROW] Output File Name | rt-ae-sae[SIND].lst
+[TABLE ROW] Purpose | IND
+[TABLE ROW] Table No. | Table 2.[SIND]
+[TABLE ROW] Title 1 | Treatment-emergent Serious Adverse Event Identifier Summary
+[TABLE ROW] Title 2 | Based On Information between DDMMMYYYY and DDMMMYYYY for [SIND] Study
+[TABLE ROW] Title 3 | All Treated Subjects
+[TABLE ROW] Title 4 | [SIND_T1]
+[TABLE ROW] Footnote 1 | Data Lock Point (DLP) Date: DDMMMYYYY.
+[TABLE ROW] Footnote 2 | MedDRA: <version>
+[TABLE ROW] Footnote 3
+[TABLE ROW] Footnote 4
+[TABLE ROW] Footnote 5 | [SIND_F1]
+[TABLE ROW] Layout notes | Display Groups and Total *See all column display options in Conventions*
+[TABLE ROW] Programming notes | Subjects shall be counted only once at the System Organ Class (SOC), Preferred Term (PT) and overall levels
+Descending incidence row sorting by Total
+SOC will be sorted by descending incidence then alphabetically 
+PT will be sorted within SOC by descending incidence then alphabetically
+[TABLE ROW] Parameter | Values
+[TABLE ROW] Repeat 2 | SIND=ALL
+[TABLE ROW] Template ID | GS_CSR_AE_L_001
+[TABLE ROW] Output File Name | rl-ae-disc[SIND].lst
+[TABLE ROW] Purpose | IND
+[TABLE ROW] Table No. | Table 3.[SIND]
+[TABLE ROW] Title 1 | Listing of Subjects with Treatment Emergent Adverse Events Leading to Discontinuation of Study Medication
+[TABLE ROW] Title 2 | Based On Information between DDMMMYYYY and DDMMMYYYY for [SIND] Study
+[TABLE ROW] Title 3 | All Treated Subjects
+[TABLE ROW] Title 4 | [SIND_T1]
+[TABLE ROW] Footnote 1 | Data Lock Point (DLP) Date: DDMMMYYYY. MedDRA Version: xx.x
+[TABLE ROW] Footnote 2
+[TABLE ROW] Footnote 3 | Races displayed in the footnote are dependent on the data collected
+A=Asian; B=Black/African American; C=White; I=American Indian/Alaska Native; U=Unknown; P=Native Hawaiian/Other Pacific Islander.
+[TABLE ROW] Footnote 4 | M=Male, F=Female, U=Unknown, UD=Undifferentiated
+[TABLE ROW] Footnote 5 | DUR (DURATION OF EVENT)/ TRD (TIME RELATIVE TO MOST RECENT DOSE): D = DAYS  H = HOURS  M = MINUTES  S = SECONDS
+[TABLE ROW] Footnote 6 | REL (RELATIONSHIP): 1=NOT RELATED  2=RELATED; TRT (TREATMENT REQUIRED): 0 = NO 1=YES 2=MEDICATION 3=PROCEDURE 4=BOTH
+[TABLE ROW] Footnote 7 | ACT displayed in the footnote is dependent on the data collected
+ACT (ACTION): 1=DOSE NOT CHANGED  2=DOSE REDUCED 3=DOSE INCREASED 4=DOSE DELAYED 5=DRUG INTERRUPTED 6=DRUG WITHDRAWN
+[TABLE ROW] Footnote 8 | D1 (Drug 1): XXX  D2 (Drug 2): YYY D3 (Drug 3): ZZZ
+[TABLE ROW] Footnote 9 | OUT (OUTCOME): 1=FATAL 2=RECOVERED/RESOLVED 3=RECOVERED/RESOLVED WITH SEQUELAE 4=NOT RECOVERED/NOT RESOLVED 5=UNKNOWN
+[TABLE ROW] Footnote 10 | Choose CTC (CTCAE grades) or INT (Intensity) based on what severity categories were collected in  specific TA or study
+CTC (COMMON TERMINOLOGY CRITERIA): 1 = GRADE 1  2 = GRADE 2  3 = GRADE 3  4 = GRADE 4  5 = GRADE 5
+OR
+INT (Intensity):  1 = MILD  2 = MODERATE  3 = SEVERE  *Study level intensity reporting: report severity categories as collected
+[TABLE ROW] Layout notes | Display CAT: CTC or INT  *Choose CTC (CTCAE grades) or INT (Intensity) based on what severity categories were collected in  specific TA or study
+
+Include/Not include T *Time
+
+Include/Not include Day
+     Day: Display Study Day  *User can specify Study Day or Period Day
+[TABLE ROW] Programming notes | Rows are sorted in ascending order by Group, Unique Subject ID individual components (Study ID, Site ID, Subject ID), Period, Visit Number, Adverse Event Onset Date/Time, MedDRA System Organ Class, MedDRA Preferred Term and Reported Term
+[TABLE ROW] Parameter | Values
+[TABLE ROW] Repeat 2 | SIND=ALL
+[TABLE ROW] Template ID | PS_DT_L_001
+[TABLE ROW] Output File Name | rl-dt-death[SIND].lst
+[TABLE ROW] Purpose | IND
+[TABLE ROW] Table No. | Table 4.[SIND]
+[TABLE ROW] Title 1 | Death Listing
+[TABLE ROW] Title 2 | Based on Information between DDMMMYYYY and DDMMMYYYY for [SIND] Study
+[TABLE ROW] Title 3 | All Treated Subjects
+[TABLE ROW] Title 4 | [SIND_T1]
+[TABLE ROW] Footnote 1 | Data Lock Point (DLP) Date: DDMMMYYYY.
+[TABLE ROW] Footnote 2 | A=Asian, B=Black/African American, C=White, I=American Indian/Alaska Native, O=Other, P=Native Hawaiian/Other Pacific Islander
+[TABLE ROW] Footnote 3 | [SIND_F1]
+[TABLE ROW] Layout notes | Include/ Not include Randomization Date
+Include/ Not include CRF Source
+[TABLE ROW] Programming notes | Death date should be the one collected from CRF, not imputed
+[TABLE ROW] Parameter | Values
+[TABLE ROW] Repeat
+[TABLE ROW] Template ID | GS_PBRER_EXP_T_001
+[TABLE ROW] Output File Name | rt-ex-ptage.lst
+[TABLE ROW] Purpose | PBRER
+[TABLE ROW] Table No. | Table 6
+[TABLE ROW] Title 1 | Estimated Clinical Exposure to BMS Drug -- BMS-sponsored Clinical Studies
+[TABLE ROW] Title 2 | in Person and Person Time by Age Group and Sex
+[TABLE ROW] Title 3 | Based on information up to Data Cutoff Date DDMMMYYY
+[TABLE ROW] Title 3 | All Treated Subjects
+[TABLE ROW] Footnote 1 | Data Lock Point (DLP) Date: DDMMMYYY
+[TABLE ROW] Footnote 2 | Sum of subject's exposure time. Subject's exposure is defined as time between first and last dose of study treatment +31 days.
+[TABLE ROW] Footnote 3 | Exposure was based on safety populations defined by protocol.
+[TABLE ROW] Footnote 4 | Exposure for blinded studies are estimated from randomization schema specified in the protocol for study xxx
+[TABLE ROW] Footnote 5
+[TABLE ROW] Footnote 6
+[TABLE ROW] Footnote 7
+[TABLE ROW] Layout notes | Include/Not include Indication
+Include/Not include SUBTOTAL
+
+BMS Drug is the drug under current reporting period, could be BMS drug monotherapy, BMS drug combo
+
+Category: Age CategorY:
+SUBCAT1: < 18
+SUBCAT2: >=18 TO <65
+SUBCAT3: >=65
+NOT REPORTED
+
+UNITS= YEARS
+[TABLE ROW] Programming notes | Total person time in <units>: sum of patient’s exposure time in <units>
+This table should include all data from both completed and ongoing studies sponsored by BMS.
+This table should be sorted by indication by alphabetic order, within indication, sorted by study ID. 
+NOT REPORTED will only be displayed if at least one occurrence was reported (i.e. count greater than 0 in at least one group)

@@ -1,0 +1,376 @@
+<?xml version="1.0" ?>
+<!-- |*******************************************************************************-->
+<!-- |                                                                               -->
+<!-- | XML File and Table Name: tr_esi2a_defaults.xml; SUBJECTS, ONSET,              -->
+<!-- |                          DURATION_PERCENT, DURATION_STATS                     --> 
+<!-- |                                                                               -->
+<!-- | Table Version:    1                                                           -->
+<!-- |                                                                               -->
+<!-- | SAS Version:      v8.2                                                        -->
+<!-- |                                                                               -->
+<!-- | Created By:       Joe Novotny                                                 -->
+<!-- |                                                                               -->
+<!-- | Date:             11OCT2006                                                   -->
+<!-- |                                                                               -->
+<!-- | Table Purpose:    Segment defaults for TD_ESI2A display macro                 -->
+<!-- |                                                                               -->
+<!-- |*******************************************************************************-->
+<!-- | Modified By:             Shan Lee                                             -->
+<!-- | Date of Modification:    05 April 2007                                        -->
+<!-- | New version number:      Version 1, build 2                                   -->
+<!-- | Modification ID:         N/a - change applies to entire file.                 -->
+<!-- | Reason For Modification: To implement a new approach of defining default      -->
+<!-- |                          values for each segment, rather than at the overall  -->
+<!-- |                          data display level.                                  -->
+<!-- |                                                                               -->
+<!-- | Modified By:             Shan Lee                                             -->
+<!-- | Date of Modification:    06 June 2007                                         -->
+<!-- | New version number:      Version 1, build 3                                   -->
+<!-- | Reason For Modification: Ensure that tt_code1 for each segment is a numeric,  -->
+<!-- |                          so that tu_multisegments will not convert tt_code1   -->
+<!-- |                          to a character variable, which is not as useful as   -->
+<!-- |                          a numeric when it comes to sorting the final data    -->
+<!-- |                          display.                                             -->
+<!-- ********************************************************************************-->
+<TDESI2A_Defaultsxls>
+    <SUBJECTS>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>codedecodevarpairs</NAME>
+        <VALUE>&amp;g_trtcd &amp;g_trtgrp</VALUE>
+    </SUBJECTS>
+    <SUBJECTS>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>completetypesvars</NAME>
+        <VALUE>&amp;g_trtcd</VALUE>
+    </SUBJECTS>
+    <SUBJECTS>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>denormyn</NAME>
+        <VALUE>N</VALUE>
+    </SUBJECTS>
+    <SUBJECTS>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>display</NAME>
+        <VALUE>N</VALUE>
+    </SUBJECTS>
+    <SUBJECTS>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>dsetindenom</NAME>
+        <VALUE>&amp;g_popdata</VALUE>
+    </SUBJECTS>
+    <SUBJECTS>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>dsetout</NAME>
+        <VALUE>segment&amp;s._out</VALUE>
+    </SUBJECTS>
+    <SUBJECTS>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>groupbyvarpop</NAME>
+        <VALUE>&amp;g_trtcd</VALUE>
+    </SUBJECTS>
+    <SUBJECTS>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>groupbyvarsdenom</NAME>
+        <VALUE>&amp;g_trtcd</VALUE>
+    </SUBJECTS>
+    <SUBJECTS>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>groupbyvarsnumer</NAME>
+        <VALUE>&amp;g_trtcd &amp;g_trtgrp</VALUE>
+    </SUBJECTS>
+    <SUBJECTS>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>postsubset</NAME>
+        <VALUE>tt_grplabel=' '; tt_code1=.; tt_decode1='Number of Subjects Experiencing &amp;aepts';</VALUE>
+    </SUBJECTS>
+    <SUBJECTS>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>rowlabelvarname</NAME>
+        <VALUE>tt_grplabel</VALUE>
+    </SUBJECTS>
+    <SUBJECTS>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>totaldecode</NAME>
+        <VALUE>Total</VALUE>
+    </SUBJECTS>
+    <SUBJECTS>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>totalforvar</NAME>
+        <VALUE>&amp;g_trtcd</VALUE>
+    </SUBJECTS>
+    <SUBJECTS>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>totalid</NAME>
+        <VALUE>99</VALUE>
+    </SUBJECTS>
+    <ONSET>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>codedecodevarpairs</NAME>
+        <VALUE>&amp;g_trtcd &amp;g_trtgrp &amp;aeonsetvar esi2a_onset</VALUE>
+    </ONSET>
+    <ONSET>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>completetypesvars</NAME>
+        <VALUE>&amp;g_trtcd</VALUE>
+    </ONSET>
+    <ONSET>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>denormyn</NAME>
+        <VALUE>N</VALUE>
+    </ONSET>
+    <ONSET>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>display</NAME>
+        <VALUE>N</VALUE>
+    </ONSET>
+    <ONSET>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>dsetindenom</NAME>
+        <VALUE>td_esi2a_onset</VALUE>
+    </ONSET>
+    <ONSET>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>dsetinnumer</NAME>
+        <VALUE>td_esi2a_onset</VALUE>
+    </ONSET>
+    <ONSET>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>dsetout</NAME>
+        <VALUE>segment&amp;s._out(rename=(&amp;aeonsetvar=tt_code1 esi2a_onset=tt_decode1))</VALUE>
+    </ONSET>
+    <ONSET>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>groupbyvarpop</NAME>
+        <VALUE>&amp;g_trtcd</VALUE>
+    </ONSET>
+    <ONSET>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>groupbyvarsdenom</NAME>
+        <VALUE>&amp;g_trtcd</VALUE>
+    </ONSET>
+    <ONSET>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>groupbyvarsnumer</NAME>
+        <VALUE>&amp;g_trtcd &amp;g_trtgrp &amp;aeonsetvar esi2a_onset</VALUE>
+    </ONSET>
+    <ONSET>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>psclassoptions</NAME>
+        <VALUE>preloadfmt</VALUE>
+    </ONSET>
+    <ONSET>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>psformat</NAME>
+        <VALUE>&amp;aeonsetvar &amp;aeonsetfmt</VALUE>
+    </ONSET>
+    <ONSET>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>resultstyle</NAME>
+        <VALUE>NUMER</VALUE>
+    </ONSET>
+    <ONSET>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>rowlabelvarname</NAME>
+        <VALUE>tt_grplabel</VALUE>
+    </ONSET>
+    <ONSET>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>totaldecode</NAME>
+        <VALUE>Total</VALUE>
+    </ONSET>
+    <ONSET>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>totalforvar</NAME>
+        <VALUE>&amp;g_trtcd</VALUE>
+    </ONSET>
+    <ONSET>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>totalid</NAME>
+        <VALUE>99</VALUE>
+    </ONSET>
+    <DURATION_PERCENT>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>codedecodevarpairs</NAME>
+        <VALUE>&amp;g_trtcd &amp;g_trtgrp &amp;aedurvar esi2a_dur</VALUE>
+    </DURATION_PERCENT>
+    <DURATION_PERCENT>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>completetypesvars</NAME>
+        <VALUE>&amp;g_trtcd</VALUE>
+    </DURATION_PERCENT>
+    <DURATION_PERCENT>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>denormyn</NAME>
+        <VALUE>N</VALUE>
+    </DURATION_PERCENT>
+    <DURATION_PERCENT>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>display</NAME>
+        <VALUE>N</VALUE>
+    </DURATION_PERCENT>
+    <DURATION_PERCENT>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>dsetindenom</NAME>
+        <VALUE>td_esi2a_dur</VALUE>
+    </DURATION_PERCENT>
+    <DURATION_PERCENT>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>dsetinnumer</NAME>
+        <VALUE>td_esi2a_dur</VALUE>
+    </DURATION_PERCENT>
+    <DURATION_PERCENT>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>dsetout</NAME>
+        <VALUE>segment&amp;s._out(rename=(&amp;aedurvar=tt_code1 esi2a_dur=tt_decode1))</VALUE>
+    </DURATION_PERCENT>
+    <DURATION_PERCENT>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>groupbyvarpop</NAME>
+        <VALUE>&amp;g_trtcd</VALUE>
+    </DURATION_PERCENT>
+    <DURATION_PERCENT>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>groupbyvarsdenom</NAME>
+        <VALUE>&amp;g_trtcd</VALUE>
+    </DURATION_PERCENT>
+    <DURATION_PERCENT>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>groupbyvarsnumer</NAME>
+        <VALUE>&amp;g_trtcd &amp;g_trtgrp (&amp;aedurvar=0; esi2a_dur=' n';) &amp;aedurvar esi2a_dur</VALUE>
+    </DURATION_PERCENT>
+    <DURATION_PERCENT>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>psclassoptions</NAME>
+        <VALUE>preloadfmt</VALUE>
+    </DURATION_PERCENT>
+    <DURATION_PERCENT>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>psformat</NAME>
+        <VALUE>&amp;aedurvar &amp;aedurfmt</VALUE>
+    </DURATION_PERCENT>
+    <DURATION_PERCENT>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>remsummarypctyn</NAME>
+        <VALUE>Y</VALUE>
+    </DURATION_PERCENT>
+    <DURATION_PERCENT>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>rowlabelvarname</NAME>
+        <VALUE>tt_grplabel</VALUE>
+    </DURATION_PERCENT>
+    <DURATION_PERCENT>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>totaldecode</NAME>
+        <VALUE>Total</VALUE>
+    </DURATION_PERCENT>
+    <DURATION_PERCENT>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>totalforvar</NAME>
+        <VALUE>&amp;g_trtcd</VALUE>
+    </DURATION_PERCENT>
+    <DURATION_PERCENT>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>totalid</NAME>
+        <VALUE>99</VALUE>
+    </DURATION_PERCENT>
+    <DURATION_STATS>
+        <TYPE>TU_SUMSTATSINROWS</TYPE>
+        <NAME>acrossvar</NAME>
+        <VALUE>&amp;g_trtcd</VALUE>
+    </DURATION_STATS>
+    <DURATION_STATS>
+        <TYPE>TU_SUMSTATSINROWS</TYPE>
+        <NAME>acrossvardecode</NAME>
+        <VALUE>&amp;g_trtgrp</VALUE>
+    </DURATION_STATS>
+    <DURATION_STATS>
+        <TYPE>TU_SUMSTATSINROWS</TYPE>
+        <NAME>addbignyn</NAME>
+        <VALUE>Y</VALUE>
+    </DURATION_STATS>
+    <DURATION_STATS>
+        <TYPE>TU_SUMSTATSINROWS</TYPE>
+        <NAME>analysisvarname</NAME>
+        <VALUE>tt_grplabel</VALUE>
+    </DURATION_STATS>
+    <DURATION_STATS>
+        <TYPE>TU_SUMSTATSINROWS</TYPE>
+        <NAME>analysisvars</NAME>
+        <VALUE>&amp;aedurvar</VALUE>
+    </DURATION_STATS>
+    <DURATION_STATS>
+        <TYPE>TU_SUMSTATSINROWS</TYPE>
+        <NAME>codedecodevarpairs</NAME>
+        <VALUE>&amp;g_trtcd &amp;g_trtgrp</VALUE>
+    </DURATION_STATS>
+    <DURATION_STATS>
+        <TYPE>TU_SUMSTATSINROWS</TYPE>
+        <NAME>denormyn</NAME>
+        <VALUE>N</VALUE>
+    </DURATION_STATS>
+    <DURATION_STATS>
+        <TYPE>TU_SUMSTATSINROWS</TYPE>
+        <NAME>display</NAME>
+        <VALUE>N</VALUE>
+    </DURATION_STATS>
+    <DURATION_STATS>
+        <TYPE>TU_SUMSTATSINROWS</TYPE>
+        <NAME>dsetin</NAME>
+        <VALUE>td_esi2a_dur</VALUE>
+    </DURATION_STATS>
+    <DURATION_STATS>
+        <TYPE>TU_SUMSTATSINROWS</TYPE>
+        <NAME>dsetout</NAME>
+        <VALUE>segment&amp;s._out</VALUE>
+    </DURATION_STATS>
+    <DURATION_STATS>
+        <TYPE>TU_SUMSTATSINROWS</TYPE>
+        <NAME>groupbyvarsanaly</NAME>
+        <VALUE>&amp;g_trtcd &amp;g_trtgrp</VALUE>
+    </DURATION_STATS>
+    <DURATION_STATS>
+        <TYPE>TU_SUMSTATSINROWS</TYPE>
+        <NAME>groupbyvarpop</NAME>
+        <VALUE>&amp;g_trtcd</VALUE>
+    </DURATION_STATS>
+    <DURATION_STATS>
+        <TYPE>TU_SUMSTATSINROWS</TYPE>
+        <NAME>resultvarname</NAME>
+        <VALUE>tt_result</VALUE>
+    </DURATION_STATS>
+    <DURATION_STATS>
+        <TYPE>TU_SUMSTATSINROWS</TYPE>
+        <NAME>statsdps</NAME>
+        <VALUE>mean +1 std +2</VALUE>
+    </DURATION_STATS>
+    <DURATION_STATS>
+        <TYPE>TU_SUMSTATSINROWS</TYPE>
+        <NAME>statslist</NAME>
+        <VALUE>mean std median min max</VALUE>
+    </DURATION_STATS>
+    <DURATION_STATS>
+        <TYPE>TU_SUMSTATSINROWS</TYPE>
+        <NAME>statslistvarname</NAME>
+        <VALUE>tt_decode1</VALUE>
+    </DURATION_STATS>
+    <DURATION_STATS>
+        <TYPE>TU_SUMSTATSINROWS</TYPE>
+        <NAME>statslistvarordervarname</NAME>
+        <VALUE>tt_code1</VALUE>
+    </DURATION_STATS>
+    <DURATION_STATS>
+        <TYPE>TU_SUMSTATSINROWS</TYPE>
+        <NAME>totaldecode</NAME>
+        <VALUE>Total</VALUE>
+    </DURATION_STATS>
+    <DURATION_STATS>
+        <TYPE>TU_SUMSTATSINROWS</TYPE>
+        <NAME>totalforvar</NAME>
+        <VALUE>&amp;g_trtcd</VALUE>
+    </DURATION_STATS>
+    <DURATION_STATS>
+        <TYPE>TU_SUMSTATSINROWS</TYPE>
+        <NAME>totalid</NAME>
+        <VALUE>99</VALUE>
+    </DURATION_STATS>
+</TDESI2A_Defaultsxls>

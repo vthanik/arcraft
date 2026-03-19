@@ -1,0 +1,10 @@
+# Source all R files for testing without package installation
+r_dir <- file.path(getwd(), "R")
+if (!dir.exists(r_dir)) r_dir <- file.path(dirname(dirname(getwd())), "R")
+if (dir.exists(r_dir)) {
+  for (f in list.files(r_dir, pattern = "\\.R$", full.names = TRUE)) {
+    tryCatch(source(f, local = FALSE), error = function(e) {
+      message("Skipping ", basename(f), ": ", e$message)
+    })
+  }
+}

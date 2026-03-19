@@ -1,0 +1,236 @@
+<?xml version="1.0" ?>
+<!-- |*******************************************************************************-->
+<!-- |                                                                               -->
+<!-- | XML File and Table Name: tr_mseg_defaults.xml, MSEG                           -->
+<!-- |                                                                               -->
+<!-- | Table Version:    1                                                           -->
+<!-- |                                                                               -->
+<!-- | SAS Version:      v8.2                                                        -->
+<!-- |                                                                               -->
+<!-- | Created By:       Shan Lee                                                    -->
+<!-- |                                                                               -->
+<!-- | Date:             26-May-2006                                                 -->
+<!-- |                                                                               -->
+<!-- | Table Purpose:    Segment defaults for tu_multisegments macro                 -->
+<!-- |                                                                               -->
+<!-- |*******************************************************************************-->
+<!-- | Modified By:                                                                  -->
+<!-- | Date of Modification:                                                         -->
+<!-- | New version number:                                                           -->
+<!-- | Modification ID:                                                              -->
+<!-- | Reason For Modification:                                                      -->
+<!-- |                                                                               -->
+<!-- |                                                                               -->
+<!-- ********************************************************************************-->
+<TUMSEG_Defaultsxls>
+    <MSEG>
+        <TDMACRO>TU_MULTISEGMENTS</TDMACRO>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>countDistinctWhatVar</NAME>
+        <VALUE>&amp;g_subjid</VALUE>
+    </MSEG>
+    <MSEG>
+        <TDMACRO>TU_MULTISEGMENTS</TDMACRO>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>dsetout</NAME>
+        <VALUE>segment&amp;s._out</VALUE>
+    </MSEG>
+    <MSEG>
+        <TDMACRO>TU_MULTISEGMENTS</TDMACRO>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>display</NAME>
+        <VALUE>N </VALUE>
+    </MSEG>
+    <MSEG>
+        <TDMACRO>TU_MULTISEGMENTS</TDMACRO>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>resultPctDps</NAME>
+        <VALUE>0</VALUE>
+    </MSEG>
+    <MSEG>
+        <TDMACRO>TU_MULTISEGMENTS</TDMACRO>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>acrossColVarPrefix</NAME>
+        <VALUE>tt_result</VALUE>
+    </MSEG>
+    <MSEG>
+        <TDMACRO>TU_MULTISEGMENTS</TDMACRO>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>rowlabelvarname</NAME>
+        <VALUE>tt_grplabel</VALUE>
+    </MSEG>
+    <MSEG>
+        <TDMACRO>TU_MULTISEGMENTS</TDMACRO>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>psClassOptions</NAME>
+        <VALUE>preloadfmt</VALUE>
+    </MSEG>
+    <MSEG>
+        <TDMACRO>TU_MULTISEGMENTS</TDMACRO>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>denormyn</NAME>
+        <VALUE>N</VALUE>
+    </MSEG>
+    <MSEG>
+        <TDMACRO>TU_MULTISEGMENTS</TDMACRO>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>addbignyn</NAME>
+        <VALUE>Y</VALUE>
+    </MSEG>
+    <MSEG>
+        <TDMACRO>TU_MULTISEGMENTS</TDMACRO>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>bignvarname</NAME>
+        <VALUE>tt_bnnm</VALUE>
+    </MSEG>
+    <MSEG>
+        <TDMACRO>TU_MULTISEGMENTS</TDMACRO>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>totalforvar</NAME>
+        <VALUE>&amp;g_trtcd</VALUE>
+    </MSEG>
+    <MSEG>
+        <TDMACRO>TU_MULTISEGMENTS</TDMACRO>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>groupbyvarpop</NAME>
+        <VALUE>&amp;g_trtcd</VALUE>
+    </MSEG>
+    <MSEG>
+        <TDMACRO>TU_MULTISEGMENTS</TDMACRO>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>totaldecode</NAME>
+        <VALUE>Total</VALUE>
+    </MSEG>
+    <MSEG>
+        <TDMACRO>TU_MULTISEGMENTS</TDMACRO>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>totalid</NAME>
+        <VALUE>9999</VALUE>
+    </MSEG>
+    <MSEG>
+        <TDMACRO>TU_MULTISEGMENTS</TDMACRO>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>codedecodevarpairs</NAME>
+        <VALUE>&amp;g_trtcd &amp;g_trtgrp</VALUE>
+    </MSEG>
+    <MSEG>
+        <TDMACRO>TU_MULTISEGMENTS</TDMACRO>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>groupbyvarsdenom</NAME>
+        <VALUE>&amp;g_trtcd</VALUE>
+    </MSEG>
+    <MSEG>
+        <TDMACRO>TU_MULTISEGMENTS</TDMACRO>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>remsummarypctyn</NAME>
+        <VALUE>Y</VALUE>
+    </MSEG>
+    <MSEG>
+        <TDMACRO>TU_MULTISEGMENTS</TDMACRO>
+        <TYPE>TU_SUMSTATSINROWS</TYPE>
+        <NAME>dsetout</NAME>
+        <VALUE>segment&amp;s._out</VALUE>
+    </MSEG>
+    <MSEG>
+        <TDMACRO>TU_MULTISEGMENTS</TDMACRO>
+        <TYPE>TU_SUMSTATSINROWS</TYPE>
+        <NAME>acrossVar</NAME>
+        <VALUE>&amp;g_trtcd</VALUE>
+    </MSEG>
+    <MSEG>
+        <TDMACRO>TU_MULTISEGMENTS</TDMACRO>
+        <TYPE>TU_SUMSTATSINROWS</TYPE>
+        <NAME>acrossVarDecode</NAME>
+        <VALUE>&amp;g_trtgrp</VALUE>
+    </MSEG>
+    <MSEG>
+        <TDMACRO>TU_MULTISEGMENTS</TDMACRO>
+        <TYPE>TU_SUMSTATSINROWS</TYPE>
+        <NAME>statslist</NAME>
+        <VALUE>N MEAN STD MEDIAN MIN MAX</VALUE>
+    </MSEG>
+    <MSEG>
+        <TDMACRO>TU_MULTISEGMENTS</TDMACRO>
+        <TYPE>TU_SUMSTATSINROWS</TYPE>
+        <NAME>statslistvarname</NAME>
+        <VALUE>tt_decode1</VALUE>
+    </MSEG>
+    <MSEG>
+        <TDMACRO>TU_MULTISEGMENTS</TDMACRO>
+        <TYPE>TU_SUMSTATSINROWS</TYPE>
+        <NAME>groupbyvarpop</NAME>
+        <VALUE>&amp;g_trtcd</VALUE>
+    </MSEG>
+    <MSEG>
+        <TDMACRO>TU_MULTISEGMENTS</TDMACRO>
+        <TYPE>TU_SUMSTATSINROWS</TYPE>
+        <NAME>groupbyvarsanaly</NAME>
+        <VALUE>&amp;g_trtcd &amp;g_trtgrp</VALUE>
+    </MSEG>
+    <MSEG>
+        <TDMACRO>TU_MULTISEGMENTS</TDMACRO>
+        <TYPE>TU_SUMSTATSINROWS</TYPE>
+        <NAME>statsdps </NAME>
+        <VALUE>N +0 MIN +0 MAX +0 MEDIAN +1 MEAN +1 STD +2</VALUE>
+    </MSEG>
+    <MSEG>
+        <TDMACRO>TU_MULTISEGMENTS</TDMACRO>
+        <TYPE>TU_SUMSTATSINROWS</TYPE>
+        <NAME>analysisvarname</NAME>
+        <VALUE>tt_grplabel</VALUE>
+    </MSEG>
+    <MSEG>
+        <TDMACRO>TU_MULTISEGMENTS</TDMACRO>
+        <TYPE>TU_SUMSTATSINROWS</TYPE>
+        <NAME>statslistvarordervarname</NAME>
+        <VALUE>tt_code1</VALUE>
+    </MSEG>
+    <MSEG>
+        <TDMACRO>TU_MULTISEGMENTS</TDMACRO>
+        <TYPE>TU_SUMSTATSINROWS</TYPE>
+        <NAME>display</NAME>
+        <VALUE>N</VALUE>
+    </MSEG>
+    <MSEG>
+        <TDMACRO>TU_MULTISEGMENTS</TDMACRO>
+        <TYPE>TU_SUMSTATSINROWS</TYPE>
+        <NAME>denormyn</NAME>
+        <VALUE>N</VALUE>
+    </MSEG>
+    <MSEG>
+        <TDMACRO>TU_MULTISEGMENTS</TDMACRO>
+        <TYPE>TU_SUMSTATSINROWS</TYPE>
+        <NAME>resultvarname</NAME>
+        <VALUE>tt_result</VALUE>
+    </MSEG>
+    <MSEG>
+        <TDMACRO>TU_MULTISEGMENTS</TDMACRO>
+        <TYPE>TU_SUMSTATSINROWS</TYPE>
+        <NAME>totaldecode</NAME>
+        <VALUE>Total</VALUE>
+    </MSEG>
+    <MSEG>
+        <TDMACRO>TU_MULTISEGMENTS</TDMACRO>
+        <TYPE>TU_SUMSTATSINROWS</TYPE>
+        <NAME>totalforvar</NAME>
+        <VALUE>&amp;g_trtcd</VALUE>
+    </MSEG>
+    <MSEG>
+        <TDMACRO>TU_MULTISEGMENTS</TDMACRO>
+        <TYPE>TU_SUMSTATSINROWS</TYPE>
+        <NAME>totalid</NAME>
+        <VALUE>9999</VALUE>
+    </MSEG>
+    <MSEG>
+        <TDMACRO>TU_MULTISEGMENTS</TDMACRO>
+        <TYPE>TU_SUMSTATSINROWS</TYPE>
+        <NAME>addbignyn</NAME>
+        <VALUE>Y</VALUE>
+    </MSEG>
+    <MSEG>
+        <TDMACRO>TU_MULTISEGMENTS</TDMACRO>
+        <TYPE>TU_SUMSTATSINROWS</TYPE>
+        <NAME>codedecodevarpairs</NAME>
+        <VALUE>&amp;g_trtcd &amp;g_trtgrp</VALUE>
+    </MSEG>
+</TUMSEG_Defaultsxls>

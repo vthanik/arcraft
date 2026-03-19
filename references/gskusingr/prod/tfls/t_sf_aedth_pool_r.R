@@ -1,0 +1,245 @@
+####------------------------------------------------------------------------####
+# Program Name: t_sf_aedth_pool_r.R
+# Domino Environment: Multilingual Frozen R4.5.1_2025-09-09_v1 SASViya4
+# Developer: Pragya Tripathi / ps209009
+# Purpose: Table 14.3.3.5c  -  Summary of Treatment-Emergent Adverse Events Leading to Death by 
+# System Organ Class and Preferred Term (Phase 1 & 1b pooled)  -  Safety Analysis Set
+#
+# Input:
+#   - adam [adbs, adae]
+# Output:
+#   - dd [t_sf_aedth_pool_r]
+#   - File: ../prod/output/t_sf_aedth_pool_r.RTF
+#
+# External files called:
+#   - /mnt/code/functions/r_setup.R
+#
+# Additional Notes:
+#
+#-------------------------------------------------------------------------------
+
+# --- 0. Setup and Library Loading ---
+
+pkg_load("dplyr", "forcats", "stringr", "tidyr", "purrr", "cards", "tfrmt")
+
+# --- 1. Load Data and Define Factor Levels ---
+
+# Load Basic Data Structure and filter for the Safety population.
+adbs_raw <- read_data_catalog(adamdata$adbs) |>
+  filter(SAFFL == "Y", !is.na(DOSGRP))
+
+# Load Adverse Event data for the Safety population.
+adae_raw <- read_data_catalog(adamdata$adae) |>
+  filter(SAFFL == "Y" & AOUT == "FATAL" & TRTEMFL == "Y")
+
+# --- EARLY EXIT HANDLING: No Data Case ----------------------------------------
+
+no_data_flag <- nrow(adae_raw) == 0
+
+# Dynamically create ordered Treatment Group factor levels.
+trt_levels <- adbs_raw |>
+  distinct(DOSGRPN, DOSGRP) |>
+  arrange(DOSGRPN) |>
+  pull(DOSGRP)
+trt_levels_total <- c(trt_levels, "Total")
+
+# --- 2. Prepare Analysis Population Denominator ---
+
+# Create `pop` with one row per patient per analysis group (incl. "Total").
+pop <-
+  bind_rows(adbs_raw, adbs_raw |> mutate(DOSGRP = "Total")) |>
+  distinct(USUBJID, DOSGRP) |>
+  mutate(DOSGRP = factor(DOSGRP, levels = trt_levels_total))
+
+# --- 3. Prepare Analysis-Specific Dataset ---
+
+# Create `adae_by_trt`, containing clean data for each actual treatment group.
+adae_by_trt <- adae_raw |>
+  mutate(
+    AESOC = coalesce(AESOC, "Uncoded SOC"),
+    AEDECOD = coalesce(AEDECOD, "Uncoded PT")
+  ) |>
+  distinct(USUBJID, AESOC, AEDECOD) |>
+  inner_join(select(adbs_raw, USUBJID, DOSGRP), by = "USUBJID")
+
+# Create the final `adae` dataset by adding the "Total" group to `adae_by_trt`
+# and setting the final factor levels.
+adae <- adae_by_trt |>
+  bind_rows(mutate(adae_by_trt, DOSGRP = "Total")) |>
+  mutate(DOSGRP = factor(DOSGRP, levels = trt_levels_total))
+
+if (no_data_flag) {
+  
+  # --- CREATE PLACEHOLDER DATA ----------------------------------------------
+  
+  final_ard <- tibble(
+    DOSGRP = NA_real_,
+    variable = "No data to report",
+    variable_level = "No data to report",
+    stat_name = "",
+    stat = NA_real_
+  )
+  
+  tfobj <- tfrmt(
+    group = variable,
+    label = variable_level,
+    column = DOSGRP,
+    value = stat,
+    param = stat_name,
+    body_plan = body_plan(
+      frmt_structure(
+        group_val = ".default",
+        label_val = ".default",
+        frmt(" ")
+      )
+    )
+  )
+  
+  gt <- print_to_gt(tfobj, final_ard)
+  
+  rtf_obj <- gt |>
+    rtf_table() |>
+    rtf_col_align(variable_level = "left") |>
+    rtf_col_widths(everything() ~ "1.05in") |>
+    rtf_col_label(variable_level = "") |>
+    rtf_title(
+      "Table 14.3.3.5c",
+      "Summary of Treatment-Emergent Adverse Events Leading to Death by System Organ Class and Preferred Term",
+      "(Phase 1 & 1b pooled)"
+    ) |>
+    rtf_header(
+      hfrow(paste("Protocol:", g_config$studyid), "Page _PAGEOF_"),
+      hfrow("Population: Safety", paste("Data as of", g_config$datadate))
+    ) |>
+    rtf_footer(
+      "Note: No treatment-emergent adverse events leading to death were reported.",
+      "Note: Adverse Events are coded with MedDRA 28.0."
+    ) |>
+    build_rtf(
+      file = file.path(g_paths$output, "t_sf_aedth_pool_r.rtf")
+    )
+  
+} else {
+  
+  # ===================== ORIGINAL LOGIC (UNCHANGED) ==========================
+  
+  # --- 4. Build Analysis Results Data (ARD) using `cards` ---
+  
+  ard_socpt <- adae |>
+    ard_stack_hierarchical(
+      by = DOSGRP,
+      variables = c(AESOC, AEDECOD),
+      denominator = pop,
+      id = USUBJID,
+      over_variables = TRUE
+    )
+  
+  processed_ard <- ard_socpt |>
+    unlist_ard_columns() |>
+    filter(stat_name %in% c("n", "p")) |>
+    mutate(
+      stat = case_when(
+        stat_name == "p" ~ coalesce(stat * 100, 0),
+        .default = stat
+      )
+    ) |>
+    select(-any_of(c("warning", "error", "fmt_fun"))) |>
+    rename_ard_columns(columns = all_ard_groups("names"))
+  
+  reshaped_ard <- processed_ard |>
+    filter(variable != "DOSGRP") |>
+    mutate(
+      .row_type = case_when(
+        variable == "..ard_hierarchical_overall.." ~ "overall",
+        variable == "AESOC" ~ "soc",
+        variable == "AEDECOD" ~ "pt"
+      ),
+      variable = case_when(
+        .row_type == "overall" ~ "Patients with Any TEAE",
+        .row_type == "soc" ~ variable_level,
+        .row_type == "pt" ~ AESOC
+      ),
+      variable_level = case_when(
+        .row_type == "overall" ~ variable,
+        .row_type == "soc" ~ "Any event",
+        .row_type == "pt" ~ variable_level
+      )
+    ) |>
+    select(-AESOC, -.row_type)
+  
+  total_counts <- reshaped_ard |>
+    filter(DOSGRP == "Total", stat_name == "n") |>
+    select(variable, variable_level, all_count = stat)
+  
+  soc_total_counts <- total_counts |>
+    filter(variable_level == "Any event") |>
+    select(variable, soc_count = all_count)
+  
+  main_stats_ard <- reshaped_ard |>
+    left_join(total_counts, by = c("variable", "variable_level")) |>
+    left_join(soc_total_counts, by = "variable") |>
+    mutate(
+      soc_count = coalesce(soc_count, all_count),
+      DOSGRP = factor(DOSGRP, levels = trt_levels_total)
+    ) |>
+    arrange(desc(soc_count), desc(all_count), variable, DOSGRP) |>
+    select(-all_count, -soc_count)
+  
+  population_counts_ard <- processed_ard |>
+    filter(variable == "DOSGRP", stat_name == "n") |>
+    mutate(
+      DOSGRP = variable_level,
+      stat_name = "popn"
+    ) |>
+    select(-variable, -variable_level)
+  
+  final_ard <- bind_rows(main_stats_ard, population_counts_ard) |>
+    mutate(across(where(is.factor), as.character)) |>
+    select(DOSGRP, variable, variable_level, stat_name, stat)
+  
+  tfobj <- tfrmt(
+    group = variable,
+    label = variable_level,
+    column = DOSGRP,
+    value = stat,
+    param = stat_name,
+    body_plan = body_plan(
+      frmt_structure(
+        group_val = ".default",
+        label_val = ".default",
+        frmt_combine("{n} {p}")
+      )
+    ),
+    big_n = big_n_structure(param_val = "popn", n_frmt = frmt("\n(N=x)"))
+  )
+  
+  gt <- print_to_gt(tfobj, final_ard)
+  
+  rtf_obj <- gt |>
+    rtf_table() |>
+    rtf_col_align(
+      variable_level = "left",
+      starts_with(c("C", "T")) ~ "center",
+      .group = "header"
+    ) |>
+    rtf_col_widths(starts_with(c("C", "T")) ~ "1.05in") |>
+    rtf_col_label(variable_level = "System Organ Class\n  Preferred Term") |>
+    rtf_paginate_cols(id_columns = variable_level, split_at = 5) |>
+    rtf_title(
+      "Table 14.3.3.5c",
+      "Summary of Treatment-Emergent Adverse Events Leading to Death by System Organ Class and Preferred Term",
+      "(Phase 1 & 1b pooled)"
+    ) |>
+    rtf_header(
+      hfrow(paste("Protocol:", g_config$studyid), "Page _PAGEOF_"),
+      hfrow("Population: Safety", paste("Data as of", g_config$datadate))
+    ) |>
+    rtf_footer(
+      "Note: Adverse Events are coded with MedDRA 28.0.",
+      "Note: Treatment-emergent adverse events (TEAE) will be recorded from the start of study treatment until 30 days after the last dose of IDRX-42.",
+      "Note: Each patient is counted at most once in each category."
+    ) |>
+    build_rtf(
+      file = file.path(g_paths$output, "t_sf_aedth_pool_r.rtf")
+    )
+}

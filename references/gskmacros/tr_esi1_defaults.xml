@@ -1,0 +1,806 @@
+<?xml version="1.0" ?>
+<!-- |*******************************************************************************-->
+<!-- |                                                                               -->
+<!-- | XML File and Table Names: tr_esi1_defaults.xml; subjects, events,             -->
+<!-- |                           characteristics, occurrences, outcome, frequency,   -->
+<!-- |                           intensity, grade, action                            -->
+<!-- |                                                                               -->
+<!-- | Table Version:    2 build 1                                                   -->
+<!-- |                                                                               -->
+<!-- | SAS Version:      v8.2                                                        -->
+<!-- |                                                                               -->
+<!-- | Created By:       Joe Novotny                                                 -->
+<!-- |                                                                               -->
+<!-- | Date:             03Jan2007                                                   -->
+<!-- |                                                                               -->
+<!-- | Table Purpose:    Store default parameter values for calls to tu_freq         -->
+<!-- |                   corresponding to segments in td_esi1.                       -->
+<!-- |                                                                               -->
+<!-- |*******************************************************************************-->
+<!-- | Modified By:             Shan Lee                                             -->
+<!-- | Date of Modification:    02-May-07                                            -->
+<!-- | New version number:      1 build 2                                            -->
+<!-- | Modification ID:         n/a - the entire file has been re-written            -->
+<!-- | Reason For Modification: A new approach has been adopted, where this XML file -->
+<!-- |                          specifies default parameter values for the calls to  -->
+<!-- |                          the package macros for each segment, rather than     -->
+<!-- |                          specifying defaults that apply overall to the data   -->
+<!-- |                          display.                                             -->
+<!-- |                                                                               -->
+<!-- | Modified By:             Shan Lee                                             -->
+<!-- | Date of Modification:    09-May-07                                            -->
+<!-- | New version number:      1 build 3                                            -->
+<!-- | Reason For Modification: The action taken segment should read in the overall  -->
+<!-- |                          DSETIN dataset, instead of a dataset created by the  -->
+<!-- |                          wrapper macro, because the values of action taken are-->
+<!-- |                          mutually exclusive, so the data does not need to be  -->
+<!-- |                          pre-processed to select the observations to be       -->
+<!-- |                          summarised.                                          -->
+<!-- |                          This modification is a response to feedback during   -->
+<!-- |                          the first round of UAT.                              -->
+<!-- |                                                                               -->
+<!-- | Modified By:             Shan Lee                                             -->
+<!-- | Date of Modification:    17-Jun-08                                            -->
+<!-- | New version number:      2 build 1                                            -->
+<!-- | Reason For Modification: Need to escape the ampersands that appear before the -->
+<!-- |                          following text strings:                              -->
+<!-- |                          evntchr, noc, dsetin(where=(aeoutcd not in('.' ' ')))-->
+<!-- ********************************************************************************-->
+<TDESI1_Defaultsxls>
+    <SUBJECTS>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>codedecodevarpairs</NAME>
+        <VALUE>&amp;g_trtcd &amp;g_trtgrp</VALUE>
+    </SUBJECTS>
+    <SUBJECTS>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>completetypesvars</NAME>
+        <VALUE>&amp;g_trtcd</VALUE>
+    </SUBJECTS>
+    <SUBJECTS>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>denormyn</NAME>
+        <VALUE>N</VALUE>
+    </SUBJECTS>
+    <SUBJECTS>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>display</NAME>
+        <VALUE>N</VALUE>
+    </SUBJECTS>
+    <SUBJECTS>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>dsetindenom</NAME>
+        <VALUE>&amp;g_popdata</VALUE>
+    </SUBJECTS>
+    <SUBJECTS>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>dsetout</NAME>
+        <VALUE>segment&amp;s._out</VALUE>
+    </SUBJECTS>
+    <SUBJECTS>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>groupbyvarpop</NAME>
+        <VALUE>&amp;g_trtcd</VALUE>
+    </SUBJECTS>
+    <SUBJECTS>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>groupbyvarsdenom</NAME>
+        <VALUE>&amp;g_trtcd</VALUE>
+    </SUBJECTS>
+    <SUBJECTS>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>groupbyvarsnumer</NAME>
+        <VALUE>&amp;g_trtcd &amp;g_trtgrp</VALUE>
+    </SUBJECTS>
+    <SUBJECTS>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>postsubset</NAME>
+        <VALUE>tt_grplabel=''; tt_code1=''; tt_decode1='Number of Subjects with Event';</VALUE>
+    </SUBJECTS>
+    <SUBJECTS>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>remsummarypctyn</NAME>
+        <VALUE>N</VALUE>
+    </SUBJECTS>
+    <SUBJECTS>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>totaldecode</NAME>
+        <VALUE>Total</VALUE>
+    </SUBJECTS>
+    <SUBJECTS>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>totalforvar</NAME>
+        <VALUE>&amp;g_trtcd</VALUE>
+    </SUBJECTS>
+    <SUBJECTS>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>totalid</NAME>
+        <VALUE>9</VALUE>
+    </SUBJECTS>
+    <EVENTS>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>codedecodevarpairs</NAME>
+        <VALUE>&amp;g_trtcd &amp;g_trtgrp</VALUE>
+    </EVENTS>
+    <EVENTS>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>completetypesvars</NAME>
+        <VALUE>&amp;g_trtcd</VALUE>
+    </EVENTS>
+    <EVENTS>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>countdistinctwhatvar</NAME>
+        <VALUE></VALUE>
+    </EVENTS>
+    <EVENTS>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>denormyn</NAME>
+        <VALUE>N</VALUE>
+    </EVENTS>
+    <EVENTS>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>display</NAME>
+        <VALUE>N</VALUE>
+    </EVENTS>
+    <EVENTS>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>dsetindenom</NAME>
+        <VALUE>&amp;g_popdata</VALUE>
+    </EVENTS>
+    <EVENTS>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>dsetout</NAME>
+        <VALUE>segment&amp;s._out</VALUE>
+    </EVENTS>
+    <EVENTS>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>groupbyvarpop</NAME>
+        <VALUE>&amp;g_trtcd</VALUE>
+    </EVENTS>
+    <EVENTS>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>groupbyvarsdenom</NAME>
+        <VALUE>&amp;g_trtcd</VALUE>
+    </EVENTS>
+    <EVENTS>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>groupbyvarsnumer</NAME>
+        <VALUE>&amp;g_trtcd &amp;g_trtgrp</VALUE>
+    </EVENTS>
+    <EVENTS>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>postsubset</NAME>
+        <VALUE>tt_grplabel=''; tt_code1=''; tt_decode1='Number of Events';</VALUE>
+    </EVENTS>
+    <EVENTS>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>remsummarypctyn</NAME>
+        <VALUE>N</VALUE>
+    </EVENTS>
+    <EVENTS>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>resultstyle</NAME>
+        <VALUE>NUMER</VALUE>
+    </EVENTS>
+    <EVENTS>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>totaldecode</NAME>
+        <VALUE>Total</VALUE>
+    </EVENTS>
+    <EVENTS>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>totalforvar</NAME>
+        <VALUE>&amp;g_trtcd</VALUE>
+    </EVENTS>
+    <EVENTS>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>totalid</NAME>
+        <VALUE>9</VALUE>
+    </EVENTS>
+    <CHARACTERISTICS>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>codedecodevarpairs</NAME>
+        <VALUE>&amp;g_trtcd &amp;g_trtgrp eventcharcd eventchar</VALUE>
+    </CHARACTERISTICS>
+    <CHARACTERISTICS>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>completetypesvars</NAME>
+        <VALUE>&amp;g_trtcd eventcharcd eventchar</VALUE>
+    </CHARACTERISTICS>
+    <CHARACTERISTICS>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>denormyn</NAME>
+        <VALUE>N</VALUE>
+    </CHARACTERISTICS>
+    <CHARACTERISTICS>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>display</NAME>
+        <VALUE>N</VALUE>
+    </CHARACTERISTICS>
+    <CHARACTERISTICS>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>dsetindenom</NAME>
+        <VALUE>_esi1_eventchar_denom</VALUE>
+    </CHARACTERISTICS>
+    <CHARACTERISTICS>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>dsetinnumer</NAME>
+        <VALUE>_esi1_eventchar_numer</VALUE>
+    </CHARACTERISTICS>
+    <CHARACTERISTICS>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>dsetout</NAME>
+        <VALUE>segment&amp;s._out(rename=(eventcharcd=tt_code1 eventchar=tt_decode1))</VALUE>
+    </CHARACTERISTICS>
+    <CHARACTERISTICS>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>groupbyvarpop</NAME>
+        <VALUE>&amp;g_trtcd</VALUE>
+    </CHARACTERISTICS>
+    <CHARACTERISTICS>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>groupbyvarsdenom</NAME>
+        <VALUE>&amp;g_trtcd</VALUE>
+    </CHARACTERISTICS>
+    <CHARACTERISTICS>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>groupbyvarsnumer</NAME>
+        <VALUE>&amp;g_trtcd &amp;g_trtgrp (eventcharcd='0'; eventchar='n';) eventcharcd eventchar</VALUE>
+    </CHARACTERISTICS>
+    <CHARACTERISTICS>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>postsubset</NAME>
+        <VALUE>tt_grplabel='Event Characteristics'; where eventcharcd ne '1';</VALUE>
+    </CHARACTERISTICS>
+    <CHARACTERISTICS>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>psclassoptions</NAME>
+        <VALUE>preloadfmt</VALUE>
+    </CHARACTERISTICS>
+    <CHARACTERISTICS>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>psformat</NAME>
+        <VALUE>eventcharcd &amp;evntchr</VALUE>
+    </CHARACTERISTICS>
+    <CHARACTERISTICS>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>remsummarypctyn</NAME>
+        <VALUE>Y</VALUE>
+    </CHARACTERISTICS>
+    <CHARACTERISTICS>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>totaldecode</NAME>
+        <VALUE>Total</VALUE>
+    </CHARACTERISTICS>
+    <CHARACTERISTICS>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>totalforvar</NAME>
+        <VALUE>&amp;g_trtcd</VALUE>
+    </CHARACTERISTICS>
+    <CHARACTERISTICS>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>totalid</NAME>
+        <VALUE>9</VALUE>
+    </CHARACTERISTICS>
+    <OCCURRENCES>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>codedecodevarpairs</NAME>
+        <VALUE>&amp;g_trtcd &amp;g_trtgrp countcd count</VALUE>
+    </OCCURRENCES>
+    <OCCURRENCES>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>completetypesvars</NAME>
+        <VALUE>&amp;g_trtcd countcd count</VALUE>
+    </OCCURRENCES>
+    <OCCURRENCES>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>denormyn</NAME>
+        <VALUE>N</VALUE>
+    </OCCURRENCES>
+    <OCCURRENCES>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>display</NAME>
+        <VALUE>N</VALUE>
+    </OCCURRENCES>
+    <OCCURRENCES>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>dsetindenom</NAME>
+        <VALUE>_esi1_occurrences</VALUE>
+    </OCCURRENCES>
+    <OCCURRENCES>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>dsetinnumer</NAME>
+        <VALUE>_esi1_occurrences(where=(countcd ne .))</VALUE>
+    </OCCURRENCES>
+    <OCCURRENCES>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>dsetout</NAME>
+        <VALUE>segment&amp;s._out(rename=(countcd=tt_code1 count=tt_decode1))</VALUE>
+    </OCCURRENCES>
+    <OCCURRENCES>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>groupbyvarpop</NAME>
+        <VALUE>&amp;g_trtcd</VALUE>
+    </OCCURRENCES>
+    <OCCURRENCES>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>groupbyvarsdenom</NAME>
+        <VALUE>&amp;g_trtcd</VALUE>
+    </OCCURRENCES>
+    <OCCURRENCES>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>groupbyvarsnumer</NAME>
+        <VALUE>&amp;g_trtcd &amp;g_trtgrp (countcd=0; count='n') countcd count</VALUE>
+    </OCCURRENCES>
+    <OCCURRENCES>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>postsubset</NAME>
+        <VALUE>tt_grplabel='Number of occurrences';</VALUE>
+    </OCCURRENCES>
+    <OCCURRENCES>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>psclassoptions</NAME>
+        <VALUE>preloadfmt</VALUE>
+    </OCCURRENCES>
+    <OCCURRENCES>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>psformat</NAME>
+        <VALUE>countcd &amp;noc</VALUE>
+    </OCCURRENCES>
+    <OCCURRENCES>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>remsummarypctyn</NAME>
+        <VALUE>Y</VALUE>
+    </OCCURRENCES>
+    <OCCURRENCES>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>totaldecode</NAME>
+        <VALUE>Total</VALUE>
+    </OCCURRENCES>
+    <OCCURRENCES>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>totalforvar</NAME>
+        <VALUE>&amp;g_trtcd</VALUE>
+    </OCCURRENCES>
+    <OCCURRENCES>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>totalid</NAME>
+        <VALUE>9</VALUE>
+    </OCCURRENCES>
+    <OUTCOME>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>codedecodevarpairs</NAME>
+        <VALUE>&amp;g_trtcd &amp;g_trtgrp aeoutcd aeout</VALUE>
+    </OUTCOME>
+    <OUTCOME>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>completetypesvars</NAME>
+        <VALUE>&amp;g_trtcd aeoutcd</VALUE>
+    </OUTCOME>
+    <OUTCOME>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>denormyn</NAME>
+        <VALUE>N</VALUE>
+    </OUTCOME>
+    <OUTCOME>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>display</NAME>
+        <VALUE>N</VALUE>
+    </OUTCOME>
+    <OUTCOME>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>dsetindenom</NAME>
+        <VALUE>&amp;dsetin(where=(aeoutcd not in('.' ' ')))</VALUE>
+    </OUTCOME>
+    <OUTCOME>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>dsetinnumer</NAME>
+        <VALUE>&amp;dsetin(where=(aeoutcd not in('.' ' ')))</VALUE>
+    </OUTCOME>
+    <OUTCOME>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>dsetout</NAME>
+        <VALUE>segment&amp;s._out(rename=(aeoutcd=tt_code1 aeout=tt_decode1))</VALUE>
+    </OUTCOME>
+    <OUTCOME>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>groupbyvarpop</NAME>
+        <VALUE>&amp;g_trtcd</VALUE>
+    </OUTCOME>
+    <OUTCOME>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>groupbyvarsdenom</NAME>
+        <VALUE>&amp;g_trtcd</VALUE>
+    </OUTCOME>
+    <OUTCOME>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>groupbyvarsnumer</NAME>
+        <VALUE>&amp;g_trtcd &amp;g_trtgrp (aeoutcd='0'; aeout='n';) aeoutcd aeout</VALUE>
+    </OUTCOME>
+    <OUTCOME>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>postsubset</NAME>
+        <VALUE>tt_grplabel='Outcome';</VALUE>
+    </OUTCOME>
+    <OUTCOME>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>psclassoptions</NAME>
+        <VALUE>preloadfmt</VALUE>
+    </OUTCOME>
+    <OUTCOME>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>psformat</NAME>
+        <VALUE>aeoutcd $aeouts.</VALUE>
+    </OUTCOME>
+    <OUTCOME>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>remsummarypctyn</NAME>
+        <VALUE>Y</VALUE>
+    </OUTCOME>
+    <OUTCOME>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>totaldecode</NAME>
+        <VALUE>Total</VALUE>
+    </OUTCOME>
+    <OUTCOME>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>totalforvar</NAME>
+        <VALUE>&amp;g_trtcd</VALUE>
+    </OUTCOME>
+    <OUTCOME>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>totalid</NAME>
+        <VALUE>9</VALUE>
+    </OUTCOME>
+    <FREQUENCY>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>codedecodevarpairs</NAME>
+        <VALUE>&amp;g_trtcd &amp;g_trtgrp aefreqcd aefreq</VALUE>
+    </FREQUENCY>
+    <FREQUENCY>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>completetypesvars</NAME>
+        <VALUE>&amp;g_trtcd aefreqcd</VALUE>
+    </FREQUENCY>
+    <FREQUENCY>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>denormyn</NAME>
+        <VALUE>N</VALUE>
+    </FREQUENCY>
+    <FREQUENCY>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>display</NAME>
+        <VALUE>N</VALUE>
+    </FREQUENCY>
+    <FREQUENCY>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>dsetindenom</NAME>
+        <VALUE>&amp;dsetin(where=(aefreqcd not in('.' ' ')))</VALUE>
+    </FREQUENCY>
+    <FREQUENCY>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>dsetinnumer</NAME>
+        <VALUE>&amp;dsetin(where=(aefreqcd not in('.' ' ')))</VALUE>
+    </FREQUENCY>
+    <FREQUENCY>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>dsetout</NAME>
+        <VALUE>segment&amp;s._out(rename=(aefreqcd=tt_code1 aefreq=tt_decode1))</VALUE>
+    </FREQUENCY>
+    <FREQUENCY>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>groupbyvarpop</NAME>
+        <VALUE>&amp;g_trtcd</VALUE>
+    </FREQUENCY>
+    <FREQUENCY>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>groupbyvarsdenom</NAME>
+        <VALUE>&amp;g_trtcd</VALUE>
+    </FREQUENCY>
+    <FREQUENCY>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>groupbyvarsnumer</NAME>
+        <VALUE>&amp;g_trtcd &amp;g_trtgrp (aefreqcd='0'; aefreq='n';) aefreqcd aefreq</VALUE>
+    </FREQUENCY>
+    <FREQUENCY>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>postsubset</NAME>
+        <VALUE>tt_grplabel='Frequency';</VALUE>
+    </FREQUENCY>
+    <FREQUENCY>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>psclassoptions</NAME>
+        <VALUE>preloadfmt</VALUE>
+    </FREQUENCY>
+    <FREQUENCY>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>psformat</NAME>
+        <VALUE>aefreqcd $aefreqs.</VALUE>
+    </FREQUENCY>
+    <FREQUENCY>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>remsummarypctyn</NAME>
+        <VALUE>Y</VALUE>
+    </FREQUENCY>
+    <FREQUENCY>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>totaldecode</NAME>
+        <VALUE>Total</VALUE>
+    </FREQUENCY>
+    <FREQUENCY>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>totalforvar</NAME>
+        <VALUE>&amp;g_trtcd</VALUE>
+    </FREQUENCY>
+    <FREQUENCY>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>totalid</NAME>
+        <VALUE>9</VALUE>
+    </FREQUENCY>
+    <INTENSITY>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>codedecodevarpairs</NAME>
+        <VALUE>&amp;g_trtcd &amp;g_trtgrp aesevcd aesev</VALUE>
+    </INTENSITY>
+    <INTENSITY>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>completetypesvars</NAME>
+        <VALUE>&amp;g_trtcd aesevcd</VALUE>
+    </INTENSITY>
+    <INTENSITY>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>denormyn</NAME>
+        <VALUE>N</VALUE>
+    </INTENSITY>
+    <INTENSITY>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>display</NAME>
+        <VALUE>N</VALUE>
+    </INTENSITY>
+    <INTENSITY>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>dsetindenom</NAME>
+        <VALUE>_esi1_aesevcd(where=(aesevcd not in('.' ' ')))</VALUE>
+    </INTENSITY>
+    <INTENSITY>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>dsetinnumer</NAME>
+        <VALUE>_esi1_aesevcd(where=(aesevcd not in('.' ' ')))</VALUE>
+    </INTENSITY>
+    <INTENSITY>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>dsetout</NAME>
+        <VALUE>segment&amp;s._out(rename=(aesevcd=tt_code1 aesev=tt_decode1))</VALUE>
+    </INTENSITY>
+    <INTENSITY>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>groupbyvarpop</NAME>
+        <VALUE>&amp;g_trtcd</VALUE>
+    </INTENSITY>
+    <INTENSITY>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>groupbyvarsdenom</NAME>
+        <VALUE>&amp;g_trtcd</VALUE>
+    </INTENSITY>
+    <INTENSITY>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>groupbyvarsnumer</NAME>
+        <VALUE>&amp;g_trtcd &amp;g_trtgrp (aesevcd='0'; aesev='n';) aesevcd aesev</VALUE>
+    </INTENSITY>
+    <INTENSITY>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>groupminmaxvar</NAME>
+        <VALUE>max(aesevcd)</VALUE>
+    </INTENSITY>
+    <INTENSITY>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>postsubset</NAME>
+        <VALUE>tt_grplabel='Maximum Intensity';</VALUE>
+    </INTENSITY>
+    <INTENSITY>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>psclassoptions</NAME>
+        <VALUE>preloadfmt</VALUE>
+    </INTENSITY>
+    <INTENSITY>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>psformat</NAME>
+        <VALUE>aesevcd $aeints.</VALUE>
+    </INTENSITY>
+    <INTENSITY>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>remsummarypctyn</NAME>
+        <VALUE>Y</VALUE>
+    </INTENSITY>
+    <INTENSITY>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>totaldecode</NAME>
+        <VALUE>Total</VALUE>
+    </INTENSITY>
+    <INTENSITY>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>totalforvar</NAME>
+        <VALUE>&amp;g_trtcd</VALUE>
+    </INTENSITY>
+    <INTENSITY>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>totalid</NAME>
+        <VALUE>9</VALUE>
+    </INTENSITY>
+    <GRADE>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>codedecodevarpairs</NAME>
+        <VALUE>&amp;g_trtcd &amp;g_trtgrp aetoxcd aetox</VALUE>
+    </GRADE>
+    <GRADE>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>completetypesvars</NAME>
+        <VALUE>&amp;g_trtcd aetoxcd</VALUE>
+    </GRADE>
+    <GRADE>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>denormyn</NAME>
+        <VALUE>N</VALUE>
+    </GRADE>
+    <GRADE>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>display</NAME>
+        <VALUE>N</VALUE>
+    </GRADE>
+    <GRADE>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>dsetindenom</NAME>
+        <VALUE>_esi1_aetoxcd(where=(aetoxcd not in('.' ' ')))</VALUE>
+    </GRADE>
+    <GRADE>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>dsetinnumer</NAME>
+        <VALUE>_esi1_aetoxcd(where=(aetoxcd not in('.' ' ')))</VALUE>
+    </GRADE>
+    <GRADE>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>dsetout</NAME>
+        <VALUE>segment&amp;s._out(rename=(aetoxcd=tt_code1 aetox=tt_decode1))</VALUE>
+    </GRADE>
+    <GRADE>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>groupbyvarpop</NAME>
+        <VALUE>&amp;g_trtcd</VALUE>
+    </GRADE>
+    <GRADE>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>groupbyvarsdenom</NAME>
+        <VALUE>&amp;g_trtcd</VALUE>
+    </GRADE>
+    <GRADE>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>groupbyvarsnumer</NAME>
+        <VALUE>&amp;g_trtcd &amp;g_trtgrp (aetoxcd='0'; aetox='n';) aetoxcd aetox</VALUE>
+    </GRADE>
+    <GRADE>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>groupminmaxvar</NAME>
+        <VALUE>max(aetoxcd)</VALUE>
+    </GRADE>
+    <GRADE>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>postsubset</NAME>
+        <VALUE>tt_grplabel='Maximum Grade';</VALUE>
+    </GRADE>
+    <GRADE>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>psclassoptions</NAME>
+        <VALUE>preloadfmt</VALUE>
+    </GRADE>
+    <GRADE>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>psformat</NAME>
+        <VALUE>aetoxcd $aetoxs.</VALUE>
+    </GRADE>
+    <GRADE>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>remsummarypctyn</NAME>
+        <VALUE>Y</VALUE>
+    </GRADE>
+    <GRADE>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>totaldecode</NAME>
+        <VALUE>Total</VALUE>
+    </GRADE>
+    <GRADE>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>totalforvar</NAME>
+        <VALUE>&amp;g_trtcd</VALUE>
+    </GRADE>
+    <GRADE>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>totalid</NAME>
+        <VALUE>9</VALUE>
+    </GRADE>
+    <ACTION>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>codedecodevarpairs</NAME>
+        <VALUE>&amp;g_trtcd &amp;g_trtgrp aeactrcd aeacttrt</VALUE>
+    </ACTION>
+    <ACTION>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>completetypesvars</NAME>
+        <VALUE>&amp;g_trtcd aeactrcd</VALUE>
+    </ACTION>
+    <ACTION>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>denormyn</NAME>
+        <VALUE>N</VALUE>
+    </ACTION>
+    <ACTION>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>display</NAME>
+        <VALUE>N</VALUE>
+    </ACTION>
+    <ACTION>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>dsetindenom</NAME>
+        <VALUE>&amp;dsetin(where=(aeactrcd not in('.' ' ')))</VALUE>
+    </ACTION>
+    <ACTION>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>dsetinnumer</NAME>
+        <VALUE>&amp;dsetin(where=(aeactrcd not in('.' ' ')))</VALUE>
+    </ACTION>
+    <ACTION>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>dsetout</NAME>
+        <VALUE>segment&amp;s._out(rename=(aeactrcd=tt_code1 aeacttrt=tt_decode1))</VALUE>
+    </ACTION>
+    <ACTION>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>groupbyvarpop</NAME>
+        <VALUE>&amp;g_trtcd</VALUE>
+    </ACTION>
+    <ACTION>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>groupbyvarsdenom</NAME>
+        <VALUE>&amp;g_trtcd</VALUE>
+    </ACTION>
+    <ACTION>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>groupbyvarsnumer</NAME>
+        <VALUE>&amp;g_trtcd &amp;g_trtgrp (aeactrcd='0'; aeacttrt='n';) aeactrcd aeacttrt</VALUE>
+    </ACTION>
+    <ACTION>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>postsubset</NAME>
+        <VALUE>tt_grplabel='Action Taken';</VALUE>
+    </ACTION>
+    <ACTION>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>psclassoptions</NAME>
+        <VALUE>preloadfmt</VALUE>
+    </ACTION>
+    <ACTION>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>psformat</NAME>
+        <VALUE>aeactrcd $aeactts.</VALUE>
+    </ACTION>
+    <ACTION>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>remsummarypctyn</NAME>
+        <VALUE>Y</VALUE>
+    </ACTION>
+    <ACTION>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>totaldecode</NAME>
+        <VALUE>Total</VALUE>
+    </ACTION>
+    <ACTION>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>totalforvar</NAME>
+        <VALUE>&amp;g_trtcd</VALUE>
+    </ACTION>
+    <ACTION>
+        <TYPE>TU_FREQ</TYPE>
+        <NAME>totalid</NAME>
+        <VALUE>9</VALUE>
+    </ACTION>
+</TDESI1_Defaultsxls>
+

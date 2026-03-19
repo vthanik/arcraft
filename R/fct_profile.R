@@ -1,44 +1,65 @@
-# Column profiling for Data Viewer — pure R
+# Column profiling for data viewer — pure R, no Shiny
 
 fct_profile_column <- function(x, col_name, n_row) {
   n_miss <- sum(is.na(x))
-  n_unique <- length(unique(x[!is.na(x)]))
-  pct_miss <- round(n_miss / n_row * 100, 1)
-  missing_str <- if (n_miss == 0) "0" else sprintf("%d (%s%%)", n_miss, pct_miss)
+  pct_miss <- if (n_row > 0) round(n_miss / n_row * 100, 1) else 0
 
-  is_num <- is.numeric(x)
-  is_date <- inherits(x, "Date") || inherits(x, "POSIXct")
-  is_bool <- is.logical(x)
+  # R attributes
+  label <- attr(x, "label") %||% ""
+  format_attr <- attr(x, "format.sas") %||% attr(x, "format") %||% ""
+  r_class <- paste(class(x), collapse = ", ")
 
-  type_label <- if (is_num) "NUM" else if (is_date) "DATE" else if (is_bool) "BOOL" else "CHR"
-  badge_class <- if (is_num) "ar-type-badge--num"
-    else if (is_date) "ar-type-badge--date"
-    else if (is_bool) "ar-type-badge--bool"
-    else "ar-type-badge--chr"
+  base <- list(
+    name = col_name,
+    label = label,
+    format = format_attr,
+    r_class = r_class,
+    n_unique = length(unique(stats::na.omit(x))),
+    n_missing = n_miss,
+    pct_missing = pct_miss
+  )
 
-  extra_name <- NULL; extra_stat <- NULL; dist_html <- NULL
-
-  if (is_num && n_miss < n_row) {
-    vals <- x[!is.na(x)]
-    extra_name <- "Range"
-    extra_stat <- sprintf("%s\u2013%s", format(min(vals), big.mark = ","), format(max(vals), big.mark = ","))
-    dist_html <- ui_numeric_dist(vals)
-  } else if (!is_num && !is_date && n_unique > 0 && n_unique <= 30) {
-    tbl <- sort(table(x[!is.na(x)]), decreasing = TRUE)
-    extra_name <- "Top"
-    extra_stat <- names(tbl)[1]
-    if (nchar(extra_stat) > 14) extra_stat <- paste0(substr(extra_stat, 1, 12), "\u2026")
-    dist_html <- ui_categorical_dist(tbl, n_row)
-  } else if (!is_num && !is_date) {
-    tbl <- sort(table(x[!is.na(x)]), decreasing = TRUE)
-    if (length(tbl) > 0) {
-      extra_name <- "Top"
-      extra_stat <- names(tbl)[1]
-      if (nchar(extra_stat) > 14) extra_stat <- paste0(substr(extra_stat, 1, 12), "\u2026")
-    }
+  if (is.numeric(x)) {
+    vals <- stats::na.omit(x)
+    c(base, list(
+      type = "NUM",
+      badge_class = "ar-type-badge--num",
+      summary = if (length(vals) > 0) list(
+        min = min(vals), max = max(vals),
+        mean = round(mean(vals), 2),
+        median = round(stats::median(vals), 2),
+        sd = round(stats::sd(vals), 2),
+        q1 = round(stats::quantile(vals, 0.25), 2),
+        q3 = round(stats::quantile(vals, 0.75), 2)
+      ) else NULL
+    ))
+  } else if (inherits(x, "Date") || inherits(x, "POSIXt")) {
+    vals <- stats::na.omit(x)
+    c(base, list(
+      type = "DATE",
+      badge_class = "ar-type-badge--date",
+      summary = if (length(vals) > 0) list(
+        min = as.character(min(vals)),
+        max = as.character(max(vals))
+      ) else NULL
+    ))
+  } else {
+    vals <- stats::na.omit(x)
+    freq <- if (length(vals) > 0) sort(table(vals), decreasing = TRUE) else integer(0)
+    c(base, list(
+      type = "CHR",
+      badge_class = "ar-type-badge--chr",
+      summary = if (length(freq) > 0) list(
+        top_values = utils::head(freq, 5),
+        n_levels = length(freq)
+      ) else NULL
+    ))
   }
+}
 
-  list(type_label = type_label, badge_class = badge_class, n_unique = n_unique,
-       missing_str = missing_str, extra_name = extra_name, extra_stat = extra_stat,
-       dist_html = dist_html)
+fct_profile_all <- function(data) {
+  n_row <- nrow(data)
+  lapply(names(data), function(col) {
+    fct_profile_column(data[[col]], col, n_row)
+  })
 }

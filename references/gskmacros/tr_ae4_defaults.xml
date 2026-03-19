@@ -1,0 +1,368 @@
+<?xml version="1.0" encoding="iso-8859-1" ?>
+<!-- |*******************************************************************************-->
+<!-- |                                                                               -->
+<!-- | XML File and Table Name: tr_ae4_defaults.xml, AE4                             -->
+<!-- |                                                                               -->
+<!-- | Table Version:    1                                                           -->
+<!-- |                                                                               -->
+<!-- | SAS Version:      v8.2                                                        -->
+<!-- |                                                                               -->
+<!-- | Created By:       Yongwei Wang                                                -->
+<!-- |                                                                               -->
+<!-- | Date:             04-OCT-2004                                                 -->
+<!-- |                                                                               -->
+<!-- | Table Purpose:    Segment defaults for TD_AE4 display macro                   -->
+<!-- |                                                                               -->
+<!-- |*******************************************************************************-->
+<!-- | Modified By:             Yongwei Wang                                         -->
+<!-- | Date of Modification:    09-Oct-2004                                          -->
+<!-- | New version number:      1/2                                                  -->
+<!-- | Modification ID:         N/A                                                  -->
+<!-- | Reason For Modification: Changed default REMSUMMARYPCTYN to N                 -->
+<!-- |                                                                               -->
+<!-- |*******************************************************************************-->
+<!-- | Modified By:                                                                  -->
+<!-- | Date of Modification:                                                         -->
+<!-- | New version number:                                                           -->
+<!-- | Modification ID:                                                              -->
+<!-- | Reason For Modification:                                                      -->
+<!-- |                                                                               -->
+<!-- ********************************************************************************-->
+<TABLE>
+   <AE4>
+      <NAME> ACROSSCOLLISTNAME </NAME>
+      <VALUE Missing=" " />
+      <TDMACRO> TD_AE4 </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <td_macro Missing="." />
+   </AE4>
+   <AE4>
+      <NAME> ACROSSCOLVARPREFIX </NAME>
+      <VALUE> tt_result </VALUE>
+      <TDMACRO> TD_AE4 </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <td_macro Missing="." />
+   </AE4>
+   <AE4>
+      <NAME> ACROSSVAR </NAME>
+      <VALUE Missing=" " />
+      <TDMACRO> TD_AE4 </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <td_macro Missing="." />
+   </AE4>
+   <AE4>
+      <NAME> ACROSSVARDECODE </NAME>
+      <VALUE Missing=" " />
+      <TDMACRO> TD_AE4 </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <td_macro Missing="." />
+   </AE4>
+   <AE4>
+      <NAME> ADDBIGNYN </NAME>
+      <VALUE> Y </VALUE>
+      <TDMACRO> TD_AE4 </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <td_macro Missing="." />
+   </AE4>
+   <AE4>
+      <NAME> BIGNVARNAME </NAME>
+      <VALUE> tt_bnnm </VALUE>
+      <TDMACRO> TD_AE4 </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <td_macro Missing="." />
+   </AE4>
+   <AE4>
+      <NAME> CODEDECODEVARPAIRS </NAME>
+      <VALUE> &amp;g_trtcd &amp;g_trtgrp </VALUE>
+      <TDMACRO> TD_AE4 </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <td_macro Missing="." />
+   </AE4>
+   <AE4>
+      <NAME> COUNTDISTINCTWHATVAR </NAME>
+      <VALUE> &amp;g_centid &amp;g_subjid </VALUE>
+      <TDMACRO> TD_AE4 </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <td_macro Missing="." />
+   </AE4>
+   <AE4>
+      <NAME> DENORMYN </NAME>
+      <VALUE> N </VALUE>
+      <TDMACRO> TD_AE4 </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <td_macro Missing="." />
+   </AE4>
+   <AE4>
+      <NAME> DISPLAY </NAME>
+      <VALUE> N </VALUE>
+      <TDMACRO> TD_AE4 </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <td_macro Missing="." />
+   </AE4>
+   <AE4>
+      <NAME> DSETINDENOM </NAME>
+      <VALUE> ardata.demo </VALUE>
+      <TDMACRO> TD_AE4 </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <td_macro Missing="." />
+   </AE4>
+   <AE4>
+      <NAME> DSETINNUMER </NAME>
+      <VALUE> ardata.ae </VALUE>
+      <TDMACRO> TD_AE4 </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <td_macro Missing="." />
+   </AE4>
+   <AE4>
+      <NAME> DSETOUT </NAME>
+      <VALUE Missing=" " />
+      <TDMACRO> TD_AE4 </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <td_macro Missing="." />
+   </AE4>
+   <AE4>
+      <NAME> GROUPBYVARPOP </NAME>
+      <VALUE> &amp;g_trtcd </VALUE>
+      <TDMACRO> TD_AE4 </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <td_macro Missing="." />
+   </AE4>
+   <AE4>
+      <NAME> GROUPBYVARSDENOM </NAME>
+      <VALUE> &amp;g_trtcd </VALUE>
+      <TDMACRO> TD_AE4 </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <td_macro Missing="." />
+   </AE4>
+   <AE4>
+      <NAME> GROUPBYVARSNUMER </NAME>
+      <VALUE Missing=" " />
+      <TDMACRO> TD_AE4 </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <td_macro Missing="." />
+   </AE4>
+   <AE4>
+      <NAME> LABELVARSYN </NAME>
+      <VALUE> Y </VALUE>
+      <TDMACRO> TD_AE4 </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <td_macro Missing="." />
+   </AE4>
+   <AE4>
+      <NAME> POSTSUBSET </NAME>
+      <VALUE Missing=" " />
+      <TDMACRO> TD_AE4 </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <td_macro Missing="." />
+   </AE4>
+   <AE4>
+      <NAME> PSBYVARS </NAME>
+      <VALUE Missing=" " />
+      <TDMACRO> TD_AE4 </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <td_macro Missing="." />
+   </AE4>
+   <AE4>
+      <NAME> PSCLASS </NAME>
+      <VALUE Missing=" " />
+      <TDMACRO> TD_AE4 </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <td_macro Missing="." />
+   </AE4>
+   <AE4>
+      <NAME> PSCLASSOPTIONS </NAME>
+      <VALUE Missing=" " />
+      <TDMACRO> TD_AE4 </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <td_macro Missing="." />
+   </AE4>
+   <AE4>
+      <NAME> PSFORMAT </NAME>
+      <VALUE Missing=" " />
+      <TDMACRO> TD_AE4 </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <td_macro Missing="." />
+   </AE4>
+   <AE4>
+      <NAME> PSFREQ </NAME>
+      <VALUE Missing=" " />
+      <TDMACRO> TD_AE4 </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <td_macro Missing="." />
+   </AE4>
+   <AE4>
+      <NAME> PSID </NAME>
+      <VALUE Missing=" " />
+      <TDMACRO> TD_AE4 </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <td_macro Missing="." />
+   </AE4>
+   <AE4>
+      <NAME> PSOPTIONS </NAME>
+      <VALUE> COMPLETETYPES MISSING NWAY </VALUE>
+      <TDMACRO> TD_AE4 </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <td_macro Missing="." />
+   </AE4>
+   <AE4>
+      <NAME> PSOUTPUT </NAME>
+      <VALUE Missing=" " />
+      <TDMACRO> TD_AE4 </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <td_macro Missing="." />
+   </AE4>
+   <AE4>
+      <NAME> PSOUTPUTOPTIONS </NAME>
+      <VALUE> noinherit </VALUE>
+      <TDMACRO> TD_AE4 </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <td_macro Missing="." />
+   </AE4>
+   <AE4>
+      <NAME> PSTYPES </NAME>
+      <VALUE Missing=" " />
+      <TDMACRO> TD_AE4 </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <td_macro Missing="." />
+   </AE4>
+   <AE4>
+      <NAME> PSWAYS </NAME>
+      <VALUE Missing=" " />
+      <TDMACRO> TD_AE4 </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <td_macro Missing="." />
+   </AE4>
+   <AE4>
+      <NAME> PSWEIGHT </NAME>
+      <VALUE Missing=" " />
+      <TDMACRO> TD_AE4 </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <td_macro Missing="." />
+   </AE4>
+   <AE4>
+      <NAME> REMSUMMARYPCTYN </NAME>
+      <VALUE> N </VALUE>
+      <TDMACRO> TD_AE4 </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <td_macro Missing="." />
+   </AE4>
+   <AE4>
+      <NAME> RESULTPCTDPS </NAME>
+      <VALUE> 0 </VALUE>
+      <TDMACRO> TD_AE4 </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <td_macro Missing="." />
+   </AE4>
+   <AE4>
+      <NAME> RESULTSTYLE </NAME>
+      <VALUE> numerDenomPct </VALUE>
+      <TDMACRO> TD_AE4 </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <td_macro Missing="." />
+   </AE4>
+   <AE4>
+      <NAME> RESULTVARNAME </NAME>
+      <VALUE> tt_result </VALUE>
+      <TDMACRO> TD_AE4 </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <td_macro Missing="." />
+   </AE4>
+   <AE4>
+      <NAME> ROWLABELVARNAME </NAME>
+      <VALUE> tt_grplabel </VALUE>
+      <TDMACRO> TD_AE4 </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <td_macro Missing="." />
+   </AE4>
+   <AE4>
+      <NAME> SPSORT2GROUPBYVARSDENOM </NAME>
+      <VALUE Missing=" " />
+      <TDMACRO> TD_AE4 </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <td_macro Missing="." />
+   </AE4>
+   <AE4>
+      <NAME> SPSORT2GROUPBYVARSNUMER </NAME>
+      <VALUE Missing=" " />
+      <TDMACRO> TD_AE4 </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <td_macro Missing="." />
+   </AE4>
+   <AE4>
+      <NAME> SPSORT2RESULTSTYLE </NAME>
+      <VALUE Missing=" " />
+      <TDMACRO> TD_AE4 </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <td_macro Missing="." />
+   </AE4>
+   <AE4>
+      <NAME> SPSORT2RESULTVARNAME </NAME>
+      <VALUE Missing=" " />
+      <TDMACRO> TD_AE4 </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <td_macro Missing="." />
+   </AE4>
+   <AE4>
+      <NAME> SPSORTGROUPBYVARSDENOM </NAME>
+      <VALUE Missing=" " />
+      <TDMACRO> TD_AE4 </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <td_macro Missing="." />
+   </AE4>
+   <AE4>
+      <NAME> SPSORTGROUPBYVARSNUMER </NAME>
+      <VALUE Missing=" " />
+      <TDMACRO> TD_AE4 </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <td_macro Missing="." />
+   </AE4>
+   <AE4>
+      <NAME> SPSORTRESULTSTYLE </NAME>
+      <VALUE Missing=" " />
+      <TDMACRO> TD_AE4 </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <td_macro Missing="." />
+   </AE4>
+   <AE4>
+      <NAME> SPSORTRESULTVARNAME </NAME>
+      <VALUE Missing=" " />
+      <TDMACRO> TD_AE4 </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <td_macro Missing="." />
+   </AE4>
+   <AE4>
+      <NAME> SUMMARYLEVELVARNAME </NAME>
+      <VALUE> tt_summaryLevel </VALUE>
+      <TDMACRO> TD_AE4 </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <td_macro Missing="." />
+   </AE4>
+   <AE4>
+      <NAME> TOTALDECODE </NAME>
+      <VALUE Missing=" " />
+      <TDMACRO> TD_AE4 </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <td_macro Missing="." />
+   </AE4>
+   <AE4>
+      <NAME> TOTALFORVAR </NAME>
+      <VALUE Missing=" " />
+      <TDMACRO> TD_AE4 </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <td_macro Missing="." />
+   </AE4>
+   <AE4>
+      <NAME> TOTALID </NAME>
+      <VALUE Missing=" " />
+      <TDMACRO> TD_AE4 </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <td_macro Missing="." />
+   </AE4>
+   <AE4>
+      <NAME> VARSTODENORM </NAME>
+      <VALUE Missing=" " />
+      <TDMACRO> TD_AE4 </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <td_macro Missing="." />
+   </AE4>
+</TABLE>

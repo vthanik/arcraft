@@ -17,8 +17,6 @@ Imports:
     arframe,
     shiny (>= 1.8.0),
     bslib (>= 0.6.0),
-    DT,
-    shinyAce,
     htmltools,
     shinyjs,
     dplyr,
@@ -29,4 +27,12 @@ Imports:
     readr,
     forcats,
     glue,
-    reactable
+    reactable,
+    jsonlite,
+    rlang,
+    survival,
+    broom,
+    ggplot2,
+    patchwork,
+    scales,
+    yaml

@@ -1,0 +1,621 @@
+<?xml version="1.0" encoding="iso-8859-1" ?>
+<TABLE>
+   <LIVER2>
+      <TDMACRO> TD_LIVER2 </TDMACRO>
+      <TYPE> SEGMENT1 </TYPE>
+      <NAME> DSETOUT </NAME>
+      <VALUE> segment1_out </VALUE>
+   </LIVER2>
+   <LIVER2>
+      <TDMACRO> TD_LIVER2 </TDMACRO>
+      <TYPE> SEGMENT2 </TYPE>
+      <NAME> DSETOUT </NAME>
+      <VALUE> segment2_out </VALUE>
+   </LIVER2>
+   <LIVER2>
+      <TDMACRO> TD_LIVER2 </TDMACRO>
+      <TYPE> SEGMENT3 </TYPE>
+      <NAME> DSETOUT </NAME>
+      <VALUE> segment3_out </VALUE>
+   </LIVER2>
+   <LIVER2>
+      <TDMACRO> TD_liver2 </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <NAME> ACROSSCOLLISTNAME </NAME>
+      <VALUE Missing=" " />
+   </LIVER2>
+   <LIVER2>
+      <TDMACRO> TD_liver2 </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <NAME> ACROSSCOLVARPREFIX </NAME>
+      <VALUE Missing=" " />
+   </LIVER2>
+   <LIVER2>
+      <TDMACRO> TD_liver2 </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <NAME> ACROSSVAR </NAME>
+      <VALUE Missing=" " />
+   </LIVER2>
+   <LIVER2>
+      <TDMACRO> TD_liver2 </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <NAME> ACROSSVARDECODE </NAME>
+      <VALUE Missing=" " />
+   </LIVER2>
+   <LIVER2>
+      <TDMACRO> TD_liver2 </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <NAME> ADDBIGNYN </NAME>
+      <VALUE> Y </VALUE>
+   </LIVER2>
+   <LIVER2>
+      <TDMACRO> TD_liver2 </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <NAME> BIGNVARNAME </NAME>
+      <VALUE> tt_bnnm </VALUE>
+   </LIVER2>
+   <LIVER2>
+      <TDMACRO> TD_liver2 </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <NAME> CODEDECODEVARPAIRS </NAME>
+      <VALUE> &amp;G_TRTCD &amp;G_TRTGRP </VALUE>
+   </LIVER2>
+   <LIVER2>
+      <TDMACRO> TD_liver2 </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <NAME> COMPLETETYPESVARS </NAME>
+      <VALUE> _all_ </VALUE>
+   </LIVER2>
+   <LIVER2>
+      <TDMACRO> TD_liver2 </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <NAME> COUNTDISTINCTWHATVAR </NAME>
+      <VALUE> &amp;G_CENTID &amp;G_SUBJID </VALUE>
+   </LIVER2>
+   <LIVER2>
+      <TDMACRO> TD_liver2 </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <NAME> DENORMYN </NAME>
+      <VALUE> N </VALUE>
+   </LIVER2>
+   <LIVER2>
+      <TDMACRO> TD_liver2 </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <NAME> DISPLAY </NAME>
+      <VALUE> N </VALUE>
+   </LIVER2>
+   <LIVER2>
+      <TDMACRO> TD_liver2 </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <NAME> DSETINDENOM </NAME>
+      <VALUE> &amp;G_POPDATA </VALUE>
+   </LIVER2>
+   <LIVER2>
+      <TDMACRO> TD_liver2 </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <NAME> DSETINNUMER </NAME>
+      <VALUE> ardata.rucam </VALUE>
+   </LIVER2>
+   <LIVER2>
+      <TDMACRO> TD_liver2 </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <NAME> DSETOUT </NAME>
+      <VALUE> DSETOUT </VALUE>
+   </LIVER2>
+   <LIVER2>
+      <TDMACRO> TD_liver2 </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <NAME> GROUPBYVARPOP </NAME>
+      <VALUE> &amp;G_TRTCD </VALUE>
+   </LIVER2>
+   <LIVER2>
+      <TDMACRO> TD_liver2 </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <NAME> GROUPBYVARSDENOM </NAME>
+      <VALUE> &amp;G_TRTCD </VALUE>
+   </LIVER2>
+   <LIVER2>
+      <TDMACRO> TD_liver2 </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <NAME> GROUPBYVARSNUMER </NAME>
+      <VALUE> &amp;G_TRTCD </VALUE>
+   </LIVER2>
+   <LIVER2>
+      <TDMACRO> TD_liver2 </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <NAME> GROUPMINMAXVAR </NAME>
+      <VALUE Missing=" " />
+   </LIVER2>
+   <LIVER2>
+      <TDMACRO> TD_liver2 </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <NAME> LABELVARSYN </NAME>
+      <VALUE> Y </VALUE>
+   </LIVER2>
+   <LIVER2>
+      <TDMACRO> TD_liver2 </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <NAME> POSTSUBSET </NAME>
+      <VALUE Missing=" " />
+   </LIVER2>
+   <LIVER2>
+      <TDMACRO> TD_liver2 </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <NAME> PSBYVARS </NAME>
+      <VALUE Missing=" " />
+   </LIVER2>
+   <LIVER2>
+      <TDMACRO> TD_liver2 </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <NAME> PSCLASS </NAME>
+      <VALUE Missing=" " />
+   </LIVER2>
+   <LIVER2>
+      <TDMACRO> TD_liver2 </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <NAME> PSCLASSOPTIONS </NAME>
+      <VALUE> PRELOADFMT </VALUE>
+   </LIVER2>
+   <LIVER2>
+      <TDMACRO> TD_liver2 </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <NAME> PSFORMAT </NAME>
+      <VALUE> &amp;G_TRTCD &amp;G_TRTFMT </VALUE>
+   </LIVER2>
+   <LIVER2>
+      <TDMACRO> TD_liver2 </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <NAME> PSFREQ </NAME>
+      <VALUE Missing=" " />
+   </LIVER2>
+   <LIVER2>
+      <TDMACRO> TD_liver2 </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <NAME> PSID </NAME>
+      <VALUE Missing=" " />
+   </LIVER2>
+   <LIVER2>
+      <TDMACRO> TD_liver2 </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <NAME> PSOPTIONS </NAME>
+      <VALUE> COMPLETETYPES NWAY MISSING </VALUE>
+   </LIVER2>
+   <LIVER2>
+      <TDMACRO> TD_liver2 </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <NAME> PSOUTPUT </NAME>
+      <VALUE Missing=" " />
+   </LIVER2>
+   <LIVER2>
+      <TDMACRO> TD_liver2 </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <NAME> PSOUTPUTOPTIONS </NAME>
+      <VALUE Missing=" " />
+   </LIVER2>
+   <LIVER2>
+      <TDMACRO> TD_liver2 </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <NAME> PSTYPES </NAME>
+      <VALUE Missing=" " />
+   </LIVER2>
+   <LIVER2>
+      <TDMACRO> TD_liver2 </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <NAME> PSWAYS </NAME>
+      <VALUE Missing=" " />
+   </LIVER2>
+   <LIVER2>
+      <TDMACRO> TD_liver2 </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <NAME> PSWEIGHT </NAME>
+      <VALUE Missing=" " />
+   </LIVER2>
+   <LIVER2>
+      <TDMACRO> TD_liver2 </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <NAME> REMSUMMARYPCTYN </NAME>
+      <VALUE> N </VALUE>
+   </LIVER2>
+   <LIVER2>
+      <TDMACRO> TD_liver2 </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <NAME> RESULTPCTDPS </NAME>
+      <VALUE> 0 </VALUE>
+   </LIVER2>
+   <LIVER2>
+      <TDMACRO> TD_liver2 </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <NAME> RESULTSTYLE </NAME>
+      <VALUE> NUMERPCT </VALUE>
+   </LIVER2>
+   <LIVER2>
+      <TDMACRO> TD_liver2 </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <NAME> RESULTVARNAME </NAME>
+      <VALUE> tt_result </VALUE>
+   </LIVER2>
+   <LIVER2>
+      <TDMACRO> TD_liver2 </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <NAME> ROWLABELVARNAME </NAME>
+      <VALUE> tt_grplabel </VALUE>
+   </LIVER2>
+   <LIVER2>
+      <TDMACRO> TD_liver2 </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <NAME> SPLITCHAR </NAME>
+      <VALUE> ~ </VALUE>
+   </LIVER2>
+   <LIVER2>
+      <TDMACRO> TD_liver2 </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <NAME> SPSORT2GROUPBYVARSDENOM </NAME>
+      <VALUE Missing=" " />
+   </LIVER2>
+   <LIVER2>
+      <TDMACRO> TD_liver2 </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <NAME> SPSORT2GROUPBYVARSNUMER </NAME>
+      <VALUE Missing=" " />
+   </LIVER2>
+   <LIVER2>
+      <TDMACRO> TD_liver2 </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <NAME> SPSORT2RESULTSTYLE </NAME>
+      <VALUE Missing=" " />
+   </LIVER2>
+   <LIVER2>
+      <TDMACRO> TD_liver2 </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <NAME> SPSORT2RESULTVARNAME </NAME>
+      <VALUE Missing=" " />
+   </LIVER2>
+   <LIVER2>
+      <TDMACRO> TD_liver2 </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <NAME> SPSORTGROUPBYVARSDENOM </NAME>
+      <VALUE Missing=" " />
+   </LIVER2>
+   <LIVER2>
+      <TDMACRO> TD_liver2 </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <NAME> SPSORTGROUPBYVARSNUMER </NAME>
+      <VALUE Missing=" " />
+   </LIVER2>
+   <LIVER2>
+      <TDMACRO> TD_liver2 </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <NAME> SPSORTRESULTSTYLE </NAME>
+      <VALUE Missing=" " />
+   </LIVER2>
+   <LIVER2>
+      <TDMACRO> TD_liver2 </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <NAME> SPSORTRESULTVARNAME </NAME>
+      <VALUE Missing=" " />
+   </LIVER2>
+   <LIVER2>
+      <TDMACRO> TD_liver2 </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <NAME> SUMMARYLEVELVARNAME </NAME>
+      <VALUE> tt_summaryLevel </VALUE>
+   </LIVER2>
+   <LIVER2>
+      <TDMACRO> TD_liver2 </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <NAME> TOTALDECODE </NAME>
+      <VALUE> Total </VALUE>
+   </LIVER2>
+   <LIVER2>
+      <TDMACRO> TD_liver2 </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <NAME> TOTALFORVAR </NAME>
+      <VALUE Missing=" " />
+   </LIVER2>
+   <LIVER2>
+      <TDMACRO> TD_liver2 </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <NAME> TOTALID </NAME>
+      <VALUE Missing=" " />
+   </LIVER2>
+   <LIVER2>
+      <TDMACRO> TD_liver2 </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <NAME> VARLABELSTYLE </NAME>
+      <VALUE> STD </VALUE>
+   </LIVER2>
+   <LIVER2>
+      <TDMACRO> TD_liver2 </TDMACRO>
+      <TYPE> TU_FREQ </TYPE>
+      <NAME> VARSTODENORM </NAME>
+      <VALUE Missing=" " />
+   </LIVER2>
+   <LIVER2>
+      <TDMACRO> TD_liver2 </TDMACRO>
+      <TYPE> TU_SUMSTATSINROWS </TYPE>
+      <NAME> ACROSSCOLLISTNAME </NAME>
+      <VALUE Missing=" " />
+   </LIVER2>
+   <LIVER2>
+      <TDMACRO> TD_liver2 </TDMACRO>
+      <TYPE> TU_SUMSTATSINROWS </TYPE>
+      <NAME> ACROSSCOLVARPREFIX </NAME>
+      <VALUE Missing=" " />
+   </LIVER2>
+   <LIVER2>
+      <TDMACRO> TD_liver2 </TDMACRO>
+      <TYPE> TU_SUMSTATSINROWS </TYPE>
+      <NAME> ACROSSVAR </NAME>
+      <VALUE Missing=" " />
+   </LIVER2>
+   <LIVER2>
+      <TDMACRO> TD_liver2 </TDMACRO>
+      <TYPE> TU_SUMSTATSINROWS </TYPE>
+      <NAME> ACROSSVARDECODE </NAME>
+      <VALUE Missing=" " />
+   </LIVER2>
+   <LIVER2>
+      <TDMACRO> TD_liver2 </TDMACRO>
+      <TYPE> TU_SUMSTATSINROWS </TYPE>
+      <NAME> ADDBIGNYN </NAME>
+      <VALUE> Y </VALUE>
+   </LIVER2>
+   <LIVER2>
+      <TDMACRO> TD_liver2 </TDMACRO>
+      <TYPE> TU_SUMSTATSINROWS </TYPE>
+      <NAME> ALIGNYN </NAME>
+      <VALUE> Y </VALUE>
+   </LIVER2>
+   <LIVER2>
+      <TDMACRO> TD_liver2 </TDMACRO>
+      <TYPE> TU_SUMSTATSINROWS </TYPE>
+      <NAME> ANALYSISVARDPS </NAME>
+      <VALUE Missing=" " />
+   </LIVER2>
+   <LIVER2>
+      <TDMACRO> TD_liver2 </TDMACRO>
+      <TYPE> TU_SUMSTATSINROWS </TYPE>
+      <NAME> ANALYSISVARNAME </NAME>
+      <VALUE> tt_grplabel </VALUE>
+   </LIVER2>
+   <LIVER2>
+      <TDMACRO> TD_liver2 </TDMACRO>
+      <TYPE> TU_SUMSTATSINROWS </TYPE>
+      <NAME> ANALYSISVARORDERVARNAME </NAME>
+      <VALUE> tt_avid </VALUE>
+   </LIVER2>
+   <LIVER2>
+      <TDMACRO> TD_liver2 </TDMACRO>
+      <TYPE> TU_SUMSTATSINROWS </TYPE>
+      <NAME> ANALYSISVARS </NAME>
+      <VALUE Missing=" " />
+   </LIVER2>
+   <LIVER2>
+      <TDMACRO> TD_liver2 </TDMACRO>
+      <TYPE> TU_SUMSTATSINROWS </TYPE>
+      <NAME> BIGNINROWYN </NAME>
+      <VALUE> N </VALUE>
+   </LIVER2>
+   <LIVER2>
+      <TDMACRO> TD_liver2 </TDMACRO>
+      <TYPE> TU_SUMSTATSINROWS </TYPE>
+      <NAME> BIGNVARNAME </NAME>
+      <VALUE> tt_bnnm </VALUE>
+   </LIVER2>
+   <LIVER2>
+      <TDMACRO> TD_liver2 </TDMACRO>
+      <TYPE> TU_SUMSTATSINROWS </TYPE>
+      <NAME> CODEDECODEVARPAIRS </NAME>
+      <VALUE> &amp;G_TRTCD &amp;G_TRTGRP </VALUE>
+   </LIVER2>
+   <LIVER2>
+      <TDMACRO> TD_liver2 </TDMACRO>
+      <TYPE> TU_SUMSTATSINROWS </TYPE>
+      <NAME> COMPLETETYPESVARS </NAME>
+      <VALUE> _all_ </VALUE>
+   </LIVER2>
+   <LIVER2>
+      <TDMACRO> TD_liver2 </TDMACRO>
+      <TYPE> TU_SUMSTATSINROWS </TYPE>
+      <NAME> COUNTDISTINCTWHATVARPOP </NAME>
+      <VALUE> &amp;G_CENTID &amp;G_SUBJID </VALUE>
+   </LIVER2>
+   <LIVER2>
+      <TDMACRO> TD_liver2 </TDMACRO>
+      <TYPE> TU_SUMSTATSINROWS </TYPE>
+      <NAME> DENORMYN </NAME>
+      <VALUE> N </VALUE>
+   </LIVER2>
+   <LIVER2>
+      <TDMACRO> TD_liver2 </TDMACRO>
+      <TYPE> TU_SUMSTATSINROWS </TYPE>
+      <NAME> DISPLAY </NAME>
+      <VALUE> N </VALUE>
+   </LIVER2>
+   <LIVER2>
+      <TDMACRO> TD_liver2 </TDMACRO>
+      <TYPE> TU_SUMSTATSINROWS </TYPE>
+      <NAME> DSETOUT </NAME>
+      <VALUE> DSETOUT </VALUE>
+   </LIVER2>
+   <LIVER2>
+      <TDMACRO> TD_liver2 </TDMACRO>
+      <TYPE> TU_SUMSTATSINROWS </TYPE>
+      <NAME> GROUPBYVARPOP </NAME>
+      <VALUE> &amp;G_TRTCD </VALUE>
+   </LIVER2>
+   <LIVER2>
+      <TDMACRO> TD_liver2 </TDMACRO>
+      <TYPE> TU_SUMSTATSINROWS </TYPE>
+      <NAME> GROUPBYVARSANALY </NAME>
+      <VALUE> &amp;G_TRTCD </VALUE>
+   </LIVER2>
+   <LIVER2>
+      <TDMACRO> TD_liver2 </TDMACRO>
+      <TYPE> TU_SUMSTATSINROWS </TYPE>
+      <NAME> LABELVARSYN </NAME>
+      <VALUE> Y </VALUE>
+   </LIVER2>
+   <LIVER2>
+      <TDMACRO> TD_liver2 </TDMACRO>
+      <TYPE> TU_SUMSTATSINROWS </TYPE>
+      <NAME> POSTSUBSET </NAME>
+      <VALUE Missing=" " />
+   </LIVER2>
+   <LIVER2>
+      <TDMACRO> TD_liver2 </TDMACRO>
+      <TYPE> TU_SUMSTATSINROWS </TYPE>
+      <NAME> PSBYVARS </NAME>
+      <VALUE Missing=" " />
+   </LIVER2>
+   <LIVER2>
+      <TDMACRO> TD_liver2 </TDMACRO>
+      <TYPE> TU_SUMSTATSINROWS </TYPE>
+      <NAME> PSCLASS </NAME>
+      <VALUE Missing=" " />
+   </LIVER2>
+   <LIVER2>
+      <TDMACRO> TD_liver2 </TDMACRO>
+      <TYPE> TU_SUMSTATSINROWS </TYPE>
+      <NAME> PSCLASSOPTIONS </NAME>
+      <VALUE> PRELOADFMT </VALUE>
+   </LIVER2>
+   <LIVER2>
+      <TDMACRO> TD_liver2 </TDMACRO>
+      <TYPE> TU_SUMSTATSINROWS </TYPE>
+      <NAME> PSFORMAT </NAME>
+      <VALUE> &amp;G_TRTCD &amp;G_TRTFMT </VALUE>
+   </LIVER2>
+   <LIVER2>
+      <TDMACRO> TD_liver2 </TDMACRO>
+      <TYPE> TU_SUMSTATSINROWS </TYPE>
+      <NAME> PSFREQ </NAME>
+      <VALUE Missing=" " />
+   </LIVER2>
+   <LIVER2>
+      <TDMACRO> TD_liver2 </TDMACRO>
+      <TYPE> TU_SUMSTATSINROWS </TYPE>
+      <NAME> PSID </NAME>
+      <VALUE Missing=" " />
+   </LIVER2>
+   <LIVER2>
+      <TDMACRO> TD_liver2 </TDMACRO>
+      <TYPE> TU_SUMSTATSINROWS </TYPE>
+      <NAME> PSOPTIONS </NAME>
+      <VALUE> COMPLETETYPES NWAY MISSING </VALUE>
+   </LIVER2>
+   <LIVER2>
+      <TDMACRO> TD_liver2 </TDMACRO>
+      <TYPE> TU_SUMSTATSINROWS </TYPE>
+      <NAME> PSOUTPUT </NAME>
+      <VALUE Missing=" " />
+   </LIVER2>
+   <LIVER2>
+      <TDMACRO> TD_liver2 </TDMACRO>
+      <TYPE> TU_SUMSTATSINROWS </TYPE>
+      <NAME> PSOUTPUTOPTIONS </NAME>
+      <VALUE Missing=" " />
+   </LIVER2>
+   <LIVER2>
+      <TDMACRO> TD_liver2 </TDMACRO>
+      <TYPE> TU_SUMSTATSINROWS </TYPE>
+      <NAME> PSTYPES </NAME>
+      <VALUE Missing=" " />
+   </LIVER2>
+   <LIVER2>
+      <TDMACRO> TD_liver2 </TDMACRO>
+      <TYPE> TU_SUMSTATSINROWS </TYPE>
+      <NAME> PSWAYS </NAME>
+      <VALUE Missing=" " />
+   </LIVER2>
+   <LIVER2>
+      <TDMACRO> TD_liver2 </TDMACRO>
+      <TYPE> TU_SUMSTATSINROWS </TYPE>
+      <NAME> PSWEIGHT </NAME>
+      <VALUE Missing=" " />
+   </LIVER2>
+   <LIVER2>
+      <TDMACRO> TD_liver2 </TDMACRO>
+      <TYPE> TU_SUMSTATSINROWS </TYPE>
+      <NAME> RESULTVARNAME </NAME>
+      <VALUE> tt_result </VALUE>
+   </LIVER2>
+   <LIVER2>
+      <TDMACRO> TD_liver2 </TDMACRO>
+      <TYPE> TU_SUMSTATSINROWS </TYPE>
+      <NAME> SPLITCHAR </NAME>
+      <VALUE> ~ </VALUE>
+   </LIVER2>
+   <LIVER2>
+      <TDMACRO> TD_liver2 </TDMACRO>
+      <TYPE> TU_SUMSTATSINROWS </TYPE>
+      <NAME> STATSDPS </NAME>
+      <VALUE> MEDIAN +1 MEAN +1 STD +2 </VALUE>
+   </LIVER2>
+   <LIVER2>
+      <TDMACRO> TD_liver2 </TDMACRO>
+      <TYPE> TU_SUMSTATSINROWS </TYPE>
+      <NAME> STATSINROWSYN </NAME>
+      <VALUE> Y </VALUE>
+   </LIVER2>
+   <LIVER2>
+      <TDMACRO> TD_liver2 </TDMACRO>
+      <TYPE> TU_SUMSTATSINROWS </TYPE>
+      <NAME> STATSLABELS </NAME>
+      <VALUE Missing=" " />
+   </LIVER2>
+   <LIVER2>
+      <TDMACRO> TD_liver2 </TDMACRO>
+      <TYPE> TU_SUMSTATSINROWS </TYPE>
+      <NAME> STATSLIST </NAME>
+      <VALUE> N MEAN STD MEDIAN MIN MAX </VALUE>
+   </LIVER2>
+   <LIVER2>
+      <TDMACRO> TD_liver2 </TDMACRO>
+      <TYPE> TU_SUMSTATSINROWS </TYPE>
+      <NAME> STATSLISTVARNAME </NAME>
+      <VALUE> tt_decode1 </VALUE>
+   </LIVER2>
+   <LIVER2>
+      <TDMACRO> TD_liver2 </TDMACRO>
+      <TYPE> TU_SUMSTATSINROWS </TYPE>
+      <NAME> STATSLISTVARORDERVARNAME </NAME>
+      <VALUE> tt_code1 </VALUE>
+   </LIVER2>
+   <LIVER2>
+      <TDMACRO> TD_liver2 </TDMACRO>
+      <TYPE> TU_SUMSTATSINROWS </TYPE>
+      <NAME> TOTALDECODE </NAME>
+      <VALUE> Total </VALUE>
+   </LIVER2>
+   <LIVER2>
+      <TDMACRO> TD_liver2 </TDMACRO>
+      <TYPE> TU_SUMSTATSINROWS </TYPE>
+      <NAME> TOTALFORVAR </NAME>
+      <VALUE Missing=" " />
+   </LIVER2>
+   <LIVER2>
+      <TDMACRO> TD_liver2 </TDMACRO>
+      <TYPE> TU_SUMSTATSINROWS </TYPE>
+      <NAME> TOTALID </NAME>
+      <VALUE Missing=" " />
+   </LIVER2>
+   <LIVER2>
+      <TDMACRO> TD_liver2 </TDMACRO>
+      <TYPE> TU_SUMSTATSINROWS </TYPE>
+      <NAME> VARLABELSTYLE </NAME>
+      <VALUE> STD </VALUE>
+   </LIVER2>
+   <LIVER2>
+      <TDMACRO> TD_liver2 </TDMACRO>
+      <TYPE> TU_SUMSTATSINROWS </TYPE>
+      <NAME> XMLINFMT </NAME>
+      <VALUE Missing=" " />
+   </LIVER2>
+   <LIVER2>
+      <TDMACRO> TD_liver2 </TDMACRO>
+      <TYPE> TU_SUMSTATSINROWS </TYPE>
+      <NAME> XMLMERGEVAR </NAME>
+      <VALUE Missing=" " />
+   </LIVER2>
+</TABLE>

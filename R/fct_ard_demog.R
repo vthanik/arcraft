@@ -1,91 +1,277 @@
 # Demographics ARD builder — pure R, no Shiny
-# Input: filtered ADSL, grouping config, stats config
-# Output: tibble in ARD wide format (param | trt1 | trt2 | ...)
+# Supports BY variable: when grouping$by_var is set, stats are computed within
+# each by-level. Adds a `by_value` column so preview/render can insert section
+# headers. Treatment columns stay the same.
+# Denominator: "col_n" = overall treatment N, "bygroup_n" = by-group treatment N.
 
-fct_ard_demog <- function(adsl, grouping, stats) {
+fct_ard_demog <- function(adsl, grouping, var_configs, added_levels = NULL, combined_groups = NULL,
+                          var_labels = NULL) {
+  by_var <- grouping$by_var
+  has_by <- !is.null(by_var) && nzchar(by_var %||% "") && by_var %in% names(adsl)
+
+  if (!has_by) {
+    return(fct_ard_demog_inner(adsl, grouping, var_configs, added_levels,
+                                combined_groups, var_labels))
+  }
+
+  # ── BY variable path ──
   trt_var <- grouping$trt_var
-  include_total <- grouping$include_total
-  vars <- grouping$analysis_vars
+  trt_levels <- grouping$trt_levels
+  include_total <- grouping$include_total %||% TRUE
+  total_label <- grouping$total_label %||% "Total"
+  denominator <- grouping$denominator %||% "col_n"
+  combined_groups <- combined_groups %||% grouping$combined_groups %||% list()
 
-  if (length(vars) == 0) return(tibble::tibble())
+  # By-levels: use custom order if stored, else sorted unique
+  by_levels <- grouping$by_levels %||% sort(unique(adsl[[by_var]]))
 
-  blocks <- purrr::map(vars, function(v) {
-    if (v$type == "continuous") {
-      block <- fct_summarize_cont(adsl, v$variable, trt_var, stats$cont_stats,
-                                   stats$cont_dec, include_total)
-    } else {
-      block <- fct_summarize_cat(adsl, v$variable, trt_var, stats$cat_fmt,
-                                  stats$pct_dec, include_total)
-    }
-    if (nrow(block) == 0) return(block)
-    # Header row + indented stats
-    trt_cols <- setdiff(names(block), "stat")
-    header <- tibble::tibble(stat = v$label)
-    for (col in trt_cols) header[[col]] <- ""
-    block$stat <- paste0("  ", block$stat)
-    dplyr::bind_rows(header, block)
+  # Overall big_n (for col_n denominator)
+  overall_big_n <- adsl |>
+    dplyr::count(.data[[trt_var]], name = "N") |>
+    dplyr::arrange(match(.data[[trt_var]], trt_levels))
+  if (include_total) {
+    overall_big_n <- dplyr::bind_rows(overall_big_n,
+      tibble::tibble(!!trt_var := total_label, N = nrow(adsl)))
+  }
+  for (cg in combined_groups) {
+    pooled_n <- sum(adsl[[trt_var]] %in% cg$arms, na.rm = TRUE)
+    overall_big_n <- dplyr::bind_rows(overall_big_n,
+      tibble::tibble(!!trt_var := cg$label, N = pooled_n))
+  }
+  overall_denom <- stats::setNames(overall_big_n$N, overall_big_n[[trt_var]])
+
+  # Build ARD per by-level, stack vertically
+  by_ards <- lapply(by_levels, function(bv) {
+    sub <- adsl[adsl[[by_var]] == bv, ]
+
+    # Denominator override for col_n: pass overall N for percentages
+    denom_n <- if (denominator == "col_n") overall_denom else NULL
+
+    ard <- fct_ard_demog_inner(sub, grouping, var_configs, added_levels,
+                                combined_groups, var_labels, denom_n = denom_n)
+
+    # Tag each row with the by-level
+    ard$by_value <- bv
+    ard
   })
 
-  result <- dplyr::bind_rows(blocks)
-  if ("stat" %in% names(result)) result <- dplyr::rename(result, param = "stat")
-  result
+  result <- dplyr::bind_rows(by_ards)
+
+  # Reorder: by_value first after meta columns
+  meta <- c("variable", "var_label", "var_type", "stat_label", "by_value")
+  dcols <- setdiff(names(result), meta)
+  result[, c(meta, dcols)]
 }
 
-fct_summarize_cont <- function(data, var, trt_var, stats, dec, include_total) {
-  df <- if (include_total) {
-    dplyr::bind_rows(data, data |> dplyr::mutate(!!trt_var := "Total"))
-  } else data
+# ── Inner builder (no BY variable) ──
+fct_ard_demog_inner <- function(adsl, grouping, var_configs, added_levels = NULL,
+                                 combined_groups = NULL, var_labels = NULL,
+                                 denom_n = NULL) {
+  trt_var <- grouping$trt_var
+  trt_levels <- grouping$trt_levels
+  include_total <- grouping$include_total %||% TRUE
+  total_label <- grouping$total_label %||% "Total"
+  analysis_vars <- grouping$analysis_vars
+  combined_groups <- combined_groups %||% grouping$combined_groups %||% list()
 
-  r <- df |> dplyr::group_by(.data[[trt_var]]) |>
-    dplyr::summarise(
-      N = dplyr::n(), Mean = mean(.data[[var]], na.rm = TRUE),
-      SD = stats::sd(.data[[var]], na.rm = TRUE),
-      Median = stats::median(.data[[var]], na.rm = TRUE),
-      Q1 = stats::quantile(.data[[var]], 0.25, na.rm = TRUE),
-      Q3 = stats::quantile(.data[[var]], 0.75, na.rm = TRUE),
-      Min = min(.data[[var]], na.rm = TRUE),
-      Max = max(.data[[var]], na.rm = TRUE), .groups = "drop")
+  # Big N per treatment (from this data subset)
+  big_n <- adsl |>
+    dplyr::count(.data[[trt_var]], name = "N") |>
+    dplyr::arrange(match(.data[[trt_var]], trt_levels))
 
-  fmt <- paste0("%.", dec, "f")
-  fmt1 <- paste0("%.", dec + 1, "f")
-  rows <- list()
-  if ("n" %in% stats)       rows[["N"]] <- fmt_row(r, trt_var, "N", "%d")
-  if ("mean_sd" %in% stats) rows[["Mean (SD)"]] <- fmt_mean_sd(r, trt_var, fmt, fmt1)
-  if ("median" %in% stats)  rows[["Median"]] <- fmt_row(r, trt_var, "Median", fmt)
-  if ("q1_q3" %in% stats)   rows[["Q1, Q3"]] <- fmt_pair(r, trt_var, "Q1", "Q3", fmt)
-  if ("min_max" %in% stats) rows[["Min, Max"]] <- fmt_pair(r, trt_var, "Min", "Max", fmt)
+  if (include_total) {
+    big_n <- dplyr::bind_rows(big_n, tibble::tibble(!!trt_var := total_label, N = nrow(adsl)))
+  }
 
-  dplyr::bind_rows(rows) |> dplyr::mutate(stat = names(rows), .before = 1)
+  for (cg in combined_groups) {
+    pooled_n <- sum(adsl[[trt_var]] %in% cg$arms, na.rm = TRUE)
+    big_n <- dplyr::bind_rows(big_n, tibble::tibble(!!trt_var := cg$label, N = pooled_n))
+  }
+
+  # Build ARD per variable
+  ard_rows <- lapply(analysis_vars, function(var) {
+    config <- var_configs[[var]] %||% list()
+    var_type <- config$type %||% fct_detect_var_type(adsl, var)
+
+    if (var_type == "continuous") {
+      fct_summarize_cont(adsl, var, trt_var, trt_levels, config, big_n,
+        include_total, combined_groups, var_labels = var_labels,
+        total_label = total_label)
+    } else {
+      extra_lvls <- if (!is.null(added_levels)) added_levels[[var]] else character(0)
+      if (length(extra_lvls) > 0) {
+        existing <- config$levels %||% {
+          if (is.factor(adsl[[var]])) levels(adsl[[var]])
+          else sort(unique(stats::na.omit(adsl[[var]])))
+        }
+        config$levels <- unique(c(existing, extra_lvls))
+      }
+      fct_summarize_cat(adsl, var, trt_var, trt_levels, config, big_n,
+        include_total, combined_groups, var_labels = var_labels,
+        denom_n = denom_n, total_label = total_label)
+    }
+  })
+
+  dplyr::bind_rows(ard_rows)
 }
 
-fct_summarize_cat <- function(data, var, trt_var, cat_fmt, pct_dec, include_total) {
-  df <- if (include_total) {
-    dplyr::bind_rows(data, data |> dplyr::mutate(!!trt_var := "Total"))
-  } else data
-
-  big_n <- df |> dplyr::count(.data[[trt_var]], name = "N")
-  pf <- paste0("%.", pct_dec, "f")
-
-  df |> dplyr::count(.data[[trt_var]], .data[[var]]) |>
-    dplyr::left_join(big_n, by = trt_var) |>
-    dplyr::mutate(value = switch(cat_fmt,
-      npct   = sprintf(paste0("%d (", pf, "%%)"), .data$n, .data$n / .data$N * 100),
-      n_only = sprintf("%d", .data$n),
-      nn_pct = sprintf(paste0("%d/%d (", pf, "%%)"), .data$n, .data$N, .data$n / .data$N * 100))) |>
-    dplyr::select(dplyr::all_of(c(trt_var, var)), "value") |>
-    tidyr::pivot_wider(names_from = dplyr::all_of(trt_var), values_from = "value") |>
-    dplyr::rename(stat = dplyr::all_of(var))
+# Helper: get per-stat decimal from config
+get_stat_dec <- function(config, stat_name, fallback = 1) {
+  decs <- config$decimals
+  if (is.list(decs)) decs[[stat_name]] %||% fallback
+  else decs %||% fallback
 }
 
-# Formatting helpers
-fmt_row <- function(r, trt_var, col, fmt) {
-  tibble::as_tibble(as.list(stats::setNames(sprintf(fmt, r[[col]]), r[[trt_var]])))
+fct_summarize_cont <- function(data, var, trt_var, trt_levels, config, big_n,
+                                include_total, combined_groups = list(),
+                                var_labels = NULL, total_label = "Total") {
+  stats <- config$stats %||% c("n", "mean_sd", "median", "q1_q3", "min_max")
+  label <- if (!is.null(var_labels[[var]]) && nzchar(var_labels[[var]])) var_labels[[var]] else safe_label(data, var)
+  stat_labels <- config$stat_labels %||% list()
+
+  groups <- trt_levels
+  if (include_total) groups <- c(groups, total_label)
+  for (cg in combined_groups) groups <- c(groups, cg$label)
+
+  rows <- lapply(stats, function(stat) {
+    vals <- vapply(groups, function(grp) {
+      if (grp == total_label) {
+        x <- data[[var]]
+      } else {
+        cg_match <- Filter(function(cg) cg$label == grp, combined_groups)
+        if (length(cg_match) > 0) {
+          x <- data[[var]][data[[trt_var]] %in% cg_match[[1]]$arms]
+        } else {
+          x <- data[[var]][data[[trt_var]] == grp]
+        }
+      }
+      x <- stats::na.omit(x)
+      n <- length(x)
+
+      switch(stat,
+        n = fmt_count(n),
+        mean = if (n > 0) formatC(mean(x), format = "f",
+          digits = get_stat_dec(config, "mean", 1)) else "",
+        sd = if (n > 0) formatC(stats::sd(x), format = "f",
+          digits = get_stat_dec(config, "sd", 2)) else "",
+        mean_sd = if (n > 0) {
+          fmt_mean_sd(mean(x), stats::sd(x),
+            mean_dec = get_stat_dec(config, "mean", 1),
+            sd_dec = get_stat_dec(config, "sd", 2))
+        } else "",
+        median = if (n > 0) fmt_median_only(stats::median(x), get_stat_dec(config, "median", 1)) else "",
+        q1 = if (n > 0) formatC(stats::quantile(x, 0.25), format = "f",
+          digits = get_stat_dec(config, "q1", 1)) else "",
+        q3 = if (n > 0) formatC(stats::quantile(x, 0.75), format = "f",
+          digits = get_stat_dec(config, "q3", 1)) else "",
+        q1_q3 = if (n > 0) fmt_q1_q3(stats::quantile(x, 0.25), stats::quantile(x, 0.75),
+          q1_dec = get_stat_dec(config, "q1", 1),
+          q3_dec = get_stat_dec(config, "q3", 1)) else "",
+        min = if (n > 0) formatC(min(x), format = "f",
+          digits = get_stat_dec(config, "min", 0)) else "",
+        max = if (n > 0) formatC(max(x), format = "f",
+          digits = get_stat_dec(config, "max", 0)) else "",
+        min_max = if (n > 0) fmt_min_max(min(x), max(x),
+          min_dec = get_stat_dec(config, "min", 0),
+          max_dec = get_stat_dec(config, "max", 0)) else "",
+        geo_mean = {
+          if (n > 0 && all(x > 0)) {
+            formatC(exp(mean(log(x))), format = "f",
+              digits = get_stat_dec(config, "geo_mean", 2))
+          } else ""
+        },
+        cv = {
+          if (n > 0 && mean(x) != 0) {
+            formatC(stats::sd(x) / mean(x) * 100, format = "f",
+              digits = get_stat_dec(config, "cv", 1))
+          } else ""
+        },
+        geo_mean_cv = {
+          if (n > 0 && all(x > 0)) {
+            gm <- exp(mean(log(x)))
+            cv <- stats::sd(x) / mean(x) * 100
+            fmt_geo_mean_cv(gm, cv,
+              gm_dec = get_stat_dec(config, "geo_mean", 2),
+              cv_dec = get_stat_dec(config, "cv", 1))
+          } else ""
+        },
+        ""
+      )
+    }, character(1))
+
+    default_label <- switch(stat,
+      n = "n", mean = "Mean", sd = "SD", mean_sd = "Mean (SD)",
+      median = "Median", q1 = "Q1", q3 = "Q3", q1_q3 = "Q1, Q3",
+      min = "Min", max = "Max", min_max = "Min, Max",
+      geo_mean = "Geometric Mean", cv = "CV%",
+      geo_mean_cv = "Geometric Mean (CV%)", stat
+    )
+    stat_label <- stat_labels[[stat]] %||% default_label
+
+    c(list(variable = var, var_label = label, var_type = "continuous",
+           stat_label = paste0("  ", stat_label)), stats::setNames(as.list(vals), groups))
+  })
+
+  dplyr::bind_rows(rows)
 }
-fmt_mean_sd <- function(r, trt_var, fmt, fmt1) {
-  tibble::as_tibble(as.list(stats::setNames(
-    sprintf(paste0(fmt, " (", fmt1, ")"), r$Mean, r$SD), r[[trt_var]])))
-}
-fmt_pair <- function(r, trt_var, c1, c2, fmt) {
-  tibble::as_tibble(as.list(stats::setNames(
-    sprintf(paste0(fmt, ", ", fmt), r[[c1]], r[[c2]]), r[[trt_var]])))
+
+fct_summarize_cat <- function(data, var, trt_var, trt_levels, config, big_n,
+                               include_total, combined_groups = list(),
+                               var_labels = NULL, denom_n = NULL,
+                               total_label = "Total") {
+  dec <- config$pct_dec %||% 1
+  fmt <- config$cat_format %||% "npct"
+  style <- config$zero_style %||% "A"
+  label <- if (!is.null(var_labels[[var]]) && nzchar(var_labels[[var]])) var_labels[[var]] else safe_label(data, var)
+
+  levels_order <- if (!is.null(config$levels)) {
+    config$levels
+  } else if (is.factor(data[[var]])) {
+    levels(data[[var]])
+  } else {
+    sort(unique(stats::na.omit(data[[var]])))
+  }
+
+  groups <- trt_levels
+  if (include_total) groups <- c(groups, total_label)
+  for (cg in combined_groups) groups <- c(groups, cg$label)
+
+  rows <- lapply(levels_order, function(lev) {
+    vals <- vapply(groups, function(grp) {
+      if (grp == total_label) {
+        x <- data[[var]]
+        N <- if (!is.null(denom_n) && total_label %in% names(denom_n)) {
+          as.integer(denom_n[[total_label]])
+        } else {
+          nrow(data)
+        }
+      } else {
+        cg_match <- Filter(function(cg) cg$label == grp, combined_groups)
+        if (length(cg_match) > 0) {
+          mask <- data[[trt_var]] %in% cg_match[[1]]$arms
+        } else {
+          mask <- data[[trt_var]] == grp
+        }
+        x <- data[[var]][mask]
+        N <- if (!is.null(denom_n) && grp %in% names(denom_n)) {
+          as.integer(denom_n[[grp]])
+        } else {
+          sum(mask)
+        }
+      }
+      n <- sum(x == lev, na.rm = TRUE)
+
+      switch(fmt,
+        npct = fmt_npct(n, N, style, dec),
+        n = fmt_count(n),
+        nn_pct = fmt_nn_pct(n, N, style, dec),
+        fmt_npct(n, N, style, dec)
+      )
+    }, character(1))
+
+    c(list(variable = var, var_label = label, var_type = "categorical",
+           stat_label = paste0("  ", lev)), stats::setNames(as.list(vals), groups))
+  })
+
+  dplyr::bind_rows(rows)
 }
