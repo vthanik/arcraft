@@ -50,8 +50,10 @@ fmt_preset_values <- function(preset_name) {
 }
 
 # ── Collect Format Drafts from All Modules ──
-collect_format_drafts <- function(titles, cols, page, rules, header_spans,
-                                  rows, chrome, base_fmt = NULL) {
+# Accepts either old 7-module signature or new 5-module signature
+collect_format_drafts <- function(titles, cols, header_spans, rows,
+                                  page_output, styles = NULL,
+                                  base_fmt = NULL) {
   fmt <- normalize_fmt(base_fmt %||% list())
   # Titles
   fmt$titles <- titles$titles %||% fmt$titles
@@ -60,18 +62,26 @@ collect_format_drafts <- function(titles, cols, page, rules, header_spans,
   fmt$fn_placement <- titles$fn_placement %||% fmt$fn_placement
   # Columns
   fmt$cols <- coalesce_list(fmt$cols, cols)
-  # Page
-  fmt$page <- coalesce_list(fmt$page, page)
-  # Rules
-  fmt$rules <- coalesce_list(fmt$rules, rules)
   # Header & Spans
   fmt$header <- coalesce_list(fmt$header, header_spans$header)
   fmt$spans <- header_spans$spans %||% fmt$spans
+  col_aligns <- header_spans$col_aligns %||% list()
+  if (length(col_aligns) > 0) {
+    fmt$header$col_aligns <- col_aligns
+  }
   # Rows
   fmt$rows <- coalesce_list(fmt$rows, rows)
-  # Chrome
-  fmt$pagehead <- coalesce_list(fmt$pagehead, chrome$pagehead)
-  fmt$pagefoot <- coalesce_list(fmt$pagefoot, chrome$pagefoot)
+  # Page + Rules + Chrome + Spacing + Output (from merged page_output module)
+  fmt$page <- coalesce_list(fmt$page, page_output$page)
+  fmt$rules <- coalesce_list(fmt$rules, page_output$rules)
+  fmt$pagehead <- coalesce_list(fmt$pagehead, page_output$pagehead)
+  fmt$pagefoot <- coalesce_list(fmt$pagefoot, page_output$pagefoot)
+  if (!is.null(page_output$spacing)) {
+    fmt$spacing <- coalesce_list(fmt$spacing, page_output$spacing)
+  }
+  fmt$output_format <- page_output$output_format %||% fmt$output_format %||% "rtf"
+  # Styles
+  if (!is.null(styles)) fmt$styles <- styles$styles %||% fmt$styles
   fmt
 }
 
@@ -101,52 +111,32 @@ apply_fmt_preset <- function(store, preset_name) {
   store$fmt <- base
 }
 
-# ── Format Panel UI: Two-Tab Split (Content + Style) ──
+# ── Format Panel UI: Single flat scrollable panel ──
 format_panel_ui <- function() {
-  htmltools::tags$div(class = "ar-fmt ar-fmt-v2",
-    bslib::navset_pill(id = "fmt_tabs",
-      # ── Content Tab ──
-      bslib::nav_panel("Content",
-        icon = shiny::icon("align-left"),
-        htmltools::tags$div(class = "ar-fmt-tab-body",
-          bslib::accordion(id = "acc_fmt_content",
-            open = "TITLES & FOOTNOTES", multiple = TRUE,
-            bslib::accordion_panel("TITLES & FOOTNOTES",
-              mod_titles_ui("titles")),
-            bslib::accordion_panel("HEADER & SPANS",
-              mod_header_spans_ui("header_spans")),
-            bslib::accordion_panel("ROW STRUCTURE",
-              mod_rows_ui("rows"))
-          )
-        )
-      ),
-      # ── Style Tab ──
-      bslib::nav_panel("Style",
-        icon = shiny::icon("palette"),
-        htmltools::tags$div(class = "ar-fmt-tab-body ar-style",
-          # Preset pills — clean, no label
-          htmltools::tags$div(class = "ar-style__presets",
-            htmltools::tags$span(class = "ar-style__presets-label", "Preset"),
-            htmltools::tags$div(class = "ar-fmt-preset-pills",
-              preset_pill("fmt_preset_fda", "FDA"),
-              preset_pill("fmt_preset_booktabs", "Booktabs"),
-              preset_pill("fmt_preset_minimal", "Minimal"),
-              preset_pill("fmt_preset_company", "Company")
-            )
-          ),
-          bslib::accordion(id = "acc_fmt_style",
-            open = "Page", multiple = TRUE,
-            bslib::accordion_panel("Page",
-              mod_page_ui("page")),
-            bslib::accordion_panel("Columns",
-              mod_columns_ui("cols")),
-            bslib::accordion_panel("Rules",
-              mod_rules_ui("rules")),
-            bslib::accordion_panel("Page Chrome",
-              mod_page_chrome_ui("page_chrome"))
-          )
-        )
+  htmltools::tags$div(class = "ar-fmt",
+    # Preset pills — always visible at top
+    htmltools::tags$div(class = "ar-fmt-presets",
+      htmltools::tags$span(class = "ar-form-label", "PRESET"),
+      htmltools::tags$div(class = "ar-fmt-preset-pills",
+        preset_pill("fmt_preset_fda", "FDA"),
+        preset_pill("fmt_preset_booktabs", "Booktabs"),
+        preset_pill("fmt_preset_minimal", "Minimal"),
+        preset_pill("fmt_preset_company", "Company")
       )
+    ),
+    # All sections in one accordion (5 panels, merged from 7)
+    bslib::accordion(id = "acc_fmt",
+      open = "TITLES & FOOTNOTES", multiple = TRUE,
+      bslib::accordion_panel("TITLES & FOOTNOTES",
+        mod_titles_ui("titles")),
+      bslib::accordion_panel("COLUMNS",
+        mod_columns_ui("cols")),
+      bslib::accordion_panel("HEADER & SPANS",
+        mod_header_spans_ui("header_spans")),
+      bslib::accordion_panel("ROW STRUCTURE",
+        mod_rows_ui("rows")),
+      bslib::accordion_panel("PAGE & OUTPUT",
+        mod_page_output_ui("page_output"))
     )
   )
 }

@@ -2,15 +2,6 @@
 
 `%||%` <- function(x, y) if (is.null(x)) y else x
 
-is_truthy <- function(x) {
-
-  if (is.null(x)) return(FALSE)
-  if (length(x) == 0) return(FALSE)
-  if (is.logical(x) && length(x) == 1) return(!is.na(x) && x)
-  if (is.character(x) && length(x) == 1) return(nzchar(x))
-  TRUE
-}
-
 coalesce_list <- function(defaults, overrides) {
   out <- defaults
   for (nm in names(overrides)) {
@@ -34,23 +25,32 @@ normalize_fmt <- function(fmt) {
     fn_separator = FALSE, fn_placement = "every",
     cols = list(width_mode = "auto", default_align = "center",
                 spaces = "indent", split = FALSE,
-                n_counts = TRUE, n_format = "(N={n})",
+                n_counts = TRUE, n_format = "{label}\\n(N={n})",
                 stub_width = 2.5, stub_align = "left", per_col = list()),
     page = list(orientation = "landscape", paper = "letter",
                 font_family = "Courier New", font_size = 9,
                 margins = c(1, 1, 1, 1), col_gap = 4,
                 continuation = "", orphan_min = 3L, widow_min = 3L),
     rules = list(hline_preset = "header", vline_preset = "none",
-                 line_width = "thin", line_color = "#000000", line_style = "solid"),
-    header = list(bold = TRUE, align = "center", valign = "bottom", bg = NULL, fg = NULL),
+                 line_width = "thin", line_color = "#000000", line_style = "solid",
+                 vline_cols = NULL, vline_abovepos = NULL, vline_belowpos = NULL),
+    header = list(bold = TRUE, align = "center", valign = "bottom",
+                  bg = NULL, fg = NULL, font_size = NULL, repeat_on_page = TRUE),
     spans = list(),
-    rows = list(group_by = NULL, blank_after = NULL, page_by = NULL,
-                page_by_bold = FALSE, indent_by = NULL,
-                repeat_cols = NULL, wrap = FALSE),
-    pagehead = list(left = "", center = "", right = ""),
-    pagefoot = list(left = "", center = "", right = ""),
+    rows = list(group_by = NULL, group_label = NULL, group_keep = TRUE,
+                blank_after = NULL, page_by = NULL,
+                page_by_bold = FALSE, page_by_align = "left",
+                page_by_visible = TRUE, indent_by = NULL,
+                sort_by = NULL, repeat_cols = NULL, wrap = FALSE),
+    pagehead = list(left = "", center = "", right = "",
+                    font_size = NULL, bold = NULL),
+    pagefoot = list(left = "", center = "", right = "",
+                    font_size = NULL, bold = NULL),
     spacing = list(titles_after = 1L, footnotes_before = 1L,
-                   pagehead_after = 0L, pagefoot_before = 0L)
+                   pagehead_after = 0L, pagefoot_before = 0L,
+                   page_by_after = NULL),
+    styles = list(),
+    output_format = "rtf"
   )
 
   # Backward compat: body_align → default_align
@@ -64,10 +64,15 @@ normalize_fmt <- function(fmt) {
     fmt$title_align <- NULL
   }
 
-  # Deep merge: for each top-level key, if it's a list, merge sub-keys
+  # Deep merge: for each top-level key, if it's a named list, merge sub-keys
+  # Unnamed lists (titles, footnotes, spans) are replaced wholesale
   out <- defaults
+  replace_keys <- c("titles", "footnotes", "spans")
   for (nm in names(fmt)) {
-    if (nm %in% names(defaults) && is.list(defaults[[nm]]) && is.list(fmt[[nm]])) {
+    if (nm %in% replace_keys) {
+      # Positional lists — replace entirely, don't merge
+      out[[nm]] <- fmt[[nm]]
+    } else if (nm %in% names(defaults) && is.list(defaults[[nm]]) && is.list(fmt[[nm]])) {
       out[[nm]] <- coalesce_list(defaults[[nm]], fmt[[nm]])
     } else {
       out[[nm]] <- fmt[[nm]]
@@ -98,17 +103,23 @@ read_arframe_yml <- function() {
 }
 
 # Get format defaults: hardcoded → _arframe.yml overlay
-get_format_defaults <- function() {
-  base <- normalize_fmt(list())
-  yml <- read_arframe_yml()
-  if (!is.null(yml)) {
-    for (section in names(yml)) {
-      if (section %in% names(base) && is.list(base[[section]]) && is.list(yml[[section]])) {
-        base[[section]] <- coalesce_list(base[[section]], yml[[section]])
-      } else if (section %in% names(base)) {
-        base[[section]] <- yml[[section]]
-      }
-    }
-  }
-  base
+# Convert literal \n (typed by user in text inputs) to actual newline
+resolve_newlines <- function(x) {
+  if (is.null(x) || !is.character(x)) return(x)
+  gsub("\\\\n", "\n", x)
 }
+
+# Centralized stat labels — single source of truth
+STAT_LABELS <- list(
+  n = "n", mean = "Mean", sd = "SD", mean_sd = "Mean (SD)",
+  median = "Median", q1 = "Q1", q3 = "Q3", q1_q3 = "Q1, Q3",
+  min = "Min", max = "Max", min_max = "Min, Max",
+  geo_mean = "Geometric Mean", cv = "CV%", geo_mean_cv = "Geometric Mean (CV%)"
+)
+
+# Default decimals per stat
+STAT_DECIMALS <- list(
+  n = 0, mean = 1, sd = 2, median = 1, q1 = 1, q3 = 1,
+  min = 0, max = 0, geo_mean = 2, cv = 1
+)
+

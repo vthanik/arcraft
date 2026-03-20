@@ -1,6 +1,6 @@
 # Pipeline validation checks — pure R, no Shiny
 
-fct_validate_pipeline <- function(store_snapshot) {
+fct_validate_pipeline <- function(store_snapshot, grp_snapshot = NULL) {
   checks <- list()
 
   # Data loaded
@@ -19,15 +19,16 @@ fct_validate_pipeline <- function(store_snapshot) {
     detail = store_snapshot$template %||% "None"
   )
 
-  # Treatment variable
+  # Treatment variable — read from grp_snapshot (separate reactiveValues)
+  trt_var <- grp_snapshot$trt_var
   checks$trt_var <- list(
     label = "Treatment variable set",
-    pass = !is.null(store_snapshot$grouping$trt_var) && nzchar(store_snapshot$grouping$trt_var),
-    detail = store_snapshot$grouping$trt_var %||% "Not set"
+    pass = !is.null(trt_var) && nzchar(trt_var),
+    detail = trt_var %||% "Not set"
   )
 
-  # Analysis variables
-  n_vars <- length(store_snapshot$grouping$analysis_vars)
+  # Analysis variables — read from grp_snapshot
+  n_vars <- length(grp_snapshot$analysis_vars)
   checks$analysis_vars <- list(
     label = "Analysis variables selected",
     pass = n_vars > 0,

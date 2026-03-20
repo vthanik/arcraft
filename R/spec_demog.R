@@ -31,7 +31,7 @@ spec_demog <- function(data = NULL) {
       var_configs[[v]] <- list(
         type = "continuous",
         stats = c("n", "mean_sd", "median", "q1_q3", "min_max"),
-        decimals = 1,
+        decimals = list(n = 0, mean = 1, sd = 2, median = 1, q1 = 1, q3 = 1, min = 0, max = 0),
         custom_labels = NULL
       )
     } else {
@@ -52,14 +52,14 @@ spec_demog <- function(data = NULL) {
   list(
     template = "demog",
     grouping = list(
-      trt_var = "TRT01P",
+      trt_var = "TRT01A",
       include_total = TRUE,
       analysis_vars = avail_vars
     ),
     var_configs = var_configs,
     fmt = list(
       titles = list(
-        list(text = "Table 14.1.1", bold = TRUE),
+        list(text = "Table 14.1.1", bold = FALSE),
         list(text = "Summary of Demographics and Baseline Characteristics", bold = FALSE)
       ),
       footnotes = list(
@@ -72,7 +72,7 @@ spec_demog <- function(data = NULL) {
         stub_width = 2.5,
         body_align = "center",
         n_counts = TRUE,
-        n_format = "(N={n})"
+        n_format = "{label}\\n(N={n})"
       ),
       page = list(
         orientation = "landscape",
@@ -80,7 +80,7 @@ spec_demog <- function(data = NULL) {
         font_family = "Courier New",
         font_size = 9,
         margins = c(1, 1, 1, 1),
-        col_gap = 0.1
+        col_gap = 4L
       ),
       rules = list(
         hline_preset = "header",

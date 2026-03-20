@@ -1,6 +1,6 @@
 # Demographics ARD builder — pure R, no Shiny
 # Supports BY variable: when grouping$by_var is set, stats are computed within
-# each by-level. Adds a `by_value` column so preview/render can insert section
+# each by-level. Adds a `group_value` column so preview/render can insert section
 # headers. Treatment columns stay the same.
 # Denominator: "col_n" = overall treatment N, "bygroup_n" = by-group treatment N.
 
@@ -51,14 +51,14 @@ fct_ard_demog <- function(adsl, grouping, var_configs, added_levels = NULL, comb
                                 combined_groups, var_labels, denom_n = denom_n)
 
     # Tag each row with the by-level
-    ard$by_value <- bv
+    ard$group_value <- bv
     ard
   })
 
   result <- dplyr::bind_rows(by_ards)
 
-  # Reorder: by_value first after meta columns
-  meta <- c("variable", "var_label", "var_type", "stat_label", "by_value")
+  # Reorder: group_value FIRST, then meta, then data columns
+  meta <- c("group_value", "variable", "var_label", "var_type", "stat_label")
   dcols <- setdiff(names(result), meta)
   result[, c(meta, dcols)]
 }
@@ -199,13 +199,7 @@ fct_summarize_cont <- function(data, var, trt_var, trt_levels, config, big_n,
       )
     }, character(1))
 
-    default_label <- switch(stat,
-      n = "n", mean = "Mean", sd = "SD", mean_sd = "Mean (SD)",
-      median = "Median", q1 = "Q1", q3 = "Q3", q1_q3 = "Q1, Q3",
-      min = "Min", max = "Max", min_max = "Min, Max",
-      geo_mean = "Geometric Mean", cv = "CV%",
-      geo_mean_cv = "Geometric Mean (CV%)", stat
-    )
+    default_label <- STAT_LABELS[[stat]] %||% stat
     stat_label <- stat_labels[[stat]] %||% default_label
 
     c(list(variable = var, var_label = label, var_type = "continuous",
@@ -236,6 +230,27 @@ fct_summarize_cat <- function(data, var, trt_var, trt_levels, config, big_n,
   if (include_total) groups <- c(groups, total_label)
   for (cg in combined_groups) groups <- c(groups, cg$label)
 
+  show_n <- config$show_n %||% TRUE
+
+  # N row: total non-missing count per treatment group
+  n_vals <- vapply(groups, function(grp) {
+    if (grp == total_label) {
+      x <- data[[var]]
+    } else {
+      cg_match <- Filter(function(cg) cg$label == grp, combined_groups)
+      if (length(cg_match) > 0) {
+        x <- data[[var]][data[[trt_var]] %in% cg_match[[1]]$arms]
+      } else {
+        x <- data[[var]][data[[trt_var]] == grp]
+      }
+    }
+    fmt_count(sum(!is.na(x)))
+  }, character(1))
+
+  n_row <- c(list(variable = var, var_label = label, var_type = "categorical",
+                   stat_label = "  n"), stats::setNames(as.list(n_vals), groups))
+
+  # Level rows: n(%) for each category
   rows <- lapply(levels_order, function(lev) {
     vals <- vapply(groups, function(grp) {
       if (grp == total_label) {
@@ -273,5 +288,9 @@ fct_summarize_cat <- function(data, var, trt_var, trt_levels, config, big_n,
            stat_label = paste0("  ", lev)), stats::setNames(as.list(vals), groups))
   })
 
-  dplyr::bind_rows(rows)
+  if (isTRUE(show_n)) {
+    dplyr::bind_rows(c(list(n_row), rows))
+  } else {
+    dplyr::bind_rows(rows)
+  }
 }

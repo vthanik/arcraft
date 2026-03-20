@@ -1,4 +1,4 @@
-# Module: Data — Datasets, Summary, Column Explorer, Filters
+# Module: Data — Datasets, Summary, Pipeline filters
 
 # ── DATASETS section ──
 mod_data_ui <- function(id) {
@@ -19,7 +19,7 @@ mod_data_ui <- function(id) {
       htmltools::tags$button(
         id = ns("load_btn"), class = "ar-btn-primary",
         onclick = paste0("Shiny.setInputValue('", ns("load_btn"), "', Math.random(), {priority: 'event'})"),
-        htmltools::tags$i(class = "fa fa-download", style = "font-size: 11px;"),
+        htmltools::tags$i(class = "fa fa-download ar-icon-md"),
         "Load"
       ),
       htmltools::tags$button(
@@ -29,12 +29,11 @@ mod_data_ui <- function(id) {
       ),
       htmltools::tags$label(
         `for` = ns("upload_file"),
-        class = "ar-btn-outline",
-        style = "cursor: pointer; margin: 0;",
-        htmltools::tags$i(class = "fa fa-upload", style = "font-size: 11px; margin-right: 4px;"),
+        class = "ar-btn-outline ar-cursor-pointer ar-m-0",
+        htmltools::tags$i(class = "fa fa-upload ar-icon-md ar-icon-mr"),
         "Upload"
       ),
-      htmltools::tags$div(style = "display: none;",
+      htmltools::tags$div(class = "ar-hidden",
         shiny::fileInput(ns("upload_file"), NULL,
           accept = c(".rds", ".csv", ".sas7bdat", ".xpt")
         )
@@ -46,41 +45,7 @@ mod_data_ui <- function(id) {
 # ── DATA SUMMARY section ──
 mod_data_summary_ui <- function(id) {
   ns <- shiny::NS(id)
-  htmltools::tagList(
-    htmltools::tags$div(class = "ar-form-group",
-      shiny::uiOutput(ns("summary_ds_picker"))
-    ),
-    shiny::uiOutput(ns("summary_stats"))
-  )
-}
-
-# ── COLUMN EXPLORER section ──
-mod_data_col_explorer_ui <- function(id) {
-  ns <- shiny::NS(id)
-  htmltools::tagList(
-    htmltools::tags$div(class = "ar-form-group",
-      shiny::selectizeInput(ns("explore_col"), NULL, choices = NULL, width = "100%",
-        options = list(placeholder = "Select a column...", allowEmptyOption = TRUE)
-      )
-    ),
-    shiny::uiOutput(ns("col_detail")),
-    shiny::uiOutput(ns("col_explorer_actions"))
-  )
-}
-
-# ── FILTERS section ──
-mod_data_filters_ui <- function(id) {
-  ns <- shiny::NS(id)
-  htmltools::tagList(
-    htmltools::tags$div(class = "ar-form-group",
-      shiny::selectizeInput(ns("filter_col_pick"), NULL, choices = NULL,
-        multiple = TRUE, width = "100%",
-        options = list(placeholder = "Select columns to filter...", allowEmptyOption = TRUE)
-      )
-    ),
-    shiny::uiOutput(ns("filter_cards")),
-    shiny::uiOutput(ns("filter_actions"))
-  )
+  shiny::uiOutput(ns("library_table"))
 }
 
 # ── DATASET section (Template sidebar) ──
@@ -94,16 +59,16 @@ mod_data_pipeline_dataset_ui <- function(id) {
     htmltools::tags$div(class = "ar-form-group ar-mt-8",
       htmltools::tags$label(class = "ar-form-label", "Dataset Filter"),
       htmltools::tags$input(
-        type = "text", class = "ar-input ar-input--sm",
+        type = "text", class = "ar-input ar-input--sm ar-w-full",
         id = ns("data_filter"),
-        placeholder = "e.g. AVISIT == 'Week 24'",
-        style = "width: 100%;",
-        onchange = paste0(
+        placeholder = "AGE > 65 | SEX %in% c('F','M') | !is.na(COL)",
+        oninput = paste0(
+          "clearTimeout(this._deb); var el=this; this._deb=setTimeout(function(){",
           "Shiny.setInputValue('", ns("data_filter"),
-          "', this.value, {priority: 'event'})"
+          "', el.value, {priority: 'event'})}, 500)"
         )
       ),
-      htmltools::tags$div(class = "ar-form-hint", "Filter applied to the primary dataset")
+      shiny::uiOutput(ns("data_filter_status"))
     )
   )
 }
@@ -115,8 +80,8 @@ mod_data_pipeline_pop_ui <- function(id) {
     htmltools::tags$div(class = "ar-form-group",
       htmltools::tags$label(class = "ar-form-label", "Population Source"),
       htmltools::tags$div(class = "ar-flex ar-items-center ar-gap-8",
-        htmltools::tags$span(style = "font-size: 12px; color: var(--fg-2); font-weight: 500;", "ADSL"),
-        htmltools::tags$span(style = "font-size: 11px; color: var(--fg-muted);", "(always)")
+        htmltools::tags$span(class = "ar-text-sm ar-text-secondary ar-text-medium", "ADSL"),
+        htmltools::tags$span(class = "ar-text-xs ar-text-muted", "(always)")
       )
     ),
     htmltools::tags$div(class = "ar-form-group",
@@ -129,28 +94,55 @@ mod_data_pipeline_pop_ui <- function(id) {
     htmltools::tags$div(class = "ar-form-group",
       htmltools::tags$label(class = "ar-form-label", "Population Filter"),
       htmltools::tags$input(
-        type = "text", class = "ar-input ar-input--sm",
+        type = "text", class = "ar-input ar-input--sm ar-w-full",
         id = ns("pop_filter"),
         placeholder = "e.g. AGE >= 18",
-        style = "width: 100%;",
-        onchange = paste0(
+        oninput = paste0(
+          "clearTimeout(this._deb); var el=this; this._deb=setTimeout(function(){",
           "Shiny.setInputValue('", ns("pop_filter"),
-          "', this.value, {priority: 'event'})"
+          "', el.value, {priority: 'event'})}, 500)"
         )
       ),
-      htmltools::tags$div(class = "ar-form-hint", "Filter applied to ADSL population")
+      shiny::uiOutput(ns("pop_filter_status"))
     ),
     shiny::uiOutput(ns("pipeline_n"))
   )
+}
+
+# Helper: validate a filter expression against a data frame
+validate_filter_expr <- function(expr, data, label = "rows") {
+  if (is.null(expr) || !nzchar(expr)) return(NULL)
+  if (is.null(data)) {
+    return(htmltools::tags$div(class = "ar-filter-status ar-filter-status--error", "No dataset loaded"))
+  }
+  tryCatch({
+    mask <- eval(parse(text = expr), envir = data)
+    if (!is.logical(mask)) {
+      return(htmltools::tags$div(class = "ar-filter-status ar-filter-status--error",
+        "Expression must return logical (TRUE/FALSE)"))
+    }
+    n_match <- sum(mask & !is.na(mask))
+    htmltools::tags$div(class = "ar-filter-status ar-filter-status--ok",
+      paste0("\u2713 ", format(n_match, big.mark = ","), " of ",
+             format(nrow(data), big.mark = ","), " ", label, " match"))
+  }, error = function(e) {
+    msg <- conditionMessage(e)
+    hint <- ""
+    if (grepl("object.*not found", msg)) {
+      bad_name <- gsub(".*object '([^']+)'.*", "\\1", msg)
+      dists <- utils::adist(tolower(bad_name), tolower(names(data)))[1, ]
+      close <- names(data)[dists <= 2]
+      if (length(close) > 0) hint <- paste0(" Did you mean: ", paste(close, collapse = ", "), "?")
+    }
+    htmltools::tags$div(class = "ar-filter-status ar-filter-status--error",
+      paste0("\u2717 ", msg, hint))
+  })
 }
 
 # ── Server ──
 mod_data_server <- function(id, store, grp) {
   shiny::moduleServer(id, function(input, output, session) {
     ns <- session$ns
-
-    # --- Internal state for filters ---
-    active_filters <- shiny::reactiveVal(list())
 
     # ── Load selected datasets ──
     shiny::observeEvent(input$load_btn, {
@@ -175,7 +167,6 @@ mod_data_server <- function(id, store, grp) {
           selected = if ("SAFFL" %in% flags) "SAFFL" else "")
       }
 
-      session$sendCustomMessage("ar_unlock_step", list(step = "template"))
       store$pipeline_state$data <- TRUE
     })
 
@@ -206,9 +197,6 @@ mod_data_server <- function(id, store, grp) {
         store$var_configs <- defaults$var_configs
         store$fmt <- defaults$fmt
 
-        session$sendCustomMessage("ar_unlock_step", list(step = "template"))
-        session$sendCustomMessage("ar_unlock_step", list(step = "analysis"))
-        session$sendCustomMessage("ar_unlock_step", list(step = "format"))
         store$pipeline_state$data <- TRUE
         store$pipeline_state$template <- TRUE
         store$pipeline_state$analysis <- TRUE
@@ -237,7 +225,6 @@ mod_data_server <- function(id, store, grp) {
         store$active_ds <- ds_name
         session$sendCustomMessage("ar_toast",
           list(message = paste("Uploaded:", ds_name), type = "success"))
-        session$sendCustomMessage("ar_unlock_step", list(step = "template"))
         store$pipeline_state$data <- TRUE
       }, error = function(e) {
         session$sendCustomMessage("ar_toast",
@@ -250,419 +237,50 @@ mod_data_server <- function(id, store, grp) {
       store$active_ds <- input$switch_ds
     })
 
-    # ── Update column explorer + filter dropdowns when dataset changes ──
-    shiny::observe({
-      req(store$active_ds, store$datasets[[store$active_ds]])
-      cols <- names(store$datasets[[store$active_ds]])
-      shiny::updateSelectizeInput(session, "explore_col", choices = cols, selected = character(0))
-      shiny::updateSelectizeInput(session, "filter_col_pick", choices = cols, selected = character(0))
-    })
-
     # ════════════════════════════════════════
     # DATA SUMMARY outputs
     # ════════════════════════════════════════
 
-    output$summary_ds_picker <- shiny::renderUI({
+    # SAS-style library table — all loaded datasets as rows
+    output$library_table <- shiny::renderUI({
       ds_names <- names(store$datasets)
       if (length(ds_names) == 0) {
-        return(htmltools::tags$span(
-          style = "font-size: 11px; color: var(--fg-muted);", "No datasets loaded"))
+        return(htmltools::tags$div(class = "ar-text-sm ar-text-muted ar-py-4",
+          "No datasets loaded"))
       }
-      # Build choices with row counts
-      choices <- stats::setNames(ds_names, vapply(ds_names, function(nm) {
-        paste0(nm, " (", format(nrow(store$datasets[[nm]]), big.mark = ","), " rows)")
-      }, character(1)))
-      shiny::selectInput(ns("summary_ds"), NULL,
-        choices = choices, selected = store$active_ds, width = "100%")
-    })
 
-    # Switch active dataset from summary picker
-    shiny::observeEvent(input$summary_ds, {
-      if (!is.null(input$summary_ds) && nzchar(input$summary_ds)) {
-        store$active_ds <- input$summary_ds
-      }
-    })
-
-    output$summary_stats <- shiny::renderUI({
-      req(store$active_ds, store$datasets[[store$active_ds]])
-      d <- store$datasets[[store$active_ds]]
-      n_row <- nrow(d)
-      n_col <- ncol(d)
-
-      # Missing %
-      total_cells <- n_row * n_col
-      n_missing <- sum(vapply(d, function(x) sum(is.na(x)), integer(1)))
-      pct_missing <- if (total_cells > 0) round(n_missing / total_cells * 100, 1) else 0
-
-      # Type counts
-      col_types <- vapply(d, function(x) {
-        if (is.numeric(x)) "NUM"
-        else if (inherits(x, "Date") || inherits(x, "POSIXt")) "DATE"
-        else "CHR"
-      }, character(1))
-      type_counts <- table(col_types)
-
-      type_badges <- lapply(names(type_counts), function(tp) {
-        htmltools::tags$span(class = "ar-ds-summary__type-chip",
-          ui_type_badge(tp),
-          htmltools::tags$span(class = "ar-ds-summary__type-count", unname(type_counts[tp]))
+      active <- store$active_ds
+      rows <- lapply(ds_names, function(nm) {
+        d <- store$datasets[[nm]]
+        is_active <- identical(nm, active)
+        row_cls <- paste0("ar-lib-row", if (is_active) " ar-lib-row--active" else "")
+        htmltools::tags$tr(
+          class = row_cls,
+          onclick = paste0("Shiny.setInputValue('", ns("switch_lib_ds"),
+            "', '", nm, "', {priority: 'event'})"),
+          htmltools::tags$td(class = "ar-lib-row__name", toupper(nm)),
+          htmltools::tags$td(class = "ar-lib-row__val", format(nrow(d), big.mark = ",")),
+          htmltools::tags$td(class = "ar-lib-row__val", ncol(d))
         )
       })
 
-      htmltools::tags$div(class = "ar-ds-summary",
-        htmltools::tags$div(class = "ar-ds-summary__grid",
-          htmltools::tags$div(class = "ar-ds-summary__cell",
-            htmltools::tags$div(class = "ar-ds-summary__value", format(n_row, big.mark = ",")),
-            htmltools::tags$div(class = "ar-ds-summary__label", "Rows")
-          ),
-          htmltools::tags$div(class = "ar-ds-summary__cell",
-            htmltools::tags$div(class = "ar-ds-summary__value", n_col),
-            htmltools::tags$div(class = "ar-ds-summary__label", "Columns")
-          ),
-          htmltools::tags$div(class = "ar-ds-summary__cell",
-            htmltools::tags$div(class = "ar-ds-summary__value", paste0(pct_missing, "%")),
-            htmltools::tags$div(class = "ar-ds-summary__label", "Missing")
-          ),
-          htmltools::tags$div(class = "ar-ds-summary__cell",
-            htmltools::tags$div(class = "ar-ds-summary__types", do.call(htmltools::tagList, type_badges)),
-            htmltools::tags$div(class = "ar-ds-summary__label", "Types")
+      htmltools::tags$table(class = "ar-lib-table",
+        htmltools::tags$thead(
+          htmltools::tags$tr(
+            htmltools::tags$th(class = "ar-lib-th", "Dataset"),
+            htmltools::tags$th(class = "ar-lib-th ar-lib-th--num", "Rows"),
+            htmltools::tags$th(class = "ar-lib-th ar-lib-th--num", "Cols")
           )
-        )
-      )
-    })
-
-    # ════════════════════════════════════════
-    # COLUMN EXPLORER outputs
-    # ════════════════════════════════════════
-
-    output$col_detail <- shiny::renderUI({
-      req(store$active_ds, store$datasets[[store$active_ds]], input$explore_col)
-      d <- store$datasets[[store$active_ds]]
-      col <- input$explore_col
-      if (!col %in% names(d)) return(NULL)
-
-      p <- fct_profile_column(d[[col]], col, nrow(d))
-
-      # Build detail card
-      stats_rows <- list()
-
-      if (p$type == "NUM" && !is.null(p$summary)) {
-        s <- p$summary
-        stats_rows <- list(
-          list("Count", format(nrow(d) - p$n_missing, big.mark = ",")),
-          list("Missing", paste0(p$n_missing, " (", p$pct_missing, "%)")),
-          list("Distinct", p$n_unique),
-          list("Mean", s$mean),
-          list("SD", s$sd),
-          list("Median", s$median),
-          list("Min", s$min),
-          list("Q1", s$q1),
-          list("Q3", s$q3),
-          list("Max", s$max)
-        )
-      } else if (p$type == "DATE" && !is.null(p$summary)) {
-        s <- p$summary
-        stats_rows <- list(
-          list("Count", format(nrow(d) - p$n_missing, big.mark = ",")),
-          list("Missing", paste0(p$n_missing, " (", p$pct_missing, "%)")),
-          list("Distinct", p$n_unique),
-          list("Min", s$min),
-          list("Max", s$max)
-        )
-      } else if (p$type == "CHR" && !is.null(p$summary)) {
-        stats_rows <- list(
-          list("Count", format(nrow(d) - p$n_missing, big.mark = ",")),
-          list("Missing", paste0(p$n_missing, " (", p$pct_missing, "%)")),
-          list("Distinct", p$n_unique)
-        )
-      }
-
-      # Stats table
-      stats_ui <- if (length(stats_rows) > 0) {
-        htmltools::tags$div(class = "ar-col-detail__stats",
-          lapply(stats_rows, function(r) {
-            htmltools::tags$div(class = "ar-col-detail__row",
-              htmltools::tags$span(class = "ar-col-detail__key", r[[1]]),
-              htmltools::tags$span(class = "ar-col-detail__val", as.character(r[[2]]))
-            )
-          })
-        )
-      }
-
-      # Frequency bars for CHR
-      freq_ui <- NULL
-      if (p$type == "CHR" && !is.null(p$summary) && length(p$summary$top_values) > 0) {
-        tv <- p$summary$top_values
-        max_count <- max(tv)
-        freq_ui <- htmltools::tags$div(class = "ar-col-detail__freq ar-mt-8",
-          htmltools::tags$div(class = "ar-form-label", "Top Values"),
-          lapply(seq_along(tv), function(i) {
-            pct <- round(tv[i] / nrow(d) * 100, 1)
-            bar_width <- round(tv[i] / max_count * 100)
-            htmltools::tags$div(class = "ar-freq-bar",
-              htmltools::tags$div(class = "ar-freq-bar__label", names(tv)[i]),
-              htmltools::tags$div(class = "ar-freq-bar__track",
-                htmltools::tags$div(class = "ar-freq-bar__fill",
-                  style = paste0("width:", bar_width, "%;"))
-              ),
-              htmltools::tags$span(class = "ar-freq-bar__count",
-                paste0(tv[i], " (", pct, "%)"))
-            )
-          })
-        )
-      }
-
-      # R attributes footer
-      attr_parts <- c(
-        paste0("class: ", p$r_class),
-        if (nzchar(p$label)) paste0("label: \"", p$label, "\""),
-        if (nzchar(p$format)) paste0("format: ", p$format)
-      )
-
-      htmltools::tags$div(class = "ar-col-detail",
-        htmltools::tags$div(class = "ar-col-detail__header",
-          ui_type_badge(p$type),
-          htmltools::tags$span(class = "ar-col-detail__name", col),
-          if (nzchar(p$label)) htmltools::tags$span(class = "ar-col-detail__label", p$label)
         ),
-        stats_ui,
-        freq_ui,
-        htmltools::tags$div(class = "ar-col-detail__attrs ar-mt-8",
-          htmltools::tags$div(class = "ar-form-label", "Attributes"),
-          htmltools::tags$div(class = "ar-text-sm ar-font-mono",
-            style = "color: var(--fg-muted);",
-            paste(attr_parts, collapse = "  |  "))
-        )
+        htmltools::tags$tbody(rows)
       )
     })
 
-    # Column Explorer — Clear button
-    output$col_explorer_actions <- shiny::renderUI({
-      req(input$explore_col)
-      if (!nzchar(input$explore_col)) return(NULL)
-      htmltools::tags$div(class = "ar-mt-8",
-        htmltools::tags$button(
-          class = "ar-btn-ghost",
-          onclick = paste0("Shiny.setInputValue('", ns("col_explorer_clear"), "', Math.random(), {priority: 'event'})"),
-          "Clear"
-        )
-      )
-    })
-
-    shiny::observeEvent(input$col_explorer_clear, {
-      shiny::updateSelectizeInput(session, "explore_col", selected = character(0))
-    })
-
-    # ════════════════════════════════════════
-    # FILTERS
-    # ════════════════════════════════════════
-
-    # Helper: create a filter entry for a column
-    make_filter_entry <- function(col, d) {
-      x <- d[[col]]
-      if (is.numeric(x) && length(unique(stats::na.omit(x))) <= 10) {
-        levs <- sort(unique(stats::na.omit(x)))
-        list(col = col, type = "checkbox", levels = as.character(levs), selected = as.character(levs))
-      } else if (is.numeric(x)) {
-        vals <- stats::na.omit(x)
-        list(col = col, type = "range", min = min(vals), max = max(vals),
-             cur_min = min(vals), cur_max = max(vals))
-      } else if (inherits(x, "Date") || inherits(x, "POSIXt")) {
-        vals <- stats::na.omit(x)
-        list(col = col, type = "date_range",
-             min = as.character(min(vals)), max = as.character(max(vals)),
-             cur_min = as.character(min(vals)), cur_max = as.character(max(vals)))
-      } else {
-        levs <- sort(unique(stats::na.omit(as.character(x))))
-        if (length(levs) > 15) {
-          list(col = col, type = "search_select", levels = levs, selected = character(0))
-        } else {
-          list(col = col, type = "checkbox", levels = levs, selected = levs)
-        }
+    # Switch active dataset from library table click
+    shiny::observeEvent(input$switch_lib_ds, {
+      if (!is.null(input$switch_lib_ds) && nzchar(input$switch_lib_ds)) {
+        store$active_ds <- input$switch_lib_ds
       }
-    }
-
-    # Snapshot current widget values into filter entries (preserves state across re-renders)
-    snapshot_filters <- function(filts) {
-      lapply(filts, function(f) {
-        col <- f$col
-        if (f$type == "range") {
-          val <- input[[paste0("filt_range_", col)]]
-          if (!is.null(val)) { f$cur_min <- val[1]; f$cur_max <- val[2] }
-        } else if (f$type == "date_range") {
-          val <- input[[paste0("filt_date_", col)]]
-          if (!is.null(val)) { f$cur_min <- as.character(val[1]); f$cur_max <- as.character(val[2]) }
-        } else if (f$type == "search_select") {
-          val <- input[[paste0("filt_sel_", col)]]
-          if (!is.null(val)) f$selected <- val
-        } else if (f$type == "checkbox") {
-          val <- input[[paste0("filt_chk_", col)]]
-          if (!is.null(val)) f$selected <- val
-        }
-        f
-      })
-    }
-
-    # Watch multi-select: add/remove filters to match selected chips
-    shiny::observeEvent(input$filter_col_pick, ignoreNULL = FALSE, {
-      req(store$active_ds, store$datasets[[store$active_ds]])
-      d <- store$datasets[[store$active_ds]]
-      selected <- input$filter_col_pick %||% character(0)
-      current <- active_filters()
-      existing_cols <- vapply(current, function(f) f$col, character(1))
-
-      new_cols <- setdiff(selected, existing_cols)
-      removed_cols <- setdiff(existing_cols, selected)
-
-      # Only update if there's an actual change
-      if (length(new_cols) == 0 && length(removed_cols) == 0) return()
-
-      # Snapshot current widget values before re-render
-      current <- snapshot_filters(current)
-
-      # Remove filters for deselected columns
-      if (length(removed_cols) > 0) {
-        current <- current[!vapply(current, function(f) f$col %in% removed_cols, logical(1))]
-      }
-
-      # Add filters for newly selected columns
-      for (col in new_cols) {
-        if (col %in% names(d)) {
-          current <- c(current, list(make_filter_entry(col, d)))
-        }
-      }
-
-      active_filters(current)
-    })
-
-    # Remove filter via × button — also sync selectize chips
-    shiny::observeEvent(input$filter_remove, {
-      col <- input$filter_remove
-      current <- active_filters()
-      active_filters(current[vapply(current, function(f) f$col != col, logical(1))])
-      # Sync selectize: remove this column from selected
-      remaining <- vapply(active_filters(), function(f) f$col, character(1))
-      shiny::updateSelectizeInput(session, "filter_col_pick", selected = remaining)
-    })
-
-    # Clear all filters — also clear selectize
-    shiny::observeEvent(input$filter_clear_all, {
-      active_filters(list())
-      shiny::updateSelectizeInput(session, "filter_col_pick", selected = character(0))
-    })
-
-    # Render filter cards
-    output$filter_cards <- shiny::renderUI({
-      filts <- active_filters()
-      if (length(filts) == 0) {
-        return(htmltools::tags$div(
-          style = "font-size: 11px; color: var(--fg-muted); padding: 4px 0;",
-          "No active filters"))
-      }
-
-      htmltools::tagList(lapply(filts, function(f) {
-        col <- f$col
-        remove_btn <- htmltools::tags$button(
-          class = "ar-filter-card__remove",
-          onclick = paste0("Shiny.setInputValue('", ns("filter_remove"), "', '",
-                           col, "', {priority: 'event'})"),
-          htmltools::HTML("&times;")
-        )
-
-        widget <- if (f$type == "range") {
-          shiny::sliderInput(ns(paste0("filt_range_", col)), NULL,
-            min = f$min, max = f$max,
-            value = c(f$cur_min, f$cur_max),
-            step = if (f$max - f$min > 100) 1 else round((f$max - f$min) / 100, 2),
-            width = "100%")
-        } else if (f$type == "date_range") {
-          shiny::dateRangeInput(ns(paste0("filt_date_", col)), NULL,
-            start = f$cur_min, end = f$cur_max,
-            min = f$min, max = f$max, width = "100%")
-        } else if (f$type == "search_select") {
-          # Searchable multi-select — empty = all included, pick values to filter TO
-          n_total <- length(f$levels)
-          hint <- htmltools::tags$div(
-            class = "ar-filter-hint",
-            if (length(f$selected) == 0)
-              paste0("All ", n_total, " values included")
-            else
-              paste0("Showing ", length(f$selected), " of ", n_total)
-          )
-          htmltools::tagList(
-            hint,
-            shiny::selectizeInput(ns(paste0("filt_sel_", col)), NULL,
-              choices = f$levels, selected = f$selected, multiple = TRUE,
-              width = "100%",
-              options = list(
-                plugins = list("remove_button"),
-                placeholder = paste0("Type to search ", n_total, " values..."),
-                maxOptions = 200
-              ))
-          )
-        } else {
-          # Checkbox — all levels
-          shiny::checkboxGroupInput(ns(paste0("filt_chk_", col)), NULL,
-            choices = f$levels, selected = f$selected,
-            inline = FALSE)
-        }
-
-        htmltools::tags$div(class = "ar-filter-card",
-          htmltools::tags$div(class = "ar-filter-card__header",
-            htmltools::tags$span(class = "ar-filter-card__col", col),
-            htmltools::tags$span(class = "ar-filter-card__type", gsub("_", " ", f$type)),
-            remove_btn
-          ),
-          htmltools::tags$div(class = "ar-filter-card__body", widget)
-        )
-      }))
-    })
-
-    output$filter_actions <- shiny::renderUI({
-      filts <- active_filters()
-      if (length(filts) == 0) return(NULL)
-      htmltools::tags$div(class = "ar-mt-8",
-        htmltools::tags$button(
-          class = "ar-btn-ghost",
-          onclick = paste0("Shiny.setInputValue('", ns("filter_clear_all"), "', Math.random(), {priority: 'event'})"),
-          "Clear All Filters"
-        )
-      )
-    })
-
-    # Push filter values into store$explore_filters
-    shiny::observe({
-      filts <- active_filters()
-      if (length(filts) == 0) {
-        store$explore_filters <- list()
-        return()
-      }
-
-      result <- list()
-      for (f in filts) {
-        col <- f$col
-        if (f$type == "range") {
-          val <- input[[paste0("filt_range_", col)]]
-          if (!is.null(val)) {
-            result[[col]] <- list(type = "range", min = val[1], max = val[2])
-          }
-        } else if (f$type == "date_range") {
-          val <- input[[paste0("filt_date_", col)]]
-          if (!is.null(val)) {
-            result[[col]] <- list(type = "date_range", min = val[1], max = val[2])
-          }
-        } else if (f$type == "search_select") {
-          val <- input[[paste0("filt_sel_", col)]]
-          # Empty selection = all included, don't filter
-          if (length(val) > 0) {
-            result[[col]] <- list(type = "checkbox", selected = val)
-          }
-        } else if (f$type == "checkbox") {
-          val <- input[[paste0("filt_chk_", col)]]
-          result[[col]] <- list(type = "checkbox", selected = val %||% character(0))
-        }
-      }
-      store$explore_filters <- result
     })
 
     # ════════════════════════════════════════
@@ -680,20 +298,13 @@ mod_data_server <- function(id, store, grp) {
         loaded <- ds %in% loaded_ds
         icon_html <- if (loaded) "\u2713" else "\u25cb"
         htmltools::tags$span(
-          style = paste0(
-            "display: inline-flex; align-items: center; gap: 4px; ",
-            "padding: 2px 8px; border-radius: var(--radius-sm); ",
-            "font-size: 11px; font-weight: 500; margin-right: 4px; ",
-            if (loaded) "background: var(--success-bg); color: var(--success);"
-            else "background: var(--bg-muted); color: var(--fg-muted); border: 1px solid var(--border-light);"
-          ),
-          htmltools::tags$span(style = "font-size: 10px;", icon_html),
+          class = paste0("ar-ds-chip", if (loaded) " ar-ds-chip--loaded" else ""),
+          htmltools::tags$span(class = "ar-text-xs", icon_html),
           toupper(ds)
         )
       })
 
-      htmltools::tags$div(class = "ar-flex ar-gap-4 ar-mb-8",
-        style = "flex-wrap: wrap;",
+      htmltools::tags$div(class = "ar-flex ar-gap-4 ar-mb-8 ar-flex-wrap",
         chips
       )
     })
@@ -704,7 +315,7 @@ mod_data_server <- function(id, store, grp) {
       req(store$datasets[[input$pipeline_ds]])
       d <- store$datasets[[input$pipeline_ds]]
       htmltools::tags$div(
-        style = "font-size: 12px; color: var(--fg-2); font-weight: 500; margin: 4px 0;",
+        class = "ar-pipeline-label",
         paste0(toupper(input$pipeline_ds), " \u00b7 ", format(nrow(d), big.mark = ","), " rows")
       )
     })
@@ -717,6 +328,36 @@ mod_data_server <- function(id, store, grp) {
     shiny::observeEvent(input$pop_filter, {
       store$pipeline_filters$pop_filter <- input$pop_filter
     }, ignoreNULL = FALSE)
+
+    # ── Live validation: Dataset Filter ──
+    output$data_filter_status <- shiny::renderUI({
+      expr <- input$data_filter
+      if (is.null(expr) || !nzchar(expr)) {
+        return(htmltools::tags$div(class = "ar-form-hint", "Filter applied to the primary dataset"))
+      }
+      ds_name <- input$pipeline_ds %||% names(store$datasets)[1]
+      d <- store$datasets[[ds_name]]
+      validate_filter_expr(expr, d, label = "rows")
+    })
+
+    # ── Live validation: Population Filter ──
+    output$pop_filter_status <- shiny::renderUI({
+      expr <- input$pop_filter
+      if (is.null(expr) || !nzchar(expr)) {
+        return(htmltools::tags$div(class = "ar-form-hint", "Filter applied to ADSL population"))
+      }
+      adsl <- store$datasets[["adsl"]]
+      if (is.null(adsl)) {
+        ds_name <- input$pipeline_ds %||% names(store$datasets)[1]
+        adsl <- store$datasets[[ds_name]]
+      }
+      # Apply pop flag first
+      pop <- input$pop_flag
+      if (!is.null(pop) && nzchar(pop) && !is.null(adsl) && pop %in% names(adsl)) {
+        adsl <- adsl[adsl[[pop]] == "Y", ]
+      }
+      validate_filter_expr(expr, adsl, label = "subjects")
+    })
 
     output$pipeline_n <- shiny::renderUI({
       pop <- input$pop_flag
@@ -779,7 +420,7 @@ mod_data_server <- function(id, store, grp) {
       )
 
       htmltools::tags$div(
-        style = "font-size: 12px; color: var(--fg-2); font-weight: 500; margin-top: 8px;",
+        class = "ar-pipeline-label ar-pipeline-label--top",
         paste0("Analysis N \u00b7 ", format(n_pop, big.mark = ","))
       )
     })

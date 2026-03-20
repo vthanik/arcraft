@@ -4,9 +4,15 @@
 app_ui <- function() {
   bslib::page_fillable(
     theme = ar_theme(),
-    shinyjs::useShinyjs(),
+    # No shinyjs — all JS via app.js + sendCustomMessage
     htmltools::tags$head(
       htmltools::tags$link(rel = "stylesheet", href = "www/app.css"),
+      # Favicon (prevent 404)
+      htmltools::tags$link(rel = "icon", href = "data:,"),
+      # highlight.js for R syntax highlighting (local, no CDN)
+      htmltools::tags$link(rel = "stylesheet", href = "www/highlight-github.min.css"),
+      htmltools::tags$script(src = "www/highlight.min.js"),
+      htmltools::tags$script(src = "www/highlight-r.min.js"),
       htmltools::tags$script(src = "www/Sortable.min.js"),
       htmltools::tags$script(src = "www/app.js")
     ),
@@ -19,17 +25,10 @@ app_ui <- function() {
         htmltools::tags$span("ar"), "builder"
       ),
 
-      # Pipeline dots
-      htmltools::tags$div(class = "ar-pipeline",
-        htmltools::tags$div(id = "pip_data", class = "ar-pipeline__dot ar-pipeline__dot--active"),
-        htmltools::tags$div(id = "pip_line_template", class = "ar-pipeline__line"),
-        htmltools::tags$div(id = "pip_template", class = "ar-pipeline__dot"),
-        htmltools::tags$div(id = "pip_line_analysis", class = "ar-pipeline__line"),
-        htmltools::tags$div(id = "pip_analysis", class = "ar-pipeline__dot"),
-        htmltools::tags$div(id = "pip_line_format", class = "ar-pipeline__line"),
-        htmltools::tags$div(id = "pip_format", class = "ar-pipeline__dot"),
-        htmltools::tags$div(id = "pip_line_output", class = "ar-pipeline__line"),
-        htmltools::tags$div(id = "pip_output", class = "ar-pipeline__dot")
+      # Status pill
+      htmltools::tags$div(id = "ar_status_pill", class = "ar-status-pill",
+        htmltools::tags$span(class = "ar-status-pill__dot"),
+        htmltools::tags$span(class = "ar-status-pill__text", "Load data to start")
       ),
 
       htmltools::tags$div(class = "ar-topbar__spacer"),
@@ -59,33 +58,58 @@ app_ui <- function() {
     # ── Body: Activity Bar + Sidebar + Canvas ──
     htmltools::tags$div(class = "ar-body",
 
-      # Activity Bar — icon buttons
+      # Activity Bar — icon buttons with labels
       htmltools::tags$div(class = "ar-activity-bar",
-        shiny::actionButton("ab_data", NULL, icon = shiny::icon("database"),
-          class = "ar-ab-btn active", title = "Data (Ctrl+1)"),
-        shiny::actionButton("ab_template", NULL, icon = shiny::icon("th-list"),
-          class = "ar-ab-btn", title = "Template (Ctrl+2)"),
-        shiny::actionButton("ab_analysis", NULL, icon = shiny::icon("chart-bar"),
-          class = "ar-ab-btn", title = "Analysis (Ctrl+3)"),
-        shiny::actionButton("ab_format", NULL, icon = shiny::icon("paint-brush"),
-          class = "ar-ab-btn", title = "Format (Ctrl+4)"),
+        shiny::actionButton("ab_data",
+          label = htmltools::tagList(
+            htmltools::tags$div(class = "ar-ab-btn__icon-wrap",
+              shiny::icon("database"),
+              htmltools::tags$span(class = "ar-ab-badge", id = "ab_badge_data")),
+            htmltools::tags$span(class = "ar-ab-btn__label", "DATA")
+          ), class = "ar-ab-btn active", title = "Data (Ctrl+1)"),
+        shiny::actionButton("ab_template",
+          label = htmltools::tagList(
+            htmltools::tags$div(class = "ar-ab-btn__icon-wrap",
+              shiny::icon("th-list"),
+              htmltools::tags$span(class = "ar-ab-badge", id = "ab_badge_template")),
+            htmltools::tags$span(class = "ar-ab-btn__label", "TMPL")
+          ), class = "ar-ab-btn", title = "Template (Ctrl+2)"),
+        shiny::actionButton("ab_analysis",
+          label = htmltools::tagList(
+            htmltools::tags$div(class = "ar-ab-btn__icon-wrap",
+              shiny::icon("chart-bar"),
+              htmltools::tags$span(class = "ar-ab-badge", id = "ab_badge_analysis")),
+            htmltools::tags$span(class = "ar-ab-btn__label", "ANLYS")
+          ), class = "ar-ab-btn", title = "Analysis (Ctrl+3)"),
+        shiny::actionButton("ab_format",
+          label = htmltools::tagList(
+            htmltools::tags$div(class = "ar-ab-btn__icon-wrap",
+              shiny::icon("paint-brush"),
+              htmltools::tags$span(class = "ar-ab-badge", id = "ab_badge_format")),
+            htmltools::tags$span(class = "ar-ab-btn__label", "FMT")
+          ), class = "ar-ab-btn", title = "Format (Ctrl+4)"),
         htmltools::tags$div(class = "ar-ab-spacer"),
-        shiny::actionButton("ab_output", NULL, icon = shiny::icon("download"),
-          class = "ar-ab-btn", title = "Output (Ctrl+5)")
+        shiny::actionButton("ab_output",
+          label = htmltools::tagList(
+            htmltools::tags$div(class = "ar-ab-btn__icon-wrap",
+              shiny::icon("download"),
+              htmltools::tags$span(class = "ar-ab-badge", id = "ab_badge_output")),
+            htmltools::tags$span(class = "ar-ab-btn__label", "OUT")
+          ), class = "ar-ab-btn", title = "Output (Ctrl+5)")
       ),
 
       # Sidebar — navset_hidden switches panels
       htmltools::tags$div(class = "ar-sidebar",
         bslib::navset_hidden(id = "sidebar_panels",
 
-          # DATA panel
+          # DATA panel — streamlined (column explorer + filters moved to canvas data viewer)
           bslib::nav_panel_hidden("data",
             bslib::accordion(id = "acc_data",
-              open = c("DATASETS", "SUMMARY"), multiple = TRUE,
-              bslib::accordion_panel("DATASETS", mod_data_ui("data")),
-              bslib::accordion_panel("SUMMARY", mod_data_summary_ui("data")),
-              bslib::accordion_panel("COLUMN EXPLORER", mod_data_col_explorer_ui("data")),
-              bslib::accordion_panel("FILTERS", mod_data_filters_ui("data"))
+              open = c("DATASETS", "LIBRARY"), multiple = TRUE,
+              bslib::accordion_panel("DATASETS", value = "DATASETS",
+                mod_data_ui("data")),
+              bslib::accordion_panel("LIBRARY", value = "LIBRARY",
+                mod_data_summary_ui("data"))
             )
           ),
 
@@ -93,15 +117,15 @@ app_ui <- function() {
           bslib::nav_panel_hidden("template",
             bslib::accordion(id = "acc_template",
               open = c("TEMPLATE INFO", "DATA SOURCE", "VARIABLES"), multiple = TRUE,
-              bslib::accordion_panel("TEMPLATE INFO",
+              bslib::accordion_panel("TEMPLATE INFO", value = "TEMPLATE INFO",
                 shiny::uiOutput("template_info_display")
               ),
-              bslib::accordion_panel("DATA SOURCE",
+              bslib::accordion_panel("DATA SOURCE", value = "DATA SOURCE",
                 mod_data_pipeline_dataset_ui("data"),
                 mod_data_pipeline_pop_ui("data"),
                 shiny::uiOutput("data_source_n")
               ),
-              bslib::accordion_panel("VARIABLES",
+              bslib::accordion_panel("VARIABLES", value = "VARIABLES",
                 mod_grouping_vars_ui("grouping")
               )
             )
@@ -111,10 +135,14 @@ app_ui <- function() {
           bslib::nav_panel_hidden("analysis",
             bslib::accordion(id = "acc_analysis",
               open = c("TREATMENT", "STATISTICS"), multiple = TRUE,
-              bslib::accordion_panel("TREATMENT",
-                mod_treatment_ui("treatment")
+              bslib::accordion_panel("TREATMENT", value = "TREATMENT",
+                mod_treatment_ui("treatment"),
+                # N counts — separated from treatment config
+                htmltools::tags$div(class = "ar-section-divider"),
+                htmltools::tags$div(class = "ar-form-label", "N COUNTS"),
+                n_counts_ui("n_counts")
               ),
-              bslib::accordion_panel("STATISTICS",
+              bslib::accordion_panel("STATISTICS", value = "STATISTICS",
                 mod_analysis_vars_ui("analysis_vars")
               )
             )
@@ -147,6 +175,9 @@ app_ui <- function() {
         )
       ),
 
+      # Resize handle (drag to resize sidebar)
+      htmltools::tags$div(class = "ar-resize-handle", id = "ar_resize_handle"),
+
       # Canvas — navset_hidden switches content, navset_tab for inner tabs
       htmltools::tags$div(class = "ar-canvas",
         bslib::navset_hidden(id = "canvas_panels",
@@ -163,26 +194,17 @@ app_ui <- function() {
             )
           ),
 
-          # ANALYSIS canvas — tabbed: N Counts + ARD Data
+          # ANALYSIS canvas — full-width ARD data grid (N counts moved to treatment sidebar)
           bslib::nav_panel_hidden("analysis",
-            bslib::navset_underline(
-              bslib::nav_panel("N Counts",
-                htmltools::tags$div(class = "ar-canvas-padded",
-                  shiny::uiOutput("n_counts_display")
+            htmltools::tags$div(class = "ar-dv",
+              htmltools::tags$div(class = "ar-dv__toolbar",
+                htmltools::tags$div(class = "ar-dv__dims",
+                  shiny::textOutput("ard_dims", inline = TRUE)
                 )
               ),
-              bslib::nav_panel("ARD Data",
-                htmltools::tags$div(class = "ar-dv",
-                  htmltools::tags$div(class = "ar-dv__toolbar",
-                    htmltools::tags$div(class = "ar-dv__dims",
-                      shiny::textOutput("ard_dims", inline = TRUE)
-                    )
-                  ),
-                  htmltools::tags$div(class = "ar-dv__grid",
-                    shiny::uiOutput("ard_empty_state"),
-                    reactable::reactableOutput("ard_data_table")
-                  )
-                )
+              htmltools::tags$div(class = "ar-dv__grid",
+                shiny::uiOutput("ard_empty_state"),
+                reactable::reactableOutput("ard_data_table")
               )
             )
           ),

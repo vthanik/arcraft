@@ -1,0 +1,44 @@
+# R package
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+*.Rproj
+
+# Build artifacts
+output.rtf
+output.pdf
+output.html
+*.o
+*.so
+*.dll
+
+# Backup files
+*.bak
+*.orig
+*.swp
+*~
+
+# Archives (kept locally, not in repo)
+_archive/
+_backup_templates/
+
+# Design docs (local reference only)
+CSS-BASICS.md
+CSS-NESTING-GUIDE.md
+DESIGN-SPEC.md
+LAYOUT-ALTERNATIVES.md
+DATA-WRANGLER-UX-REFERENCE.md
+
+# Screenshots (local dev only)
+screenshots/
+
+# Notes
+notes/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Claude
+.claude/

@@ -14,37 +14,7 @@ app_server <- function(input, output, session) {
     added_levels = list(),
     extra_vars = character(0),
     fig_configs = list(),
-    fmt = list(
-      # Section 1: Titles & Footnotes
-      titles = list(), footnotes = list(), population = "", source = "",
-      title_defaults = list(align = "center", bold = FALSE),
-      fn_separator = FALSE, fn_placement = "every",
-      # Section 2: Columns
-      cols = list(width_mode = "auto", default_align = "center",
-                  spaces = "indent", split = FALSE,
-                  n_counts = TRUE, n_format = "(N={n})",
-                  stub_width = 2.5, per_col = list()),
-      # Section 3: Page Layout
-      page = list(orientation = "landscape", paper = "letter",
-                  font_family = "Courier New", font_size = 9,
-                  margins = c(1, 1, 1, 1), col_gap = 4,
-                  continuation = "", orphan_min = 3L, widow_min = 3L),
-      # Section 4: Rules
-      rules = list(hline_preset = "header", vline_preset = "none",
-                   line_width = "thin", line_color = "#000000", line_style = "solid"),
-      # Section 5: Header & Spans
-      header = list(bold = TRUE, align = "center", valign = "bottom", bg = NULL, fg = NULL),
-      spans = list(),
-      # Section 6: Rows & Pagination
-      rows = list(group_by = NULL, blank_after = NULL, page_by = NULL,
-                  page_by_bold = FALSE, indent_by = NULL,
-                  repeat_cols = NULL, wrap = FALSE),
-      # Section 7: Page Chrome
-      pagehead = list(left = "", center = "", right = ""),
-      pagefoot = list(left = "", center = "", right = ""),
-      spacing = list(titles_after = 1L, footnotes_before = 1L,
-                     pagehead_after = 0L, pagefoot_before = 0L)
-    ),
+    fmt = normalize_fmt(list()),
     ard = NULL,
     figure = NULL,
     listing = NULL,
@@ -78,17 +48,44 @@ app_server <- function(input, output, session) {
   # Format modules return get_draft() functions (non-reactive architecture)
   titles_draft <- mod_titles_server("titles", store)
   cols_draft <- mod_columns_server("cols", store)
-  page_draft <- mod_page_server("page", store)
-  rules_draft <- mod_rules_server("rules", store)
   header_spans_draft <- mod_header_spans_server("header_spans", store)
   rows_draft <- mod_rows_server("rows", store)
-  chrome_draft <- mod_page_chrome_server("page_chrome", store)
+  page_output_draft <- mod_page_output_server("page_output", store)
+  styles_draft <- mod_styles_server("styles", store)
 
-  mod_validation_server("validation", store)
-  mod_preview_server("preview", store)
+  n_counts_server("n_counts", store, grp)
+  mod_validation_server("validation", store, grp)
   mod_code_server("code", store)
 
-  # ── 2a. Preset Handlers ──
+  # ── 2a. Auto-Preview (debounced — triggers ONCE when config changes) ──
+  # Uses a fingerprint to detect real changes vs reactive noise.
+  # Only fires when the user actually changes something meaningful.
+  auto_preview_fingerprint <- shiny::reactiveVal("")
+
+  shiny::observe({
+    # Build a fingerprint from key config values
+    vars <- grp$analysis_vars
+    trt <- grp$trt_var
+    total <- grp$include_total
+    tmpl <- store$template
+
+    # Only watch when we have minimum requirements
+    req(length(store$datasets) > 0, !is.null(tmpl), length(vars) > 0)
+
+    fp <- paste(tmpl, trt, total, paste(vars, collapse = ","), sep = "|")
+    old_fp <- shiny::isolate(auto_preview_fingerprint())
+
+    if (nzchar(old_fp) && fp != old_fp) {
+      # Config actually changed — trigger preview via JS after 800ms debounce
+      auto_preview_fingerprint(fp)
+      session$sendCustomMessage("ar_debounce_preview", list(delay = 800))
+    } else if (!nzchar(old_fp)) {
+      # First time — just record the fingerprint, don't trigger
+      auto_preview_fingerprint(fp)
+    }
+  })
+
+  # ── 2b. Preset Handlers ──
   shiny::observeEvent(input$fmt_preset_fda, {
     apply_fmt_preset(store, "fda")
   })
@@ -106,8 +103,7 @@ app_server <- function(input, output, session) {
   output$template_info_display <- shiny::renderUI({
     tmpl <- store$template
     if (is.null(tmpl)) {
-      return(htmltools::tags$div(class = "ar-text-sm ar-text-muted",
-        style = "padding: 4px 0;",
+      return(htmltools::tags$div(class = "ar-text-sm ar-text-muted ar-py-4",
         "Select a template from the gallery"))
     }
     tmpl_def <- get_template_def(tmpl)
@@ -145,129 +141,12 @@ app_server <- function(input, output, session) {
     n <- nrow(d)
     pop_label <- if (!is.null(pop) && nzchar(pop)) paste0(" (", pop, " = Y)") else ""
     htmltools::tags$div(class = "ar-data-source-n",
-      htmltools::tags$span(class = "ar-text-sm",
-        style = "font-weight: 500; color: var(--fg-2);",
+      htmltools::tags$span(class = "ar-text-sm ar-text-secondary ar-text-medium",
         paste0("N = ", n, " subjects", pop_label))
     )
   })
 
-  # ── 2d. N Counts Display (canvas tab) ──
-  output$n_counts_display <- shiny::renderUI({
-    req(store$datasets)
-    ds_name <- names(store$datasets)[1]
-    req(ds_name)
-    d <- store$datasets[[ds_name]]
-
-    trt_var <- grp$trt_var
-    if (is.null(trt_var) || !trt_var %in% names(d)) {
-      return(htmltools::tags$div(class = "ar-empty-state",
-        htmltools::tags$div(class = "ar-empty-state__icon", shiny::icon("users")),
-        htmltools::tags$div(class = "ar-empty-state__text", "No Treatment Variable"),
-        htmltools::tags$div(class = "ar-empty-state__hint",
-          "Select a treatment variable in the sidebar to view N counts")
-      ))
-    }
-
-    # Apply pop filter
-    pop <- store$pipeline_filters$pop_flag
-    if (!is.null(pop) && nzchar(pop) && pop %in% names(d)) {
-      d <- d[d[[pop]] == "Y", ]
-    }
-
-    trt_lvls <- grp$trt_levels %||% sort(unique(d[[trt_var]]))
-    counts <- table(d[[trt_var]])
-    n_total <- nrow(d)
-    include_total <- grp$include_total %||% TRUE
-    total_label <- grp$total_label %||% "Total"
-
-    # Treatment Arms table
-    trt_rows <- lapply(trt_lvls, function(lv) {
-      n <- as.integer(counts[lv])
-      if (is.na(n)) n <- 0L
-      pct <- sprintf("%.1f%%", 100 * n / n_total)
-      htmltools::tags$tr(
-        htmltools::tags$td(class = "ar-nc__cell", lv),
-        htmltools::tags$td(class = "ar-nc__cell ar-nc__cell--num", n),
-        htmltools::tags$td(class = "ar-nc__cell ar-nc__cell--num", pct)
-      )
-    })
-
-    total_row <- if (isTRUE(include_total)) {
-      htmltools::tags$tr(class = "ar-nc__total",
-        htmltools::tags$td(class = "ar-nc__cell", total_label),
-        htmltools::tags$td(class = "ar-nc__cell ar-nc__cell--num", n_total),
-        htmltools::tags$td(class = "ar-nc__cell ar-nc__cell--num", "100.0%")
-      )
-    }
-
-    trt_table <- htmltools::tags$div(class = "ar-n-counts__section",
-      htmltools::tags$h4(class = "ar-n-counts__heading", "Treatment Arms"),
-      htmltools::tags$table(class = "ar-nc__table",
-        htmltools::tags$thead(
-          htmltools::tags$tr(
-            htmltools::tags$th(class = "ar-nc__th", "Arm"),
-            htmltools::tags$th(class = "ar-nc__th ar-nc__th--num", "N"),
-            htmltools::tags$th(class = "ar-nc__th ar-nc__th--num", "%")
-          )
-        ),
-        htmltools::tags$tbody(trt_rows, total_row)
-      )
-    )
-
-    # By Variable section (if selected)
-    by_var <- grp$by_var
-    by_section <- NULL
-    if (!is.null(by_var) && nzchar(by_var) && by_var %in% names(d)) {
-      by_lvls <- grp$by_levels %||% sort(unique(d[[by_var]]))
-
-      by_blocks <- lapply(by_lvls, function(bv) {
-        sub <- d[d[[by_var]] == bv, ]
-        trt_counts <- table(sub[[trt_var]])
-        n_by_total <- nrow(sub)
-
-        rows <- lapply(trt_lvls, function(tv) {
-          n <- as.integer(trt_counts[tv])
-          if (is.na(n)) n <- 0L
-          pct <- if (n_by_total > 0) sprintf("%.1f%%", 100 * n / n_by_total) else "0.0%"
-          htmltools::tags$tr(
-            htmltools::tags$td(class = "ar-nc__cell", tv),
-            htmltools::tags$td(class = "ar-nc__cell ar-nc__cell--num", n),
-            htmltools::tags$td(class = "ar-nc__cell ar-nc__cell--num", pct)
-          )
-        })
-
-        t_row <- if (isTRUE(include_total)) {
-          htmltools::tags$tr(class = "ar-nc__total",
-            htmltools::tags$td(class = "ar-nc__cell", total_label),
-            htmltools::tags$td(class = "ar-nc__cell ar-nc__cell--num", n_by_total),
-            htmltools::tags$td(class = "ar-nc__cell ar-nc__cell--num", "100.0%")
-          )
-        }
-
-        htmltools::tags$div(class = "ar-n-counts__by-block",
-          htmltools::tags$h5(class = "ar-n-counts__by-label", bv),
-          htmltools::tags$table(class = "ar-nc__table",
-            htmltools::tags$thead(
-              htmltools::tags$tr(
-                htmltools::tags$th(class = "ar-nc__th", "Arm"),
-                htmltools::tags$th(class = "ar-nc__th ar-nc__th--num", "N"),
-                htmltools::tags$th(class = "ar-nc__th ar-nc__th--num", "%")
-              )
-            ),
-            htmltools::tags$tbody(rows, t_row)
-          )
-        )
-      })
-
-      by_section <- htmltools::tags$div(class = "ar-n-counts__section",
-        htmltools::tags$h4(class = "ar-n-counts__heading",
-          paste0("By Variable: ", by_var)),
-        htmltools::tagList(by_blocks)
-      )
-    }
-
-    htmltools::tags$div(class = "ar-n-counts", trt_table, by_section)
-  })
+  # ── 2d. N Counts — extracted to mod_n_counts.R ──
 
   # ── 2e. ARD Data Table (reactable) ──
   output$ard_data_table <- reactable::renderReactable({
@@ -279,11 +158,18 @@ app_server <- function(input, output, session) {
   # ARD empty state
   output$ard_empty_state <- shiny::renderUI({
     if (!is.null(store$ard)) return(NULL)
-    htmltools::tags$div(class = "ar-empty-state",
-      htmltools::tags$div(class = "ar-empty-state__icon", shiny::icon("play")),
-      htmltools::tags$div(class = "ar-empty-state__text", "Generate Preview"),
-      htmltools::tags$div(class = "ar-empty-state__hint",
-        "Configure your analysis and click Generate Preview in the top bar")
+    ui_empty_state(
+      "ARD data will appear here",
+      "Configure your analysis and press Ctrl+Enter to generate the Analysis Results Dataset.",
+      "fa-table",
+      cta = if (length(grp$analysis_vars) > 0) {
+        htmltools::tags$button(
+          class = "ar-btn-primary",
+          onclick = "document.getElementById('preview_btn').click();",
+          htmltools::tags$i(class = "fa fa-play ar-icon-sm ar-icon-mr"),
+          "Generate Preview"
+        )
+      }
     )
   })
 
@@ -298,11 +184,7 @@ app_server <- function(input, output, session) {
   switch_panel <- function(panel) {
     bslib::nav_select("sidebar_panels", panel, session = session)
     bslib::nav_select("canvas_panels", panel, session = session)
-    shinyjs::runjs(sprintf(
-      "document.querySelectorAll('.ar-ab-btn').forEach(function(b){b.classList.remove('active')});
-       document.getElementById('ab_%s').classList.add('active');",
-      panel
-    ))
+    session$sendCustomMessage("ar_switch_panel", list(panel = panel))
   }
 
   shiny::observeEvent(input$ab_data, switch_panel("data"))
@@ -333,8 +215,8 @@ app_server <- function(input, output, session) {
     tryCatch({
       # Snapshot format drafts from all modules into store (non-reactive architecture)
       store$fmt <- collect_format_drafts(
-        titles_draft(), cols_draft(), page_draft(), rules_draft(),
-        header_spans_draft(), rows_draft(), chrome_draft()
+        titles_draft(), cols_draft(), header_spans_draft(),
+        rows_draft(), page_output_draft(), styles_draft()
       )
 
       template <- store$template
@@ -377,25 +259,30 @@ app_server <- function(input, output, session) {
                                       var_labels = store$var_labels)
         store$figure <- NULL
         store$listing <- NULL
-      } else if (output_type == "figure") {
-        fig_cfgs <- store$fig_configs
-        if (length(fig_cfgs) == 0) {
-          tmpl_def <- get_template_def(template)
-          if (!is.null(tmpl_def)) {
-            spec_fn <- get(tmpl_def$spec_fn, envir = globalenv())
-            spec <- spec_fn()
-            fig_cfgs <- spec$fig_configs %||% list()
+      }
+      # NOTE: figure and listing branches removed (demographics only)
+
+      # Compute N counts for column headers (reuse same logic as N Counts display)
+      if (output_type == "table" && !is.null(trt_var) && !is.null(adsl) && trt_var %in% names(adsl)) {
+        trt_lvls <- grp_list$trt_levels %||% sort(unique(adsl[[trt_var]]))
+        counts <- table(adsl[[trt_var]])
+        n_vec <- vapply(trt_lvls, function(lv) {
+          n <- as.integer(counts[lv])
+          if (is.na(n)) 0L else n
+        }, integer(1))
+        names(n_vec) <- trt_lvls
+        if (isTRUE(grp_list$include_total)) {
+          total_label <- grp_list$total_label %||% "Total"
+          n_vec <- c(n_vec, stats::setNames(nrow(adsl), total_label))
+        }
+        # Combined groups
+        for (cg in grp_list$combined_groups) {
+          if (!is.null(cg$label) && length(cg$arms) > 0) {
+            cg_n <- sum(adsl[[trt_var]] %in% cg$arms)
+            n_vec <- c(n_vec, stats::setNames(as.integer(cg_n), cg$label))
           }
         }
-        store$figure <- fct_figure_dispatch(template, datasets, grp_list, fig_cfgs)
-        store$ard <- NULL
-        store$listing <- NULL
-      } else if (output_type == "listing") {
-        listing_config <- store$var_configs
-        listing_config$dataset <- ds_name
-        store$listing <- fct_listing_dispatch(template, datasets, listing_config)
-        store$ard <- NULL
-        store$figure <- NULL
+        store$fmt$cols$n_values <- n_vec
       }
 
       # Generate code
@@ -407,8 +294,14 @@ app_server <- function(input, output, session) {
         ),
         pop_flag = pop_flag
       )
-      store$code <- fct_codegen_dispatch(template, data_cfg, grp_list,
-                                          store$var_configs, store$fmt)
+      # Merge custom labels into var_configs for codegen
+      vc <- store$var_configs
+      for (vn in names(store$var_labels)) {
+        if (!is.null(vc[[vn]]) && nzchar(store$var_labels[[vn]])) {
+          vc[[vn]]$label <- store$var_labels[[vn]]
+        }
+      }
+      store$code <- fct_codegen_dispatch(template, data_cfg, grp_list, vc, store$fmt)
 
       # Update pipeline state
       store$pipeline_state$analysis <- TRUE
@@ -433,6 +326,29 @@ app_server <- function(input, output, session) {
       output = !is.null(store$ard)
     )
     session$sendCustomMessage("ar_pipeline_update", state)
+  })
+
+  # ── 5b. Accordion Status Dots ──
+  shiny::observe({
+    has_data <- length(store$datasets) > 0
+    has_template <- !is.null(store$template)
+    has_trt <- !is.null(grp$trt_var) && nzchar(grp$trt_var %||% "")
+    has_vars <- length(grp$analysis_vars) > 0
+    has_ard <- !is.null(store$ard)
+
+    dots <- list(
+      # Data panel
+      datasets = if (has_data) "done" else "",
+      summary = if (has_data) "done" else "",
+      # Template panel
+      template_info = if (has_template) "done" else "",
+      data_source = if (has_data) "done" else "",
+      variables = if (has_vars) "done" else if (has_template) "active" else "",
+      # Analysis panel
+      treatment = if (has_trt) "done" else if (has_data) "active" else "",
+      statistics = if (has_vars) "done" else if (has_trt) "active" else ""
+    )
+    session$sendCustomMessage("ar_acc_dots", dots)
   })
 
   # ── 6. Context Summary Line ──
@@ -477,15 +393,37 @@ app_server <- function(input, output, session) {
     shiny::renderUI({
       code <- store$code
       if (is.null(code) || !nzchar(code)) {
-        return(ui_empty_state("No code generated yet",
-          desc = "Click Generate Preview to build the pipeline",
+        # Contextual hint based on pipeline state
+        hint <- if (length(store$datasets) == 0) {
+          "Load an ADaM dataset in the Data tab first"
+        } else if (is.null(store$template)) {
+          "Select a template to define your table structure"
+        } else if (length(grp$analysis_vars) == 0) {
+          "Choose analysis variables, then press Ctrl+Enter"
+        } else {
+          "Press Ctrl+Enter to generate"
+        }
+        return(ui_empty_state("R script will appear here",
+          desc = hint,
           icon = "fa-code"))
       }
       htmltools::tags$div(class = "ar-code-wrap",
+        htmltools::tags$div(class = "ar-code-toolbar",
+          htmltools::tags$button(
+            class = "ar-btn-ghost ar-btn--xs ar-code-copy",
+            onclick = "var c=this.closest('.ar-code-wrap').querySelector('code').textContent;navigator.clipboard.writeText(c).then(function(){var b=event.target.closest('.ar-code-copy');b.textContent='Copied!';setTimeout(function(){b.innerHTML='<i class=\"fa fa-copy\"></i> Copy';},1500);})",
+            htmltools::tags$i(class = "fa fa-copy"),
+            "Copy"
+          )
+        ),
         htmltools::tags$pre(
           class = "ar-code-display",
-          htmltools::tags$code(code)
-        )
+          htmltools::tags$code(class = "language-r", code)
+        ),
+        # Trigger highlight.js
+        htmltools::tags$script(htmltools::HTML(
+          "if(window.hljs){document.querySelectorAll('.ar-code-display code.language-r').forEach(function(el){hljs.highlightElement(el);});}"
+        ))
       )
     })
   }
@@ -495,38 +433,97 @@ app_server <- function(input, output, session) {
   output$code_display_out <- render_code_display()
 
   # ── 10. Preview Display Outputs (table, figure, listing) ──
-  render_preview_display <- function() {
-    shiny::renderUI({
-      output_type <- if (!is.null(store$template)) fct_template_output_type(store$template) else "table"
+  # Shared reactive computes the preview UI once; both outputs read from it.
 
-      if (output_type == "figure" && !is.null(store$figure)) {
-        return(htmltools::tags$div(
-          class = "ar-preview",
-          shiny::plotOutput("figure_preview_plot", height = "500px")
-        ))
-      }
+  preview_ui <- shiny::reactive({
+    output_type <- if (!is.null(store$template)) fct_template_output_type(store$template) else "table"
 
-      if (output_type == "listing" && !is.null(store$listing)) {
-        return(htmltools::tags$div(
-          class = "ar-preview",
-          reactable::reactableOutput("listing_preview_table")
-        ))
-      }
+    if (output_type == "figure" && !is.null(store$figure)) {
+      return(htmltools::tags$div(
+        class = "ar-preview",
+        shiny::plotOutput("figure_preview_plot", height = "500px")
+      ))
+    }
 
-      ard <- store$ard
-      if (is.null(ard)) {
+    if (output_type == "listing" && !is.null(store$listing)) {
+      return(htmltools::tags$div(
+        class = "ar-preview",
+        reactable::reactableOutput("listing_preview_table")
+      ))
+    }
+
+    ard <- store$ard
+    fmt <- store$fmt
+    if (is.null(ard)) {
+      # Contextual empty state with CTA
+      if (length(store$datasets) == 0) {
         return(ui_empty_state(
-          "No preview available",
-          "Configure your table and click Generate Preview (Ctrl+Enter).",
-          "fa-table"
+          "Load data to get started",
+          "Upload an ADaM dataset (ADSL) to begin building your table.",
+          "fa-database",
+          cta = htmltools::tags$button(
+            class = "ar-btn-primary",
+            onclick = "document.getElementById('ab_data').click();",
+            "Open Data Tab"
+          )
         ))
       }
-      fct_build_preview_html(ard, store$fmt)
-    })
-  }
+      if (is.null(store$template)) {
+        return(ui_empty_state(
+          "Select a template",
+          "Choose a table template to define the output structure.",
+          "fa-th-list",
+          cta = htmltools::tags$button(
+            class = "ar-btn-primary",
+            onclick = "document.getElementById('ab_template').click();",
+            "Browse Templates"
+          )
+        ))
+      }
+      if (length(grp$analysis_vars) == 0) {
+        return(ui_empty_state(
+          "Configure analysis variables",
+          "Select the variables to include in your demographics table.",
+          "fa-chart-bar",
+          cta = htmltools::tags$button(
+            class = "ar-btn-primary",
+            onclick = "document.getElementById('ab_analysis').click();",
+            "Open Analysis"
+          )
+        ))
+      }
+      return(ui_empty_state(
+        "Ready to generate",
+        "Your table is configured. Press Ctrl+Enter or click the button below.",
+        "fa-play",
+        cta = htmltools::tags$button(
+          class = "ar-btn-primary",
+          onclick = "document.getElementById('preview_btn').click();",
+          htmltools::tags$i(class = "fa fa-play ar-icon-sm ar-icon-mr"),
+          "Generate Preview"
+        )
+      ))
+    }
 
-  output$preview_display_fmt <- render_preview_display()
-  output$preview_display_out <- render_preview_display()
+    # arframe native HTML preview in full-screen scrollable iframe
+    tryCatch({
+      html_string <- fct_render_html_preview(ard, fmt)
+      htmltools::tags$iframe(
+        srcdoc = html_string,
+        class = "ar-preview-frame",
+        scrolling = "yes"
+      )
+    }, error = function(e) {
+      ui_empty_state(
+        "Preview error",
+        e$message,
+        "fa-exclamation-triangle"
+      )
+    })
+  })
+
+  output$preview_display_fmt <- shiny::renderUI({ preview_ui() })
+  output$preview_display_out <- shiny::renderUI({ preview_ui() })
 
   # Figure plot output
   output$figure_preview_plot <- shiny::renderPlot({
@@ -568,22 +565,26 @@ app_server <- function(input, output, session) {
     tmpl <- store$template %||% "table"
     output_type <- fct_template_output_type(tmpl)
     prefix <- switch(output_type, figure = "f_", listing = "l_", "t_")
-    ext <- switch(output_type, figure = ".png", ".rtf")
-    paste0(prefix, tmpl, "_", format(Sys.Date(), "%Y%m%d"), ext)
+    out_fmt <- store$fmt$output_format %||% "rtf"
+    ext <- switch(output_type,
+      figure = ".png",
+      switch(out_fmt, pdf = ".pdf", html = ".html", ".rtf"))
+    paste0(prefix, tmpl, "_", format(Sys.time(), "%Y%m%dT%H%M%S"), ext)
   }
 
   export_content <- function(file) {
-    output_type <- fct_template_output_type(store$template)
-    if (output_type == "figure") {
-      req(store$figure)
-      ggplot2::ggsave(file, store$figure, width = 10, height = 7, dpi = 300)
-    } else if (output_type == "listing") {
-      req(store$listing)
-      fct_render_listing(store$listing, store$fmt, file)
-    } else {
-      req(store$ard)
-      fct_render_rtf(store$ard, store$fmt, file)
-    }
+    # NOTE: figure and listing export branches removed (demographics only)
+    req(store$ard)
+    fct_render_rtf(store$ard, store$fmt, file)
+  }
+
+  script_filename <- function() {
+    tmpl <- store$template %||% "table"
+    paste0("t_", tmpl, ".R")
+  }
+  script_content <- function(file) {
+    req(store$code)
+    writeLines(store$code, file)
   }
 
   output$export_rtf <- shiny::downloadHandler(
@@ -594,31 +595,10 @@ app_server <- function(input, output, session) {
         list(message = "Export complete", type = "success"))
     }
   )
-
   output$export_rtf_side <- shiny::downloadHandler(
-    filename = export_filename,
-    content = export_content
-  )
-
+    filename = export_filename, content = export_content)
   output$dl_script <- shiny::downloadHandler(
-    filename = function() {
-      tmpl <- store$template %||% "table"
-      paste0("t_", tmpl, ".R")
-    },
-    content = function(file) {
-      req(store$code)
-      writeLines(store$code, file)
-    }
-  )
-
+    filename = script_filename, content = script_content)
   output$dl_script_side <- shiny::downloadHandler(
-    filename = function() {
-      tmpl <- store$template %||% "table"
-      paste0("t_", tmpl, ".R")
-    },
-    content = function(file) {
-      req(store$code)
-      writeLines(store$code, file)
-    }
-  )
+    filename = script_filename, content = script_content)
 }

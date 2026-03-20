@@ -1,69 +1,51 @@
-/* =============================================================================
-   arbuilder — JavaScript (minimal — bslib handles layout switching)
-   ============================================================================= */
+/* arbuilder — JavaScript (demographics only)
+   Backup of full version: app.js.bak
 
-// --- Variable Card Expand/Collapse ---
+   Sections:
+   1. Variable Card Toggle
+   2. Toast Notifications
+   3. Keyboard Shortcuts
+   4. Resizable Sidebar
+   5. Sidebar Collapse
+   6. SortableJS Init (generic)
+   7. Shiny Message Handlers
+   8. DOMContentLoaded Setup
+*/
+
+/* ── 1. Variable Card Toggle ── */
 function arToggleVarCard(cardId) {
   var card = document.getElementById(cardId);
   if (!card) return;
-  var wasOpen = card.classList.contains('ar-var-card--open');
   card.classList.toggle('ar-var-card--open');
   var varName = card.getAttribute('data-var');
+  if (!varName) return;
   var nsPrefix = cardId.replace('vcard_' + varName, '');
-  if (!wasOpen) {
-    // Notify R when card opens (for snapshotting pending state)
-    if (varName) {
-      Shiny.setInputValue(nsPrefix + 'card_opened', {var: varName, ts: Date.now()}, {priority: 'event'});
-    }
-  } else {
-    // Notify R when card closes
-    if (varName) {
-      Shiny.setInputValue(nsPrefix + 'card_closed', {var: varName, ts: Date.now()}, {priority: 'event'});
-    }
-  }
+  var isOpen = card.classList.contains('ar-var-card--open');
+  var eventName = isOpen ? 'card_opened' : 'card_closed';
+  Shiny.setInputValue(nsPrefix + eventName, {var: varName, ts: Date.now()}, {priority: 'event'});
 }
 
-// --- Variable Row Expand/Collapse (Template sidebar) ---
-function arToggleVarRow(rowId) {
-  var row = document.getElementById(rowId);
-  if (row) row.classList.toggle('ar-varlist-row--open');
-}
-
-// --- Fullscreen Toggle ---
-function arToggleFullscreen() {
-  if (!document.fullscreenElement) {
-    document.documentElement.requestFullscreen();
-  } else {
-    document.exitFullscreen();
-  }
-}
-
-// --- Toast Notifications ---
+/* ── 2. Toast Notifications ── */
 function arToast(message, type, duration) {
   type = type || 'success';
   duration = duration || 3000;
-
   var container = document.getElementById('ar_toast_container');
   if (!container) return;
-
   var icons = { success: '&#10003;', warning: '&#9888;', error: '&#10007;' };
-
   var toast = document.createElement('div');
   toast.className = 'ar-toast ar-toast--' + type;
   toast.innerHTML = '<span class="ar-toast__icon">' + (icons[type] || '') + '</span>' +
                     '<span class="ar-toast__message">' + message + '</span>';
-
   container.appendChild(toast);
-
   setTimeout(function() {
     toast.style.animation = 'ar-toast-out 0.3s ease forwards';
     setTimeout(function() { toast.remove(); }, 300);
   }, duration);
 }
 
-// --- Keyboard Shortcuts ---
+/* ── 3. Keyboard Shortcuts ── */
 document.addEventListener('keydown', function(e) {
-  // Ctrl+1-5 — click activity bar buttons
+  /* Ctrl+1-5: switch activity bar tabs */
   if (e.ctrlKey && !e.shiftKey && !e.altKey) {
     var panels = ['data', 'template', 'analysis', 'format', 'output'];
     var num = parseInt(e.key);
@@ -73,248 +55,264 @@ document.addEventListener('keydown', function(e) {
       if (btn) btn.click();
     }
   }
-
-  // Ctrl+Enter — generate preview
-  if (e.ctrlKey && e.key === 'Enter') {
-    e.preventDefault();
-    var btn = document.getElementById('preview_btn');
-    if (btn) btn.click();
-  }
-});
-
-// --- SortableJS: Variable Card Reorder ---
-function arInitVarSortable(containerId) {
-  var container = document.getElementById(containerId);
-  if (!container) return;
-
-  // Destroy existing instance before re-creating (renderUI replaces DOM)
-  if (container._sortable) container._sortable.destroy();
-
-  container._sortable = new Sortable(container, {
-    animation: 150,
-    handle: '.ar-var-card__drag',
-    ghostClass: 'ar-sortable-ghost',
-    chosenClass: 'ar-sortable-chosen',
-    dragClass: 'ar-sortable-drag',
-    onEnd: function() {
-      var cards = container.querySelectorAll('.ar-var-card[data-var]');
-      var order = Array.from(cards).map(function(c) { return c.getAttribute('data-var'); });
-      // Container ID is ns("var_cards") → strip "var_cards" to get ns prefix
-      var nsPrefix = containerId.replace('var_cards', '');
-      Shiny.setInputValue(nsPrefix + 'var_order', order, {priority: 'event'});
-    }
-  });
-}
-
-// --- SortableJS: Stat Grid Reorder ---
-function arInitStatSortable(containerId, varName, nsPrefix) {
-  var container = document.getElementById(containerId);
-  if (!container) return;
-
-  // Destroy existing instance before re-creating
-  if (container._sortable) container._sortable.destroy();
-
-  container._sortable = new Sortable(container, {
-    animation: 150,
-    handle: '.ar-stat-grid__drag',
-    ghostClass: 'ar-sortable-ghost',
-    onEnd: function() {
-      var rows = container.querySelectorAll('.ar-stat-grid__row[data-stat]');
-      var stats = Array.from(rows).map(function(r) { return r.getAttribute('data-stat'); });
-      Shiny.setInputValue(nsPrefix + 'stat_order',
-        {var: varName, stats: stats}, {priority: 'event'});
-    }
-  });
-}
-
-// --- Disclosure State Preservation ---
-// Saves <details> open/closed state before Shiny re-renders, restores after.
-var arDisclosureState = {};
-
-$(document).on('shiny:recalculating', function(e) {
-  var el = e.target;
-  if (!el || !el.querySelectorAll) return;
-  el.querySelectorAll('details.ar-disclosure[id]').forEach(function(d) {
-    arDisclosureState[d.id] = d.open;
-  });
-});
-
-$(document).on('shiny:value', function(e) {
-  setTimeout(function() {
-    var target = document.getElementById(e.name);
-    if (!target) return;
-    target.querySelectorAll('details.ar-disclosure[id]').forEach(function(d) {
-      if (d.id in arDisclosureState) {
-        d.open = arDisclosureState[d.id];
-      }
+  /* Ctrl+Enter: generate preview */
+  if (e.ctrlKey && e.key === 'Enter') { e.preventDefault(); var btn = document.getElementById('preview_btn'); if (btn) btn.click(); }
+  /* Ctrl+S: export RTF */
+  if (e.ctrlKey && !e.shiftKey && e.key === 's') { e.preventDefault(); var dl = document.getElementById('export_rtf'); if (dl) dl.click(); }
+  /* Ctrl+Shift+S: download R script */
+  if (e.ctrlKey && e.shiftKey && e.key === 'S') { e.preventDefault(); var dl = document.getElementById('dl_script'); if (dl) dl.click(); }
+  /* Escape: collapse all open cards */
+  if (e.key === 'Escape') {
+    document.querySelectorAll('.ar-var-card--open').forEach(function(c) { c.classList.remove('ar-var-card--open'); });
+    document.querySelectorAll('.ar-col-item__body--open').forEach(function(b) {
+      b.classList.remove('ar-col-item__body--open');
+      var h = b.previousElementSibling;
+      if (h) { var ch = h.querySelector('.ar-col-item__chevron'); if (ch) ch.classList.remove('ar-col-item__chevron--open'); }
     });
-  }, 50);
+  }
+  /* Ctrl+B: toggle sidebar */
+  if (e.ctrlKey && e.key === 'b') { e.preventDefault(); arToggleSidebar(); }
 });
 
-// --- Shiny Custom Message Handlers ---
-$(document).ready(function() {
-  // Toast handler
-  Shiny.addCustomMessageHandler('ar_toast', function(data) {
-    arToast(data.message, data.type, data.duration);
+/* ── 4. Resizable Sidebar ── */
+(function() {
+  var handle, sidebar, isResizing = false, startX, startWidth;
+  document.addEventListener('DOMContentLoaded', function() {
+    handle = document.getElementById('ar_resize_handle');
+    sidebar = document.querySelector('.ar-sidebar');
+    if (!handle || !sidebar) return;
+    handle.addEventListener('mousedown', function(e) {
+      isResizing = true; startX = e.clientX; startWidth = sidebar.offsetWidth;
+      handle.classList.add('ar-resize-handle--active');
+      document.body.style.cursor = 'col-resize'; document.body.style.userSelect = 'none';
+      e.preventDefault();
+    });
+    document.addEventListener('mousemove', function(e) {
+      if (!isResizing) return;
+      var w = Math.max(260, Math.min(500, startWidth + e.clientX - startX));
+      sidebar.style.width = w + 'px'; sidebar.style.transition = 'none';
+    });
+    document.addEventListener('mouseup', function() {
+      if (!isResizing) return;
+      isResizing = false; handle.classList.remove('ar-resize-handle--active');
+      document.body.style.cursor = ''; document.body.style.userSelect = '';
+      sidebar.style.transition = '';
+    });
+    handle.addEventListener('dblclick', arToggleSidebar);
   });
+})();
 
-  // Pipeline dot update handler
+/* ── 5. Sidebar Collapse ── */
+function arToggleSidebar() {
+  var sidebar = document.querySelector('.ar-sidebar');
+  var handle = document.getElementById('ar_resize_handle');
+  if (!sidebar) return;
+  var collapsed = sidebar.classList.toggle('ar-sidebar--collapsed');
+  if (handle) handle.style.display = collapsed ? 'none' : '';
+}
+
+/* ── 6. SortableJS Init (generic) ── */
+function arInitSortable(containerId, handleClass, itemSelector, attrName, inputId) {
+  var el = document.getElementById(containerId);
+  if (!el) return;
+  if (el._sortable) el._sortable.destroy();
+  el._sortable = new Sortable(el, {
+    animation: 150, handle: handleClass,
+    ghostClass: 'ar-sortable-ghost', chosenClass: 'ar-sortable-chosen', dragClass: 'ar-sortable-drag',
+    onEnd: function() {
+      var items = el.querySelectorAll(itemSelector);
+      var order = Array.from(items).map(function(i) { return i.getAttribute(attrName); });
+      Shiny.setInputValue(inputId, order, {priority: 'event'});
+    }
+  });
+}
+
+/* ── 7. Shiny Message Handlers ── */
+$(document).ready(function() {
+  /* Toast */
+  Shiny.addCustomMessageHandler('ar_toast', function(d) { arToast(d.message, d.type, d.duration); });
+
+  /* Pipeline badges + status pill */
   Shiny.addCustomMessageHandler('ar_pipeline_update', function(state) {
     var steps = ['data', 'template', 'analysis', 'format', 'output'];
-    steps.forEach(function(step) {
-      var dot = document.getElementById('pip_' + step);
-      if (!dot) return;
-      dot.className = 'ar-pipeline__dot';
-      if (state[step] === true) {
-        dot.classList.add('ar-pipeline__dot--done');
-      }
+    var first = null;
+    steps.forEach(function(s) {
+      var b = document.getElementById('ab_badge_' + s);
+      if (!b) return;
+      b.className = 'ar-ab-badge';
+      if (state[s] === true) b.classList.add('ar-ab-badge--done');
     });
-    // Mark first incomplete step as active
     for (var i = 0; i < steps.length; i++) {
       if (state[steps[i]] !== true) {
-        var dot = document.getElementById('pip_' + steps[i]);
-        if (dot) dot.classList.add('ar-pipeline__dot--active');
+        first = steps[i];
+        var b = document.getElementById('ab_badge_' + steps[i]);
+        if (b) b.className = 'ar-ab-badge ar-ab-badge--active';
         break;
       }
     }
-    // Update connector lines
-    steps.forEach(function(step, i) {
-      if (i === 0) return;
-      var line = document.getElementById('pip_line_' + step);
-      if (!line) return;
-      line.className = 'ar-pipeline__line';
-      if (state[steps[i - 1]] === true) {
-        line.classList.add('ar-pipeline__line--done');
+    var pill = document.getElementById('ar_status_pill');
+    if (pill) {
+      var t = pill.querySelector('.ar-status-pill__text');
+      pill.className = 'ar-status-pill';
+      if (!first) { pill.classList.add('ar-status-pill--ready'); if (t) t.textContent = 'Ready to export'; }
+      else { pill.classList.add('ar-status-pill--needs-config');
+        var hints = { data: 'Load data to start', template: 'Select a template', analysis: 'Configure analysis', format: 'Generate preview', output: 'Generate preview' };
+        if (t) t.textContent = hints[first] || 'Configure';
       }
-    });
+    }
   });
 
-  // Init variable card sortable
-  Shiny.addCustomMessageHandler('ar_init_var_sortable', function(data) {
-    // Delay slightly to let DOM render
+  /* Variable card sortable */
+  Shiny.addCustomMessageHandler('ar_init_var_sortable', function(d) {
     setTimeout(function() {
-      arInitVarSortable(data.container_id);
+      var cid = d.container_id;
+      var ns = cid.replace('var_cards', '');
+      arInitSortable(cid, '.ar-var-card__drag', '.ar-var-card[data-var]', 'data-var', ns + 'var_order');
     }, 100);
   });
 
-  // Init stat grid sortable
-  Shiny.addCustomMessageHandler('ar_init_stat_sortable', function(data) {
+  /* Stat grid sortable */
+  Shiny.addCustomMessageHandler('ar_init_stat_sortable', function(d) {
     setTimeout(function() {
-      arInitStatSortable(data.container_id, data.var_name, data.ns_prefix);
-    }, 100);
-  });
-
-  // Init treatment level sortable (drag to reorder arms)
-  Shiny.addCustomMessageHandler('ar_init_trt_sortable', function(data) {
-    setTimeout(function() {
-      var container = document.getElementById(data.container_id);
-      if (!container) return;
-      if (container._sortable) container._sortable.destroy();
-      container._sortable = new Sortable(container, {
-        animation: 150,
-        handle: '.ar-trt-row__drag',
-        ghostClass: 'ar-sortable-ghost',
-        chosenClass: 'ar-sortable-chosen',
-        dragClass: 'ar-sortable-drag',
+      var el = document.getElementById(d.container_id);
+      if (!el) return;
+      if (el._sortable) el._sortable.destroy();
+      el._sortable = new Sortable(el, {
+        animation: 150, handle: '.ar-stat-grid__drag', ghostClass: 'ar-sortable-ghost',
         onEnd: function() {
-          var rows = container.querySelectorAll('.ar-trt-row[data-level]');
-          var order = Array.from(rows).map(function(r) { return r.getAttribute('data-level'); });
-          Shiny.setInputValue(data.input_id, order, {priority: 'event'});
+          var rows = el.querySelectorAll('.ar-stat-grid__row[data-stat]');
+          var stats = Array.from(rows).map(function(r) { return r.getAttribute('data-stat'); });
+          Shiny.setInputValue(d.ns_prefix + 'stat_order', {var: d.var_name, stats: stats}, {priority: 'event'});
         }
       });
     }, 100);
   });
 
-  // Init by-variable level sortable (drag to reorder by-groups)
-  Shiny.addCustomMessageHandler('ar_init_by_sortable', function(data) {
-    setTimeout(function() {
-      var container = document.getElementById(data.container_id);
-      if (!container) return;
-      if (container._sortable) container._sortable.destroy();
-      container._sortable = new Sortable(container, {
-        animation: 150,
-        handle: '.ar-trt-row__drag',
-        ghostClass: 'ar-sortable-ghost',
-        chosenClass: 'ar-sortable-chosen',
-        dragClass: 'ar-sortable-drag',
-        onEnd: function() {
-          var blocks = container.querySelectorAll('.ar-by-block[data-level]');
-          var order = Array.from(blocks).map(function(b) { return b.getAttribute('data-level'); });
-          Shiny.setInputValue(data.input_id, order, {priority: 'event'});
-        }
-      });
-    }, 100);
+  /* Treatment level sortable */
+  /* Robust sortable init — retries until element exists */
+  function arInitSortableRetry(containerId, handleClass, itemSelector, attrName, inputId) {
+    var attempts = 0;
+    function tryInit() {
+      var el = document.getElementById(containerId);
+      if (el && el.children.length > 0) {
+        arInitSortable(containerId, handleClass, itemSelector, attrName, inputId);
+      } else if (attempts < 10) {
+        attempts++;
+        setTimeout(tryInit, 200);
+      }
+    }
+    setTimeout(tryInit, 100);
+  }
+
+  Shiny.addCustomMessageHandler('ar_init_trt_sortable', function(d) {
+    arInitSortableRetry(d.container_id, '.ar-trt-row__drag', '.ar-trt-row[data-level]', 'data-level', d.input_id);
   });
 
-  // Tab pulse (works with bslib nav-link elements)
-  Shiny.addCustomMessageHandler('ar_tab_pulse', function(data) {
-    document.querySelectorAll('.nav-link').forEach(function(t) {
-      if (t.textContent.trim().toLowerCase().indexOf(data.tab) >= 0) {
-        t.classList.add('pulse');
-        setTimeout(function() { t.classList.remove('pulse'); }, 3000);
+  Shiny.addCustomMessageHandler('ar_init_by_sortable', function(d) {
+    arInitSortableRetry(d.container_id, '.ar-trt-row__drag', '.ar-trt-row[data-level]', 'data-level', d.input_id);
+  });
+
+  Shiny.addCustomMessageHandler('ar_init_level_sortable', function(d) {
+    arInitSortableRetry(d.container_id, '.ar-trt-row__drag', '.ar-trt-row[data-level]', 'data-level', d.input_id);
+  });
+
+  /* Collapse/open variable cards */
+  Shiny.addCustomMessageHandler('ar_collapse_card', function(d) {
+    var card = document.getElementById(d.card_id);
+    if (card) {
+      card.classList.remove('ar-var-card--open');
+      var v = card.getAttribute('data-var');
+      if (v) { var ns = d.card_id.replace('vcard_' + v, ''); Shiny.setInputValue(ns + 'card_closed', {var: v, ts: Date.now()}, {priority: 'event'}); }
+    }
+  });
+  Shiny.addCustomMessageHandler('ar_open_card', function(d) {
+    setTimeout(function() { var c = document.getElementById(d.card_id); if (c) c.classList.add('ar-var-card--open'); }, 150);
+  });
+
+  /* Accordion status dots */
+  Shiny.addCustomMessageHandler('ar_acc_dots', function(dots) {
+    var map = { datasets:'DATASETS', summary:'SUMMARY', col_explorer:'COLUMN EXPLORER', filters:'FILTERS',
+      template_info:'TEMPLATE INFO', data_source:'DATA SOURCE', variables:'VARIABLES', treatment:'TREATMENT', statistics:'STATISTICS' };
+    Object.keys(dots).forEach(function(k) {
+      var title = map[k]; if (!title) return;
+      var btns = document.querySelectorAll('.ar-sidebar .accordion-button');
+      for (var i = 0; i < btns.length; i++) {
+        if (btns[i].textContent.trim().indexOf(title) === 0) {
+          var dot = btns[i].querySelector('.ar-acc-dot');
+          if (!dot) { dot = document.createElement('span'); dot.className = 'ar-acc-dot'; btns[i].appendChild(dot); }
+          dot.className = 'ar-acc-dot';
+          if (dots[k] === 'done') dot.classList.add('ar-acc-dot--done');
+          else if (dots[k] === 'active') dot.classList.add('ar-acc-dot--active');
+          break;
+        }
       }
     });
   });
 
-  // Scroll to column in data viewer (partial match + highlight)
-  Shiny.addCustomMessageHandler('ar_scroll_to_col', function(data) {
+  /* Scroll to column in data viewer (mod_data_viewer.R) */
+  Shiny.addCustomMessageHandler('ar_scroll_to_col', function(d) {
     var headers = document.querySelectorAll('.ar-dv__grid .rt-th');
-    var search = data.col.toLowerCase();
+    var search = d.col.toLowerCase();
     for (var i = 0; i < headers.length; i++) {
       if (headers[i].textContent.toLowerCase().indexOf(search) >= 0) {
         headers[i].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
         headers[i].style.background = 'var(--accent-muted)';
-        (function(el) {
-          setTimeout(function() { el.style.background = ''; }, 2000);
-        })(headers[i]);
+        (function(el) { setTimeout(function() { el.style.background = ''; }, 2000); })(headers[i]);
         break;
       }
     }
   });
 
-  // Collapse a variable card by ID
-  Shiny.addCustomMessageHandler('ar_collapse_card', function(data) {
-    var card = document.getElementById(data.card_id);
-    if (card) {
-      card.classList.remove('ar-var-card--open');
-      var varName = card.getAttribute('data-var');
-      if (varName) {
-        var nsPrefix = data.card_id.replace('vcard_' + varName, '');
-        Shiny.setInputValue(nsPrefix + 'card_closed', {var: varName, ts: Date.now()}, {priority: 'event'});
-      }
+  /* Toggle element visibility (replaces shinyjs::toggle) */
+  Shiny.addCustomMessageHandler('ar_toggle', function(d) {
+    var el = document.getElementById(d.id);
+    if (el) {
+      if (d.show) { el.classList.remove('ar-hidden'); el.style.display = ''; }
+      else { el.classList.add('ar-hidden'); el.style.display = ''; }
     }
   });
 
-  // Open a variable card by ID (used to restore state after re-render)
-  Shiny.addCustomMessageHandler('ar_open_card', function(data) {
-    setTimeout(function() {
-      var card = document.getElementById(data.card_id);
-      if (card) card.classList.add('ar-var-card--open');
-    }, 150);
+  /* Switch activity bar panel (replaces shinyjs::runjs) */
+  Shiny.addCustomMessageHandler('ar_switch_panel', function(d) {
+    document.querySelectorAll('.ar-ab-btn').forEach(function(b) { b.classList.remove('active'); });
+    var btn = document.getElementById('ab_' + d.panel);
+    if (btn) btn.classList.add('active');
   });
 
-  // Activity bar unlock (legacy — modules still send this)
-  Shiny.addCustomMessageHandler('ar_unlock_step', function(data) {
-    // No-op: all panels are now always accessible
+  /* Debounced preview trigger (replaces shinyjs::delay + click) */
+  var _previewTimer = null;
+  Shiny.addCustomMessageHandler('ar_debounce_preview', function(d) {
+    if (_previewTimer) clearTimeout(_previewTimer);
+    _previewTimer = setTimeout(function() {
+      var btn = document.getElementById('preview_btn');
+      if (btn) btn.click();
+      _previewTimer = null;
+    }, d.delay || 800);
   });
+
 });
 
-// Toast container (injected once)
+/* ── 8. DOMContentLoaded Setup ── */
 document.addEventListener('DOMContentLoaded', function() {
+  /* Toast container */
   if (!document.getElementById('ar_toast_container')) {
-    var container = document.createElement('div');
-    container.id = 'ar_toast_container';
-    document.body.appendChild(container);
+    var c = document.createElement('div'); c.id = 'ar_toast_container'; document.body.appendChild(c);
   }
+  /* Double-click activity bar icon to toggle sidebar */
+  var lastClick = {};
+  document.querySelectorAll('.ar-ab-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var now = Date.now();
+      if (lastClick[btn.id] && now - lastClick[btn.id] < 350) { arToggleSidebar(); lastClick[btn.id] = 0; }
+      else { lastClick[btn.id] = now; }
+    });
+  });
 });
 
-// --- Format Panel: Preset Active State ---
+/* Format preset active state */
 function arFmtPresetActive(btn) {
-  var container = btn.closest('.ar-fmt-preset-pills');
-  if (container) {
-    container.querySelectorAll('.ar-pill').forEach(function(p) {
-      p.classList.remove('ar-pill--active');
-    });
-  }
+  var p = btn.closest('.ar-fmt-preset-pills');
+  if (p) p.querySelectorAll('.ar-pill').forEach(function(x) { x.classList.remove('ar-pill--active'); });
   btn.classList.add('ar-pill--active');
 }
+

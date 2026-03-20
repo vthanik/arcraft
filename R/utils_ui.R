@@ -7,7 +7,7 @@ ar_theme <- function() {
     primary = "#4a6fa5",
     "font-size-base" = "0.8125rem",
     "body-bg" = "#ffffff",
-    "body-color" = "#1a1918"
+    "body-color" = "#1a1d23"
   ) |>
     bslib::bs_add_rules(
       "@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');"
@@ -16,13 +16,13 @@ ar_theme <- function() {
 
 ar_grid_theme <- function() {
   reactable::reactableTheme(
-    borderColor = "#e5e4e2",
+    borderColor = "#e2e5ea",
     headerStyle = list(
-      background = "#f8f8f7",
-      borderBottom = "1px solid #e5e4e2",
+      background = "#ffffff",
+      borderBottom = "1px solid #e2e5ea",
       fontWeight = 600,
       fontSize = "11px",
-      color = "#57534e",
+      color = "#4b5563",
       padding = "4px 8px",
       verticalAlign = "bottom"
     ),
@@ -30,18 +30,10 @@ ar_grid_theme <- function() {
       padding = "2px 8px",
       fontSize = "11.5px",
       lineHeight = "1.3",
-      borderBottom = "1px solid #f3f2f1",
+      borderBottom = "1px solid #eceef2",
       verticalAlign = "top"
     ),
     paginationStyle = list(fontSize = "11px")
-  )
-}
-
-ui_stat_chip <- function(label, value) {
-  htmltools::tags$span(
-    class = "ar-stat-chip",
-    htmltools::tags$span(class = "ar-stat-chip__label", label),
-    htmltools::tags$span(class = "ar-stat-chip__value", value)
   )
 }
 
@@ -67,89 +59,67 @@ ui_type_badge <- function(type) {
   htmltools::tags$span(class = cls, toupper(type))
 }
 
-ui_pill <- function(label, active = FALSE, removable = FALSE, ns_remove_id = NULL) {
-  cls <- paste0("ar-pill", if (active) " ar-pill--active" else "")
-  htmltools::tags$span(
-    class = cls,
-    label,
-    if (removable && !is.null(ns_remove_id)) {
-      htmltools::tags$span(
-        class = "ar-pill__remove",
-        onclick = paste0("Shiny.setInputValue('", ns_remove_id, "', '", label, "', {priority: 'event'})"),
-        htmltools::HTML("&times;")
-      )
-    }
-  )
-}
+# Custom JS filter: supports NA, comma-separated multi-value
+# Custom filter: comma-separated multi-value match
+.ar_filter_js <- reactable::JS("function(rows, columnId, filterValue) {
+  var terms = filterValue.toLowerCase().split(',').map(function(s){return s.trim();}).filter(function(s){return s.length>0;});
+  if (terms.length === 0) return rows;
+  return rows.filter(function(row) {
+    var val = row.values[columnId];
+    var valStr = (val === null || val === undefined) ? '' : String(val).toLowerCase();
+    return terms.some(function(t) { return valStr.indexOf(t) !== -1; });
+  });
+}")
 
-ar_build_reactable <- function(data, height = "calc(100vh - 180px)") {
-  d <- dplyr::bind_cols(
-    tibble::tibble(`#` = seq_len(nrow(data))),
-    data
-  )
+ar_build_reactable <- function(data, height = "auto") {
+  wide_data <- ncol(data) > 20
+  skip_rownum <- ncol(data) > 30
+  measure_cols <- if (wide_data) min(10, ncol(data)) else ncol(data)
+
+  if (skip_rownum) {
+    d <- data
+  } else {
+    d <- dplyr::bind_cols(
+      tibble::tibble(`#` = seq_len(nrow(data))),
+      data
+    )
+  }
 
   col_defs <- list()
 
-  # Row number column
-  col_defs[["#"]] <- reactable::colDef(
-    name = "#",
-    width = 60,
-    align = "right",
-    style = list(color = "var(--fg-muted)", fontSize = "11px",
-                 borderRight = "1px solid var(--border-light)",
-                 overflow = "visible", textOverflow = "clip"),
-    sortable = FALSE,
-    filterable = FALSE,
-    sticky = "left"
-  )
+  # Row number column (skip for very wide data)
+  if (!skip_rownum) {
+    col_defs[["#"]] <- reactable::colDef(
+      name = "#",
+      width = 60,
+      align = "right",
+      style = list(color = "var(--fg-muted)", fontSize = "11px",
+                   borderRight = "1px solid var(--border-light)",
+                   overflow = "visible", textOverflow = "clip"),
+      sortable = FALSE,
+      filterable = FALSE,
+      sticky = "left"
+    )
+  }
 
-  for (col in names(d)[-1]) {
+  # Build column defs — fast path: skip per-column width measurement
+  data_col_names <- if (skip_rownum) names(d) else names(d)[-1]
+
+  # NA cell renderer (shared)
+  na_cell <- function(value) {
+    if (is.na(value)) htmltools::tags$span(class = "ar-cell--na", "NA")
+    else as.character(value)
+  }
+
+  for (col in data_col_names) {
     x <- d[[col]]
     lbl <- attr(x, "label")
-    align <- if (is.numeric(x)) "right" else "left"
-
-    # Measure header width
-    header_chars <- nchar(col)
-    if (!is.null(lbl) && nzchar(lbl)) header_chars <- max(header_chars, nchar(lbl))
-    header_width <- header_chars * 7.5 + 24
-
-    # Measure content width from sample
-    sample_vals <- utils::head(stats::na.omit(x), 200)
-    content_width <- if (length(sample_vals) > 0) {
-      if (is.numeric(x)) {
-        formatted <- formatC(as.numeric(sample_vals), format = "f",
-                             digits = if (all(sample_vals == floor(sample_vals), na.rm = TRUE)) 0 else 1,
-                             big.mark = ",")
-        max(nchar(formatted), na.rm = TRUE) * 7.5 + 24
-      } else {
-        max(nchar(as.character(sample_vals)), na.rm = TRUE) * 7 + 24
-      }
-    } else 80
-
-    width <- min(350, max(80, max(header_width, content_width)))
-
     col_defs[[col]] <- reactable::colDef(
-      name = col,
-      header = function(value) {
-        col_name <- value
-        col_data <- d[[col_name]]
-        col_lbl <- attr(col_data, "label")
-        htmltools::tags$div(
-          htmltools::tags$div(style = "font-weight: 600; font-size: 11.5px;", col_name),
-          if (!is.null(col_lbl) && nzchar(col_lbl)) {
-            htmltools::tags$div(style = "font-size: 10px; color: var(--fg-muted); font-weight: 400;", col_lbl)
-          }
-        )
-      },
-      align = align,
-      minWidth = width,
-      cell = function(value) {
-        if (is.na(value)) {
-          htmltools::tags$span(style = "color: var(--fg-muted); font-style: italic;", "NA")
-        } else {
-          as.character(value)
-        }
-      }
+      name = if (!is.null(lbl) && nzchar(lbl)) paste0(col, "\n", lbl) else col,
+      align = if (is.numeric(x)) "right" else "left",
+      minWidth = min(200, max(80, nchar(col) * 8 + 24)),
+      filterMethod = .ar_filter_js,
+      cell = na_cell
     )
   }
 
@@ -162,115 +132,15 @@ ar_build_reactable <- function(data, height = "calc(100vh - 180px)") {
     defaultPageSize = 50,
     showPageSizeOptions = TRUE,
     pageSizeOptions = c(25, 50, 100, 250),
+    sortable = TRUE,
+    filterable = TRUE,
     resizable = TRUE,
     wrap = FALSE,
     bordered = FALSE,
     striped = FALSE,
     highlight = TRUE,
     compact = TRUE,
-    fullWidth = TRUE
+    fullWidth = FALSE
   )
 }
 
-ui_var_card_header <- function(ns, var, label, type, summary = "", modified = FALSE) {
-  htmltools::tags$div(
-    class = "ar-var-card__header",
-    onclick = paste0("arToggleVarCard('", ns(paste0("card_", var)), "')"),
-    htmltools::tags$span(class = "ar-var-card__drag", htmltools::HTML("&#8942;&#8942;")),
-    htmltools::tags$span(class = "ar-var-card__name", var),
-    ui_type_badge(if (type == "continuous") "NUM" else "CHR"),
-    htmltools::tags$span(class = "ar-var-card__label", label),
-    htmltools::tags$span(class = "ar-var-card__summary", summary),
-    if (modified) htmltools::tags$span(class = "ar-var-card__modified"),
-    htmltools::tags$span(class = "ar-var-card__chevron", htmltools::HTML("&#9656;"))
-  )
-}
-
-ui_var_card_cont <- function(ns, var, config) {
-  stats_choices <- c(
-    "n" = "N",
-    "mean_sd" = "Mean (SD)",
-    "median" = "Median",
-    "q1_q3" = "Q1, Q3",
-    "min_max" = "Min, Max",
-    "geo_mean_cv" = "Geometric Mean (CV%)"
-  )
-  selected_stats <- config$stats %||% c("n", "mean_sd", "median", "q1_q3", "min_max")
-  dec <- config$decimals %||% 1
-
-  htmltools::tags$div(
-    class = "ar-var-card__content",
-    htmltools::tags$div(
-      class = "ar-form-group",
-      htmltools::tags$label(class = "ar-form-label", "Statistics"),
-      shiny::checkboxGroupInput(
-        ns(paste0("stats_", var)), NULL,
-        choices = stats_choices,
-        selected = selected_stats,
-        inline = FALSE
-      )
-    ),
-    htmltools::tags$div(
-      class = "ar-form-group",
-      htmltools::tags$label(class = "ar-form-label", "Decimal places"),
-      shiny::numericInput(ns(paste0("dec_", var)), NULL, value = dec, min = 0, max = 6, step = 1, width = "80px")
-    ),
-    htmltools::tags$div(
-      class = "ar-var-card__actions",
-      htmltools::tags$button(
-        class = "ar-btn-ghost",
-        onclick = paste0("Shiny.setInputValue('", ns(paste0("reset_", var)), "', Math.random(), {priority: 'event'})"),
-        "Reset to Default"
-      )
-    )
-  )
-}
-
-ui_var_card_cat <- function(ns, var, config, levels = NULL) {
-  fmt <- config$cat_format %||% "npct"
-  dec <- config$pct_dec %||% 1
-  style <- config$zero_style %||% "A"
-
-  htmltools::tags$div(
-    class = "ar-var-card__content",
-    htmltools::tags$div(
-      class = "ar-form-group",
-      htmltools::tags$label(class = "ar-form-label", "Display format"),
-      shiny::radioButtons(
-        ns(paste0("catfmt_", var)), NULL,
-        choices = c("n (%)" = "npct", "n only" = "n", "n/N (%)" = "nn_pct"),
-        selected = fmt, inline = TRUE
-      )
-    ),
-    htmltools::tags$div(
-      class = "ar-form-group",
-      htmltools::tags$label(class = "ar-form-label", "Percent decimals"),
-      shiny::numericInput(ns(paste0("catdec_", var)), NULL, value = dec, min = 0, max = 3, step = 1, width = "80px")
-    ),
-    htmltools::tags$div(
-      class = "ar-form-group",
-      htmltools::tags$label(class = "ar-form-label", "Zero display"),
-      shiny::radioButtons(
-        ns(paste0("zero_", var)), NULL,
-        choices = c("0" = "A", "0 (0.0)" = "D"),
-        selected = style, inline = TRUE
-      )
-    ),
-    if (!is.null(levels) && length(levels) > 0) {
-      htmltools::tags$div(
-        class = "ar-form-group ar-mt-8",
-        htmltools::tags$label(class = "ar-form-label", paste0("Levels (", length(levels), ")")),
-        htmltools::tags$div(class = "ar-text-sm ar-text-muted",
-                            paste(levels, collapse = ", "))
-      )
-    },
-    htmltools::tags$div(
-      class = "ar-var-card__actions",
-      htmltools::tags$button(
-        class = "ar-btn-ghost",
-        onclick = paste0("Shiny.setInputValue('", ns(paste0("reset_", var)), "', Math.random(), {priority: 'event'})"),
-        "Reset to Default"
-      )
-    )
-  )
-}

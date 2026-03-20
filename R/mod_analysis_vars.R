@@ -71,8 +71,7 @@ mod_analysis_vars_server <- function(id, store, grp) {
       # Get analysis vars from store (isolated — var_list_trigger handles add/remove)
       analysis_vars <- isolate(grp$analysis_vars)
       if (length(analysis_vars) == 0) {
-        return(htmltools::tags$div(class = "ar-text-sm ar-text-muted",
-          style = "padding: 8px 0;",
+        return(htmltools::tags$div(class = "ar-text-sm ar-text-muted ar-py-8",
           "No variables selected. Select variables in the Template panel."))
       }
 
@@ -124,7 +123,7 @@ mod_analysis_vars_server <- function(id, store, grp) {
           htmltools::tags$div(
             class = "ar-var-card__header",
             onclick = paste0("arToggleVarCard('", card_id, "')"),
-            htmltools::tags$span(class = "ar-var-card__drag", htmltools::HTML("&#8942;&#8942;")),
+            htmltools::tags$span(class = "ar-var-card__drag", htmltools::tags$i(class = "fa fa-grip-vertical")),
             htmltools::tags$span(class = "ar-var-card__chevron", htmltools::HTML("&#9656;")),
             htmltools::tags$span(class = "ar-var-card__name", v),
             ui_type_badge(badge_type)
@@ -214,10 +213,12 @@ mod_analysis_vars_server <- function(id, store, grp) {
             if (is.null(config)) return(NULL)
             vtype <- config$type %||% fct_detect_var_type(d, my_var)
 
+            custom_label <- isolate(store$var_labels[[my_var]])
+
             body <- if (vtype == "continuous") {
-              ui_stat_card_cont(ns, my_var, config, d)
+              ui_stat_card_cont(ns, my_var, config, d, custom_label = custom_label)
             } else {
-              ui_stat_card_cat(ns, my_var, config, d,
+              ui_stat_card_cat(ns, my_var, config, d, custom_label = custom_label,
                 added_levels = isolate(store$added_levels[[my_var]]))
             }
 
@@ -226,6 +227,12 @@ mod_analysis_vars_server <- function(id, store, grp) {
               session$sendCustomMessage("ar_init_stat_sortable",
                 list(container_id = ns(paste0("stat_grid_", my_var)),
                      var_name = my_var, ns_prefix = ns("")))
+            }
+            # Init level sortable for categorical vars
+            if (vtype != "continuous") {
+              session$sendCustomMessage("ar_init_level_sortable",
+                list(container_id = ns(paste0("level_sortable_", my_var)),
+                     input_id = ns(paste0("level_order_", my_var))))
             }
 
             body
@@ -333,6 +340,12 @@ mod_analysis_vars_server <- function(id, store, grp) {
             }
           }, ignoreInit = TRUE)
 
+          # Show n toggle (categorical)
+          shiny::observeEvent(input[[paste0("show_n_", my_var)]], {
+            val <- identical(input[[paste0("show_n_", my_var)]], "yes")
+            store$var_configs[[my_var]]$show_n <- val
+          }, ignoreInit = TRUE)
+
           # Variable label
           shiny::observeEvent(input[[paste0("vlabel_", my_var)]], {
             lbl <- input[[paste0("vlabel_", my_var)]]
@@ -342,19 +355,12 @@ mod_analysis_vars_server <- function(id, store, grp) {
           }, ignoreInit = TRUE)
 
           # Move level up/down
-          shiny::observeEvent(input[[paste0("move_level_", my_var)]], {
-            req(input[[paste0("move_level_", my_var)]])
-            info <- input[[paste0("move_level_", my_var)]]
-            lvls <- store$var_configs[[my_var]]$levels
-            idx <- as.integer(info$index)
-            if (!is.null(idx) && !is.na(idx) && idx >= 1 && idx <= length(lvls)) {
-              new_idx <- if (info$direction == "up") max(1, idx - 1) else min(length(lvls), idx + 1)
-              if (new_idx != idx) {
-                lvls[c(idx, new_idx)] <- lvls[c(new_idx, idx)]
-                store$var_configs[[my_var]]$levels <- lvls
-                store$var_configs[[my_var]]$sorted_by_freq <- FALSE
-                bump_var(my_var)  # only re-render THIS card
-              }
+          # Level reorder via SortableJS drag
+          shiny::observeEvent(input[[paste0("level_order_", my_var)]], {
+            new_order <- input[[paste0("level_order_", my_var)]]
+            if (is.character(new_order) && length(new_order) > 0) {
+              store$var_configs[[my_var]]$levels <- new_order
+              store$var_configs[[my_var]]$sorted_by_freq <- FALSE
             }
           })
 
@@ -403,9 +409,16 @@ mod_analysis_vars_server <- function(id, store, grp) {
               d <- d[d[[pop]] == "Y", ]
             }
             x <- d[[my_var]]
-            freq <- sort(table(x), decreasing = TRUE)
-            store$var_configs[[my_var]]$levels <- names(freq)
-            store$var_configs[[my_var]]$sorted_by_freq <- TRUE
+            if (isTRUE(store$var_configs[[my_var]]$sorted_by_freq)) {
+              # Toggle OFF — revert to alphabetical
+              store$var_configs[[my_var]]$levels <- sort(unique(stats::na.omit(as.character(x))))
+              store$var_configs[[my_var]]$sorted_by_freq <- FALSE
+            } else {
+              # Toggle ON — sort by frequency
+              freq <- sort(table(x), decreasing = TRUE)
+              store$var_configs[[my_var]]$levels <- names(freq)
+              store$var_configs[[my_var]]$sorted_by_freq <- TRUE
+            }
             bump_var(my_var)  # only re-render THIS card
           })
 
@@ -431,7 +444,7 @@ mod_analysis_vars_server <- function(id, store, grp) {
 }
 
 # ── UI Helper: Continuous stat card body ──
-ui_stat_card_cont <- function(ns, var, config, data) {
+ui_stat_card_cont <- function(ns, var, config, data, custom_label = NULL) {
   # Full stat vocabulary
   stats_all <- c("n", "mean", "sd", "mean_sd", "median",
                  "q1", "q3", "q1_q3", "min", "max", "min_max",
@@ -443,19 +456,9 @@ ui_stat_card_cont <- function(ns, var, config, data) {
   decs <- config$decimals
   stat_labels <- config$stat_labels %||% list()
 
-  # Default stat labels
-  default_labels <- list(
-    n = "n", mean = "Mean", sd = "SD", mean_sd = "Mean (SD)",
-    median = "Median", q1 = "Q1", q3 = "Q3", q1_q3 = "Q1, Q3",
-    min = "Min", max = "Max", min_max = "Min, Max",
-    geo_mean = "Geometric Mean", cv = "CV%", geo_mean_cv = "Geometric Mean (CV%)"
-  )
-
-  # Default decimals per stat
-  default_decs <- list(
-    n = 0, mean = 1, sd = 2, median = 1, q1 = 1, q3 = 1,
-    min = 0, max = 0, geo_mean = 2, cv = 1
-  )
+  # Default stat labels and decimals (from shared constants in utils_helpers.R)
+  default_labels <- STAT_LABELS
+  default_decs <- STAT_DECIMALS
 
   # Stats checkbox (chip-styled via CSS)
   stat_choices <- stats::setNames(stats_all, stats_labels)
@@ -510,12 +513,9 @@ ui_stat_card_cont <- function(ns, var, config, data) {
     htmltools::tags$div(
       class = row_class,
       `data-stat` = s,
-      htmltools::tags$span(class = "ar-stat-grid__drag", htmltools::HTML("&#8942;&#8942;")),
+      htmltools::tags$span(class = "ar-stat-grid__drag", htmltools::tags$i(class = "fa fa-grip-vertical")),
       htmltools::tags$span(class = "ar-stat-grid__name",
-        switch(s, n = "N", mean = "Mean", sd = "SD", mean_sd = "Mean (SD)",
-          median = "Median", q1 = "Q1", q3 = "Q3", q1_q3 = "Q1, Q3",
-          min = "Min", max = "Max", min_max = "Min, Max",
-          geo_mean = "GeoMean", cv = "CV%", geo_mean_cv = "GeoMean (CV%)", s)
+        STAT_LABELS[[s]] %||% s
       ),
       htmltools::tags$input(
         type = "text", class = "ar-input ar-input--sm ar-stat-grid__label",
@@ -531,7 +531,7 @@ ui_stat_card_cont <- function(ns, var, config, data) {
   })
 
   # Variable label
-  label_text <- fct_get_var_label(data, var)
+  label_text <- custom_label %||% fct_get_var_label(data, var)
 
   htmltools::tags$div(class = "ar-var-card__content",
     # Variable Label
@@ -540,7 +540,7 @@ ui_stat_card_cont <- function(ns, var, config, data) {
       htmltools::tags$input(
         type = "text", class = "ar-input ar-input--sm",
         id = ns(paste0("vlabel_", var)),
-        value = label_text, style = "width: 100%;",
+        value = label_text, class = "ar-w-full",
         onchange = paste0(
           "Shiny.setInputValue('", ns(paste0("vlabel_", var)),
           "', this.value, {priority: 'event'})"
@@ -602,57 +602,37 @@ ui_stat_card_cont <- function(ns, var, config, data) {
 }
 
 # ── UI Helper: Categorical stat card body ──
-ui_stat_card_cat <- function(ns, var, config, data, added_levels = NULL) {
+ui_stat_card_cat <- function(ns, var, config, data, custom_label = NULL, added_levels = NULL) {
   fmt <- config$cat_format %||% "npct"
   pct_dec <- config$pct_dec %||% 1
   style <- config$zero_style %||% "A"
-  label_text <- fct_get_var_label(data, var)
+  show_n <- config$show_n %||% TRUE
+  label_text <- custom_label %||% fct_get_var_label(data, var)
   added <- added_levels %||% character(0)
 
   x <- data[[var]]
   obs_levels <- sort(unique(stats::na.omit(as.character(x))))
   cfg_levels <- config$levels %||% obs_levels
 
-  # Level rows with up/down buttons
+  # Level rows with drag handles (SortableJS)
   level_rows <- lapply(seq_along(cfg_levels), function(i) {
     lv <- cfg_levels[i]
     is_added <- lv %in% added
-    row_class <- paste0("ar-level-row", if (is_added) " ar-level-row--added" else "")
+    row_class <- paste0("ar-trt-row", if (is_added) " ar-trt-row--added" else "")
 
-    htmltools::tags$div(class = row_class,
-      htmltools::tags$span(class = "ar-level-row__name", lv),
-      if (is_added) htmltools::tags$span(class = "ar-level-row__badge", "added") else NULL,
-      htmltools::tags$div(class = "ar-level-row__btns",
-        htmltools::tags$button(
-          class = "ar-btn-icon--xs ar-level-btn",
-          title = "Move up",
-          disabled = if (i == 1) "disabled" else NULL,
-          onclick = paste0(
-            "Shiny.setInputValue('", ns(paste0("move_level_", var)),
-            "', {index: ", i, ", direction: 'up'}, {priority: 'event'})"
-          ),
-          htmltools::HTML("&#9650;")
+    htmltools::tags$div(class = row_class, `data-level` = lv,
+      htmltools::tags$span(class = "ar-trt-row__drag", htmltools::tags$i(class = "fa fa-grip-vertical")),
+      htmltools::tags$span(class = "ar-trt-row__label", lv),
+      if (is_added) htmltools::tags$span(class = "ar-trt-row__badge", "added") else NULL,
+      if (is_added) htmltools::tags$button(
+        class = "ar-btn-icon--xs ar-level-btn--remove",
+        title = "Remove added level",
+        onclick = paste0(
+          "Shiny.setInputValue('", ns(paste0("remove_level_", var)),
+          "', {level: '", gsub("'", "\\\\'", lv), "', ts: Date.now()}, {priority: 'event'})"
         ),
-        htmltools::tags$button(
-          class = "ar-btn-icon--xs ar-level-btn",
-          title = "Move down",
-          disabled = if (i == length(cfg_levels)) "disabled" else NULL,
-          onclick = paste0(
-            "Shiny.setInputValue('", ns(paste0("move_level_", var)),
-            "', {index: ", i, ", direction: 'down'}, {priority: 'event'})"
-          ),
-          htmltools::HTML("&#9660;")
-        ),
-        if (is_added) htmltools::tags$button(
-          class = "ar-btn-icon--xs ar-level-btn--remove",
-          title = "Remove added level",
-          onclick = paste0(
-            "Shiny.setInputValue('", ns(paste0("remove_level_", var)),
-            "', {level: '", gsub("'", "\\\\'", lv), "', ts: Date.now()}, {priority: 'event'})"
-          ),
-          htmltools::HTML("&#10005;")
-        ) else NULL
-      )
+        htmltools::HTML("&#10005;")
+      ) else NULL
     )
   })
 
@@ -663,7 +643,7 @@ ui_stat_card_cat <- function(ns, var, config, data, added_levels = NULL) {
       htmltools::tags$input(
         type = "text", class = "ar-input ar-input--sm",
         id = ns(paste0("vlabel_", var)),
-        value = label_text, style = "width: 100%;",
+        value = label_text, class = "ar-w-full",
         onchange = paste0(
           "Shiny.setInputValue('", ns(paste0("vlabel_", var)),
           "', this.value, {priority: 'event'})"
@@ -696,6 +676,14 @@ ui_stat_card_cat <- function(ns, var, config, data, added_levels = NULL) {
           choices = c("0" = "A", "0 (0.0)" = "D"),
           selected = style, inline = TRUE
         )
+      ),
+      htmltools::tags$div(class = "ar-form-group",
+        htmltools::tags$label(class = "ar-form-label", "Show n"),
+        shiny::radioButtons(
+          ns(paste0("show_n_", var)), NULL,
+          choices = c("Yes" = "yes", "No" = "no"),
+          selected = if (isTRUE(show_n)) "yes" else "no", inline = TRUE
+        )
       )
     ),
 
@@ -706,23 +694,21 @@ ui_stat_card_cat <- function(ns, var, config, data, added_levels = NULL) {
           paste0("Levels (", length(cfg_levels), ")")),
         htmltools::tags$button(
           id = ns(paste0("sort_freq_btn_", var)),
-          class = paste0("ar-btn-ghost ar-btn--xs ar-sort-freq-btn",
+          class = paste0("ar-btn-ghost ar-btn--xs ar-sort-freq-btn ar-ml-auto",
             if (isTRUE(config$sorted_by_freq)) " ar-sort-freq-btn--active" else ""),
-          style = "margin-left: auto;",
           onclick = paste0(
-            "this.classList.add('ar-sort-freq-btn--active');",
+            "this.classList.toggle('ar-sort-freq-btn--active');",
             "Shiny.setInputValue('", ns(paste0("sort_freq_", var)),
             "', Math.random(), {priority: 'event'})"),
           "Sort by frequency"
         )
       ),
-      htmltools::tags$div(class = "ar-level-list", level_rows),
+      htmltools::tags$div(class = "ar-level-list", id = ns(paste0("level_sortable_", var)), level_rows),
       htmltools::tags$div(class = "ar-flex ar-items-center ar-gap-8 ar-mt-4",
         htmltools::tags$input(
-          type = "text", class = "ar-input ar-input--sm",
+          type = "text", class = "ar-input ar-input--sm ar-flex-1",
           id = ns(paste0("add_level_input_", var)),
           placeholder = "Add level...",
-          style = "flex: 1;",
           onkeydown = paste0(
             "if(event.key==='Enter'){event.preventDefault();",
             "var v=this.value.trim();if(v){",
@@ -732,8 +718,7 @@ ui_stat_card_cat <- function(ns, var, config, data, added_levels = NULL) {
           )
         ),
         htmltools::tags$button(
-          class = "ar-btn-outline ar-btn--sm",
-          style = "flex-shrink: 0;",
+          class = "ar-btn-outline ar-btn--sm ar-flex-shrink-0",
           onclick = paste0(
             "var inp=document.getElementById('", ns(paste0("add_level_input_", var)), "');",
             "var v=inp.value.trim();if(v){",

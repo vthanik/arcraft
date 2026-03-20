@@ -36,7 +36,7 @@ mod_grouping_vars_ui <- function(id) {
           class = "ar-btn-ghost",
           onclick = paste0("Shiny.setInputValue('", ns("reset_vars"),
                            "', Math.random(), {priority: 'event'})"),
-          htmltools::tags$i(class = "fa fa-undo", style = "font-size: 11px; margin-right: 4px;"),
+          htmltools::tags$i(class = "fa fa-undo ar-icon-md ar-icon-mr"),
           "Reset Variables"
         )
       )
@@ -129,16 +129,15 @@ mod_grouping_server <- function(id, store, grp) {
         lapply(lvls, function(lv) {
           n <- as.integer(counts[lv])
           htmltools::tags$div(class = "ar-flex ar-items-center ar-gap-8",
-            htmltools::tags$span(style = "font-size: 12px; color: var(--fg-2);", lv),
-            htmltools::tags$span(style = "font-size: 11px; color: var(--fg-muted); margin-left: auto;",
+            htmltools::tags$span(class = "ar-text-sm ar-text-secondary", lv),
+            htmltools::tags$span(class = "ar-text-sm ar-text-muted ar-ml-auto",
                                  paste0("N=", n))
           )
         }),
         if (isTRUE(input$include_total)) {
-          htmltools::tags$div(class = "ar-flex ar-items-center ar-gap-8",
-            style = "border-top: 1px solid var(--border-light); padding-top: 4px;",
-            htmltools::tags$span(style = "font-size: 12px; font-weight: 600; color: var(--fg);", "Total"),
-            htmltools::tags$span(style = "font-size: 11px; color: var(--fg-muted); margin-left: auto;",
+          htmltools::tags$div(class = "ar-flex ar-items-center ar-gap-8 ar-trt-divider",
+            htmltools::tags$span(class = "ar-text-sm ar-text-bold", "Total"),
+            htmltools::tags$span(class = "ar-text-sm ar-text-muted ar-ml-auto",
                                  paste0("N=", nrow(d)))
           )
         }
@@ -233,13 +232,13 @@ mod_grouping_server <- function(id, store, grp) {
                 "var vals = Array.from(checked).map(function(c) { return c.id.replace('", ns("avar_"), "', ''); });",
                 "Shiny.setInputValue('", ns("analysis_vars"), "', vals);"
               ),
-              style = "accent-color: var(--accent);"
+              class = "ar-accent-check"
             ),
             htmltools::tags$span(class = "ar-varlist-row__name", v),
             ui_type_badge(badge_type),
             htmltools::tags$span(class = "ar-varlist-row__label", label_text),
-            htmltools::tags$span(class = "ar-varlist-row__mini",
-              style = if (is.null(cfg)) "color: var(--fg-muted); font-style: italic;" else NULL,
+            htmltools::tags$span(class = paste0("ar-varlist-row__mini",
+              if (is.null(cfg)) " ar-text-italic" else ""),
               mini_stat),
             if (v %in% (store$extra_vars %||% character(0))) {
               htmltools::tags$button(
@@ -264,7 +263,6 @@ mod_grouping_server <- function(id, store, grp) {
       grp$analysis_vars <- input$analysis_vars
       store$pipeline_state$analysis <- length(input$analysis_vars) > 0
       if (length(input$analysis_vars) > 0) {
-        session$sendCustomMessage("ar_unlock_step", list(step = "format"))
       }
     }, ignoreNULL = FALSE)
 
@@ -358,7 +356,7 @@ render_bds_params <- function(d, ns, store, grp) {
             "var vals = Array.from(checked).map(function(c) { return c.id.replace('", ns("avar_"), "', ''); });",
             "Shiny.setInputValue('", ns("analysis_vars"), "', vals);"
           ),
-          style = "accent-color: var(--accent);"
+          class = "ar-accent-check"
         ),
         htmltools::tags$span(class = "ar-varlist-row__name", pc),
         htmltools::tags$span(class = "ar-varlist-row__label", display_label)

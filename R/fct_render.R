@@ -1,217 +1,216 @@
 # arframe rendering orchestrator — pure R, no Shiny
-# Uses full store$fmt schema → all arframe verb families
+# Consumes IR from fct_build_ir() → walks sections → arframe verbs
 
-fct_render_rtf <- function(tbl_data, format_cfg, path, combined_groups = NULL) {
-  # Drop by_value before rendering — handled as row grouping in preview
-  if ("by_value" %in% names(tbl_data)) {
-    tbl_data$by_value <- NULL
+# ── Build fr_spec from ARD data + format config ──
+fct_build_spec <- function(tbl_data, format_cfg, combined_groups = NULL) {
+  ir <- fct_build_ir(format_cfg, combined_groups)
+  # Only drop group_value if it's not used by any row structure feature
+  row_cols <- c(ir$rows$page_by, ir$rows$group_by, ir$rows$indent_by)
+  if ("group_value" %in% names(tbl_data) && !"group_value" %in% row_cols) {
+    tbl_data$group_value <- NULL
   }
-
   spec <- tbl_data |> arframe::fr_table()
 
-  # ── Columns (per-column + global) ──
-  cols_cfg <- format_cfg$cols %||% list()
-  data_cols <- setdiff(names(tbl_data),
-    c("variable", "var_label", "var_type", "stat_label", "row_type",
-      "timepoint", "baseline_category", "post_category"))
-
-  # Build per-column specs
-  per_col <- cols_cfg$per_col %||% list()
-  cgs <- combined_groups %||% list()
-  spanners <- Filter(function(cg) !is.null(cg$spanner) && nzchar(cg$spanner), cgs)
-
+  # ── Columns ──
   col_specs <- list()
-  for (col_name in data_cols) {
-    args <- list()
-    pc <- per_col[[col_name]]
+  for (mc in intersect(ir$cols$meta_hidden, names(tbl_data)))
+    col_specs[[mc]] <- arframe::fr_col(visible = FALSE)
 
-    # Per-column overrides
-    if (!is.null(pc$label)) args$label <- pc$label
-    if (!is.null(pc$width)) args$width <- pc$width
-    if (!is.null(pc$align) && nzchar(pc$align)) args$align <- pc$align
-    if (!is.null(pc$visible) && !pc$visible) args$visible <- FALSE
-
-    # Spanner group assignment
-    for (sp in spanners) {
-      if (col_name %in% sp$arms || col_name == sp$label) {
-        args$group <- sp$spanner
-        break
-      }
-    }
-
-    if (length(args) > 0) {
-      col_specs[[col_name]] <- do.call(arframe::fr_col, args)
-    }
+  for (cn in names(tbl_data)) {
+    a <- list()
+    pc <- ir$cols$per_col[[cn]]
+    if (!is.null(pc$label))                      a$label   <- resolve_newlines(pc$label)
+    if (!is.null(pc$width))                      a$width   <- pc$width
+    if (!is.null(pc$align) && nzchar(pc$align))  a$align   <- pc$align
+    if (!is.null(pc$visible) && !pc$visible)     a$visible <- FALSE
+    for (sp in ir$spans)
+      if (cn %in% (sp$cols %||% character(0))) { a$group <- sp$label; break }
+    ha <- ir$header$col_aligns[[cn]]
+    if (!is.null(ha)) a$header_align <- ha
+    if (length(a) > 0) col_specs[[cn]] <- do.call(arframe::fr_col, a)
   }
 
-  # Mark first data column as stub with width + alignment
-  stub_w <- cols_cfg$stub_width
-  stub_a <- cols_cfg$stub_align %||% "left"
-  if (length(data_cols) > 0) {
-    stub_col <- data_cols[1]
-    stub_args <- list(stub = TRUE)
-    if (!is.null(stub_w)) stub_args$width <- stub_w
-    if (!is.null(stub_a)) stub_args$align <- stub_a
-    # Merge with existing per-col spec if present
-    if (!is.null(col_specs[[stub_col]])) {
-      existing <- col_specs[[stub_col]]
-      stub_args <- c(stub_args, as.list(existing))
-      stub_args <- stub_args[!duplicated(names(stub_args))]
+  # Stub column
+  sc <- ir$cols$stub$col
+  if (!is.null(sc) && sc %in% names(tbl_data)) {
+    sa <- list(stub = TRUE)
+    if (!is.null(ir$cols$stub$width)) sa$width <- ir$cols$stub$width
+    if (!is.null(col_specs[[sc]])) {
+      ex <- Filter(Negate(is.null), as.list(col_specs[[sc]])); ex$id <- NULL
+      sa <- c(ex, sa); sa <- sa[!duplicated(names(sa))]
     }
-    col_specs[[stub_col]] <- do.call(arframe::fr_col, stub_args)
+    if (is.null(sa$align)) sa$align <- ir$cols$stub$align
+    col_specs[[sc]] <- do.call(arframe::fr_col, sa)
   }
 
-  # Apply fr_cols with global + per-column
-  cols_args <- list(spec)
-  if (length(col_specs) > 0) cols_args <- c(cols_args, col_specs)
   # Global column options
-  if (!is.null(cols_cfg$width_mode) && cols_cfg$width_mode != "auto") {
-    cols_args$.width <- cols_cfg$width_mode
-  }
-  if (!is.null(cols_cfg$default_align)) cols_args$.align <- cols_cfg$default_align
-  if (!is.null(cols_cfg$spaces) && cols_cfg$spaces != "indent") cols_args$.spaces <- cols_cfg$spaces
-  if (isTRUE(cols_cfg$split)) cols_args$.split <- TRUE
-  if (!is.null(cols_cfg$n_counts)) cols_args$.n <- cols_cfg$n_counts
-  if (!is.null(cols_cfg$n_format)) cols_args$.n_format <- cols_cfg$n_format
+  g <- ir$cols$global
+  ca <- c(list(spec), col_specs)
+  if (!is.null(g$width_mode) && g$width_mode != "auto") ca$.width    <- g$width_mode
+  if (!is.null(g$align))                                ca$.align    <- g$align
+  if (!is.null(g$spaces) && g$spaces != "indent")       ca$.spaces   <- g$spaces
+  if (isTRUE(g$split))                                  ca$.split    <- TRUE
+  if (isTRUE(g$n_counts) && length(g$n_values) > 0)     ca$.n        <- g$n_values
+  if (!is.null(g$n_format))                              ca$.n_format <- resolve_newlines(g$n_format)
+  if (length(ca) > 1) spec <- do.call(arframe::fr_cols, ca)
 
-  if (length(cols_args) > 1 || length(names(cols_args)) > 1) {
-    spec <- do.call(arframe::fr_cols, cols_args)
-  }
-
-  # ── Titles (per-title align/bold) ──
-  titles <- format_cfg$titles
-  title_defaults <- format_cfg$title_defaults %||% list()
-  if (length(titles) > 0) {
-    title_items <- lapply(titles, function(t) {
-      text <- t$text %||% as.character(t)
-      bold <- t$bold %||% title_defaults$bold %||% FALSE
-      align <- t$align %||% title_defaults$align %||% "center"
-      if (bold || align != "center") {
-        list(text, bold = bold, align = align)
-      } else {
-        text
-      }
+  # ── Titles ──
+  if (length(ir$titles$items) > 0) {
+    d <- ir$titles$defaults
+    ti <- lapply(ir$titles$items, function(t) {
+      txt <- resolve_newlines(t$text %||% as.character(t))
+      b <- t$bold %||% d$bold %||% FALSE; al <- t$align %||% d$align %||% "center"
+      if (b || al != "center") list(txt, bold = b, align = al) else txt
     })
-    title_args <- c(list(spec), title_items)
-    if (!is.null(title_defaults$align)) title_args$.align <- title_defaults$align
-    if (isTRUE(title_defaults$bold)) title_args$.bold <- TRUE
-    spec <- do.call(arframe::fr_titles, title_args)
+    ta <- c(list(spec), ti)
+    if (!is.null(d$align)) ta$.align <- d$align
+    if (isTRUE(d$bold))   ta$.bold  <- TRUE
+    spec <- do.call(arframe::fr_titles, ta)
   }
 
-  # ── Footnotes (separator, placement) ──
-  footnotes <- format_cfg$footnotes
-  fn_texts <- list()
-  if (length(footnotes) > 0) {
-    fn_texts <- lapply(footnotes, function(f) f$text %||% as.character(f))
+  # ── Footnotes ──
+  ft <- lapply(ir$footnotes$items, function(f) resolve_newlines(f$text %||% as.character(f)))
+  if (length(ft) > 0) {
+    fa <- c(list(spec), ft)
+    if (isTRUE(ir$footnotes$separator))    fa$.separator <- TRUE
+    if (ir$footnotes$placement != "every") fa$.placement <- ir$footnotes$placement
+    spec <- do.call(arframe::fr_footnotes, fa)
   }
 
-  if (length(fn_texts) > 0) {
-    fn_args <- c(list(spec), fn_texts)
-    if (isTRUE(format_cfg$fn_separator)) fn_args$.separator <- TRUE
-    if (!is.null(format_cfg$fn_placement) && format_cfg$fn_placement != "every") {
-      fn_args$.placement <- format_cfg$fn_placement
-    }
-    spec <- do.call(arframe::fr_footnotes, fn_args)
-  }
+  # ── Header ──
+  h <- ir$header
+  ha <- list(spec)
+  if (!is.null(h$bold))                  ha$bold   <- h$bold
+  if (!is.null(h$align))                 ha$align  <- h$align
+  if (!is.null(h$valign))                ha$valign <- h$valign
+  if (!is.null(h$bg) && nzchar(h$bg))   ha$bg     <- h$bg
+  if (!is.null(h$fg) && nzchar(h$fg))   ha$fg     <- h$fg
+  spec <- do.call(arframe::fr_header, ha)
 
-  # ── Header (bold, align, valign, bg, fg) ──
-  hdr <- format_cfg$header %||% list(bold = TRUE, align = "center")
-  hdr_args <- list(spec)
-  if (!is.null(hdr$bold)) hdr_args$bold <- hdr$bold
-  if (!is.null(hdr$align)) hdr_args$align <- hdr$align
-  if (!is.null(hdr$valign)) hdr_args$valign <- hdr$valign
-  if (!is.null(hdr$bg) && nzchar(hdr$bg)) hdr_args$bg <- hdr$bg
-  if (!is.null(hdr$fg) && nzchar(hdr$fg)) hdr_args$fg <- hdr$fg
-  spec <- do.call(arframe::fr_header, hdr_args)
-
-  # ── Spans (multi-level) ──
-  spans <- format_cfg$spans %||% list()
-  for (sp in spans) {
+  # ── Spans ──
+  for (sp in ir$spans) {
     if (nzchar(sp$label) && length(sp$cols) > 0) {
-      span_args <- list(spec)
-      span_args[[sp$label]] <- sp$cols
-      if (!is.null(sp$level) && sp$level > 1) span_args$.level <- sp$level
-      spec <- do.call(arframe::fr_spans, span_args)
+      sa <- list(spec); sa[[sp$label]] <- sp$cols
+      if (!is.null(sp$level) && sp$level > 1) sa$.level <- sp$level
+      spec <- do.call(arframe::fr_spans, sa)
     }
   }
 
-  # ── Page layout (all params) ──
-  page <- format_cfg$page
-  if (!is.null(page)) {
-    page_args <- list(spec)
-    if (!is.null(page$orientation)) page_args$orientation <- page$orientation
-    if (!is.null(page$paper)) page_args$paper <- page$paper
-    if (!is.null(page$font_family)) page_args$font_family <- page$font_family
-    if (!is.null(page$font_size)) page_args$font_size <- page$font_size
-    if (!is.null(page$margins)) page_args$margins <- page$margins
-    if (!is.null(page$col_gap)) page_args$col_gap <- page$col_gap
-    if (!is.null(page$continuation) && nzchar(page$continuation)) page_args$continuation <- page$continuation
-    if (!is.null(page$orphan_min)) page_args$orphan_min <- page$orphan_min
-    if (!is.null(page$widow_min)) page_args$widow_min <- page$widow_min
-    spec <- do.call(arframe::fr_page, page_args)
+  # ── Page ──
+  if (!is.null(ir$page)) {
+    pa <- list(spec)
+    for (nm in c("orientation","paper","font_family","font_size","margins","col_gap","orphan_min","widow_min"))
+      if (!is.null(ir$page[[nm]])) pa[[nm]] <- ir$page[[nm]]
+    if (!is.null(ir$page$continuation) && nzchar(ir$page$continuation))
+      pa$continuation <- resolve_newlines(ir$page$continuation)
+    spec <- do.call(arframe::fr_page, pa)
   }
 
-  # ── Rules (presets + custom) ──
-  rules <- format_cfg$rules
-  if (!is.null(rules)) {
-    if (!is.null(rules$hline_preset)) {
-      hline_args <- list(spec, rules$hline_preset)
-      if (!is.null(rules$line_width) && rules$line_width != "thin") hline_args$width <- rules$line_width
-      if (!is.null(rules$line_color) && rules$line_color != "#000000") hline_args$color <- rules$line_color
-      if (!is.null(rules$line_style) && rules$line_style != "solid") hline_args$linestyle <- rules$line_style
-      spec <- do.call(arframe::fr_hlines, hline_args)
-    }
-    if (!is.null(rules$vline_preset) && rules$vline_preset != "none") {
-      spec <- arframe::fr_vlines(spec, rules$vline_preset)
-    }
+  # ── Rules ──
+  r <- ir$rules
+  if (!is.null(r$hline_preset)) {
+    ra <- list(spec, r$hline_preset)
+    if (r$line_width != "thin")    ra$width     <- r$line_width
+    if (r$line_color != "#000000") ra$color     <- r$line_color
+    if (r$line_style != "solid")   ra$linestyle <- r$line_style
+    spec <- do.call(arframe::fr_hlines, ra)
   }
+  if (!is.null(r$vline_preset) && r$vline_preset != "none")
+    spec <- arframe::fr_vlines(spec, r$vline_preset)
 
-  # ── Rows (group, page, indent, etc.) ──
-  rows <- format_cfg$rows %||% list()
-  row_args <- list(spec)
-  has_row_arg <- FALSE
-  if (!is.null(rows$group_by)) { row_args$group_by <- rows$group_by; has_row_arg <- TRUE }
-  if (!is.null(rows$blank_after)) { row_args$blank_after <- rows$blank_after; has_row_arg <- TRUE }
-  if (!is.null(rows$page_by)) { row_args$page_by <- rows$page_by; has_row_arg <- TRUE }
-  if (isTRUE(rows$page_by_bold)) { row_args$page_by_bold <- TRUE; has_row_arg <- TRUE }
-  if (!is.null(rows$indent_by)) { row_args$indent_by <- rows$indent_by; has_row_arg <- TRUE }
-  if (!is.null(rows$repeat_cols)) { row_args$repeat_cols <- rows$repeat_cols; has_row_arg <- TRUE }
-  if (isTRUE(rows$wrap)) { row_args$wrap <- TRUE; has_row_arg <- TRUE }
-  if (has_row_arg) {
-    spec <- do.call(arframe::fr_rows, row_args)
+  # ── Rows — only pass column refs that exist in tbl_data ──
+  data_cols <- names(tbl_data)
+  rw <- ir$rows; ra <- list(spec); hr <- FALSE
+  # Column-reference params: validate they exist in data
+  for (nm in c("group_by","group_label","blank_after","page_by","indent_by"))
+    if (!is.null(rw[[nm]]) && rw[[nm]] %in% data_cols) { ra[[nm]] <- rw[[nm]]; hr <- TRUE }
+  if (!is.null(rw$sort_by)) {
+    valid_sort <- rw$sort_by[rw$sort_by %in% data_cols]
+    if (length(valid_sort) > 0) { ra$sort_by <- valid_sort; hr <- TRUE }
   }
+  if (!is.null(rw$repeat_cols)) {
+    valid <- rw$repeat_cols[rw$repeat_cols %in% data_cols]
+    if (length(valid) > 0) { ra$repeat_cols <- valid; hr <- TRUE }
+  }
+  # Boolean/scalar params
+  if (isTRUE(rw$page_by_bold) && !is.null(ra$page_by)) { ra$page_by_bold <- TRUE; hr <- TRUE }
+  if (!is.null(ra$page_by) && !is.null(rw$page_by_align) && rw$page_by_align != "left") {
+    ra$page_by_align <- rw$page_by_align; hr <- TRUE
+  }
+  if (!is.null(ra$page_by) && isFALSE(rw$page_by_visible)) {
+    ra$page_by_visible <- FALSE; hr <- TRUE
+  }
+  if (!is.null(ra$group_by) && isFALSE(rw$group_keep)) {
+    ra$group_keep <- FALSE; hr <- TRUE
+  }
+  if (isTRUE(rw$wrap)) { ra$wrap <- TRUE; hr <- TRUE }
+  if (hr) spec <- do.call(arframe::fr_rows, ra)
 
   # ── Page chrome ──
-  ph <- format_cfg$pagehead %||% list()
-  if (any(nzchar(c(ph$left, ph$center, ph$right)))) {
-    ph_args <- list(spec)
-    if (nzchar(ph$left %||% "")) ph_args$left <- ph$left
-    if (nzchar(ph$center %||% "")) ph_args$center <- ph$center
-    if (nzchar(ph$right %||% "")) ph_args$right <- ph$right
-    spec <- do.call(arframe::fr_pagehead, ph_args)
-  }
-
-  pf <- format_cfg$pagefoot %||% list()
-  if (any(nzchar(c(pf$left, pf$center, pf$right)))) {
-    pf_args <- list(spec)
-    if (nzchar(pf$left %||% "")) pf_args$left <- pf$left
-    if (nzchar(pf$center %||% "")) pf_args$center <- pf$center
-    if (nzchar(pf$right %||% "")) pf_args$right <- pf$right
-    spec <- do.call(arframe::fr_pagefoot, pf_args)
+  for (verb in c("pagehead", "pagefoot")) {
+    chrome <- ir[[verb]]
+    if (any(nzchar(c(chrome$left, chrome$center, chrome$right)))) {
+      va <- list(spec)
+      for (nm in c("left","center","right"))
+        if (nzchar(chrome[[nm]])) va[[nm]] <- resolve_newlines(chrome[[nm]])
+      spec <- do.call(getExportedValue("arframe", paste0("fr_", verb)), va)
+    }
   }
 
   # ── Spacing ──
-  sp <- format_cfg$spacing %||% list()
-  sp_args <- list(spec)
-  has_sp <- FALSE
-  if (!is.null(sp$titles_after) && sp$titles_after != 1L) { sp_args$titles_after <- sp$titles_after; has_sp <- TRUE }
-  if (!is.null(sp$footnotes_before) && sp$footnotes_before != 1L) { sp_args$footnotes_before <- sp$footnotes_before; has_sp <- TRUE }
-  if (!is.null(sp$pagehead_after) && sp$pagehead_after != 0L) { sp_args$pagehead_after <- sp$pagehead_after; has_sp <- TRUE }
-  if (!is.null(sp$pagefoot_before) && sp$pagefoot_before != 0L) { sp_args$pagefoot_before <- sp$pagefoot_before; has_sp <- TRUE }
-  if (has_sp) {
-    spec <- do.call(arframe::fr_spacing, sp_args)
+  s <- ir$spacing; sa <- list(spec); hs <- FALSE
+  if (s$titles_after != 1L)     { sa$titles_after     <- s$titles_after;     hs <- TRUE }
+  if (s$footnotes_before != 1L) { sa$footnotes_before <- s$footnotes_before; hs <- TRUE }
+  if (s$pagehead_after != 0L)   { sa$pagehead_after   <- s$pagehead_after;   hs <- TRUE }
+  if (s$pagefoot_before != 0L)  { sa$pagefoot_before  <- s$pagefoot_before;  hs <- TRUE }
+  if (hs) spec <- do.call(arframe::fr_spacing, sa)
+
+  # ── Styles ──
+  stys <- ir$styles
+  if (length(stys) > 0) {
+    style_objs <- list()
+    for (sname in names(stys)) {
+      s <- stys[[sname]]
+      if (s$type == "conditional") {
+        # fr_style_if: condition-based styling
+        si_args <- list(condition = rlang::as_function(stats::as.formula(s$condition)))
+        if (!is.null(s$cols))     si_args$cols     <- s$cols
+        if (!is.null(s$apply_to)) si_args$apply_to <- s$apply_to
+        if (isTRUE(s$bold))       si_args$bold     <- TRUE
+        if (!is.null(s$bg))       si_args$bg       <- s$bg
+        if (!is.null(s$fg))       si_args$fg       <- s$fg
+        if (!is.null(s$italic))   si_args$italic   <- s$italic
+        style_objs[[length(style_objs) + 1]] <- do.call(arframe::fr_style_if, si_args)
+      } else if (s$type == "row") {
+        rs_args <- list()
+        if (!is.null(s$match))  rs_args$rows   <- s$match
+        if (isTRUE(s$bold))     rs_args$bold   <- TRUE
+        if (!is.null(s$bg))     rs_args$bg     <- s$bg
+        if (!is.null(s$fg))     rs_args$fg     <- s$fg
+        if (!is.null(s$italic)) rs_args$italic <- s$italic
+        style_objs[[length(style_objs) + 1]] <- do.call(arframe::fr_row_style, rs_args)
+      }
+    }
+    if (length(style_objs) > 0) {
+      spec <- do.call(arframe::fr_styles, c(list(spec), style_objs))
+    }
   }
 
+  spec
+}
+
+# ── Render to RTF file ──
+fct_render_rtf <- function(tbl_data, format_cfg, path, combined_groups = NULL) {
+  spec <- fct_build_spec(tbl_data, format_cfg, combined_groups)
   arframe::fr_render(spec, path)
   path
+}
+
+# ── Render to HTML string for live preview ──
+fct_render_html_preview <- function(tbl_data, format_cfg, combined_groups = NULL) {
+  spec <- fct_build_spec(tbl_data, format_cfg, combined_groups)
+  tmp <- tempfile(fileext = ".html")
+  on.exit(unlink(tmp), add = TRUE)
+  arframe::fr_render(spec, tmp)
+  paste0(readLines(tmp, warn = FALSE), collapse = "\n")
 }

@@ -10,7 +10,7 @@ mod_titles_ui <- function(id) {
       htmltools::tags$button(
         class = "ar-btn-ghost ar-btn--xs",
         onclick = paste0("Shiny.setInputValue('", ns("add_title"), "', Math.random(), {priority: 'event'})"),
-        htmltools::tags$i(class = "fa fa-plus", style = "font-size: 9px; margin-right: 2px;"), "Add"
+        htmltools::tags$i(class = "fa fa-plus ar-icon-xs ar-icon-mr-2"), "Add"
       )
     ),
     shiny::uiOutput(ns("title_inputs")),
@@ -21,14 +21,13 @@ mod_titles_ui <- function(id) {
       htmltools::tags$button(
         class = "ar-btn-ghost ar-btn--xs",
         onclick = paste0("Shiny.setInputValue('", ns("add_fn"), "', Math.random(), {priority: 'event'})"),
-        htmltools::tags$i(class = "fa fa-plus", style = "font-size: 9px; margin-right: 2px;"), "Add"
+        htmltools::tags$i(class = "fa fa-plus ar-icon-xs ar-icon-mr-2"), "Add"
       )
     ),
     shiny::uiOutput(ns("fn_inputs")),
 
-    # Footnote options — static DOM, toggled via shinyjs
-    htmltools::tags$div(id = ns("fn_options_wrap"), class = "ar-fn-options",
-      style = "display: none;",
+    # Footnote options — static DOM, toggled via sendCustomMessage
+    htmltools::tags$div(id = ns("fn_options_wrap"), class = "ar-fn-options ar-hidden",
       htmltools::tags$div(class = "ar-fn-options__page",
         shiny::selectInput(ns("fn_placement"), NULL,
           choices = c("Every page" = "every", "Last page" = "last"),
@@ -64,7 +63,11 @@ mod_titles_server <- function(id, store) {
       fns <- store$fmt$footnotes
       if (length(fns) > 0) {
         normalized <- lapply(fns, function(f) {
-          if (is.list(f)) list(text = f$text %||% "") else list(text = as.character(f))
+          if (is.list(f)) {
+            list(text = f$text %||% "", align = f$align %||% "left")
+          } else {
+            list(text = as.character(f), align = "left")
+          }
         })
         fns_rv(normalized)
       }
@@ -96,7 +99,7 @@ mod_titles_server <- function(id, store) {
     shiny::observeEvent(input$add_fn, {
       current <- fns_rv()
       if (length(current) < 10) {
-        fns_rv(c(current, list(list(text = ""))))
+        fns_rv(c(current, list(list(text = "", align = "left"))))
       }
     })
 
@@ -133,21 +136,21 @@ mod_titles_server <- function(id, store) {
                 htmltools::tags$input(type = "radio", name = ns(paste0("talign_", i)),
                   value = "left", checked = if (align_val == "left") NA else NULL,
                   onchange = paste0("Shiny.setInputValue('", ns(paste0("talign_", i)), "', 'left')")),
-                htmltools::tags$i(class = "fa fa-align-left", style = "font-size: 10px;")
+                htmltools::tags$i(class = "fa fa-align-left ar-icon-sm")
               ),
               htmltools::tags$label(class = "ar-inline-radio__opt",
                 title = "Center",
                 htmltools::tags$input(type = "radio", name = ns(paste0("talign_", i)),
                   value = "center", checked = if (align_val == "center") NA else NULL,
                   onchange = paste0("Shiny.setInputValue('", ns(paste0("talign_", i)), "', 'center')")),
-                htmltools::tags$i(class = "fa fa-align-center", style = "font-size: 10px;")
+                htmltools::tags$i(class = "fa fa-align-center ar-icon-sm")
               ),
               htmltools::tags$label(class = "ar-inline-radio__opt",
                 title = "Right",
                 htmltools::tags$input(type = "radio", name = ns(paste0("talign_", i)),
                   value = "right", checked = if (align_val == "right") NA else NULL,
                   onchange = paste0("Shiny.setInputValue('", ns(paste0("talign_", i)), "', 'right')")),
-                htmltools::tags$i(class = "fa fa-align-right", style = "font-size: 10px;")
+                htmltools::tags$i(class = "fa fa-align-right ar-icon-sm")
               )
             ),
             htmltools::tags$label(class = "ar-inline-check", title = "Bold",
@@ -155,12 +158,12 @@ mod_titles_server <- function(id, store) {
                 checked = if (bold_val) NA else NULL,
                 onchange = paste0("Shiny.setInputValue('", ns(paste0("tbold_", i)),
                   "', this.checked, {priority: 'event'})")),
-              htmltools::tags$span(class = "ar-text-sm", style = "font-weight: 700;", "B")
+              htmltools::tags$span(class = "ar-text-sm ar-text-700", "B")
             ),
             htmltools::tags$button(
               class = "ar-btn-ghost",
               onclick = paste0("Shiny.setInputValue('", ns("rm_title"), "', '", i, "', {priority: 'event'})"),
-              htmltools::tags$i(class = "fa fa-times", style = "font-size: 11px; color: var(--fg-muted);")
+              htmltools::tags$i(class = "fa fa-times ar-icon-md ar-icon-muted")
             )
           )
         )
@@ -172,24 +175,55 @@ mod_titles_server <- function(id, store) {
       fns <- fns_rv()
       if (length(fns) == 0) return(NULL)
 
-      lapply(seq_along(fns), function(i) {
-        val <- fns[[i]]$text %||% ""
+      htmltools::tagList(
+        lapply(seq_along(fns), function(i) {
+          val <- fns[[i]]$text %||% ""
+          align_val <- fns[[i]]$align %||% "left"
 
-        htmltools::tags$div(class = "ar-fn-row",
-          shiny::textInput(ns(paste0("fn_", i)), NULL, value = val, width = "100%",
-                           placeholder = paste0("Footnote ", i)),
-          htmltools::tags$button(
-            class = "ar-btn-ghost ar-btn--xs",
-            onclick = paste0("Shiny.setInputValue('", ns("rm_fn"), "', '", i, "', {priority: 'event'})"),
-            htmltools::tags$i(class = "fa fa-times", style = "font-size: 10px; color: var(--fg-muted);")
+          htmltools::tags$div(class = "ar-fn-row",
+            shiny::textInput(ns(paste0("fn_", i)), NULL, value = val, width = "100%",
+                             placeholder = paste0("Footnote ", i)),
+            htmltools::tags$div(class = "ar-fn-row__controls",
+              htmltools::tags$div(class = "ar-inline-radio",
+                htmltools::tags$label(class = "ar-inline-radio__opt",
+                  title = "Left",
+                  htmltools::tags$input(type = "radio", name = ns(paste0("fnalign_", i)),
+                    value = "left", checked = if (align_val == "left") NA else NULL,
+                    onchange = paste0("Shiny.setInputValue('", ns(paste0("fnalign_", i)), "', 'left')")),
+                  htmltools::tags$i(class = "fa fa-align-left ar-icon-sm")
+                ),
+                htmltools::tags$label(class = "ar-inline-radio__opt",
+                  title = "Center",
+                  htmltools::tags$input(type = "radio", name = ns(paste0("fnalign_", i)),
+                    value = "center", checked = if (align_val == "center") NA else NULL,
+                    onchange = paste0("Shiny.setInputValue('", ns(paste0("fnalign_", i)), "', 'center')")),
+                  htmltools::tags$i(class = "fa fa-align-center ar-icon-sm")
+                ),
+                htmltools::tags$label(class = "ar-inline-radio__opt",
+                  title = "Right",
+                  htmltools::tags$input(type = "radio", name = ns(paste0("fnalign_", i)),
+                    value = "right", checked = if (align_val == "right") NA else NULL,
+                    onchange = paste0("Shiny.setInputValue('", ns(paste0("fnalign_", i)), "', 'right')")),
+                  htmltools::tags$i(class = "fa fa-align-right ar-icon-sm")
+                )
+              ),
+              htmltools::tags$button(
+                class = "ar-btn-ghost ar-btn--xs",
+                onclick = paste0("Shiny.setInputValue('", ns("rm_fn"), "', '", i, "', {priority: 'event'})"),
+                htmltools::tags$i(class = "fa fa-times ar-icon-sm ar-icon-muted")
+              )
+            )
           )
-        )
-      })
+        }),
+        htmltools::tags$div(class = "ar-text-xs ar-text-muted ar-mt-4",
+          "Supports {fr_super()}, {fr_bold()}, {fr_italic()}")
+      )
     })
 
     # ── Toggle footnote options visibility ──
     shiny::observe({
-      shinyjs::toggle("fn_options_wrap", condition = length(fns_rv()) > 0)
+      show <- length(fns_rv()) > 0
+      session$sendCustomMessage("ar_toggle", list(id = ns("fn_options_wrap"), show = show))
     })
 
     # ── get_draft: return current input state as plain list ──
@@ -209,7 +243,10 @@ mod_titles_server <- function(id, store) {
       fn_n <- length(fns)
       fn_list <- if (fn_n == 0) list() else {
         lapply(seq_len(fn_n), function(i) {
-          list(text = shiny::isolate(input[[paste0("fn_", i)]]) %||% fns[[i]]$text %||% "")
+          list(
+            text = shiny::isolate(input[[paste0("fn_", i)]]) %||% fns[[i]]$text %||% "",
+            align = shiny::isolate(input[[paste0("fnalign_", i)]]) %||% fns[[i]]$align %||% "left"
+          )
         })
       }
       list(

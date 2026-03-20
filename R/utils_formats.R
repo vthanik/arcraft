@@ -6,6 +6,7 @@ fmt_count <- function(n) {
 
 fmt_npct <- function(n, N, style = "A", dec = 1) {
   if (N == 0) return("0")
+  if (n == 0 && style == "A") return("0")
   pct <- n / N * 100
   pct_str <- fmt_pct_value(pct, dec, style)
   paste0(n, " (", pct_str, ")")
@@ -13,6 +14,7 @@ fmt_npct <- function(n, N, style = "A", dec = 1) {
 
 fmt_nn_pct <- function(n, N, style = "A", dec = 1) {
   if (N == 0) return("0/0")
+  if (n == 0 && style == "A") return("0")
   pct <- n / N * 100
   pct_str <- fmt_pct_value(pct, dec, style)
   paste0(n, "/", N, " (", pct_str, ")")

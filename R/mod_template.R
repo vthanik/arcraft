@@ -33,8 +33,8 @@ mod_template_server <- function(id, store, grp) {
 
     # Render template cards from registry, grouped by category — canvas grid
     output$template_cards <- shiny::renderUI({
-      registry <- template_registry()
-      categories <- get_template_categories()
+      registry <- Filter(function(t) isTRUE(t$enabled), template_registry())
+      categories <- unique(vapply(registry, function(t) t$category, character(1)))
       loaded_ds <- names(store$datasets)
 
       card_groups <- lapply(categories, function(cat) {
@@ -45,22 +45,18 @@ mod_template_server <- function(id, store, grp) {
           required <- if (is.character(t$adam_required)) t$adam_required else "adsl"
           has_data <- all(required %in% loaded_ds) || length(loaded_ds) > 0
           is_active <- identical(store$template, t$id)
-          disabled <- !t$enabled
 
           output_type <- fct_template_output_type(t$id)
           type_label <- tools::toTitleCase(output_type)
 
           cls <- paste0("ar-tmpl-card--canvas",
-                        if (is_active) " active" else "",
-                        if (disabled) " disabled" else "")
+                        if (is_active) " active" else "")
 
           htmltools::tags$div(
             class = cls,
             `data-name` = t$name,
             `data-desc` = t$description,
-            onclick = if (!disabled) {
-              paste0("Shiny.setInputValue('", ns("select_tmpl"), "', '", t$id, "', {priority: 'event'})")
-            },
+            onclick = paste0("Shiny.setInputValue('", ns("select_tmpl"), "', '", t$id, "', {priority: 'event'})"),
             htmltools::tags$div(class = "ar-tmpl-card--canvas__icon",
               htmltools::tags$i(class = paste("fa", t$icon))),
             htmltools::tags$div(class = "ar-tmpl-card--canvas__body",
@@ -147,9 +143,6 @@ mod_template_server <- function(id, store, grp) {
       }
 
       store$pipeline_state$template <- TRUE
-      session$sendCustomMessage("ar_unlock_step", list(step = "analysis"))
-      session$sendCustomMessage("ar_unlock_step", list(step = "format"))
-
       tmpl_name <- if (!is.null(tmpl_def)) tmpl_def$name else tmpl_id
       session$sendCustomMessage("ar_toast",
         list(message = paste0(tmpl_name, " template selected"), type = "success"))
