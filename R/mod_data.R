@@ -6,8 +6,8 @@ mod_data_ui <- function(id) {
   htmltools::tagList(
     htmltools::tags$div(class = "ar-form-group",
       shiny::selectizeInput(ns("ds_select"), NULL,
-        choices = c("adsl", "adae", "adcm", "adeff", "adeg",
-                    "adex", "adlb", "adpc", "adrs", "adtte", "advs"),
+        choices = c("adsl", "adae", "adcm", "adex", "adlb",
+                    "admh", "adrs", "adtr", "adtte", "advs"),
         selected = NULL, multiple = TRUE,
         options = list(
           placeholder = "Select datasets to load...",
@@ -148,8 +148,8 @@ mod_data_server <- function(id, store, grp) {
     shiny::observeEvent(input$load_btn, {
       req(input$ds_select)
       for (ds_name in input$ds_select) {
-        path <- file.path("/home/vignesh/R_Projects/adam_pilot/data", paste0(ds_name, ".rds"))
-        if (file.exists(path)) {
+        path <- system.file("data", paste0(ds_name, ".rds"), package = "arbuilder")
+        if (nzchar(path) && file.exists(path)) {
           store$datasets[[ds_name]] <- readRDS(path)
         }
       }
@@ -170,10 +170,10 @@ mod_data_server <- function(id, store, grp) {
       store$pipeline_state$data <- TRUE
     })
 
-    # ── Load Demo Data ──
+    # ── Load Demo Data (CDISC Pilot — bundled) ──
     shiny::observeEvent(input$load_demo, {
-      path <- "/home/vignesh/R_Projects/adam_pilot/data/adsl.rds"
-      if (file.exists(path)) {
+      path <- system.file("data", "adsl.rds", package = "arbuilder")
+      if (nzchar(path) && file.exists(path)) {
         store$datasets[["adsl"]] <- readRDS(path)
         store$active_ds <- "adsl"
 

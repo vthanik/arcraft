@@ -17,8 +17,8 @@ test_that("fmt_nn_pct zero style A shows just 0", {
 
 # ── Categorical n row ──
 test_that("categorical variables include n row", {
-  skip_if_not(file.exists("/home/vignesh/R_Projects/adam_pilot/data/adsl.rds"))
-  adsl <- readRDS("/home/vignesh/R_Projects/adam_pilot/data/adsl.rds")
+  adsl_path <- system.file("data", "adsl.rds", package = "arbuilder"); skip_if_not(nzchar(adsl_path))
+  adsl <- readRDS(adsl_path)
   defaults <- spec_demog(adsl)
   grp <- defaults$grouping
   grp$trt_levels <- sort(unique(adsl[[grp$trt_var]]))
@@ -35,8 +35,8 @@ test_that("categorical variables include n row", {
 })
 
 test_that("show_n = FALSE omits n row", {
-  skip_if_not(file.exists("/home/vignesh/R_Projects/adam_pilot/data/adsl.rds"))
-  adsl <- readRDS("/home/vignesh/R_Projects/adam_pilot/data/adsl.rds")
+  adsl_path <- system.file("data", "adsl.rds", package = "arbuilder"); skip_if_not(nzchar(adsl_path))
+  adsl <- readRDS(adsl_path)
   defaults <- spec_demog(adsl)
   grp <- defaults$grouping
   grp$trt_levels <- sort(unique(adsl[[grp$trt_var]]))
@@ -53,8 +53,8 @@ test_that("show_n = FALSE omits n row", {
 
 # ── Per-stat decimal defaults ──
 test_that("spec_demog uses per-stat decimals not scalar", {
-  skip_if_not(file.exists("/home/vignesh/R_Projects/adam_pilot/data/adsl.rds"))
-  adsl <- readRDS("/home/vignesh/R_Projects/adam_pilot/data/adsl.rds")
+  adsl_path <- system.file("data", "adsl.rds", package = "arbuilder"); skip_if_not(nzchar(adsl_path))
+  adsl <- readRDS(adsl_path)
   defaults <- spec_demog(adsl)
   decs <- defaults$var_configs[["AGE"]]$decimals
   expect_true(is.list(decs), "decimals should be a list, not scalar")
@@ -66,8 +66,8 @@ test_that("spec_demog uses per-stat decimals not scalar", {
 
 # ── group_value column ──
 test_that("group_value is first column when by_var is set", {
-  skip_if_not(file.exists("/home/vignesh/R_Projects/adam_pilot/data/adsl.rds"))
-  adsl <- readRDS("/home/vignesh/R_Projects/adam_pilot/data/adsl.rds")
+  adsl_path <- system.file("data", "adsl.rds", package = "arbuilder"); skip_if_not(nzchar(adsl_path))
+  adsl <- readRDS(adsl_path)
   defaults <- spec_demog(adsl)
   grp <- defaults$grouping
   grp$trt_levels <- sort(unique(adsl[[grp$trt_var]]))
@@ -81,8 +81,8 @@ test_that("group_value is first column when by_var is set", {
 })
 
 test_that("group_value not present without by_var", {
-  skip_if_not(file.exists("/home/vignesh/R_Projects/adam_pilot/data/adsl.rds"))
-  adsl <- readRDS("/home/vignesh/R_Projects/adam_pilot/data/adsl.rds")
+  adsl_path <- system.file("data", "adsl.rds", package = "arbuilder"); skip_if_not(nzchar(adsl_path))
+  adsl <- readRDS(adsl_path)
   defaults <- spec_demog(adsl)
   grp <- defaults$grouping
   grp$trt_levels <- sort(unique(adsl[[grp$trt_var]]))
@@ -114,8 +114,8 @@ test_that("n_format default has literal backslash-n, not newline", {
 
 # ── Render validates column existence for fr_rows ──
 test_that("render skips page_by for non-existent column", {
-  skip_if_not(file.exists("/home/vignesh/R_Projects/adam_pilot/data/adsl.rds"))
-  adsl <- readRDS("/home/vignesh/R_Projects/adam_pilot/data/adsl.rds")
+  adsl_path <- system.file("data", "adsl.rds", package = "arbuilder"); skip_if_not(nzchar(adsl_path))
+  adsl <- readRDS(adsl_path)
   defaults <- spec_demog(adsl)
   grp <- defaults$grouping
   grp$trt_levels <- sort(unique(adsl[[grp$trt_var]]))
@@ -134,8 +134,8 @@ test_that("render skips page_by for non-existent column", {
 
 # ── Codegen skips page_by for non-existent column ──
 test_that("codegen omits page_by when column not in ARD", {
-  skip_if_not(file.exists("/home/vignesh/R_Projects/adam_pilot/data/adsl.rds"))
-  adsl <- readRDS("/home/vignesh/R_Projects/adam_pilot/data/adsl.rds")
+  adsl_path <- system.file("data", "adsl.rds", package = "arbuilder"); skip_if_not(nzchar(adsl_path))
+  adsl <- readRDS(adsl_path)
   defaults <- spec_demog(adsl)
   grp <- defaults$grouping
   grp$trt_levels <- sort(unique(adsl[[grp$trt_var]]))
@@ -152,8 +152,8 @@ test_that("codegen omits page_by when column not in ARD", {
 
 # ── Codegen with group_value + page_by works ──
 test_that("codegen includes page_by when group_value exists", {
-  skip_if_not(file.exists("/home/vignesh/R_Projects/adam_pilot/data/adsl.rds"))
-  adsl <- readRDS("/home/vignesh/R_Projects/adam_pilot/data/adsl.rds")
+  adsl_path <- system.file("data", "adsl.rds", package = "arbuilder"); skip_if_not(nzchar(adsl_path))
+  adsl <- readRDS(adsl_path)
   defaults <- spec_demog(adsl)
   grp <- defaults$grouping
   grp$trt_levels <- sort(unique(adsl[[grp$trt_var]]))
@@ -171,8 +171,8 @@ test_that("codegen includes page_by when group_value exists", {
 
 # ── Generated code runs without error ──
 test_that("generated code executes without error (basic)", {
-  skip_if_not(file.exists("/home/vignesh/R_Projects/adam_pilot/data/adsl.rds"))
-  adsl <- readRDS("/home/vignesh/R_Projects/adam_pilot/data/adsl.rds")
+  adsl_path <- system.file("data", "adsl.rds", package = "arbuilder"); skip_if_not(nzchar(adsl_path))
+  adsl <- readRDS(adsl_path)
   defaults <- spec_demog(adsl)
   grp <- defaults$grouping
   grp$trt_levels <- sort(unique(adsl[[grp$trt_var]]))
@@ -185,7 +185,7 @@ test_that("generated code executes without error (basic)", {
 
   # Fix path for test
   code <- sub('readRDS\\("data/adsl.rds"\\)',
-    'readRDS("/home/vignesh/R_Projects/adam_pilot/data/adsl.rds")', code)
+    'readRDS(system.file("data", "adsl.rds", package = "arbuilder"))', code)
 
   tmp <- tempfile(fileext = ".R")
   writeLines(code, tmp)
@@ -196,8 +196,8 @@ test_that("generated code executes without error (basic)", {
 })
 
 test_that("generated code executes without error (group var)", {
-  skip_if_not(file.exists("/home/vignesh/R_Projects/adam_pilot/data/adsl.rds"))
-  adsl <- readRDS("/home/vignesh/R_Projects/adam_pilot/data/adsl.rds")
+  adsl_path <- system.file("data", "adsl.rds", package = "arbuilder"); skip_if_not(nzchar(adsl_path))
+  adsl <- readRDS(adsl_path)
   defaults <- spec_demog(adsl)
   grp <- defaults$grouping
   grp$trt_levels <- sort(unique(adsl[[grp$trt_var]]))
@@ -212,7 +212,7 @@ test_that("generated code executes without error (group var)", {
   code <- fct_codegen_dispatch("demog", list(dataset = "adsl", pop_flag = "SAFFL"),
     grp, defaults$var_configs, fmt)
   code <- sub('readRDS\\("data/adsl.rds"\\)',
-    'readRDS("/home/vignesh/R_Projects/adam_pilot/data/adsl.rds")', code)
+    'readRDS(system.file("data", "adsl.rds", package = "arbuilder"))', code)
 
   tmp <- tempfile(fileext = ".R")
   writeLines(code, tmp)
@@ -232,16 +232,16 @@ test_that("STAT_LABELS has all expected keys", {
 
 # ── Default treatment variable ──
 test_that("spec_demog defaults to TRT01A", {
-  skip_if_not(file.exists("/home/vignesh/R_Projects/adam_pilot/data/adsl.rds"))
-  adsl <- readRDS("/home/vignesh/R_Projects/adam_pilot/data/adsl.rds")
+  adsl_path <- system.file("data", "adsl.rds", package = "arbuilder"); skip_if_not(nzchar(adsl_path))
+  adsl <- readRDS(adsl_path)
   defaults <- spec_demog(adsl)
   expect_equal(defaults$grouping$trt_var, "TRT01A")
 })
 
 # ── Title not bold by default ──
 test_that("spec_demog titles are not bold by default", {
-  skip_if_not(file.exists("/home/vignesh/R_Projects/adam_pilot/data/adsl.rds"))
-  adsl <- readRDS("/home/vignesh/R_Projects/adam_pilot/data/adsl.rds")
+  adsl_path <- system.file("data", "adsl.rds", package = "arbuilder"); skip_if_not(nzchar(adsl_path))
+  adsl <- readRDS(adsl_path)
   defaults <- spec_demog(adsl)
   expect_false(defaults$fmt$titles[[1]]$bold)
   expect_false(defaults$fmt$titles[[2]]$bold)
