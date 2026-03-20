@@ -23,18 +23,23 @@ output.html
 _archive/
 _backup_templates/
 
-# Design docs (local reference only)
+# Design/plan docs (local reference only)
 CSS-BASICS.md
 CSS-NESTING-GUIDE.md
 DESIGN-SPEC.md
+DESIGN.md
 LAYOUT-ALTERNATIVES.md
 DATA-WRANGLER-UX-REFERENCE.md
+PLAN.md
+ARFRAME-PLAN.txt
+CLAUDE.md
 
 # Screenshots (local dev only)
 screenshots/
 
-# Notes
+# Notes & references (local only)
 notes/
+references/
 
 # OS files
 .DS_Store

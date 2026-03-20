@@ -1,1204 +1,0 @@
-
-
-
-
-
-Standard Safety Tables, Listings and Graphs Shells
-Table of Contents
-General Points to Consider	3
-Table of Contents for Tables, Listings and Graphes	6
-Module #1 General Study Information Tables	10
-Module #2 Treatment Emergent Adverse Events (TEAE)	27
-Module #3 Lab Parameter Tests	56
-Module #4 Adverse Events of Special Interest (AESI)	75
-Module #5 Second Primary Malignancies (SPM)	80
-
-
-General Points to Consider 
-General Points to Consider (applies to all Tables, Listings and Graphs in this package)Column Ordering * The general principles for ordering treatment group columns is as follows:
-* Columns are displayed in the order of dose escalation.
-* Active treatment is first, and placebo/control is last.
-o  In general, the active treatment should be placed in columns prior to the
- comparator/placebo arms, except for, e.g., dose-ranging or titration studies. 
-* Total column for AE tables is optional. If included, the total should only include the active arms of the study, and not be a total of active and control/placebo.  If included, the total column should be placed immediately after the right-most active treatment column.Allowable Modifications* The recommended populations and subsets for the TLGs are seen in this document, but there are allowable modifications.  Allowable modifications are changes to the TLGs that can be made within the standard TLG macros. 
-* The  modifications given below are allowed for all TLGs. In addition, there may be allowable modifications stated under the TLGs that applies directly to that TLG.
-1.) Change of population
-2.) Change in the treatment groups displayed including subtotal and total columns 
-3.) Displaying a subset of events (for example adverse event of special interest or adverse event leading to discontinuation), provided the subsetting is indicated in the title or footnote.
-4.) Change of title or footnote, provided the change properly reflects what is being displayed in the TLG.  
-5.) May modify categorical variables as determined necessary by study team. For example, age categories may deviate from <65 and >=65 as long as the categories are inclusive of all subjects. 
-6.) May modify the sort order of tables, be sure to specify sort order in footnotes. Dose Interruption * Dose interruption may be defined differently, depending on the drug/compound formulation (eg, oral  versus injectable), therefore may require  team  agreement.Footnote in TLG* Do not use the word "Note" at the beginning of the footnote section.
-* Use alphabetic order such as [a], [b], ..., etc. and not numeric order such as [1], [2], ..., etc.Celgene convention* Use "Subject" instead of "Patient" in all TLGs.Treatment order* The treatments/treatment groups will be displayed as "XXXXX", "XXXXX" and "XXXXX". For the TLGs, unless otherwise specified, the treatments/treatment groups will appear from left to right (and top to bottom) in the order of "XXXXX", "XXXXX" and "XXXXX", as applicable.Spanning headers* While spanning headers may be necessary in some cases, it is recommended that they only be used when necessary. TLG not included in this package* The Table of Contents of this package only includes the most commonly used TLG for study reports (hence, "Standard"). 
-* Variations of the TLG herein, such as subgroups by sex, age, time-period-of-interest, population-of-interest, etc., are recommended to use the same TLG formats to streamline the creations of the variations.Formatting issues* Use :  (xxx.x) , where the left and right parenthesis are in a consistent location in the column.  One hundred percent would include the decimal, i.e. (100.0).
-* If the numerator is '0' then show '0'. If the denominator is '0', then show 'NA' - apply this logic for descriptive stats
-* Do the rounding for the percentages before displaying in report.
-* For tables that have a mix of continuous and categorical summaries (e.g. Demographics), the summary statistics should be centered
-* Display as <= or >=, instead of = or =.
-* Use superscripts to denote a value raised to a power (eg X2 instead of X^2).Tables, listings and graphs  numbering 
-The following guidelines should be used for all  TLGs in the CSR. 
-
-Types of tables and graphs                                           Starting numbers
-Demographic data summary tables and figures                          14.1
-Efficacy data summary tables and figures (including PK/PD)           14.2
-Displays of Adverse Events and Dosing/Exposure                       14.3.1
-Deaths, Other Serious and Significant Adverse Events                 14.3.2
-Abnormal Laboratory value                                            14.3.4
-Tables and figures of vital signs, physical findings and other 
-observations related to safety tables                                14.3.5
-
-Subject data listings
-Discontinued Subjects                                                16.2.1
-Protocol Deviations                                                  16.2.2
-Subjects excluded from efficacy analysis                             16.2.3
-Demographics and other baseline data                                 16.2.4
-Compliance and/or drug concentration data                            16.2.5
-Individual efficacy response and PK/PD data                          16.2.6
-Adverse events listings                                              16.2.7
-Individual Laboratory measurements by subject                        16.2.8
- 
-* It is recommended that another level be used when using the same TLGs for differing populations.  For example, if your normal AE Summary table is 14.3.1.2 and you have two summary tables for the efficacy evaluable and safety populations, then they should be given the numbering 14.3.1.2.1 and 14.3.1.2.2. 
-* It is recommended to have no more than 6 levels of numbers, for example 14.3.1.2.1.2 would be considered 6 levels.  Clearly studies with a large number of TLGs may require more 6 levels. In this case, the numbering should be reviewed with medical writing.
-Table of Contents for Tables, Listings and Graphes
-Table Number NamePopulationGeneral Study InformationTable 14.1.1 Summary of Reasons for Not EnrollingAll Screened SubjectsTable 14.1.2 Analysis PopulationsTable 14.1.3 Subject DispositionITT PopulationTable 14.1.4 Number of Subjects by Treatment and SiteITT PopulationTable 14.1.5 DemographicsITT PopulationTable 14.1.6 Protocol Violations ITT PopulationTable 14.1.7 Medical HistorySafety PopulationTable 14.1.8 Prior MedicationSafety PopulationTable 14.1.9 Concomitant MedicationSafety PopulationExposure TablesTable 14.3.1.1.1 Treatment ExposureSafety PopulationTable 14.3.1.1.2 Cumulative Exposure and Dose IntensitySafety PopulationTable 14.3.1.1.3 Dose ModificationsSafety PopulationTable 14.3.1.1.4Treatment ComplianceSafety PopulationTreatment Emergent Adverse Event (TEAE) TablesTable 14.3.1.2Treatment-emergent Adverse Events (TEAEs) SummarySafety PopulationTable 14.3.1.3Treatment-emergent Adverse Events (TEAEs) by Treatment, System Organ Class and Preferred TermSafety PopulationTable 14.3.1.3ATreatment-emergent Adverse Events (TEAEs) and Exposure Adjusted Incidence Rate by System Organ Class and Preferred TermSafety PopulationTable 14.3.1.4Treatment-emergent Adverse Events (TEAEs) Related to Study Drug by Treatment, System Organ Class and Preferred TermSafety PopulationTable 14.3.1.5Grade 3/4 Treatment-emergent Adverse Events (TEAEs) by Treatment, System Organ Class and Preferred TermSafety PopulationTable 14.3.1.6Treatment-emergent Adverse Events (TEAEs) by Treatment, System Organ Class, Preferred Term and Maximum SeveritySafety PopulationTable 14.3.1.6ATreatment-emergent Adverse Events (TEAEs) and Exposure Adjusted Incidence Rate by Treatment, System Organ Class, Preferred Term and Maximum SeveritySafety PopulationTable 14.3.1.6BTreatment-emergent Adverse Events (TEAEs) by Treatment, System Organ Class, Preferred Term and Maximum IntensitySafety PopulationTable 14.3.1.6CTreatment-Emergent Adverse Events (TEAEs) and Exposure Adjusted Incidence Rate by Treatment, System Organ Class, Preferred Term and Maximum IntensitySafety PopulationTable 14.3.1.7Treatment-emergent Adverse Events (TEAEs) by Treatment, System Organ Class, Preferred Term and Age GroupSafety PopulationTable 14.3.1.7ATreatment-emergent Adverse Events (TEAEs) and Exposure Adjusted Incidence Rate by Treatment, System Organ Class, Preferred Term and Age GroupSafety PopulationTable 14.3.1.8Treatment-emergent Adverse Events (TEAEs) by Treatment, System Organ Class, Preferred Term and SexSafety PopulationTable 14.3.1.8ATreatment-emergent Adverse Events (TEAEs) and Exposure Adjusted Incidence Rate by Treatment, System Organ Class, Preferred Term and SexSafety PopulationTable 14.3.1.9Treatment-emergent Adverse Events (TEAEs) by Treatment and Decreasing Frequency of Preferred TermSafety PopulationTable 14.3.1.9ATreatment-emergent Adverse Events (TEAEs) and Exposure Adjusted Incidence Rate by Treatment and Decreasing Frequency of Preferred TermSafety PopulationTable 14.3.1.10Treatment-emergent Adverse Events (TEAEs) by Treatment and Decreasing Frequency of System Organ ClassSafety PopulationTable 14.3.1.11Treatment-emergent Adverse Events (TEAEs) by Treatment, System Organ Class, Preferred Term and Exposure Interval of OnsetSafety PopulationTable 14.3.1.11ATreatment-emergent Adverse Events (TEAEs) and Exposure Adjusted Incidence Rate by Exposure Interval, System Organ Class, Preferred TermSafety PopulationTable 14.3.1.12Pre-treatment Adverse Events by Treatment, System Organ Class and Preferred Term Safety PopulationTable 14.3.1.13Non-serious Common Treatment-emergent Adverse Events (TEAEs) by Treatment, System Organ Class and Preferred TermSafety PopulationTable 14.3.2.1Serious Treatment-emergent Adverse Events (TEAEs) by Treatment, System Organ Class and Preferred TermSafety PopulationTable 14.3.2.2Serious Treatment-emergent Adverse Events (TEAEs) Related to Study Drug by Treatment, System Organ Class and Preferred TermSafety PopulationTable 14.3.2.3Treatment-emergent Adverse Events (TEAEs) Leading to Death by Treatment, System Organ Class and Preferred TermSafety PopulationTable 14.3.2.4Treatment-emergent Adverse Events (TEAEs) Leading to Dose Reduction by Treatment, System Organ Class and Preferred TermSafety PopulationTable 14.3.2.5Treatment-emergent Adverse Events (TEAEs) Leading to Dose Interruption by Treatment, System Organ Class and Preferred TermSafety PopulationTable 14.3.2.6Treatment-emergent Adverse Events (TEAEs) Leading to Study Drug Discontinuation by Treatment, System Organ Class and Preferred TermSafety PopulationTable 14.3.2.7Summary of Deaths and Causes by TreatmentSafety PopulationTable 14.3.2.8Serious Treatment-emergent Adverse Events (TEAEs) by Seriousness CriteriaSafety PopulationTable 14.3.2.9Serious Treatment-emergent Adverse Events (TEAEs) by Treatment, Seriousness Criteria, System Organ Class and Preferred TermSafety PopulationTable 14.3.2.10Serious Treatment-emergent Adverse Events (TEAEs) Related to <Study Drug> by Treatment, Seriousness Criteria, System Organ Class and Preferred TermSafety PopulationTable 14.3.2.11Serious Treatment-emergent Adverse Events of Special Interest (AESI) by Treatment, Seriousness Criteria, AESI Category and Preferred TermSafety PopulationLaboratory Test Results TablesTable 14.3.4.1.1Hematology Results and Change from Baseline by Treatment and CycleSafety PopulationTable 14.3.4.1.1AHematology Results and Change from Baseline by Treatment and CycleSafety PopulationTable 14.3.4.1.2Serum Chemistry Results and Change from Baseline by Treatment and CycleSafety PopulationTable 14.3.4.1.2ASerum Chemistry Results and Change from Baseline by Treatment and CycleSafety PopulationTable 14.3.4.1.3Other Laboratory Results and Change from Baseline by Treatment and CycleSafety PopulationTable 14.3.4.1.3AOther Laboratory Results and Change from Baseline by Treatment and CycleSafety PopulationTable 14.3.4.2.1Shifts in Maximum CTCAE Grades (High) in Selected Hematology Parameters by Treatment and CycleSafety PopulationTable 14.3.4.2.2Shifts in Maximum  CTCAEGrades (Low) in Selected Hematology Parameters by Treatment and CycleSafety PopulationTable 14.3.4.3.1Shifts in Maximum CTCAEGrades (High) in Selected Serum Chemistry Parameters by Treatment and CycleSafety PopulationTable 14.3.4.3.2Shifts in Maximum CTCAEGrades (Low) in Selected Serum Chemistry Parameters by Treatment and CycleSafety PopulationTable 14.3.4.4Shifts in Abnormality Category in Serum Chemistry Parameters by Treatment and TimepointSafety PopulationTable 14.3.4.5Laboratory Marked Abnormalities by TreatmentSafety PopulationTable 14.3.4.6Laboratory Marked Abnormalities by Baseline Laboratory Category and TreatmentSafety PopulationTable 14.3.5.1Vital Signs - Change from Baseline by Treatment and CycleSafety PopulationTable 14.3.5.1AVital Signs - Change from Baseline by Treatment and CycleSafety PopulationTable 14.3.5.2Vital Signs Marked Abnormalities by TreatmentSafety PopulationTable 14.3.5.3ECG - Shift in Overall Interpretation by Treatment and CycleSafety PopulationTable 14.3.5.5ECOG - Shift from Baseline by Treatment and Cycle Safety PopulationTreatment-emergent Adverse Events of Special Interest (AESI)Table 14.3.2.8.1Summary of Treatment-emergent Adverse Events of Special Interest (AESI) by Treatment and AESI CategorySafety PopulationTable 14.3.2.8.2Treatment-emergent Adverse Events of Special Interest (AESI) by Treatment, AESI Category and Preferred TermSafety PopulationTable 14.3.2.8.3Duration of Treatment-emergent Adverse Event of Special Interest (AESI) by TreatmentSafety PopulationTable 14.3.2.8.4Onset Day of Treatment-emergent Adverse Event of Special Interest (AESI)  by TreatmentSafety PopulationSecond Primary Malignancies (SPM)Table 14.3.1.14.1Summary of Second Primary Malignancies (SPM)- Frequency Safety PopulationTable 14.3.1.14.2Summary of Second Primary Malignancies (SPM)- Frequency Among Subjects Who Died Safety PopulationTable 14.3.1.14.3Summary of Second Primary Malignancies (SPM)- Frequency Among Subjects Who Did Not Die Safety PopulationTable 14.3.1.14.4Summary of Second Primary Malignancies (SPM)- Incidence Rate per 100 Person-years Safety Population
-
-Module #1 General Study Information Tables 
-Table number (with brief description)Points to consider14.1.1. Screen Failures*  Consider adding basic demographic information (i.e., age, sex, race/ethnicity) to the beginning of the table. This will show the reviewer that a group of subjects were not systematically excluded which could bias results.14.1.3. Subject Disposition* This table shell is for the ITT/FAS population. If necessary, the team could run the same table for the safety population.14.1.5. Demographic and Baseline Disease Characteristics*  The Cutoff for age group may change depending on study (e.g., use >=70 instead of >=65)
-*  Team may consider creating 3 separate tables from this single table:
-o  Common general baseline demographics.
-o  Disease specific demographics.
-o  Baseline lab tests (determined by team).14.1.6. Protocol Violation*  This table contains only protocol violations, not deviations. 
-*  Deviations can be provided in a separate listing, but are generally not provided in a separate table.14.1.7. Medical History*  This table should present only relevant medical history; the team should determine what qualifies as "relevant," depending on the relevant subject population, nature of disease, and expected EOIs, etc.14.1.9. Concomitant Medications* Unless otherwise specified, the Conmed  tables will be displayed in alphabetical order for the ATC1 Classification, and within each ATC1 Classification, the preferred names will be displayed in alphabetical order.14.3.1.1.1 Summary of Dose Information by Treatment Group* A uniform definition of treatment duration is needed, and should be specified in the SAP
-o  Last dose + x days for compounds with long half-lives, versus last dose + 0 days for compounds with short half-lives as determined by study team.
-
-Celgene                                                                             		                                Page X of Y
-Study/Protocol: XXX-XXX-XXX                                                              		            Database Cutoff Date: DDMONYYYY
-Table 14.1.1
-Summary of Reasons for Not Enrolling
-All Screened Subjects
-Total Number of Subjects Screened(N=XXX)Parametern (%)Number of Subjects Screenedxx ( xx.x)Number of Subjects Who Screened but Did not Enrollxx ( xx.x)Primary Reason for Not Enrolling              Adverse Event                      xx ( xx.x)  Death                              xx ( xx.x)  Subject lost to follow-up          xx ( xx.x)  Subject withdrew consent           xx ( xx.x)  Other                              xx ( xx.x)  Missingxx ( xx.x)  Failure to Meet Eligibility Criteria xx ( xx.x)    INC XX: Descriptionxx ( xx.x)    EXC XX: Description xx ( xx.x)
-Program Path: S:\DEV\projects\...\Tables\XXXXXXX.
-Data Source: 							Data extract Date:					RunTime: DDMONYYYY:HH:MM
-
-
-Allowable modifications: May drop Inclusion/exclusion criteria if deemed unnecessary by study team. The reason for screen failure may be dropped as specified by the team. Refer to allowable modifications at top of document for more guidance.
-Celgene                                                                             		                                Page X of Y
-Study/Protocol: XXX-XXX-XXX                                                              		            Database Cutoff Date: DDMONYYYY
-Table 14.1.2
-Analysis Populations
-Trt1Trt2TotalPopulationn (%)n (%)n (%)Full Analysis Set (FAS) / Intent-to-Treat (ITT) [a]                      xx ( xx.x)xx ( xx.x)xx ( xx.x)Safety [b]                                     xx ( xx.x)xx ( xx.x)xx ( xx.x)Efficacy Evaluable / Per-protocol (PP) population [c]            xx ( xx.x)xx ( xx.x)xx ( xx.x)Percentages are based upon the number of subjects in the FAS/ITT population. 
-[a] Includes all subjects who are randomized/enrolled, regardless of whether they received treatment or not.
-[b] Includes all randomized subjects who received at least one dose of treatment. 
-[c] Includes all FAS/ITT subjects who have at least one post-baseline efficacy assessment performed, met all inclusion/exclusion criteria, and received a minimum of one cycle of treatment.
-                                                                                                                                                                
-Program Path: S:\DEV\projects\...\Tables\XXXXXXX.sas 
-Data Source: 							Data extract Date:					RunTime: DDMONYYYY:HH:MM
-Allowable modifications: Add or remove populations as necessary such as Randomized, Per-protocol, PK and PD. Note use population definitions as specified in the SAP. Refer to allowable modifications at top of document for more guidance.
-Celgene                                                                             		                                Page X of Y
-Study/Protocol: XXX-XXX-XXX                                                              		            Database Cutoff Date: DDMONYYYY
-Table 14.1.3
-Subject Disposition
-ITT Population
-Trt1Trt2Total(N=XXX)(N=XXX)(N=XXX)Parametern (%)n (%)n (%)Subjects discontinued from treatment [a]      xx ( xx.x)xx ( xx.x)xx ( xx.x)   Adverse Event                                  xx ( xx.x)xx ( xx.x)xx ( xx.x)   Death                                          xx ( xx.x)xx ( xx.x)xx ( xx.x)   Lack of Therapeutic Effect                         xx ( xx.x)xx ( xx.x)xx ( xx.x)   Lost to follow-up                              xx ( xx.x)xx ( xx.x)xx ( xx.x)   Protocol violation                             xx ( xx.x)xx ( xx.x)xx ( xx.x)   Withdrew consent                               xx ( xx.x)xx ( xx.x)xx ( xx.x)   Other           xx ( xx.x)xx ( xx.x)xx ( xx.x)  Subjects discontinued from study [b]         Adverse eventxx ( xx.x)xx ( xx.x)xx ( xx.x)   Deathxx ( xx.x)xx ( xx.x)xx ( xx.x)   Lack of efficacyxx ( xx.x)xx ( xx.x)xx ( xx.x)   Lost to follow-upxx ( xx.x)xx ( xx.x)xx ( xx.x)   Non-compliance with study drugxx ( xx.x)xx ( xx.x)xx ( xx.x)   Pregnancyxx ( xx.x)xx ( xx.x)xx ( xx.x)   Progressive diseasexx ( xx.x)xx ( xx.x)xx ( xx.x)   Protocol violationxx ( xx.x)xx ( xx.x)xx ( xx.x)   Recoveryxx ( xx.x)xx ( xx.x)xx ( xx.x)   Study terminated by sponsorxx ( xx.x)xx ( xx.x)xx ( xx.x)   Transition to commercially available treatmentxx ( xx.x)xx ( xx.x)xx ( xx.x)   Withdrew consentxx ( xx.x)xx ( xx.x)xx ( xx.x)   Otherxx ( xx.x)xx ( xx.x)xx ( xx.x)[a] Percentages are calculated using the safety population. 
-[b] Percentages are calculated using the ITT population. 
-
-Program Path: S:\DEV\projects\...\Tables\XXXXXXX.sas
-Data Source: 							Data extract Date:					RunTime: DDMONYYYY:HH:MM
-
-Allowable modifications: Reasons given for discontinuation should match the CRF. May drop reason for discontinuation from study if not collected in CRF. Refer to allowable modifications at top of document for more guidance.
-
-Celgene                                                                             		                                Page X of Y        
-Study/Protocol: XXX-XXX-XXX                                                              		            Database Cutoff Date: DDMONYYYY                      
-Table 14.1.4
-Number of Subjects by Treatment and Site
-ITT Population
-Trt1Trt2TotalCountry(N=XXX)(N=XXX)(N=XXX)  Siten (%)n (%)n (%)Country 1 xx ( xx.x)xx ( xx.x)xx ( xx.x)  Site 1xx ( xx.x)xx ( xx.x)xx ( xx.x)  Site 2xx ( xx.x)xx ( xx.x)xx ( xx.x)  Site 3xx ( xx.x)xx ( xx.x)xx ( xx.x)Country 2 xx ( xx.x)xx ( xx.x)xx ( xx.x)  Site 1xx ( xx.x)xx ( xx.x)xx ( xx.x)  Site 2xx ( xx.x)xx ( xx.x)xx ( xx.x)  Site 3xx ( xx.x)xx ( xx.x)xx ( xx.x)...Program Path: S:\DEV\projects\...\Tables\XXXXXXX.sas 
-Data Source: 							Data extract Date:					RunTime: DDMONYYYY:HH:MM
-
-Allowable Modifications: May just display sites if study is done in one country or country is not collected in CRF. Refer to allowable modifications at top of document for more guidance.  
-
-Celgene                                                                             		                                Page X of Y        
-Study/Protocol: XXX-XXX-XXX                                                              		            Database Cutoff Date: DDMONYYYY                      
-Table 14.1.5
-Demographics
-Safety Population                                                        
-Trt1Trt2TotalParameter(N=XXX)(N=XXX)(N=XXX)Age (years)                                     n                                                   xx xx xx   Mean                                      xx.x xx.x xx.x    SD                                        xx.xxxx.xxxx.xx   Median                                    xx.xxx.xxx.x   Q1, Q3                                    xx.x, xx.xxx.x, xx.xxx.x, xx.x   Min, Max                                  xx, xx  xx, xx  xx, xx                                               Age Categories (years) - n (%)                  < xx                                     xx ( xx.x)xx ( xx.x)xx ( xx.x)   >=xx to <xx                                     xx ( xx.x)xx ( xx.x)xx ( xx.x)   >= xx                                     xx ( xx.x)xx ( xx.x)xx ( xx.x)   Missing                                         xx ( xx.x)xx ( xx.x)xx ( xx.x)Sex - n (%)                                     Male                                      xx ( xx.x)xx ( xx.x)xx ( xx.x)   Female                                    xx ( xx.x)xx ( xx.x)xx ( xx.x)   Missing                                         xx ( xx.x)xx ( xx.x)xx ( xx.x)                                             Race - n (%)                                    White           xx ( xx.x)xx ( xx.x)xx ( xx.x)   Black or African American                 xx ( xx.x)xx ( xx.x)xx ( xx.x)   Asian                                     xx ( xx.x)xx ( xx.x)xx ( xx.x)   Native Hawaiian or Other Pacific Islander xx ( xx.x)xx ( xx.x)xx ( xx.x)   American Indian or Alaskan Native         xx ( xx.x)xx ( xx.x)xx ( xx.x)   Japanese                                  xx ( xx.x)xx ( xx.x)xx ( xx.x)   Other                                     xx ( xx.x)xx ( xx.x)xx ( xx.x)   Missing                                         xx ( xx.x)xx ( xx.x)xx ( xx.x)BSA=Body Surface Area; Max=Maximum; Min=Minimum; Q1=First quartile; Q3=Third quartile; SD=Standard deviation.
-Percentages are based on the number of subjects in each treatment group. 
-Baseline Body Mass Index (BMI) is calculated as weight (kg)/ ((height (m))2).
-Program Path: S:\DEV\projects\...\Tables\XXXXXXX.sas 
-Data Source: 							Data extract Date:					RunTime: DDMONYYYY:HH:MM
-
-Allowable modifications: May drop or include Height, Weight, BMI, BMI category, BSA or BSA category as determined by study team. Race and Ethnicity categories should match the CRF. May omit reproductive status as deemed necessary by study team. Refer to allowable modifications at top of document for more guidance.
-Celgene                                                                             		                                Page X of Y
-Study/Protocol: XXX-XXX-XXX                                                              		            Database Cutoff Date: DDMONYYYY
-Table 14.1.5
-Demographics
-Safety Population
-Trt1Trt2TotalParameter(N=XXX)(N=XXX)(N=XXX)Ethnicity - n (%)                               Hispanic or Latino                        xx ( xx.x)xx ( xx.x)xx ( xx.x)   Not Hispanic or Latino                    xx ( xx.x)xx ( xx.x)xx ( xx.x)   Unknown                                   xx ( xx.x)xx ( xx.x)xx ( xx.x)   Missing                                         xx ( xx.x)xx ( xx.x)xx ( xx.x)Reproductive Status - n (%)   Female of childbearing potentialxx ( xx.x)xx ( xx.x)xx ( xx.x)   Female of nonchildbearing potential                   xx ( xx.x)xx ( xx.x)xx ( xx.x)   Male                                   xx ( xx.x)xx ( xx.x)xx ( xx.x)   Missing                                         xx ( xx.x)xx ( xx.x)xx ( xx.x)Weight (kg)   n                                                   xx xx xx   Mean                                      xx.x xx.x xx.x    SD                                        xx.xxxx.xxxx.xx   Median                                    xx.xxx.xxx.x   Q1, Q3                                    xx.x, xx.xxx.x, xx.xxx.x, xx.x   Min, Max                                  xx, xx  xx, xx  xx, xx                                               Height (cm)     n                                                   xx xx xx   Mean                                      xx.x xx.x xx.x    SD                                        xx.xxxx.xxxx.xx   Median                                    xx.xxx.xxx.x   Q1, Q3                                    xx.x, xx.xxx.x, xx.xxx.x, xx.x   Min, Max                                  xx, xx  xx, xx  xx, xx  BSA=Body Surface Area; Max=Maximum; Min=Minimum; Q1=First quartile; Q3=Third quartile; SD=Standard deviation.
-Percentages are based on the number of subjects in each treatment group. 
-Baseline Body Mass Index (BMI) is calculated as weight (kg)/ ((height (m))2). 
-
-Program Path: S:\DEV\projects\...\Tables\XXXXXXX.sas
-Data Source: 							Data extract Date:					RunTime: DDMONYYYY:HH:MM
-
-Allowable modifications: May drop or include Height, Weight, BMI, BMI category, BSA or BSA category as determined by study team. Race and Ethnicity categories should match the CRF. May omit reproductive status as deemed necessary by study team. Refer to allowable modifications at top of document for more guidance.
-Celgene                                                                             		                                Page X of Y
-Study/Protocol: XXX-XXX-XXX                                                              		            Database Cutoff Date: DDMONYYYY
-Table 14.1.5
-Demographics
-Safety Population
-Trt1Trt2TotalParameter(N=XXX)(N=XXX)(N=XXX)BMI (kg/m2)   n                                                   xx xx xx   Mean                                      xx.x xx.x xx.x    SD                                        xx.xxxx.xxxx.xx   Median                                    xx.xxx.xxx.x   Q1, Q3                                    xx.x, xx.xxx.x, xx.xxx.x, xx.x   Min, Max                                  xx, xx  xx, xx  xx, xx  BMI Categories (kg/m2) - n (%)   <xx kg/m2   xx ( xx.x)xx ( xx.x)xx ( xx.x)   xx-<xx kg/m2xx ( xx.x)xx ( xx.x)xx ( xx.x)   xx-<xx kg/m2                            xx ( xx.x)xx ( xx.x)xx ( xx.x)   >= xx kg/m2                                            xx ( xx.x)xx ( xx.x)xx ( xx.x)   Missing                                         xx ( xx.x)xx ( xx.x)xx ( xx.x)                                             BSA (m2)   n                                                   xx xx xx   Mean                                      xx.x xx.x xx.x    SD                                        xx.xxxx.xxxx.xx   Median                                    xx.xxx.xxx.x   Q1, Q3                                    xx.x, xx.xxx.x, xx.xxx.x, xx.x   Min, Max                                  xx, xx  xx, xx  xx, xx  BSA=Body Surface Area; Max=Maximum; Min=Minimum; Q1=First quartile; Q3=Third quartile; SD=Standard deviation.
-Percentages are based on the number of subjects in each treatment group. 
-Baseline Body Mass Index (BMI) is calculated as weight (kg)/ ((height (m))2). 
-
-Program Path: S:\DEV\projects\...\Tables\XXXXXXX.sas 
-Data Source: 							Data extract Date:					RunTime: DDMONYYYY:HH:MM
-
-Allowable modifications: May drop or include Height, Weight, BMI, BMI category, BSA or BSA category as determined by study team. Race and Ethnicity categories should match the CRF. May omit reproductive status as deemed necessary by study team. Refer to allowable modifications at top of document for more guidance.
-Celgene                                                                             		                                Page X of Y
-Study/Protocol: XXX-XXX-XXX                                                              		            Database Cutoff Date: DDMONYYYY
-Table 14.1.6
-Protocol Violations
-ITT Population
-Trt1Trt2Total(N=XXX)(N=XXX)(N=XXX)Parametern (%)n (%)n (%)Number of Subjects with at least one protocol violationxx ( xx.x)xx ( xx.x)xx ( xx.x)Protocol Violations           Violation Type #1       xx ( xx.x)xx ( xx.x)xx ( xx.x)   Violation Type #2       xx ( xx.x)xx ( xx.x)xx ( xx.x)   Violation Type #3       xx ( xx.x)xx ( xx.x)xx ( xx.x)   Violation Type #4       xx ( xx.x)xx ( xx.x)xx ( xx.x)Number of Subject with    One Violationxx ( xx.x)xx ( xx.x)xx ( xx.x)   Two Violationsxx ( xx.x)xx ( xx.x)xx ( xx.x)   >2 Violationsxx ( xx.x)xx ( xx.x)xx ( xx.x)Program Path: S:\DEV\projects\...\Tables\XXXXXXX.sas
-Data Source: 							Data extract Date:					RunTime: DDMONYYYY:HH:MM
-
-Allowable modifications: May summarize Protocol deviations if determined necessary by study team. Refer to allowable modifications at top of document for more guidance.                                                        
-
-Celgene                                                                             		                                Page X of Y
-Study/Protocol: XXX-XXX-XXX                                                              		            Database Cutoff Date: DDMONYYYY
-Table 14.1.7
-Medical History
-Safety Population                                                                                                                                                                
-Trt1Trt2TotalSystem Organ Class(N=XXX)(N=XXX)(N=XXX)  Preferred Term [a]n (%)n (%)n (%)Subjects With at Least One Medical History Conditionxx ( xx.x)xx ( xx.x)xx ( xx.x)                               System Organ Class #1          xx ( xx.x)xx ( xx.x)xx ( xx.x)  Preferred Term #1            xx ( xx.x)xx ( xx.x)xx ( xx.x)  Preferred Term #2            xx ( xx.x)xx ( xx.x)xx ( xx.x)System Organ Class #2          xx ( xx.x)xx ( xx.x)xx ( xx.x)  Preferred Term #1            xx ( xx.x)xx ( xx.x)xx ( xx.x)  Preferred Term #2            xx ( xx.x)xx ( xx.x)xx ( xx.x)System Organ Class #3          xx ( xx.x)xx ( xx.x)xx ( xx.x)  Preferred Term #1            xx ( xx.x)xx ( xx.x)xx ( xx.x)  Preferred Term #2            xx ( xx.x)xx ( xx.x)xx ( xx.x)System Organ Class #4          xx ( xx.x)xx ( xx.x)xx ( xx.x)  Preferred Term #1            xx ( xx.x)xx ( xx.x)xx ( xx.x)  Preferred Term #2            xx ( xx.x)xx ( xx.x)xx ( xx.x)[a] Coded using MedDRA version xx.x.  A subject is counted only once for multiple events within preferred term/system organ class.
-
-Program Path: S:\DEV\projects\...\Tables\XXXXXXX.sas 
-Data Source: 							Data extract Date:					RunTime: DDMONYYYY:HH:MM
-
-Allowable modifications: Refer to allowable modifications at top of document for more guidance.
-Celgene                                                                             		                                Page X of Y
-Study/Protocol: XXX-XXX-XXX                                                              		            Database Cutoff Date: DDMONYYYY
-Table 14.1.8
-Prior Medication
-Safety Population
-Trt1Trt2TotalATC1 Dictionary Level       (N=XXX)(N=XXX)(N=XXX)  Preferred Name [a]n (%)n (%)n (%)Subjects with at Least One Prior Medicationxx ( xx.x)xx ( xx.x)xx ( xx.x)ATC1 Dictionary Level #1xx ( xx.x)xx ( xx.x)xx ( xx.x)   Preferred Name #1       xx ( xx.x)xx ( xx.x)xx ( xx.x)   Preferred Name #2       xx ( xx.x)xx ( xx.x)xx ( xx.x)   Preferred Name #3       xx ( xx.x)xx ( xx.x)xx ( xx.x)   Preferred Name #4       xx ( xx.x)xx ( xx.x)xx ( xx.x)   Preferred Name #5       xx ( xx.x)xx ( xx.x)xx ( xx.x)   Preferred Name #6       xx ( xx.x)xx ( xx.x)xx ( xx.x)ATC1 Dictionary Level #2xx ( xx.x)xx ( xx.x)xx ( xx.x)   Preferred Name #1       xx ( xx.x)xx ( xx.x)xx ( xx.x)   Preferred Name #2       xx ( xx.x)xx ( xx.x)xx ( xx.x)   Preferred Name #3       xx ( xx.x)xx ( xx.x)xx ( xx.x)   Preferred Name #4       xx ( xx.x)xx ( xx.x)xx ( xx.x)   Preferred Name #5       xx ( xx.x)xx ( xx.x)xx ( xx.x)   Preferred Name #6       xx ( xx.x)xx ( xx.x)xx ( xx.x)Prior medication is defined as any non-study medication taken prior to date of randomization. Medication not in the WHO drug dictionary will be classified as "Not Coded".
-[a] Coded using WHO Drug Version X.X. A subject with multiple occurrences of a drug class or drug is counted only once in the specific ATC classification or preferred name, respectively.
-
-
-Program Path: S:\DEV\projects\...\Tables\XXXXXXX.sas 
-Data Source: 							Data extract Date:					RunTime: DDMONYYYY:HH:MM
-
-Allowable modifications: Prior medication definition can change as deemed necessary by study team. Refer to allowable modifications at top of document for more guidance.
-Celgene                                                                             		                                Page X of Y
-Study/Protocol: XXX-XXX-XXX                                                              		            Database Cutoff Date: DDMONYYYY
-Table 14.1.9
-Concomitant Medication
-Safety Population
-Trt1Trt2TotalATC1 Dictionary Level       (N=XXX)(N=XXX)(N=XXX)  Preferred Name [a]n (%)n (%)n (%)Subjects with at Least One Concomitant Medicationxx ( xx.x)xx ( xx.x)xx ( xx.x)ATC1 Dictionary Level #1xx ( xx.x)xx ( xx.x)xx ( xx.x)   Preferred Name #1       xx ( xx.x)xx ( xx.x)xx ( xx.x)   Preferred Name #2       xx ( xx.x)xx ( xx.x)xx ( xx.x)   Preferred Name #3       xx ( xx.x)xx ( xx.x)xx ( xx.x)   Preferred Name #4       xx ( xx.x)xx ( xx.x)xx ( xx.x)   Preferred Name #5       xx ( xx.x)xx ( xx.x)xx ( xx.x)   Preferred Name #6       xx ( xx.x)xx ( xx.x)xx ( xx.x)ATC1 Dictionary Level #2xx ( xx.x)xx ( xx.x)xx ( xx.x)   Preferred Name #1       xx ( xx.x)xx ( xx.x)xx ( xx.x)   Preferred Name #2       xx ( xx.x)xx ( xx.x)xx ( xx.x)   Preferred Name #3       xx ( xx.x)xx ( xx.x)xx ( xx.x)   Preferred Name #4       xx ( xx.x)xx ( xx.x)xx ( xx.x)   Preferred Name #5       xx ( xx.x)xx ( xx.x)xx ( xx.x)   Preferred Name #6       xx ( xx.x)xx ( xx.x)xx ( xx.x)Concomitant medication is defined as any non-study medication taken from date of randomization until xx days after last dose of study drug or until the last study visit, whichever is longer. Medication not in the WHO drug dictionary will be classified as "Not Coded".
-[a] Coded using WHO Drug Version X.X. A subject with multiple occurrences of a drug class or drug is counted only once in the specific ATC classification or preferred name, respectively.
-
-
-Program Path: S:\DEV\projects\...\Tables\XXXXXXX.sas
-Data Source: 							Data extract Date:					RunTime: DDMONYYYY:HH:MM
-
-Allowable modifications: Concomitant medication definition can change as deemed necessary by study team. Refer to allowable modifications at top of document for more guidance.
-Celgene                                                                             		                                Page X of Y
-Study/Protocol: XXX-XXX-XXX                                                              		            Database Cutoff Date: DDMONYYYY
-Table 14.3.1.1.1
-Treatment Exposure
-Safety Population
-Trt1Trt2TotalParameter(N=XXX)(N=XXX)(N=XXX)Treatment Duration (months) [a]           n                                                   xx xx xx   Mean                                xx.x xx.x xx.x    SD                                  xx.xxxx.xxxx.xx   Median                              xx.xxx.xxx.x   Q1, Q3                              xx.x, xx.xxx.x, xx.xxx.x, xx.x   Min, Max                            xx, xx  xx, xx  xx, xx  Duration of Exposure (days) [b]           n                                                   xx xx xx   Mean                                xx.x xx.x xx.x    SD                                  xx.xxxx.xxxx.xx   Median                              xx.xxx.xxx.x   Q1, Q3                              xx.x, xx.xxx.x, xx.xxx.x, xx.x   Min, Max                            xx, xx  xx, xx  xx, xx                                         Avg. Length of Cycle (days) [c]           n                                                   xx xx xx   Mean                                xx.x xx.x xx.x    SD                                  xx.xxxx.xxxx.xx   Median                              xx.xxx.xxx.x   Q1, Q3                              xx.x, xx.xxx.x, xx.xxx.x, xx.x   Min, Max                            xx, xx  xx, xx  xx, xx                                         SD=Standard deviation; Q1=First quartile; Q3=Third quartile; Min=Minimum; Max=Maximum. 
-[a] Defined as (date of last dose - date of first dose + 1)/30.4167.
-[b] Defined as the total number of days the subject received a non-zero dose.
-[c] Defined as number of days on treatment divided by the number of cycles for each subject.
-[d] Defined as average of number of days dosed divided by number of cycles for each subject.
-
-Program Path: S:\DEV\projects\...\Tables\XXXXXXX.sas
-Data Source: 							Data extract Date:					RunTime: DDMONYYYY:HH:MM
-
-Allowable modifications: May consider using weeks or months for treatment duration at study team's discretion. Refer to allowable modifications at top of document for more guidance.
-Celgene                                                                             		                                Page X of Y
-Study/Protocol: XXX-XXX-XXX                                                              		            Database Cutoff Date: DDMONYYYY
-Table 14.3.1.1.1
-Treatment Exposure
-Safety Population
-Trt1Trt2TotalParameter(N=XXX)(N=XXX)(N=XXX)Avg. Number of Days Dosed per Cycle [d]   n                                                   xx xx xx   Mean                                xx.x xx.x xx.x    SD                                  xx.xxxx.xxxx.xx   Median                              xx.xxx.xxx.x   Q1, Q3                              xx.x, xx.xxx.x, xx.xxx.x, xx.x   Min, Max                            xx, xx  xx, xx  xx, xx                                                         Number of Cycles                     n                                                   xx xx xx   Mean                                                xx.x xx.x xx.x    SD                                                  xx.xxxx.xxxx.xx   Median                                              xx.xxx.xxx.x   Q1, Q3                                              xx.x, xx.xxx.x, xx.xxx.x, xx.x   Min, Max                                            xx, xx  xx, xx  xx, xx                                                         Number of Treatment Cycles Initiated - n (%)   1                                      xx ( xx.x)xx ( xx.x)xx ( xx.x)   2                                      xx ( xx.x)xx ( xx.x)xx ( xx.x)   3                                      xx ( xx.x)xx ( xx.x)xx ( xx.x)   4                                      xx ( xx.x)xx ( xx.x)xx ( xx.x)   5                                      xx ( xx.x)xx ( xx.x)xx ( xx.x)   6                                      xx ( xx.x)xx ( xx.x)xx ( xx.x)   7-12                                   xx ( xx.x)xx ( xx.x)xx ( xx.x)   13-18                                  xx ( xx.x)xx ( xx.x)xx ( xx.x)   19-24                                  xx ( xx.x)xx ( xx.x)xx ( xx.x)   25-30                                  xx ( xx.x)xx ( xx.x)xx ( xx.x)   >30                                    xx ( xx.x)xx ( xx.x)xx ( xx.x)SD=Standard deviation; Q1=First quartile; Q3=Third quartile; Min=Minimum; Max=Maximum. 
-[a] Defined as (date of last dose - date of first dose + 1)/30.4167. 
-[b] Defined as the total number of days the subject received a non-zero dose.
-[c] Defined as average of number of days between and including cycle start and day before next cycle start.
-[d] Defined as average of number of days dosed within a cycle.
-
-Program Path: S:\DEV\projects\...\Tables\XXXXXXX.sas
-Data Source: 							Data extract Date:					RunTime: DDMONYYYY:HH:MM
-
-Allowable modifications: May consider using weeks or months for treatment duration at study team's discretion. Refer to allowable modifications at top of document for more guidance.
-Celgene                                                                             		                                Page X of Y
-Study/Protocol: XXX-XXX-XXX                                                              		            Database Cutoff Date: DDMONYYYY
-Table 14.3.1.1.2
-Cumulative Exposure and Dose Intensity
-Safety Population
-Trt1Trt2TotalParameter(N=XXX)(N=XXX)(N=XXX)Total Cumulative Dose (mg)   n                                                   xx xx xx   Mean                                                xx.x xx.x xx.x    SD                                                  xx.xxxx.xxxx.xx   Median                                              xx.xxx.xxx.x   Q1, Q3                                              xx.x, xx.xxx.x, xx.xxx.x, xx.x   Min, Max                                            xx, xx  xx, xx  xx, xx                                                         Average Daily Dose (mg/day) [a]   n                                                   xx xx xx   Mean                                                xx.x xx.x xx.x    SD                                                  xx.xxxx.xxxx.xx   Median                                              xx.xxx.xxx.x   Q1, Q3                                              xx.x, xx.xxx.x, xx.xxx.x, xx.x   Min, Max                                            xx, xx  xx, xx  xx, xx                                                         Dose Intensity (mg/day) [b]   n                                                   xx xx xx   Mean                                                xx.x xx.x xx.x    SD                                                  xx.xxxx.xxxx.xx   Median                                              xx.xxx.xxx.x   Q1, Q3                                              xx.x, xx.xxx.x, xx.xxx.x, xx.x   Min, Max                                            xx, xx  xx, xx  xx, xx  Relative Dose Intensity [c]   n                                                   xx xx xx   Mean                                                xx.x xx.x xx.x    SD                                                  xx.xxxx.xxxx.xx   Median                                              xx.xxx.xxx.x   Q1, Q3                                              xx.x, xx.xxx.x, xx.xxx.x, xx.x   Min, Max                                            xx, xx  xx, xx  xx, xx  SD=Standard deviation; Q1=First quartile; Q3=Third quartile; Min=Minimum; Max=Maximum. 
-[a] Defined as total cumulative dose / # of days dosed (received non-zero dose).
-[b] Defined as total cumulative dose / ((date of the last dose) - (date of first dose) + 1).
-[c] Defined as dose intensity / planned dose intensity.
-
-Program Path: S:\DEV\projects\...\Tables\XXXXXXX.sas 
-Data Source: 							Data extract Date:					RunTime: DDMONYYYY:HH:MM
-Allowable modifications: May remove Relative Dose Intensity. Definitions may be modified as necessary by study team. Refer to allowable modifications at top of document for more guidance.
-
-Celgene                                                                             		                                Page X of Y
-Study/Protocol: XXX-XXX-XXX                                                              		            Database Cutoff Date: DDMONYYYY
-Table 14.3.1.1.3
-Dose Modifications
-Safety Population
-Trt1Trt2TotalParameter(N=XXX)(N=XXX)(N=XXX)Number of Subjects with at Least One Dose Reduction/Interruption - n (%) xx ( xx.x) xx ( xx.x) xx ( xx.x)Reason for Dose Reduction/Interruption - n (%)   Adverse Event                                        xx ( xx.x) xx ( xx.x) xx ( xx.x)   Per protocol                                         xx ( xx.x) xx ( xx.x) xx ( xx.x)   Other                                                xx ( xx.x) xx ( xx.x) xx ( xx.x)   Missing xx ( xx.x) xx ( xx.x) xx ( xx.x)   Total                                                xx ( xx.x) xx ( xx.x) xx ( xx.x)                                                       Time to First Dose Reduction/Interruption (days)          n                                                   xx xx xx   Mean                                                xx.x xx.x xx.x    SD                                                  xx.xxxx.xxxx.xx   Median                                              xx.xxx.xxx.x   Q1, Q3                                              xx.x, xx.xxx.x, xx.xxx.x, xx.x   Min, Max                                            xx, xx  xx, xx  xx, xx                                                         Time to First Dose Reduction/Interruption due to an AE(days)   n                                                   xx xx xx   Mean                                                xx.x xx.x xx.x    SD                                                  xx.xxxx.xxxx.xx   Median                                              xx.xxx.xxx.x   Q1, Q3                                              xx.x, xx.xxx.x, xx.xxx.x, xx.x   Min, Max                                            xx, xx  xx, xx  xx, xx                                                         SD=Standard deviation; Q1=First quartile; Q3=Third quartile; Min=Minimum; Max=Maximum. 
-
-Program Path: S:\DEV\projects\...\Tables\XXXXXXX.sas 
-Data Source: 							Data extract Date:					RunTime: DDMONYYY:
-
-Allowable modifications: Table may be displayed as separate dose reduction, dose interruption, and/or dose reductions and interruption. Refer to allowable modifications at top of document for more guidance.
-
-Celgene 		                                                                 		                                Page X of Y
-Study/Protocol: XXX-XXX-XXX                                                              		            Database Cutoff Date: DDMONYYYY
-Table 14.3.1.1.4
-Treatment Compliance
-Safety Population
-Trt1Trt2TotalParameter(N=XXX)(N=XXX)(N=XXX)Compliance (%) [a]    nxx xx xx    Meanxx.x xx.x xx.x     SDxx.xxxx.xxxx.xx    Medianxx.xxx.xxx.x    Q1, Q3                                              xx.x, xx.xxx.x, xx.xxx.x, xx.x    Min, Maxxx.x, xx.xxx.x, xx.xxx.x, xx.xCompliance Category, n (%)     < 75% xx ( xx.x) xx ( xx.x) xx ( xx.x)    = 75% to = 120% xx ( xx.x) xx ( xx.x) xx ( xx.x)    > 120% xx ( xx.x) xx ( xx.x) xx ( xx.x)    Missing xx ( xx.x) xx ( xx.x) xx ( xx.x)[a] Treatment compliance (%) is calculated as 100 times the total number of tablets taken (the total number of tablets dispensed minus the total number of tablets returned) over the period divided by the intended number of tablets over the period.
-SD=Standard deviation; Q1=First quartile; Q3=Third quartile; Min=Minimum; Max=Maximum. 
-
-Program Path: S:\DEV\projects\...\Tables\XXXXXXX.sas
-Data Source: 							Data extract Date:					RunTime: DDMONYYYY:HH:MM
-
-Allowable modifications: Change of compliance categories may be made. Refer to allowable modifications at top of document for more guidance.
-
- Module #2 Treatment Emergent Adverse Events (TEAE)
-Points to Consider: Adverse Event Tables Table number 
-(with brief description)Points to considerAE table orderingUnless otherwise specified, the AE tables will be displayed in alphabetical order for the System organ class, and within each system organ class, the preferred terms will be displayed in alphabetical order. AE Tables -
-Exposure Adjusted* If significant differences in duration of exposure exist between the active and placebo/comparator arms,
-select AE tables can be rerun where AE rates per 100-person years of exposure are displayed (see Tables
-14.3.1.17 in the AE table package).14.3.1.2. Summary of TEAEs*  The CTCAE version (if applicable) used in the study to define grades should be identified in a footnote.
-* A footnote should be included which specifies that the Grade 3-4 and Grade 5 presentations may or may not be mutually exclusive. 
-* A footnote should be included which notes that study drug dose interruption includes dose delay, by definition.
-* This table presents subject incidence (i.e., multiple occurrences of an AE are counted only once for each row).14.3.1.3. TEAEs by SOC and PT* This table is ordered by SOC and PT: by frequency in descending order. The name of the column used to sort the frequencies needs to be specified in the footnote.
-* Optionally, the team may request AE tables be produced by SOC and then PTs in alphabetical order for ease in review.14.3.1.10 TEAEs by decreasing frequency of SOC* This table is frequently requested as an in-text table. Consider producing at study team's discretion. 14.3.1.11 TEAEs by Exposure Interval of Onset* These tables should be used for particular events of interest/TEAEs of Special Interest as defined by the team, and generally not for all AEs.14.3.1.14 Common TEAEs * Team to determine frequency cutoff. General guideline: 5%, 10%, or 20% for overall AE; 2% or 5% for grade 3-4 TEAE or serious TEAE.
-* Used for in-text tables in CSRs, submissions, etc.
-* Non-serious Common AE tables are required for CT.gov on any Phase II or III study but will not be included in CSR.New Tables*  Study team may consider adding new tables or listing to summarize the data for the subjects
-who crossed over to a different treatment group.I&I studies* Add exposure-adjusted incidence rate (EAIR) to all I&I TEAE tables using the Table 14.3.1.3A as the standardI&I Sorting order* The SOCs are presented in standard international order and PTs are presented alphabetically within each SOC. All I&I AE tables* It is recommended that EAIR be used for all I&I AE table types with the exception of the AE summary table 14.3.1.2. Teams may also consider adding exposure-adjusted event rate (EAER) AE table as deemed necessary. The following example tables have been provided for EAIR tables: 14.3.1.3A, 14.3.1.6A, 14.3.1.7A, 14.3.1.8A, 14.3.1.9A, 14.3.1.11A.  Only one example of an EAER AE table has been provided. The format of EAER AE tables should match the EAIR tables with the exception of the footnotes, heading and table name as seen in Table 14.3.1.3B.   All AEs* Display non-coded AEs first in order as "UNCODED". 
-Celgene                                                                             		                                Page X of Y
-Study/Protocol: XXX-XXX-XXX                                                              		            Database Cutoff Date: DDMONYYYY
-Table 14.3.1.2
-Treatment-emergent Adverse Events (TEAEs) Summary
-Safety Population
-Trt1Trt2(N=XXX)(N=XXX)TEAE Categories  n (%)n (%)Subjects with at Least One TEAE                                xx ( xx.x)xx ( xx.x)                                                               Subjects with at Least One TEAE Related to Study Drug         xx ( xx.x)xx ( xx.x)Subjects with at Least One Serious TEAE                        xx ( xx.x)xx ( xx.x)Subjects with at Least One Serious TEAE Related to Study Drugxx ( xx.x)xx ( xx.x)Subjects with at Least One CTCAE Grade 3/4 [a] TEAE                      xx ( xx.x)xx ( xx.x)Subjects with at Least One CTCAE Grade 3/4 [a] TEAE Related to Study Drugxx ( xx.x)xx ( xx.x)Subjects with at Least One TEAE Leading to Death xx ( xx.x)xx ( xx.x)Subjects with at Least One TEAE Leading to Dose Reduction      xx ( xx.x)xx ( xx.x)Subjects with at Least One TEAE Leading to Dose Interruption   xx ( xx.x)xx ( xx.x)Subjects with at Least One TEAE Leading to Study Drug Discontinuationxx ( xx.x)xx ( xx.x)[a] Graded using Common Terminology Criteria for Adverse Events (CTCAE) version x.x.
-Treatment-emergent adverse events include adverse events that started between the date of first dose and xx days after the date of last dose.  
-
-Program Path: S:\DEV\projects\...\Tables\XXXXXXX.sas
-Data Source: 							Data extract Date:					RunTime: DDMONYYYY:HH:MM
-
-
-Allowable modifications: TEAE categories may be added or removed as deemed necessary by the study team. Refer to allowable modifications at top of document for more guidance.
-
-Celgene                                                                             		                                Page X of Y
-Study/Protocol: XXX-XXX-XXX                                                              		            Database Cutoff Date: DDMONYYYY
-Table 14.3.1.3
-Treatment-emergent Adverse Events (TEAEs) by Treatment, System Organ Class and Preferred Term
-Safety Population
-Trt1Trt2System Organ Class(N=XXX)(N=XXX)  Preferred Term [a]n (%)n (%)Subjects With at Least One TEAExx ( xx.x)xx ( xx.x)                               System Organ Class #1          xx ( xx.x)xx ( xx.x)  Preferred Term #1            xx ( xx.x)xx ( xx.x)  Preferred Term #2            xx ( xx.x)xx ( xx.x)System Organ Class #2          xx ( xx.x)xx ( xx.x)  Preferred Term #1            xx ( xx.x)xx ( xx.x)  Preferred Term #2            xx ( xx.x)xx ( xx.x)System Organ Class #3          xx ( xx.x)xx ( xx.x)  Preferred Term #1            xx ( xx.x)xx ( xx.x)  Preferred Term #2            xx ( xx.x)xx ( xx.x)System Organ Class #4          xx ( xx.x)xx ( xx.x)  Preferred Term #1            xx ( xx.x)xx ( xx.x)  Preferred Term #2            xx ( xx.x)xx ( xx.x)Treatment-emergent adverse events include adverse events that started between the date of first dose and xx days after the date of last dose.  
-[a] Coded using MedDRA version xx.x. A subject is counted only once for multiple events within preferred term/system organ class.
-
-Program Path: S:\DEV\projects\...\Tables\XXXXXXX.sas
-Data Source: 							Data extract Date:					RunTime: DDMONYYYY:HH:MM
-
-
-Allowable modifications: Refer to allowable modifications at top of document for more guidance.
-Celgene 		                                                                  		                                Page X of Y
-Study/Protocol: XXX-XXX-XXX                                                              		            Database Cutoff Date: DDMONYYYY
-Table 14.3.1.3A
-Treatment-emergent Adverse Events (TEAEs) and Exposure Adjusted Incidence Rate by System Organ Class and Preferred Term
-Safety Population 
-Trt1Trt2System Organ Class(N=XXX)(N=XXX)  Preferred Term [a]n (%)EAIR [b]n (%)EAIR [b]Subjects With at Least One TEAExx ( xx.x) xx.xxxx ( xx.x) xx.xx                               System Organ Class #1          xx ( xx.x) xx.xxxx ( xx.x) xx.xx  Preferred Term #1            xx ( xx.x) xx.xxxx ( xx.x) xx.xx  Preferred Term #2            xx ( xx.x) xx.xxxx ( xx.x) xx.xxSystem Organ Class #2          xx ( xx.x) xx.xxxx ( xx.x) xx.xx  Preferred Term #1            xx ( xx.x) xx.xxxx ( xx.x) xx.xx  Preferred Term #2            xx ( xx.x) xx.xxxx ( xx.x) xx.xxSystem Organ Class #3          xx ( xx.x) xx.xxxx ( xx.x) xx.xx  Preferred Term #1            xx ( xx.x) xx.xxxx ( xx.x) xx.xx  Preferred Term #2            xx ( xx.x) xx.xxxx ( xx.x) xx.xxSystem Organ Class #4          xx ( xx.x) xx.xxxx ( xx.x) xx.xx  Preferred Term #1            xx ( xx.x) xx.xxxx ( xx.x) xx.xx  Preferred Term #2            xx ( xx.x) xx.xxxx ( xx.x) xx.xxTreatment-emergent adverse events include adverse events that started between the date of first dose and xx days after the date of last dose.  
-[a] Coded using MedDRA version xx.x. A subject is counted only once for multiple events within preferred term/system organ class.
-[b] Exposure adjusted incidence rate (EAIR) per 100 person-years is 100 times the number of subjects with the specific TEAE divided by the total exposure time (in years) to the event. Exposure time is the TEAE follow-up time for subjects without the event and the time up to the first event start date for subjects with the event.
-
-Program Path: S:\DEV\projects\...\Tables\XXXXXXX.sas  
-Data Source: 							Data extract Date:					RunTime: DDMONYYYY:HH:MM
-
-Allowable modifications: Calculation of total exposure time and EAIR may change as deemed necessary by study team. Refer to allowable modifications at top of document for more guidance.
-
-
-Celgene                                                                             		                                Page X of Y
-Study/Protocol: XXX-XXX-XXX                                                              		            Database Cutoff Date: DDMONYYYY
-Table 14.3.1.4
-Treatment-emergent Adverse Events (TEAEs) Related to Study Drug by Treatment, System Organ Class and Preferred Term
-Safety Population
-Trt1Trt2System Organ Class(N=XXX)(N=XXX)  Preferred Term [a]n (%)n (%)Subjects With at Least One TEAE Related to Study Drugxx ( xx.x)xx ( xx.x)                               System Organ Class #1          xx ( xx.x)xx ( xx.x)  Preferred Term #1            xx ( xx.x)xx ( xx.x)  Preferred Term #2            xx ( xx.x)xx ( xx.x)System Organ Class #2          xx ( xx.x)xx ( xx.x)  Preferred Term #1            xx ( xx.x)xx ( xx.x)  Preferred Term #2            xx ( xx.x)xx ( xx.x)System Organ Class #3          xx ( xx.x)xx ( xx.x)  Preferred Term #1            xx ( xx.x)xx ( xx.x)  Preferred Term #2            xx ( xx.x)xx ( xx.x)System Organ Class #4          xx ( xx.x)xx ( xx.x)  Preferred Term #1            xx ( xx.x)xx ( xx.x)  Preferred Term #2            xx ( xx.x)xx ( xx.x)Treatment-emergent adverse events include adverse events that started between the date of first dose and xx days after the date of last dose.  
-[a] Coded using MedDRA version xx.x. A subject is counted only once for multiple events within preferred term/system organ class.
-
-Program Path: S:\DEV\projects\...\Tables\XXXXXXX.sas
-Data Source: 							Data extract Date:					RunTime: DDMONYYYY:HH:MM
-
-Allowable modifications: Refer to allowable modifications at top of document for more guidance.
-
-Celgene                                                                             		                                Page X of Y
-Study/Protocol: XXX-XXX-XXX                                                              		            Database Cutoff Date: DDMONYYYY
-Table 14.3.1.5
-Grade 3/4 Treatment-emergent Adverse Events (TEAEs) by Treatment, System Organ Class and Preferred Term
-Safety Population
-Trt1Trt2System Organ Class(N=XXX)(N=XXX)  Preferred Term [a]n (%)n (%)Subjects With at Least One Grade 3/4 [b] TEAExx ( xx.x)xx ( xx.x)                               System Organ Class #1          xx ( xx.x)xx ( xx.x)  Preferred Term #1            xx ( xx.x)xx ( xx.x)  Preferred Term #2            xx ( xx.x)xx ( xx.x)System Organ Class #2          xx ( xx.x)xx ( xx.x)  Preferred Term #1            xx ( xx.x)xx ( xx.x)  Preferred Term #2            xx ( xx.x)xx ( xx.x)System Organ Class #3          xx ( xx.x)xx ( xx.x)  Preferred Term #1            xx ( xx.x)xx ( xx.x)  Preferred Term #2            xx ( xx.x)xx ( xx.x)System Organ Class #4          xx ( xx.x)xx ( xx.x)  Preferred Term #1            xx ( xx.x)xx ( xx.x)  Preferred Term #2            xx ( xx.x)xx ( xx.x)Treatment-emergent adverse events include adverse events that started between the date of first dose and xx days after the date of last dose.  
-[a] Coded using MedDRA version xx.x. A subject is counted only once for multiple events within preferred term/system organ class.
-[b] Graded using Common Terminology Criteria for Adverse Events (CTCAE) version x.x.
-
-Program Path: S:\DEV\projects\...\Tables\XXXXXXX.sas
-Data Source: 							Data extract Date:					RunTime: DDMONYYYY:HH:MM
-
-Allowable modifications: Refer to allowable modifications at top of document for more guidance.
-
- 
-Celgene                                                                             		                                Page X of Y
-Study/Protocol: XXX-XXX-XXX                                                              		            Database Cutoff Date: DDMONYYYY
-Table 14.3.1.6
-Treatment-emergent Adverse Events (TEAEs) by Treatment, System Organ Class, Preferred Term and Maximum Severity
-Safety Population
-Trt1 (N=XXX)Maximum Severity [b]System Organ Class  Grade 1 -
-MildGrade 2 -
-ModerateGrade 3 -
-SevereGrade 4 -
-Life ThreateningGrade 5 -
-DeathTotal  Preferred Term [a]n (%)n (%)n (%)n (%)n (%)n (%)Subjects With at Least One TEAE by Maximum CTCAE gradexx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)                               System Organ Class #1          xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)  Preferred Term #1            xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)  Preferred Term #2            xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)System Organ Class #2          xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)  Preferred Term #1            xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)  Preferred Term #2            xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)System Organ Class #3          xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)  Preferred Term #1            xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)  Preferred Term #2            xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)System Organ Class #4          xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)  Preferred Term #1            xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)  Preferred Term #2            xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)Treatment-emergent adverse events include adverse events that started between the date of first dose and xx days after the date of last dose.  
-[a] Coded using MedDRA version xx.x. A subject with multiple TEAEs within a preferred term/system organ class is counted once for that preferred term/system organ class at the maximum severity.
-[b] Graded using Common Terminology Criteria for Adverse Events (CTCAE) version x.x.
-
-Program Path: S:\DEV\projects\...\Tables\XXXXXXX.sas
-Data Source: 							Data extract Date:					RunTime: DDMONYYYY:HH:MM
-
-Note to Programming: Repeat for Trt2
-
-Allowable modifications: May merge severity categories or add severity categories (like grade 3/4) if deemed necessary by study team. If not using CTCAE grading drop footnote [b] and grades in the column headings. Refer to allowable modifications at top of document for more guidance.
-Celgene 												                                Page X of Y
-Study/Protocol: XXX-XXX-XXX                                                              		            Database Cutoff Date: DDMONYYYY
-Table 14.3.1.6A
-Treatment-emergent Adverse Events (TEAEs) and Exposure Adjusted Incidence Rate by Treatment, System Organ Class, Preferred Term and Maximum Severity
-Safety Population
- Trt1 (N=XXX) System Organ ClassGrade 1 -
-Mild [c] Grade 2 -
-Moderate [c]Grade 3 -
-Severe [c]Grade 4 -
-Life Threatening [c]Grade 5 -
-Death [c]
-   Preferred Term [a]   n (%)EAIR [b]   n (%)EAIR [b]   n (%)EAIR [b]   n (%)EAIR [b]   n (%)EAIR [b]Any TEAExx ( xx.x)xx.xxxx ( xx.x)xx.xxxx ( xx.x)xx.xxxx ( xx.x)xx.xxxx ( xx.x)xx.xxSystem organ class #1xx ( xx.x)xx.xxxx ( xx.x)xx.xxxx ( xx.x)xx.xxxx ( xx.x)xx.xxxx ( xx.x)xx.xx  Preferred term #1xx ( xx.x)xx.xxxx ( xx.x)xx.xxxx ( xx.x)xx.xxxx ( xx.x)xx.xxxx ( xx.x)xx.xx  Preferred term #2xx ( xx.x)xx.xxxx ( xx.x)xx.xxxx ( xx.x)xx.xxxx ( xx.x)xx.xxxx ( xx.x)xx.xx  Etc.System organ class #2xx ( xx.x)xx.xxxx ( xx.x)xx.xxxx ( xx.x)xx.xxxx ( xx.x)xx.xxxx ( xx.x)xx.xx  Preferred term #3xx ( xx.x)xx.xxxx ( xx.x)xx.xxxx ( xx.x)xx.xxxx ( xx.x)xx.xxxx ( xx.x)xx.xx  Preferred term #4xx ( xx.x)xx.xxxx ( xx.x)xx.xxxx ( xx.x)xx.xxxx ( xx.x)xx.xxxx ( xx.x)xx.xx  Etc.Etc.Treatment-emergent adverse events include adverse events that started between the date of first dose and xx days after the date of last dose.  
-[a] Coded using MedDRA version xx.x. A subject with multiple TEAEs within a preferred term/system organ class is counted once for that preferred term/system organ class at the maximum severity.
-[b] Exposure adjusted incidence rate (EAIR) per 100 person-years is 100 times the number of subjects with the specific TEAE divided by the total exposure time (in years) to the event. Exposure time is the TEAE follow-up time for subjects without the event and the time up to the first event start date for subjects with the event.
-[c] Graded using Common Terminology Criteria for Adverse Events (CTCAE) version x.x.
-
-Program Path: S:\DEV\projects\...\Tables\XXXXXXX.sas
-Data Source: 							Data extract Date:					RunTime: DDMONYYYY:HH:MM
-
-Allowable modifications: May add total column per treatment is deemed necessary by study team. Calculation of total exposure time may change as deemed necessary by study team. EAIR calculations may be modified as deemed necessary by the study team. If not using CTCAE grading drop footnote [d] and grades in the column headings.  Refer to allowable modifications at top of document for more guidance.
-Celgene 												                                Page X of Y
-Study/Protocol: XXX-XXX-XXX                                                              		            Database Cutoff Date: DDMONYYYY
-Table 14.3.1.6B
-Treatment-Emergent Adverse Events (TEAEs) by Treatment, System Organ Class, Preferred Term and Maximum Severity/Intensity
-Safety Population
-System Organ ClassTrt1Trt2  Preferred Term [a](N=XXX)(N=XXX)    Severity/Intensity [b]n (%)n (%)Subjects With at Least One TEAE by Maximum Severity/Intensityxx ( xx.x)xx ( xx.x)    Mild (Grade 1)xx ( xx.x)xx ( xx.x)    Moderate (Grade 2)xx ( xx.x)xx ( xx.x)    Severe (Grade 3)xx ( xx.x)xx ( xx.x)    Life-threatening (Grade 4)xx ( xx.x)xx ( xx.x)    Death (Grade 5)xx ( xx.x)xx ( xx.x)                               System Organ Class #1          xx ( xx.x)xx ( xx.x)    Mild (Grade 1)xx ( xx.x)xx ( xx.x)    Moderate (Grade 2)xx ( xx.x)xx ( xx.x)    Severe (Grade 3)xx ( xx.x)xx ( xx.x)    Life-threatening (Grade 4)xx ( xx.x)xx ( xx.x)    Death (Grade 5)xx ( xx.x)xx ( xx.x)  Preferred Term #1            xx ( xx.x)xx ( xx.x)    Mild (Grade 1)xx ( xx.x)xx ( xx.x)    Moderate (Grade 2)xx ( xx.x)xx ( xx.x)    Severe (Grade 3)xx ( xx.x)xx ( xx.x)    Life-threatening (Grade 4)xx ( xx.x)xx ( xx.x)    Death (Grade 5)xx ( xx.x)xx ( xx.x)  Preferred Term #2            xx ( xx.x)xx ( xx.x)Treatment-emergent adverse events include adverse events that started between the date of first dose and xx days after the date of last dose.  
-[a] Coded using MedDRA version xx.x. A subject with multiple TEAEs within a preferred term/system organ class is counted once for that preferred term/system organ class at the maximum intensity.
-[b] Graded using Common Terminology Criteria for Adverse Events (CTCAE) version x.x.
-
-Program Path: S:\DEV\projects\...\Tables\XXXXXXX.sas 
-Data Source: 							Data extract Date:					RunTime: DDMONYYYY:HH:MM
-
-Allowable modifications: May merge severity categories if deemed necessary by study team.  If not using CTCAE grading drop footnote [b] and grades in the row headings. Refer to allowable modifications at top of document for more guidance. 
-Celgene 		                                                                  		                                Page X of Y
-Study/Protocol: XXX-XXX-XXX                                                              		            Database Cutoff Date: DDMONYYYY
-Table 14.3.1.6C
-Treatment-Emergent Adverse Events (TEAEs) and Exposure Adjusted Incidence Rate by Treatment, System Organ Class, Preferred Term and Maximum Severity/Intensity
-Safety Population
-System Organ ClassTrt1Trt2  Preferred Term [a](N=XXX)(N=XXX)    Intensity [b]    n (%)EAIR [c]   n (%)EAIR [c]Subjects With at Least One TEAE by Maximum Severity/Intensityxx ( xx.x)xx.xxxx ( xx.x)xx.xx    Mild (Grade 1)xx ( xx.x)xx.xxxx ( xx.x)xx.xx    Moderate (Grade 2)xx ( xx.x)xx.xxxx ( xx.x)xx.xx    Severe (Grade 3)xx ( xx.x)xx.xxxx ( xx.x)xx.xx    Life-threatening (Grade 4)xx ( xx.x)xx.xxxx ( xx.x)xx.xx    Death (Grade 5)xx ( xx.x)xx.xxxx ( xx.x)xx.xx                               System Organ Class #1          xx ( xx.x)xx.xxxx ( xx.x)xx.xx    Mild (Grade 1)xx ( xx.x)xx.xxxx ( xx.x)xx.xx    Moderate (Grade 2)xx ( xx.x)xx.xxxx ( xx.x)xx.xx    Severe (Grade 3)xx ( xx.x)xx.xxxx ( xx.x)xx.xx    Life-threatening (Grade 4)xx ( xx.x)xx.xxxx ( xx.x)xx.xx    Death (Grade 5)xx ( xx.x)xx.xxxx ( xx.x)xx.xx  Preferred Term #1            xx ( xx.x)xx.xxxx ( xx.x)xx.xx    Mild (Grade 1)xx ( xx.x)xx.xxxx ( xx.x)xx.xx    Moderate (Grade 2)xx ( xx.x)xx.xxxx ( xx.x)xx.xx    Severe (Grade 3)xx ( xx.x)xx.xxxx ( xx.x)xx.xx    Life-threatening (Grade 4)xx ( xx.x)xx.xxxx ( xx.x)xx.xx    Death (Grade 5)xx ( xx.x)xx.xxxx ( xx.x)xx.xx  Preferred Term #2            xx ( xx.x)xx.xxxx ( xx.x)xx.xxTreatment-emergent adverse events include adverse events that started between the date of first dose and xx days after the date of last dose.  
-[a] Coded using MedDRA version xx.x. A subject with multiple TEAEs within a preferred term/system organ class is counted once for that preferred term/system organ class at the maximum intensity.
-[b] Graded using Common Terminology Criteria for Adverse Events (CTCAE) version x.x.
-[c] Exposure adjusted incidence rate (EAIR) per 100 person-years is 100 times the number of subjects with the specific TEAE divided by the total exposure time (in years) to the event. Exposure time is the TEAE follow-up time for subjects without the event and the time up to the first event start date for subjects with the event.
-
-Program Path: S:\DEV\projects\...\Tables\XXXXXXX.sas 
-Data Source: 							Data extract Date:					RunTime: DDMONYYYY:HH:MM
-
-Allowable modifications: EAIR calculations may be modified as deemed necessary by the study team. If not using CTCAE grading drop footnote [b] and grades in the row headings. May merge severity categories if deemed necessary by study team.  Refer to allowable modifications at top of document for more guidance.
-Celgene                                                                             		                                Page X of Y
-Study/Protocol: XXX-XXX-XXX                                                              		            Database Cutoff Date: DDMONYYYY
-Table 14.3.1.7
-Treatment-emergent Adverse Events (TEAEs) by Treatment, System Organ Class, Preferred Term and Age Group
-Safety Population 
- Age Group (years): <65
-Trt1Trt2System Organ Class(N=XXX)(N=XXX)  Preferred Term [a]n (%)n (%)Subjects With at Least One TEAExx ( xx.x)xx ( xx.x)                               System Organ Class #1          xx ( xx.x)xx ( xx.x)  Preferred Term #1            xx ( xx.x)xx ( xx.x)  Preferred Term #2            xx ( xx.x)xx ( xx.x)System Organ Class #2          xx ( xx.x)xx ( xx.x)  Preferred Term #1            xx ( xx.x)xx ( xx.x)  Preferred Term #2            xx ( xx.x)xx ( xx.x)System Organ Class #3          xx ( xx.x)xx ( xx.x)  Preferred Term #1            xx ( xx.x)xx ( xx.x)  Preferred Term #2            xx ( xx.x)xx ( xx.x)System Organ Class #4          xx ( xx.x)xx ( xx.x)  Preferred Term #1            xx ( xx.x)xx ( xx.x)  Preferred Term #2            xx ( xx.x)xx ( xx.x)Treatment-emergent adverse events include adverse events that started between the date of first dose and xx days after the date of last dose.  
-[a] Coded using MedDRA version xx.x. A subject is counted only once for multiple events within preferred term/system organ class. 
-
-Program Path: S:\DEV\projects\...\Tables\XXXXXXX.sas
-Data Source: 							Data extract Date:					RunTime: DDMONYYYY:HH:MM
-
-Allowable modifications: May change Age group categories as deemed necessary by team, but categories must include all subjects. Refer to allowable modifications at top of document for more guidance.
-Celgene 		                                                                  		                                Page X of Y
-Study/Protocol: XXX-XXX-XXX                                                              		            Database Cutoff Date: DDMONYYYY
-Table 14.3.1.7A
-Treatment-emergent Adverse Events (TEAEs) and Exposure Adjusted Incidence Rate by Treatment, System Organ Class, Preferred Term and Age Group
-Safety Population 
- Age Group (years): <65
-Trt1Trt2System Organ Class(N=XXX)(N=XXX)  Preferred Term [a]   n (%)EAIR [b]
-   n (%)EAIR [b] 
-Subjects With at Least One TEAExx ( xx.x)xx.xxxx ( xx.x)xx.xx                               System Organ Class #1          xx ( xx.x)xx.xxxx ( xx.x)xx.xx  Preferred Term #1            xx ( xx.x)xx.xxxx ( xx.x)xx.xx  Preferred Term #2            xx ( xx.x)xx.xxxx ( xx.x)xx.xxSystem Organ Class #2          xx ( xx.x)xx.xxxx ( xx.x)xx.xx  Preferred Term #1            xx ( xx.x)xx.xxxx ( xx.x)xx.xx  Preferred Term #2            xx ( xx.x)xx.xxxx ( xx.x)xx.xxSystem Organ Class #3          xx ( xx.x)xx.xxxx ( xx.x)xx.xx  Preferred Term #1            xx ( xx.x)xx.xxxx ( xx.x)xx.xx  Preferred Term #2            xx ( xx.x)xx.xxxx ( xx.x)xx.xxSystem Organ Class #4          xx ( xx.x)xx.xxxx ( xx.x)xx.xx  Preferred Term #1            xx ( xx.x)xx.xxxx ( xx.x)xx.xx  Preferred Term #2            xx ( xx.x)xx.xxxx ( xx.x)xx.xxTreatment-emergent adverse events include adverse events that started between the date of first dose and xx days after the date of last dose.  
-[a] Coded using MedDRA version xx.x. A subject is counted only once for multiple events within preferred term/system organ class. 
-[b] Exposure adjusted incidence rate (EAIR) per 100 person-years is 100 times the number of subjects with the specific TEAE divided by the total exposure time (in years) to the event. Exposure time is the TEAE follow-up time for subjects without the event and the time up to the first event start date for subjects with the event.
-
-Program Path: S:\DEV\projects\...\Tables\XXXXXXX.sas
-Data Source: 							Data extract Date:					RunTime: DDMONYYYY:HH:MM
-
-Allowable modifications: May change Age group categories as deemed necessary by team, but categories must include all subjects. Calculation of total exposure time may be changed or dropped as deemed necessary by study team. EAIR calculations may be modified as deemed necessary by the study team. Refer to allowable modifications at top of document for more guidance. 
-
-Celgene                                                                             		                                Page X of Y
-Study/Protocol: XXX-XXX-XXX                                                              		            Database Cutoff Date: DDMONYYYY
-Table 14.3.1.8
-Treatment-emergent Adverse Events (TEAEs) by Treatment, System Organ Class, Preferred Term and Sex
-Safety Population
-Trt1Trt2(N=XXX)(N=XXX)MaleFemaleMaleFemaleSystem Organ Class(N=XXX)(N=XXX)(N=XXX)(N=XXX)  Preferred Term [a]n (%)n (%)n (%)n (%)Subjects With at Least One TEAExx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)                               System Organ Class #1          xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)  Preferred Term #1            xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)  Preferred Term #2            xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)System Organ Class #2          xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)  Preferred Term #1            xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)  Preferred Term #2            xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)System Organ Class #3          xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)  Preferred Term #1            xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)  Preferred Term #2            xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)System Organ Class #4          xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)  Preferred Term #1            xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)  Preferred Term #2            xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)Treatment-emergent adverse events include adverse events that started between the date of first dose and xx days after the date of last dose.  
-[a] Coded using MedDRA version xx.x. A subject is counted only once for multiple events within preferred term/system organ class.
-
-Program Path: S:\DEV\projects\...\Tables\XXXXXXX.sas
-Data Source: 							Data extract Date:					RunTime: DDMONYYYY:HH:MM
-
-Allowable modifications: Refer to allowable modifications at top of document for more guidance.
-
-Celgene 		                                                                  		                                Page X of Y
-Study/Protocol: XXX-XXX-XXX                                                              		            Database Cutoff Date: DDMONYYYY
-Table 14.3.1.8A
-Treatment-emergent Adverse Events (TEAEs) and Exposure Adjusted Incidence Rate by Treatment, System Organ Class, Preferred Term and Sex
-Safety Population
-Trt1Trt2(N=XXX)(N=XXX)MaleFemaleMaleFemaleSystem Organ Class(N=XXX)(N=XXX)(N=XXX)(N=XXX)  Preferred Term [a]   n (%)EAIR [b]   n (%)EAIR [b]   n (%)EAIR [b]   n (%)EAIR [b]Subjects With at Least One TEAExx ( xx.x)xx.xxxx ( xx.x)xx.xxxx ( xx.x)xx.xxxx ( xx.x)xx.xxSystem Organ Class #1          xx ( xx.x)xx.xxxx ( xx.x)xx.xxxx ( xx.x)xx.xxxx ( xx.x)xx.xx  Preferred Term #1            xx ( xx.x)xx.xxxx ( xx.x)xx.xxxx ( xx.x)xx.xxxx ( xx.x)xx.xx  Preferred Term #2            xx ( xx.x)xx.xxxx ( xx.x)xx.xxxx ( xx.x)xx.xxxx ( xx.x)xx.xxSystem Organ Class #2          xx ( xx.x)xx.xxxx ( xx.x)xx.xxxx ( xx.x)xx.xxxx ( xx.x)xx.xx  Preferred Term #1            xx ( xx.x)xx.xxxx ( xx.x)xx.xxxx ( xx.x)xx.xxxx ( xx.x)xx.xx  Preferred Term #2            xx ( xx.x)xx.xxxx ( xx.x)xx.xxxx ( xx.x)xx.xxxx ( xx.x)xx.xxSystem Organ Class #3          xx ( xx.x)xx.xxxx ( xx.x)xx.xxxx ( xx.x)xx.xxxx ( xx.x)xx.xx  Preferred Term #1            xx ( xx.x)xx.xxxx ( xx.x)xx.xxxx ( xx.x)xx.xxxx ( xx.x)xx.xx  Preferred Term #2            xx ( xx.x)xx.xxxx ( xx.x)xx.xxxx ( xx.x)xx.xxxx ( xx.x)xx.xxSystem Organ Class #4          xx ( xx.x)xx.xxxx ( xx.x)xx.xxxx ( xx.x)xx.xxxx ( xx.x)xx.xx  Preferred Term #1            xx ( xx.x)xx.xxxx ( xx.x)xx.xxxx ( xx.x)xx.xxxx ( xx.x)xx.xx  Preferred Term #2            xx ( xx.x)xx.xxxx ( xx.x)xx.xxxx ( xx.x)xx.xxxx ( xx.x)xx.xxTreatment-emergent adverse events include adverse events that started between the date of first dose and xx days after the date of last dose.  
-[a] Coded using MedDRA version xx.x. A subject is counted only once for multiple events within preferred term/system organ class.
-[b] Exposure adjusted incidence rate (EAIR) per 100 person-years is 100 times the number of subjects with the specific TEAE divided by the total exposure time (in years) to the event. Exposure time is the TEAE follow-up time for subjects without the event and the time up to the first event start date for subjects with the event.
-
-Program Path: S:\DEV\projects\...\Tables\XXXXXXX.sas
-Data Source: 							Data extract Date:					RunTime: DDMONYYYY:HH:MM
-
-Allowable modifications: EAIR calculations may be modified as deemed necessary by the study team. Refer to allowable modifications at top of document for more guidance.
-
-Celgene                                                                             		                                Page X of Y
-Study/Protocol: XXX-XXX-XXX                                                              		            Database Cutoff Date: DDMONYYYY
-Table 14.3.1.9
-Treatment-emergent Adverse Events (TEAEs) by Treatment and Decreasing Frequency of Preferred Term
-Safety Population
-Trt1Trt2(N=XXX)(N=XXX)Preferred Term [a]n (%)n (%)Subjects With at Least One TEAExx ( xx.x)xx ( xx.x)Preferred Term #1            xx ( xx.x)xx ( xx.x)Preferred Term #2            xx ( xx.x)xx ( xx.x)Preferred Term #3            xx ( xx.x)xx ( xx.x)Preferred Term #4            xx ( xx.x)xx ( xx.x)Preferred Term #5            xx ( xx.x)xx ( xx.x)Preferred Term #6            xx ( xx.x)xx ( xx.x)Preferred Term #7            xx ( xx.x)xx ( xx.x)Preferred Term #8            xx ( xx.x)xx ( xx.x)Frequencies are listed in descending order for the <specify> column. 
-Treatment-emergent adverse events include adverse events that started between the date of first dose and xx days after the date of last dose.  
-[a] Coded using MedDRA version xx.x. A subject is counted only once for multiple events within preferred term.
-
-Program Path: S:\DEV\projects\...\Tables\XXXXXXX.sas
-Data Source: 							Data extract Date:					RunTime: DDMONYYYY:HH:MM
-
-Allowable modifications: Refer to allowable modifications at top of document for more guidance.
-
-Celgene 												                                Page X of Y
-Study/Protocol: XXX-XXX-XXX                                                              		            Database Cutoff Date: DDMONYYYY
-Table 14.3.1.9A
-Treatment-emergent Adverse Events (TEAEs) and Exposure Adjusted Incidence Rate by Treatment and Decreasing Frequency of Preferred Term
-Safety Population
-Trt1Trt2(N=XXX)(N=XXX)  Preferred Term [a]   n (%)EAIR [b]   n (%)EAIR [b]Subjects With at Least One TEAExx ( xx.x)xx.xxxx ( xx.x)xx.xxPreferred Term #1            xx ( xx.x)xx.xxxx ( xx.x)xx.xxPreferred Term #2            xx ( xx.x)xx.xxxx ( xx.x)xx.xxPreferred Term #3            xx ( xx.x)xx.xxxx ( xx.x)xx.xxPreferred Term #4            xx ( xx.x)xx.xxxx ( xx.x)xx.xxPreferred Term #5            xx ( xx.x)xx.xxxx ( xx.x)xx.xxPreferred Term #6            xx ( xx.x)xx.xxxx ( xx.x)xx.xxPreferred Term #7            xx ( xx.x)xx.xxxx ( xx.x)xx.xxPreferred Term #8            xx ( xx.x)xx.xxxx ( xx.x)xx.xxFrequencies are listed in descending order for the <specify> column. 
-Treatment-emergent adverse events include adverse events that started between the date of first dose and xx days after the date of last dose.  
-[a] Coded using MedDRA version xx.x. A subject is counted only once for multiple events within preferred term.
-[b] Exposure adjusted incidence rate (EAIR) per 100 person-years is 100 times the number of subjects with the specific TEAE divided by the total exposure time (in years) to the event. Exposure time is the TEAE follow-up time for subjects without the event and the time up to the first event start date for subjects with the event.
-
-Program Path: S:\DEV\projects\...\Tables\XXXXXXX.sas
-Data Source: 							Data extract Date:					RunTime: DDMONYYYY:HH:MM
-
-Allowable modifications: EAIR calculations may be modified as deemed necessary by the study team. Refer to allowable modifications at top of document for more guidance.
-Celgene                                                                             		                                Page X of Y
-Study/Protocol: XXX-XXX-XXX                                                              		            Database Cutoff Date: DDMONYYYY
-Table 14.3.1.10
-Treatment-emergent Adverse Events (TEAEs) by Treatment and Decreasing Frequency of System Organ Class
-Safety Population
-Trt1Trt2(N=XXX)(N=XXX)System Organ Class [a]n (%)n (%)Subjects With at Least One TEAExx ( xx.x)xx ( xx.x)System Organ Class #1            xx ( xx.x)xx ( xx.x)System Organ Class #2            xx ( xx.x)xx ( xx.x)System Organ Class #3            xx ( xx.x)xx ( xx.x)System Organ Class #4            xx ( xx.x)xx ( xx.x)System Organ Class #5            xx ( xx.x)xx ( xx.x)System Organ Class #6            xx ( xx.x)xx ( xx.x)System Organ Class #7            xx ( xx.x)xx ( xx.x)System Organ Class #8            xx ( xx.x)xx ( xx.x)Frequencies are listed in descending order for the <specify> column.
-Treatment-emergent adverse events include adverse events that started between the date of first dose and xx days after the date of last dose.  
-[a] Coded using MedDRA version xx.x. A subject is counted only once for multiple events within system organ class.
-
-Program Path: S:\DEV\projects\...\Tables\XXXXXXX.sas
-Data Source: 							Data extract Date:					RunTime: DDMONYYYY:HH:MM
-
-Allowable modifications: Refer to allowable modifications at top of document for more guidance.
-Celgene                                                                             		                                Page X of Y
-Study/Protocol: XXX-XXX-XXX                                                              		            Database Cutoff Date: DDMONYYYY
-Table 14.3.1.11
-Treatment-emergent Adverse Events (TEAEs) by Treatment, System Organ Class, Preferred Term and Exposure Interval of Onset
-Safety Population
-Treatment Interval #1
-Trt1Trt2System Organ Class(N=XXX)(N=XXX)  Preferred Term [a]n (%)n (%)Subjects With at Least One TEAExx ( xx.x)xx ( xx.x)                               System Organ Class #1          xx ( xx.x)xx ( xx.x)  Preferred Term #1            xx ( xx.x)xx ( xx.x)  Preferred Term #2            xx ( xx.x)xx ( xx.x)System Organ Class #2          xx ( xx.x)xx ( xx.x)  Preferred Term #1            xx ( xx.x)xx ( xx.x)  Preferred Term #2            xx ( xx.x)xx ( xx.x)System Organ Class #3          xx ( xx.x)xx ( xx.x)  Preferred Term #1            xx ( xx.x)xx ( xx.x)  Preferred Term #2            xx ( xx.x)xx ( xx.x)System Organ Class #4          xx ( xx.x)xx ( xx.x)  Preferred Term #1            xx ( xx.x)xx ( xx.x)  Preferred Term #2            xx ( xx.x)xx ( xx.x)Treatment-emergent adverse events include adverse events that started between the date of first dose and xx days after the date of last dose.  
-[a] Coded using MedDRA version xx.x. A subject is counted only once for multiple events within preferred term/system organ class/interval.
-
-Program Path: S:\DEV\projects\...\Tables\XXXXXXX.sas                                         
-Data Source: 							Data extract Date:					RunTime: DDMONYYYY:HH:MM
-Note to Programming: Repeat for all specified time intervals. 
-
-Allowable modifications: Exposure Intervals can be in terms of cycle, of time from first exposure as deemed necessary by study team. Refer to allowable modifications at top of document for more guidance. 
-Celgene 		                                                                  		                                Page X of Y
-Study/Protocol: XXX-XXX-XXX                                                              		            Database Cutoff Date: DDMONYYYY
-Table 14.3.1.11A
-Treatment-emergent Adverse Events (TEAEs) and Exposure Adjusted Incidence Rate by Exposure Interval, System Organ Class and Preferred Term 
-Safety Population
-Trt1(N=XXX)
-Exposure IntervalInterval #1Interval #2Interval #3Interval #4System Organ Class(N=XXX)(N=XXX)(N=XXX)(N=XXX)  Preferred Term [a]   n (%)EAIR [b]   n (%)EAIR [b]   n (%)EAIR [b]   n (%)EAIR [b]Subjects With at Least One TEAExx ( xx.x)xx.xxxx ( xx.x)xx.xxxx ( xx.x)xx.xxxx ( xx.x)xx.xxSystem Organ Class #1          xx ( xx.x)xx.xxxx ( xx.x)xx.xxxx ( xx.x)xx.xxxx ( xx.x)xx.xx  Preferred Term #1            xx ( xx.x)xx.xxxx ( xx.x)xx.xxxx ( xx.x)xx.xxxx ( xx.x)xx.xx  Preferred Term #2            xx ( xx.x)xx.xxxx ( xx.x)xx.xxxx ( xx.x)xx.xxxx ( xx.x)xx.xxSystem Organ Class #2          xx ( xx.x)xx.xxxx ( xx.x)xx.xxxx ( xx.x)xx.xxxx ( xx.x)xx.xx  Preferred Term #1            xx ( xx.x)xx.xxxx ( xx.x)xx.xxxx ( xx.x)xx.xxxx ( xx.x)xx.xx  Preferred Term #2            xx ( xx.x)xx.xxxx ( xx.x)xx.xxxx ( xx.x)xx.xxxx ( xx.x)xx.xxSystem Organ Class #3          xx ( xx.x)xx.xxxx ( xx.x)xx.xxxx ( xx.x)xx.xxxx ( xx.x)xx.xx  Preferred Term #1            xx ( xx.x)xx.xxxx ( xx.x)xx.xxxx ( xx.x)xx.xxxx ( xx.x)xx.xx  Preferred Term #2            xx ( xx.x)xx.xxxx ( xx.x)xx.xxxx ( xx.x)xx.xxxx ( xx.x)xx.xxSystem Organ Class #4          xx ( xx.x)xx.xxxx ( xx.x)xx.xxxx ( xx.x)xx.xxxx ( xx.x)xx.xx  Preferred Term #1            xx ( xx.x)xx.xxxx ( xx.x)xx.xxxx ( xx.x)xx.xxxx ( xx.x)xx.xx  Preferred Term #2            xx ( xx.x)xx.xxxx ( xx.x)xx.xxxx ( xx.x)xx.xxxx ( xx.x)xx.xxTreatment-emergent adverse events include adverse events that started between the date of first dose and xx days after the date of last dose.  
-[a] Coded using MedDRA version xx.x. A subject is counted only once for multiple events within preferred term/system organ class/interval.
-[b] Exposure adjusted incidence rate (EAIR) per 100 person-years is 100 times the number of subjects with the specific TEAE divided by the total exposure time (in years) to the event. Exposure time is the TEAE follow-up time for subjects without the event and the time up to the first event start date for subjects with the event.
-
-Program Path: S:\DEV\projects\...\Tables\XXXXXXX.sas
-Data Source: 							Data extract Date:					RunTime: DDMONYYYY:HH:MM
-
-Allowable modifications: Exposure Intervals can be in terms of cycle, of time from first exposure as deemed necessary by study team.
-EAIR calculations may be modified as deemed necessary by the study team. Refer to allowable modifications at top of document for more guidance.
-
-Celgene                                                                             		                                Page X of Y
-Study/Protocol: XXX-XXX-XXX                                                              		            Database Cutoff Date: DDMONYYYY
-Table 14.3.1.12
-Pre-treatment Adverse Events by Treatment, System Organ Class and Preferred Term 
-Safety Population
-Trt1Trt2System Organ Class(N=XXX)(N=XXX)  Preferred Term [a]n (%)n (%)Subjects With at Least One Pre-treatment AExx ( xx.x)xx ( xx.x)                               System Organ Class #1          xx ( xx.x)xx ( xx.x)  Preferred Term #1            xx ( xx.x)xx ( xx.x)  Preferred Term #2            xx ( xx.x)xx ( xx.x)System Organ Class #2          xx ( xx.x)xx ( xx.x)  Preferred Term #1            xx ( xx.x)xx ( xx.x)  Preferred Term #2            xx ( xx.x)xx ( xx.x)System Organ Class #3          xx ( xx.x)xx ( xx.x)  Preferred Term #1            xx ( xx.x)xx ( xx.x)  Preferred Term #2            xx ( xx.x)xx ( xx.x)System Organ Class #4          xx ( xx.x)xx ( xx.x)  Preferred Term #1            xx ( xx.x)xx ( xx.x)  Preferred Term #2            xx ( xx.x)xx ( xx.x)Pre-treatment adverse events include adverse events that started on or after the date of informed consent and before the date of first dose of study drug.
-[a] Coded using MedDRA version xx.x. A subject is counted only once for multiple events within preferred term/system organ class.
-
-Program Path: S:\DEV\projects\...\Tables\XXXXXXX.sas 
-Data Source: 							Data extract Date:					RunTime: DDMONYYYY:HH:MM
-
-Allowable modifications: Refer to allowable modifications at top of document for more guidance.
-
-
-Celgene                                                                             		                                Page X of Y
-Study/Protocol: XXX-XXX-XXX                                                              		            Database Cutoff Date: DDMONYYYY
-Table 14.3.1.13
-Non-serious Common Treatment-emergent Adverse Events (TEAEs) by Treatment, System Organ Class and Preferred Term
-Safety Population
-Trt1Trt2System Organ Class(N=XXX)(N=XXX)  Preferred Term [a]n (%)n (%)Subjects With at Least One Nonserious Common TEAExx ( xx.x)xx ( xx.x)                               System Organ Class #1          xx ( xx.x)xx ( xx.x)  Preferred Term #1            xx ( xx.x)xx ( xx.x)  Preferred Term #2            xx ( xx.x)xx ( xx.x)System Organ Class #2          xx ( xx.x)xx ( xx.x)  Preferred Term #1            xx ( xx.x)xx ( xx.x)  Preferred Term #2            xx ( xx.x)xx ( xx.x)System Organ Class #3          xx ( xx.x)xx ( xx.x)  Preferred Term #1            xx ( xx.x)xx ( xx.x)  Preferred Term #2            xx ( xx.x)xx ( xx.x)System Organ Class #4          xx ( xx.x)xx ( xx.x)  Preferred Term #1            xx ( xx.x)xx ( xx.x)  Preferred Term #2            xx ( xx.x)xx ( xx.x)Treatment-emergent adverse events include adverse events that started between the date of first dose and xx days after the date of last dose. 
-Common TEAEs are defined as events occurring for more than 5% of subjects in any treatment group. 
-[a] Coded using MedDRA version 16.1. A subject is counted only once for multiple events within preferred term/system organ class.
-
-Program Path: S:\DEV\projects\...\Tables\XXXXXXX.sas 
-Data Source: 							Data extract Date:					RunTime: DDMONYYYY:HH:MM
-
-Allowable modifications: Refer to allowable modifications at top of document for more guidance. 
-
-
-Celgene                                                                             		                                Page X of Y
-Study/Protocol: XXX-XXX-XXX                                                              		            Database Cutoff Date: DDMONYYYY
-Table 14.3.2.1
-Serious Treatment-emergent Adverse Events (TEAEs) by Treatment, System Organ Class and Preferred Term
-Safety Population
-Trt1Trt2System Organ Class(N=XXX)(N=XXX)  Preferred Term [a]n (%)n (%)Subjects With at Least One Serious TEAExx ( xx.x)xx ( xx.x)                               System Organ Class #1          xx ( xx.x)xx ( xx.x)  Preferred Term #1            xx ( xx.x)xx ( xx.x)  Preferred Term #2            xx ( xx.x)xx ( xx.x)System Organ Class #2          xx ( xx.x)xx ( xx.x)  Preferred Term #1            xx ( xx.x)xx ( xx.x)  Preferred Term #2            xx ( xx.x)xx ( xx.x)System Organ Class #3          xx ( xx.x)xx ( xx.x)  Preferred Term #1            xx ( xx.x)xx ( xx.x)  Preferred Term #2            xx ( xx.x)xx ( xx.x)System Organ Class #4          xx ( xx.x)xx ( xx.x)  Preferred Term #1            xx ( xx.x)xx ( xx.x)  Preferred Term #2            xx ( xx.x)xx ( xx.x)Treatment-emergent adverse events include adverse events that started between the date of first dose and xx days after the date of last dose.  
-[a] Coded using MedDRA version xx.x. A subject is counted only once for multiple events within preferred term/system organ class.
-
-Program Path: S:\DEV\projects\...\Tables\XXXXXXX.sas 
-Data Source: 							Data extract Date:					RunTime: DDMONYYYY:HH:MM
-
-Allowable modifications: Refer to allowable modifications at top of document for more guidance.
-
-Celgene                                                                             		                                Page X of Y
-Study/Protocol: XXX-XXX-XXX                                                              		            Database Cutoff Date: DDMONYYYY
-Table 14.3.2.2
-Serious Treatment-emergent Adverse Events (TEAEs) Related to Study Drug by Treatment, System Organ Class and Preferred Term
-Safety Population
-Trt1Trt2System Organ Class(N=XXX)(N=XXX)  Preferred Term [a]n (%)n (%)Subjects With at Least One Serious TEAE Related to Study Drugxx ( xx.x)xx ( xx.x)                               System Organ Class #1          xx ( xx.x)xx ( xx.x)  Preferred Term #1            xx ( xx.x)xx ( xx.x)  Preferred Term #2            xx ( xx.x)xx ( xx.x)System Organ Class #2          xx ( xx.x)xx ( xx.x)  Preferred Term #1            xx ( xx.x)xx ( xx.x)  Preferred Term #2            xx ( xx.x)xx ( xx.x)System Organ Class #3          xx ( xx.x)xx ( xx.x)  Preferred Term #1            xx ( xx.x)xx ( xx.x)  Preferred Term #2            xx ( xx.x)xx ( xx.x)System Organ Class #4          xx ( xx.x)xx ( xx.x)  Preferred Term #1            xx ( xx.x)xx ( xx.x)  Preferred Term #2            xx ( xx.x)xx ( xx.x)Treatment-emergent adverse events include adverse events that started between the date of first dose and xx days after the date of last dose.  
-[a] Coded using MedDRA version xx.x. A subject is counted only once for multiple events within preferred term/system organ class.
-
-Program Path: S:\DEV\projects\...\Tables\XXXXXXX.sas
-Data Source: 							Data extract Date:					RunTime: DDMONYYYY:HH:MM
-
-Allowable modifications: Refer to allowable modifications at top of document for more guidance.
-
-Celgene                                                                             		                                Page X of Y
-Study/Protocol: XXX-XXX-XXX                                                              		            Database Cutoff Date: DDMONYYYY
-Table 14.3.2.3
-Treatment-emergent Adverse Events (TEAEs) Leading to Death by Treatment, System Organ Class and Preferred Term
-Safety Population
-Trt1Trt2System Organ Class(N=XXX)(N=XXX)  Preferred Term [a]n (%)n (%)Subjects With at Least One TEAE Leading to Death xx ( xx.x)xx ( xx.x)                               System Organ Class #1          xx ( xx.x)xx ( xx.x)  Preferred Term #1            xx ( xx.x)xx ( xx.x)  Preferred Term #2            xx ( xx.x)xx ( xx.x)System Organ Class #2          xx ( xx.x)xx ( xx.x)  Preferred Term #1            xx ( xx.x)xx ( xx.x)  Preferred Term #2            xx ( xx.x)xx ( xx.x)System Organ Class #3          xx ( xx.x)xx ( xx.x)  Preferred Term #1            xx ( xx.x)xx ( xx.x)  Preferred Term #2            xx ( xx.x)xx ( xx.x)System Organ Class #4          xx ( xx.x)xx ( xx.x)  Preferred Term #1            xx ( xx.x)xx ( xx.x)  Preferred Term #2            xx ( xx.x)xx ( xx.x)Treatment-emergent adverse events include adverse events that started between the date of first dose and xx days after the date of last dose.  
-[a] Coded using MedDRA version xx.x. A subject is counted only once for multiple events within preferred term/system organ class.
-
-Program Path: S:\DEV\projects\...\Tables\XXXXXXX.sas
-Data Source: 							Data extract Date:					RunTime: DDMONYYYY:HH:MM
-
-Allowable modifications: Refer to allowable modifications at top of document for more guidance.
-
-Celgene                                                                             		                                Page X of Y
-Study/Protocol: XXX-XXX-XXX                                                              		            Database Cutoff Date: DDMONYYYY
-Table 14.3.2.4
-Treatment-emergent Adverse Events (TEAEs) Leading to Dose Reduction by Treatment, System Organ Class and Preferred Term
-Safety Population
-Trt1Trt2System Organ Class(N=XXX)(N=XXX)  Preferred Term [a]n (%)n (%)Subjects With at Least One TEAE Leading to Dose Reductionxx ( xx.x)xx ( xx.x)                               System Organ Class #1          xx ( xx.x)xx ( xx.x)  Preferred Term #1            xx ( xx.x)xx ( xx.x)  Preferred Term #2            xx ( xx.x)xx ( xx.x)System Organ Class #2          xx ( xx.x)xx ( xx.x)  Preferred Term #1            xx ( xx.x)xx ( xx.x)  Preferred Term #2            xx ( xx.x)xx ( xx.x)System Organ Class #3          xx ( xx.x)xx ( xx.x)  Preferred Term #1            xx ( xx.x)xx ( xx.x)  Preferred Term #2            xx ( xx.x)xx ( xx.x)System Organ Class #4          xx ( xx.x)xx ( xx.x)  Preferred Term #1            xx ( xx.x)xx ( xx.x)  Preferred Term #2            xx ( xx.x)xx ( xx.x)Treatment-emergent adverse events include adverse events that started between the date of first dose and xx days after the date of last dose.  
-[a] Coded using MedDRA version xx.x. A subject is counted only once for multiple events within preferred term/system organ class.
-
-Program Path: S:\DEV\projects\...\Tables\XXXXXXX.sas
-Data Source: 							Data extract Date:					RunTime: DDMONYYYY:HH:MM
-
-Allowable modifications: Refer to allowable modifications at top of document for more guidance.
-
-Celgene                                                                             		                                Page X of Y
-Study/Protocol: XXX-XXX-XXX                                                              		            Database Cutoff Date: DDMONYYYY
-Table 14.3.2.5
-Treatment-emergent Adverse Events (TEAEs) Leading to Dose Interruption by Treatment, System Organ Class and Preferred Term
-Safety Population
-Trt1Trt2System Organ Class(N=XXX)(N=XXX)  Preferred Term [a]n (%)n (%)Subjects With at Least One TEAE Leading to Dose Interruptionxx ( xx.x)xx ( xx.x)                               System Organ Class #1          xx ( xx.x)xx ( xx.x)  Preferred Term #1            xx ( xx.x)xx ( xx.x)  Preferred Term #2            xx ( xx.x)xx ( xx.x)System Organ Class #2          xx ( xx.x)xx ( xx.x)  Preferred Term #1            xx ( xx.x)xx ( xx.x)  Preferred Term #2            xx ( xx.x)xx ( xx.x)System Organ Class #3          xx ( xx.x)xx ( xx.x)  Preferred Term #1            xx ( xx.x)xx ( xx.x)  Preferred Term #2            xx ( xx.x)xx ( xx.x)System Organ Class #4          xx ( xx.x)xx ( xx.x)  Preferred Term #1            xx ( xx.x)xx ( xx.x)  Preferred Term #2            xx ( xx.x)xx ( xx.x)Treatment-emergent adverse events include adverse events that started between the date of first dose and xx days after the date of last dose.  
-[a] Coded using MedDRA version xx.x. A subject is counted only once for multiple events within preferred term/system organ class.
-
-Program Path: S:\DEV\projects\...\Tables\XXXXXXX.sas
-Data Source: 							Data extract Date:					RunTime: DDMONYYYY:HH:MM
-
-Allowable modifications: Refer to allowable modifications at top of document for more guidance.
-
-Celgene                                                                             		                                Page X of Y
-Study/Protocol: XXX-XXX-XXX                                                              		            Database Cutoff Date: DDMONYYYY
-Table 14.3.2.6
-Treatment-emergent Adverse Events (TEAEs) Leading to Study Drug Discontinuation by Treatment, System Organ Class and Preferred Term
-Safety Population
-Trt1Trt2System Organ Class(N=XXX)(N=XXX)  Preferred Term [a]n (%)n (%)Subjects With at Least One TEAE Leading to Study Drug Discontinuationxx ( xx.x)xx ( xx.x)                               System Organ Class #1          xx ( xx.x)xx ( xx.x)  Preferred Term #1            xx ( xx.x)xx ( xx.x)  Preferred Term #2            xx ( xx.x)xx ( xx.x)System Organ Class #2          xx ( xx.x)xx ( xx.x)  Preferred Term #1            xx ( xx.x)xx ( xx.x)  Preferred Term #2            xx ( xx.x)xx ( xx.x)System Organ Class #3          xx ( xx.x)xx ( xx.x)  Preferred Term #1            xx ( xx.x)xx ( xx.x)  Preferred Term #2            xx ( xx.x)xx ( xx.x)System Organ Class #4          xx ( xx.x)xx ( xx.x)  Preferred Term #1            xx ( xx.x)xx ( xx.x)  Preferred Term #2            xx ( xx.x)xx ( xx.x)Treatment-emergent adverse events include adverse events that started between the date of first dose and xx days after the date of last dose.  
-[a] Coded using MedDRA version xx.x. A subject is counted only once for multiple events within preferred term/system organ class.
-
-Program Path: S:\DEV\projects\...\Tables\XXXXXXX.sas 
-Data Source: 							Data extract Date:					RunTime: DDMONYYYY:HH:MM
-
-Allowable modifications: Refer to allowable modifications at top of document for more guidance. 
-
-Celgene                                                                             		                                Page X of Y
-Study/Protocol: XXX-XXX-XXX                                                              		            Database Cutoff Date: DDMONYYYY
-Table 14.3.2.7
-Summary of Deaths and Causes by Treatment
-Safety Population
-Trt1Trt2(N=XXX)(N=XXX)Primary Causen (%)n (%)Overall Number of Deathsxx ( xx.x)xx ( xx.x)Cause of Deathxx ( xx.x)xx ( xx.x)    Primary Cause 1xx ( xx.x)xx ( xx.x)    Primary Cause 2xx ( xx.x)xx ( xx.x)    Primary Cause 3xx ( xx.x)xx ( xx.x)    Primary Cause 4xx ( xx.x)xx ( xx.x)    Primary Cause 5xx ( xx.x)xx ( xx.x)Death   On Treatmentxx ( xx.x)xx ( xx.x)    Primary Cause 1xx ( xx.x)xx ( xx.x)    Primary Cause 2xx ( xx.x)xx ( xx.x)    Primary Cause 3xx ( xx.x)xx ( xx.x)    Primary Cause 4xx ( xx.x)xx ( xx.x)    Primary Cause 5xx ( xx.x)xx ( xx.x)  During Follow-upxx ( xx.x)xx ( xx.x)    Primary Cause 1xx ( xx.x)xx ( xx.x)    Primary Cause 2xx ( xx.x)xx ( xx.x)    Primary Cause 3xx ( xx.x)xx ( xx.x)    Primary Cause 4xx ( xx.x)xx ( xx.x)    Primary Cause 5xx ( xx.x)xx ( xx.x)Frequencies are listed in descending order for the Trt1 column.
-
-Program Path: S:\DEV\projects\...\Tables\XXXXXXX.sas
-Data Source: 							Data extract Date:					RunTime: DDMONYYYY:HH:MM
-
-Allowable modifications: Refer to allowable modifications at top of document for more guidance. 
-
-
-Celgene                                                                             		                                Page X of Y
-Study/Protocol: XXX-XXX-XXX                                                              		            Database Cutoff Date: DDMONYYYY
-Table 14.3.2.8
-Serious Treatment-emergent Adverse Events (TEAEs) by Seriousness Criteria
-Safety Population
-Trt1Trt2(N=XXX)(N=XXX)Seriousness Criterian (%)n (%)Subjects With at Least One Serious TEAExx ( xx.x)xx ( xx.x)                               Resulted in Death xx ( xx.x)xx ( xx.x)Life threatening            xx ( xx.x)xx ( xx.x)Inpatient hospitalization or prolongation of existing hospitalizationxx ( xx.x)xx ( xx.x)Persistent or Significant Disability/Incapacityxx ( xx.x)xx ( xx.x)Congenital Anomaly/Birth Defectxx ( xx.x)xx ( xx.x)Medically Importantxx ( xx.x)xx ( xx.x)Treatment-emergent adverse events include adverse events that started between the date of first dose and xx days after the date of last dose.  
-
-Program Path: S:\DEV\projects\...\Tables\XXXXXXX.sas
-Data Source: 							Data extract Date:					RunTime: DDMONYYYY:HH:MM
-
-
-Allowable modifications: Use the seriousness criteria as captured in the CRF. Refer to allowable modifications at top of document for more guidance.
-
-
-Celgene                                                                             		                                Page X of Y
-Study/Protocol: XXX-XXX-XXX                                                              		            Database Cutoff Date: DDMONYYYY
-Table 14.3.2.9
-Serious Treatment-emergent Adverse Events (TEAEs) by Treatment, Seriousness Criteria, System Organ Class and Preferred Term
-Safety Population
-Seriousness CriteriaTrt1Trt2  System Organ Class(N=XXX)(N=XXX)    Preferred Term [a]n (%)n (%)Subjects With at Least One Serious TEAE xx ( xx.x)xx ( xx.x)                               Subjects with at Least One Serious TEAE with Seriousness Criteria of:                                Resulted in Deathxx ( xx.x)xx ( xx.x)  System Organ Class #1          xx ( xx.x)xx ( xx.x)    Preferred Term #1            xx ( xx.x)xx ( xx.x)    Preferred Term #2            xx ( xx.x)xx ( xx.x)Life threateningxx ( xx.x)xx ( xx.x)  System Organ Class #1          xx ( xx.x)xx ( xx.x)    Preferred Term #1            xx ( xx.x)xx ( xx.x)    Preferred Term #2            xx ( xx.x)xx ( xx.x)Inpatient hospitalization or prolongation of existing hospitalizationxx ( xx.x)xx ( xx.x)  System Organ Class #1          xx ( xx.x)xx ( xx.x)    Preferred Term #1            xx ( xx.x)xx ( xx.x)    Preferred Term #2            xx ( xx.x)xx ( xx.x)Treatment-emergent adverse events include adverse events that started between the date of first dose and xx days after the date of last dose.  
-[a] Coded using MedDRA version xx.x. A subject is counted only once for multiple events within seriousness criteria/preferred term/system organ class.
-
-Program Path: S:\DEV\projects\...\Tables\XXXXXXX.sas
-Data Source: 							Data extract Date:					RunTime: DDMONYYYY:HH:MM
-
-Allowable modifications: Use the seriousness criteria as captured in the CRF. Refer to allowable modifications at top of document for more guidance.
-
-
-Celgene                                                                             		                                Page X of Y
-Study/Protocol: XXX-XXX-XXX                                                              		            Database Cutoff Date: DDMONYYYY
-Table 14.3.2.10
-Serious Treatment-emergent Adverse Events (TEAEs) Related to <Study Drug> by Treatment, Seriousness Criteria, System Organ Class and Preferred Term
-Safety Population
-Seriousness CriteriaTrt1Trt2  System Organ Class(N=XXX)(N=XXX)    Preferred Term [a]n (%)n (%)Subjects With at Least One Serious TEAE xx ( xx.x)xx ( xx.x)                               Subjects with at Least One Serious TEAE with Seriousness Criteria of:                                Resulted in Deathxx ( xx.x)xx ( xx.x)  System Organ Class #1          xx ( xx.x)xx ( xx.x)    Preferred Term #1            xx ( xx.x)xx ( xx.x)    Preferred Term #2            xx ( xx.x)xx ( xx.x)Life threateningxx ( xx.x)xx ( xx.x)  System Organ Class #1          xx ( xx.x)xx ( xx.x)    Preferred Term #1            xx ( xx.x)xx ( xx.x)    Preferred Term #2            xx ( xx.x)xx ( xx.x)Inpatient hospitalization or prolongation of existing hospitalizationxx ( xx.x)xx ( xx.x)  System Organ Class #1          xx ( xx.x)xx ( xx.x)    Preferred Term #1            xx ( xx.x)xx ( xx.x)    Preferred Term #2            xx ( xx.x)xx ( xx.x)Treatment-emergent adverse events include adverse events that started between the date of first dose and xx days after the date of last dose.  
-[a] Coded using MedDRA version xx.x. A subject is counted only once for multiple events within seriousness criteria/preferred term/system organ class.
-
-Program Path: S:\DEV\projects\...\Tables\XXXXXXX.sas
-Data Source: 							Data extract Date:					RunTime: DDMONYYYY:HH:MM
-
-Allowable modifications: Use the seriousness criteria as captured in the CRF. Refer to allowable modifications at top of document for more guidance.
-
-
-
-Celgene                                                                             		                                Page X of Y
-Study/Protocol: XXX-XXX-XXX                                                              		            Database Cutoff Date: DDMONYYYY
-Table 14.3.2.11
-Serious Treatment-emergent Adverse Events of Special Interest (AESI) by Treatment, Seriousness Criteria, AESI Category and Preferred Term
-Safety Population
-Seriousness CriteriaTrt1Trt2  AESI Category(N=XXX)(N=XXX)    Preferred Term [a]n (%)n (%)Subjects With at Least One Serious AESI xx ( xx.x)xx ( xx.x)                               Subjects with at Least One Serious AESI with Seriousness Criteria of:                                Resulted in Deathxx ( xx.x)xx ( xx.x)  AESI Category Name #1          xx ( xx.x)xx ( xx.x)    Preferred Term #1            xx ( xx.x)xx ( xx.x)    Preferred Term #2            xx ( xx.x)xx ( xx.x)Life threateningxx ( xx.x)xx ( xx.x)  AESI Category Name #1          xx ( xx.x)xx ( xx.x)    Preferred Term #1            xx ( xx.x)xx ( xx.x)    Preferred Term #2            xx ( xx.x)xx ( xx.x)Inpatient hospitalization or prolongation of existing hospitalizationxx ( xx.x)xx ( xx.x)  AESI Category Name #1          xx ( xx.x)xx ( xx.x)    Preferred Term #1            xx ( xx.x)xx ( xx.x)    Preferred Term #2            xx ( xx.x)xx ( xx.x)Treatment-emergent adverse events include adverse events that started between the date of first dose and xx days after the date of last dose.  
-[a] Coded using MedDRA version xx.x. A subject is counted only once for multiple events within seriousness criteria/preferred term/system organ class.
-
-Program Path: S:\DEV\projects\...\Tables\XXXXXXX.sas
-Data Source: 							Data extract Date:					RunTime: DDMONYYYY:HH:MM
-
-Allowable modifications: Use the seriousness criteria as captured in the CRF. Refer to allowable modifications at top of document for more guidance.
-
-
-
-Module #3 Lab Parameter Tests
-Points to Consider: Lab and Vital Sign TablesTable number
-(with brief description)Points to considerAll tables • Change "Visit" to "Cycle."
-• Re-order the treatment groups appropriately (refer to "General Points to Consider")All Lab and Vital Sign TLGs *  The most conservative and accurate way to determine the incidences of neutropenia, thrombocytopenia and anemia is to calculate the subject incidence using both lab values (including local lab values, normalized if needed) and standard adverse events (as agreed upon by safety, clinical and Biostat); however, ultimately this is a team decision.
-* There is generally no imputations for the lab values which are below detection limits.
-* All lab test values should have units.
-* If multiple lab tests fall into the same cycle, study team needs to decide how to handle them.
-*  In general, it is preferable to present the window time period the analyte sample was taken rather than just the visit number
-*  If this is not possible, then the listing should clearly show on what day Visit X was scheduled to have occurred.Table 14.3.4.2.1
-Shift Table for Labs• In general, for most labs and vital signs, a single shift table will be produced which shows worst change from baseline over entire study.
-• This optional table should be used for particular labs of interest, as determined by the team.
-• In general, for all shift tables, it is preferable to use CTCAE grades rather than, "low, normal, and high."
-• Indicate the number of subjects for each category at baseline.
-• Add a "Missing" category for both the baseline and post baseline to account for the missing data.All Lab tables • Clinical significance should, in general, be based on Central Lab results. However, the team must consider whether or not to include local labs, which may be more timely and informative.Table 14.3.6.1 • In general, collecting serial ECGs where the only information provided is either, "normal," "abnormal NCS," "abnormal CS," or "not done/missing," is not useful.
-• Teams should consider collecting more detailed data, or not collecting serial ECGs if not necessary or mandated by regulators.
-• Consider adding a rule to stop presenting data for later cycles where the sample size is too small.   
-
-Celgene                                                                             		                                Page X of Y
-Study/Protocol: XXX-XXX-XXX                                                              		            Database Cutoff Date: DDMONYYYY
-Table 14.3.4.1.1
-Hematology Results and Change from Baseline by Treatment and Timepoint
-Safety Population
-Trt1
-(N=XXX)Trt2
-(N=XXX)BaselineValueChange from BaselineBaselineValueChange from BaselineLab Test #1 (units)                        Baseline                n                xx xx      Mean             xx.xxx.x     SD               xx.xxxx.xx     Median           xx.xxx.x     Q1, Q3           xx.x, xx.xxx.x, xx.x     Min, Max         xx, xxxx, xx                        Timepoint 1                  n                xx xx xx xx xx xx      Mean             xx.xxx.xxx.xxx.xxx.xxx.x     SD               xx.xxxx.xxxx.xxxx.xxxx.xxxx.xx     Median           xx.xxx.xxx.xxx.xxx.xxx.x     Q1, Q3           xx.x, xx.xxx.x, xx.xxx.x, xx.xxx.x, xx.xxx.x, xx.xxx.x, xx.x     Min, Max         xx, xxxx, xxxx, xxxx, xxxx, xxxx, xx                      ...                                           End of Study             n                xx xx xx xx xx xx      Mean             xx.xxx.xxx.xxx.xxx.xxx.x     SD               xx.xxxx.xxxx.xxxx.xxxx.xxxx.xx     Median           xx.xxx.xxx.xxx.xxx.xxx.x     Q1, Q3           xx.x, xx.xxx.x, xx.xxx.x, xx.xxx.x, xx.xxx.x, xx.xxx.x, xx.x     Min, Max         xx, xxxx, xxxx, xxxx, xxxx, xxxx, xxSD=Standard Deviation, Q1=First Quartile, Q3=Third Quartile, Min=Minimum, Max=Maximum.
-
-Program Path: S:\DEV\projects\...\Tables\XXXXXXX.sas
-Data Source: 							Data extract Date:					RunTime: DDMONYYYY:HH:MM
-
-Allowable modifications: Refer to allowable modifications at top of document for more guidance.
-
-Celgene 		                                                                  		                                Page X of Y
-Study/Protocol: XXX-XXX-XXX                                                              		            Database Cutoff Date: DDMONYYYY
-Table 14.3.4.1.1A
-Hematology Results and Change from Baseline by Treatment and Timepoint
-Safety Population
-Laboratory test: Lab Test #1 (Normal range: xx - xx units)                      BaselinePost-Baseline
-TimepointChange from Baselinen [a]Mean (SD)Mean (SD)Mean (SD)MedianQ1, Q3Min, Max  Baseline      Trt1          xx xx.x (xx.xx)     Trt2  xxxx.x (xx.xx)  Timepoint #1                Trt1               xxxx.x (xx.xx)xx.x (xx.xx)xx.x (xx.xx)xx.xxx.x, xx.xxx.x, xx.x     Trt2             xxxx.x (xx.xx)xx.x (xx.xx)xx.x (xx.xx)xx.xxx.x, xx.xxx.x, xx.x  Timepoint #2                Trt1               xxxx.x (xx.xx)xx.x (xx.xx)xx.x (xx.xx)xx.xxx.x, xx.xxx.x, xx.x     Trt2             xxxx.x (xx.xx)xx.x (xx.xx)xx.x (xx.xx)xx.xxx.x, xx.xxx.x, xx.x  Timepoint #3                Trt1               xxxx.x (xx.xx)xx.x (xx.xx)xx.x (xx.xx)xx.xxx.x, xx.xxx.x, xx.x     Trt2             xxxx.x (xx.xx)xx.x (xx.xx)xx.x (xx.xx)xx.xxx.x, xx.xxx.x, xx.x  Timepoint #4                Trt1               xxxx.x (xx.xx)xx.x (xx.xx)xx.x (xx.xx)xx.xxx.x, xx.xxx.x, xx.x     Trt2             xxxx.x (xx.xx)xx.x (xx.xx)xx.x (xx.xx)xx.xxx.x, xx.xxx.x, xx.xSD=Standard Deviation, Q1=First Quartile, Q3=Third Quartile, Min=Minimum, Max=Maximum.
-<Description of how normal range was obtained if local labs are used.>
-[a] At Baseline, n=number of subjects with a Baseline value. At post-Baseline timepoints, n=number of subjects with a Baseline value and a post-Baseline value at the time point. 
-
-Program Path: S:\DEV\projects\...\Tables\XXXXXXX.sas
-Data Source: 							Data extract Date:					RunTime: DDMONYYYY:HH:MM
-
-Allowable modification: Normal Range may be dropped as deemed necessary by the study team. Refer to allowable modifications at top of document for more guidance.
-
-Celgene                                                                             		                                Page X of Y
-Study/Protocol: XXX-XXX-XXX                                                              		            Database Cutoff Date: DDMONYYYY
-Table 14.3.4.1.2
-Serum Chemistry Results and Change from Baseline by Treatment and Timepoint
-Safety Population
-Trt1
-(N=XXX)Trt2
-(N=XXX)BaselineValueChange from BaselineBaselineValueChange from BaselineLab Test #1 (units)                        Baseline                n                xxxx      Mean             xx.xxx.x     SD               xx.xxxx.xx     Median           xx.xxx.x     Q1, Q3           xx.x, xx.xxx.x, xx.x     Min, Max         xx, xxxx, xx                        Timepoint 1                  n                xx xx xx xx xx xx      Mean             xx.xxx.xxx.xxx.xxx.xxx.x     SD               xx.xxxx.xxxx.xxxx.xxxx.xxxx.xx     Median           xx.xxx.xxx.xxx.xxx.xxx.x     Q1, Q3           xx.x, xx.xxx.x, xx.xxx.x, xx.xxx.x, xx.xxx.x, xx.xxx.x, xx.x     Min, Max         xx, xxxx, xxxx, xxxx, xxxx, xxxx, xx                      ...                                           End of Study             n                xx xx xx xx xx xx      Mean             xx.xxx.xxx.xxx.xxx.xxx.x     SD               xx.xxxx.xxxx.xxxx.xxxx.xxxx.xx     Median           xx.xxx.xxx.xxx.xxx.xxx.x     Q1, Q3           xx.x, xx.xxx.x, xx.xxx.x, xx.xxx.x, xx.xxx.x, xx.xxx.x, xx.x     Min, Max         xx, xxxx, xxxx, xxxx, xxxx, xxxx, xxSD=Standard Deviation, Q1=First Quartile, Q3=Third Quartile, Min=Minimum, Max=Maximum.
-
-Program Path: S:\DEV\projects\...\Tables\XXXXXXX.sas
-Data Source: 							Data extract Date:					RunTime: DDMONYYYY:HH:MM
-
-Allowable modifications: Refer to allowable modifications at top of document for more guidance.
-
-
-Celgene 		                                                                  		                                Page X of Y
-Study/Protocol: XXX-XXX-XXX                                                              		            Database Cutoff Date: DDMONYYYY
-Table 14.3.4.1.2A
-Serum Chemistry Results and Change from Baseline by Treatment and Timepoint
-Safety Population
-Laboratory test: Lab Test #1 (Normal range: xx - xx units)                      BaselinePost-Baseline
-TimepointChange from Baselinen [a]Mean (SD)Mean (SD)Mean (SD)MedianQ1, Q3Min, Max  Baseline      Trt1          xx xx.x (xx.xx)     Trt2  xxxx.x (xx.xx)  Timepoint #1                Trt1               xxxx.x (xx.xx)xx.x (xx.xx)xx.x (xx.xx)xx.xxx.x, xx.xxx.x, xx.x     Trt2             xxxx.x (xx.xx)xx.x (xx.xx)xx.x (xx.xx)xx.xxx.x, xx.xxx.x, xx.x  Timepoint #2                Trt1               xxxx.x (xx.xx)xx.x (xx.xx)xx.x (xx.xx)xx.xxx.x, xx.xxx.x, xx.x     Trt2             xxxx.x (xx.xx)xx.x (xx.xx)xx.x (xx.xx)xx.xxx.x, xx.xxx.x, xx.x  Timepoint #3                Trt1               xxxx.x (xx.xx)xx.x (xx.xx)xx.x (xx.xx)xx.xxx.x, xx.xxx.x, xx.x     Trt2             xxxx.x (xx.xx)xx.x (xx.xx)xx.x (xx.xx)xx.xxx.x, xx.xxx.x, xx.x  Timepoint #4                Trt1               xxxx.x (xx.xx)xx.x (xx.xx)xx.x (xx.xx)xx.xxx.x, xx.xxx.x, xx.x     Trt2             xxxx.x (xx.xx)xx.x (xx.xx)xx.x (xx.xx)xx.xxx.x, xx.xxx.x, xx.xSD=Standard Deviation, Q1=First Quartile, Q3=Third Quartile, Min=Minimum, Max=Maximum.
-<Description of how normal range was obtained if local labs are used.>
-[a] At Baseline, n=number of subjects with a Baseline value. At post-Baseline timepoints, n=number of subjects with a Baseline value and a post-Baseline value at the time point. 
-
-Program Path: S:\DEV\projects\...\Tables\XXXXXXX.sas
-Data Source: 							Data extract Date:					RunTime: DDMONYYYY:HH:MM
-
-Allowable modification: Normal Range may be dropped as deemed necessary by the study team. Refer to allowable modifications at top of document for more guidance.
-
-Celgene                                                                             		                                Page X of Y
-Study/Protocol: XXX-XXX-XXX                                                              		            Database Cutoff Date: DDMONYYYY
-Table 14.3.4.1.3
-Other Laboratory Results and Change from Baseline by Treatment and Timepoint
-Safety Population
-Trt1
-(N=XXX)Trt2
-(N=XXX)BaselineValueChange from BaselineBaselineValueChange from BaselineLab Test #1 (units)                        Baseline                n                xx xx      Mean             xx.xxx.x     SD               xx.xxxx.xx     Median           xx.xxx.x     Q1, Q3           xx.x, xx.xxx.x, xx.x     Min, Max         xx, xxxx, xx                        Timepoint 1                  n                xx xx xx xx xx xx      Mean             xx.xxx.xxx.xxx.xxx.xxx.x     SD               xx.xxxx.xxxx.xxxx.xxxx.xxxx.xx     Median           xx.xxx.xxx.xxx.xxx.xxx.x     Q1, Q3           xx.x, xx.xxx.x, xx.xxx.x, xx.xxx.x, xx.xxx.x, xx.xxx.x, xx.x     Min, Max         xx, xxxx, xxxx, xxxx, xxxx, xxxx, xx                      ...                                           End of Study             n                xx xx xx xx xx xx      Mean             xx.xxx.xxx.xxx.xxx.xxx.x     SD               xx.xxxx.xxxx.xxxx.xxxx.xxxx.xx     Median           xx.xxx.xxx.xxx.xxx.xxx.x     Q1, Q3           xx.x, xx.xxx.x, xx.xxx.x, xx.xxx.x, xx.xxx.x, xx.xxx.x, xx.x     Min, Max         xx, xxxx, xxxx, xxxx, xxxx, xxxx, xxSD=Standard Deviation, Q1=First Quartile, Q3=Third Quartile, Min=Minimum, Max=Maximum.
-
-Program Path: S:\DEV\projects\...\Tables\XXXXXXX.sas
-Data Source: 							Data extract Date:					RunTime: DDMONYYYY:HH:MM
-
-Allowable modifications: Refer to allowable modifications at top of document for more guidance.
-
-
-Celgene 		                                                                  		                                Page X of Y
-Study/Protocol: XXX-XXX-XXX                                                              		            Database Cutoff Date: DDMONYYYY
-Table 14.3.4.1.3A
-Other Laboratory Results and Change from Baseline by Treatment and Timepoint
-Safety Population
-Laboratory test: Lab Test #1 (Normal range: xx - xx units)                      BaselinePost-Baseline
-TimepointChange from Baselinen [a]Mean (SD)Mean (SD)Mean (SD)MedianQ1, Q3Min, Max  Baseline      Trt1          xx xx.x (xx.xx)     Trt2  xxxx.x (xx.xx)  Timepoint #1                Trt1               xxxx.x (xx.xx)xx.x (xx.xx)xx.x (xx.xx)xx.xxx.x, xx.xxx.x, xx.x     Trt2             xxxx.x (xx.xx)xx.x (xx.xx)xx.x (xx.xx)xx.xxx.x, xx.xxx.x, xx.x  Timepoint #2                Trt1               xxxx.x (xx.xx)xx.x (xx.xx)xx.x (xx.xx)xx.xxx.x, xx.xxx.x, xx.x     Trt2             xxxx.x (xx.xx)xx.x (xx.xx)xx.x (xx.xx)xx.xxx.x, xx.xxx.x, xx.x  Timepoint #3                Trt1               xxxx.x (xx.xx)xx.x (xx.xx)xx.x (xx.xx)xx.xxx.x, xx.xxx.x, xx.x     Trt2             xxxx.x (xx.xx)xx.x (xx.xx)xx.x (xx.xx)xx.xxx.x, xx.xxx.x, xx.x  Timepoint #4                Trt1               xxxx.x (xx.xx)xx.x (xx.xx)xx.x (xx.xx)xx.xxx.x, xx.xxx.x, xx.x     Trt2             xxxx.x (xx.xx)xx.x (xx.xx)xx.x (xx.xx)xx.xxx.x, xx.xxx.x, xx.xSD=Standard Deviation, Q1=First Quartile, Q3=Third Quartile, Min=Minimum, Max=Maximum.
-<Description of how normal range was obtained if local labs are used.>
-[a] At Baseline, n=number of subjects with a Baseline value. At post-Baseline timepoints, n=number of subjects with a Baseline value and a post-Baseline value at the time point. 
-
-Program Path: S:\DEV\projects\...\Tables\XXXXXXX.sas
-Data Source: 							Data extract Date:					RunTime: DDMONYYYY:HH:MM
-
-Allowable modification: Normal Range may be dropped as deemed necessary by the study team. Refer to allowable modifications at top of document for more guidance.
-
-Celgene                                                                             		                                Page X of Y
-Study/Protocol: XXX-XXX-XXX                                                              		            Database Cutoff Date: DDMONYYYY
-Table 14.3.4.2.1
-Shifts in Maximum CTCAE Grades (High) in Selected Hematology Parameters by Treatment and Cycle
-Safety Population
-Post-baseline ResultsTreatment Lab TestCycleCTCAE Grade
-[a]Baseline
-nGrade 0
-n (%)Grade 1
-n (%)Grade 2
-n (%)Grade 3
-n (%)Grade 4
-n (%)Trt1Hgb (g/dL)All Cycles  Grade 0 xxxx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)Grade 1 xxxx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)Grade 2 xxxx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)Grade 3 xxxx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)Grade 4 xxxx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)Total   xxxx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)Cycle 1Grade 0 xxxx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)Grade 1 xxxx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)Grade 2 xxxx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)Grade 3 xxxx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)Grade 4 xxxx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)Total   xxxx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)...Last availableGrade 0 xxxx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)Grade 1 xxxx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)Grade 2 xxxx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)Grade 3 xxxx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)Grade 4 xxxx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)Total   xxxx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)Hgb=hemoglobin, ANC=absolute neutrophil count, WBC=white blood cells.
-For each time period, the maximum grade collected within the period was used to summarize a subject's response.
-For baseline, each subject was summarized by the maximum grade of all laboratory values obtained up to and including the date of the first dose of study medication in subjects randomized to active treatment.
-The N for each treatment group is the number of subjects with a baseline and at least one post-baseline CTCAE grade assessment.
-Percentages are based on the number of subjects in each baseline category for each analyte in each treatment group.
-[a] Graded using Common Terminology Criteria for Adverse Events (CTCAE) version x.x.
-
-Program Path: S:\DEV\projects\...\Tables\XXXXXXX.sas 
-Data Source: 							Data extract Date:					RunTime: DDMONYYYY:HH:MM
-
-Allowable modifications: Refer to allowable modifications at top of document for more guidance.
-
-Celgene                                                                             		                                Page X of Y
-Study/Protocol: XXX-XXX-XXX                                                              		            Database Cutoff Date: DDMONYYYY
-Table 14.3.4.2.2
-Shifts in Maximum CTCAE Grades (Low) in Selected Hematology Parameters by Treatment and Cycle
-Safety Population
-Post-baseline ResultsTreatment Lab TestCycleCTCAE Grade
-[a]Baseline
-nGrade 0
-n (%)Grade 1
-n (%)Grade 2
-n (%)Grade 3
-n (%)Grade 4
-n (%)Trt1Hgb (g/dL)All Cycles  Grade 0 xxxx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)Grade 1 xxxx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)Grade 2 xxxx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)Grade 3 xxxx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)Grade 4 xxxx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)Total   xxxx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)Cycle 1Grade 0 xxxx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)Grade 1 xxxx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)Grade 2 xxxx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)Grade 3 xxxx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)Grade 4 xxxx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)Total   xxxx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)...Last availableGrade 0 xxxx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)Grade 1 xxxx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)Grade 2 xxxx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)Grade 3 xxxx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)Grade 4 xxxx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)Total   xxxx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)Hgb=hemoglobin, ANC=absolute neutrophil count, WBC=white blood cells.
-For each time period, the maximum grade collected within the period was used to summarize a subject's response.
-For baseline, each subject was summarized by the maximum grade of all laboratory values obtained up to and including the date of the first dose of study medication in subjects randomized to active treatment.
-The N for each treatment group is the number of subjects with a baseline and at least one post-baseline CTCAE grade assessment.
-Percentages are based on the number of subjects in each baseline category for each analyte in each treatment group.
-[a] Graded using Common Terminology Criteria for Adverse Events (CTCAE) version x.x.
-                                                                                                                                                                
-Program Path: S:\DEV\projects\...\Tables\XXXXXXX.sas 
-Data Source: 							Data extract Date:					RunTime: DDMONYYYY:HH:MM
-
-Allowable modifications: Refer to allowable modifications at top of document for more guidance.
-
-Celgene                                                                             		                                Page X of Y
-Study/Protocol: XXX-XXX-XXX                                                              		            Database Cutoff Date: DDMONYYYY
-Table 14.3.4.3.1
-Shifts in Maximum CTCAE Grades (High) in Selected Serum Chemistry Parameters by Treatment and Cycle
-Safety Population
-Post-baseline ResultsTreatment Lab TestCycleCTCAE Grade
-[a]Baseline
-nGrade 0
-n (%)Grade 1
-n (%)Grade 2
-n (%)Grade 3
-n (%)Grade 4
-n (%)Trt1Albumin (g/L)All Cycles  Grade 0 xxxx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)Grade 1 xxxx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)Grade 2 xxxx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)Grade 3 xxxx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)Grade 4 xxxx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)Total   xxxx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)Cycle 1Grade 0 xxxx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)Grade 1 xxxx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)Grade 2 xxxx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)Grade 3 xxxx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)Grade 4 xxxx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)Total   xxxx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)...Last availableGrade 0 xxxx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)Grade 1 xxxx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)Grade 2 xxxx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)Grade 3 xxxx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)Grade 4 xxxx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)Total   xxxx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)For each time period, the maximum grade collected within the period was used to summarize a subject's response.
-For baseline, each subject was summarized by the maximum grade of all laboratory values obtained up to and including the date of the first dose of study medication in subjects randomized to active treatment.
-The N for each treatment group is the number of subjects with a baseline and at least one post-baseline CTCAE grade assessment.
-Percentages are based on the number of subjects in each baseline category for each analyte in each treatment group.
-[a] Graded using Common Terminology Criteria for Adverse Events (CTCAE) version x.x.
-                                                                                                                                                                
-Program Path: S:\DEV\projects\...\Tables\XXXXXXX.sas 
-Data Source: 							Data extract Date:					RunTime: DDMONYYYY:HH:MM
-
-Allowable modifications: Refer to allowable modifications at top of document for more guidance.
-Celgene                                                                             		                                Page X of Y
-Study/Protocol: XXX-XXX-XXX                                                              		            Database Cutoff Date: DDMONYYYY
-Table 14.3.4.3.2
-Shifts in Maximum CTCAE Grades (Low) in Selected Serum Chemistry Parameters by Treatment and Cycle
-Safety Population
-Post-baseline ResultsTreatment Lab TestCycleCTCAE Grade
-[a]Baseline
-nGrade 0
-n (%)Grade 1
-n (%)Grade 2
-n (%)Grade 3
-n (%)Grade 4
-n (%)Trt1Albumin (g/L)All Cycles  Grade 0 xxxx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)Grade 1 xxxx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)Grade 2 xxxx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)Grade 3 xxxx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)Grade 4 xxxx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)Total   xxxx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)Cycle 1Grade 0 xxxx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)Grade 1 xxxx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)Grade 2 xxxx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)Grade 3 xxxx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)Grade 4 xxxx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)Total   xxxx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)...Last availableGrade 0 xxxx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)Grade 1 xxxx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)Grade 2 xxxx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)Grade 3 xxxx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)Grade 4 xxxx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)Total   xxxx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)For each time period, the maximum grade collected within the period was used to summarize a subject's response.
-For baseline, each subject was summarized by the maximum grade of all laboratory values obtained up to and including the date of the first dose of study medication in subjects randomized to active treatment.
-The N for each treatment group is the number of subjects with a baseline and at least one post-baseline CTCAE grade assessment.
-Percentages are based on the number of subjects in each baseline category for each analyte in each treatment group.
-[a] Graded using Common Terminology Criteria for Adverse Events (CTCAE) version x.x.
-                                                                                                                                                                
-Program Path: S:\DEV\projects\...\Tables\XXXXXXX.sas 
-Data Source: 							Data extract Date:					RunTime: DDMONYYYY:HH:MM
-
-Allowable modifications: Refer to allowable modifications at top of document for more guidance.
-
-Celgene 		                                                                  		                                Page X of Y
-Study/Protocol: XXX-XXX-XXX                                                              		            Database Cutoff Date: DDMONYYYY
-Table 14.3.4.4
-Shifts in Abnormality Category in Serum Chemistry Parameters by Treatment and Timepoint
-Safety Population
-Laboratory Test: Lab test #1  Post-baseline Result   Time PointBaselineBaselineLowNormalHigh Both Low and High [b]      TreatmentCategoryN n (%)n (%)n (%)n (%)   Timepoint #1      Trt1Lowxxxxx (xx.x)xx (xx.x)xx (xx.x)xx (xx.x)Normalxxxxx (xx.x)xx (xx.x)xx (xx.x)xx (xx.x)Highxxxxx (xx.x)xx (xx.x)xx (xx.x)xx (xx.x)Totalxxxxx (xx.x)xx (xx.x)xx (xx.x)xx (xx.x)      Trt2Lowxxxxx (xx.x)xx (xx.x)xx (xx.x)xx (xx.x)Normalxxxxx (xx.x)xx (xx.x)xx (xx.x)xx (xx.x)Highxxxxx (xx.x)xx (xx.x)xx (xx.x)xx (xx.x)Totalxxxxx (xx.x)xx (xx.x)xx (xx.x)xx (xx.x)   Timepoint #2      Trt1Lowxxxxx (xx.x)xx (xx.x)xx (xx.x)xx (xx.x)Normalxxxxx (xx.x)xx (xx.x)xx (xx.x)xx (xx.x)Highxxxxx (xx.x)xx (xx.x)xx (xx.x)xx (xx.x)Totalxxxxx (xx.x)xx (xx.x)xx (xx.x)xx (xx.x)      Trt2Lowxxxxx (xx.x)xx (xx.x)xx (xx.x)xx (xx.x)Normalxxxxx (xx.x)xx (xx.x)xx (xx.x)xx (xx.x)Highxxxxx (xx.x)xx (xx.x)xx (xx.x)xx (xx.x)Totalxxxxx (xx.x)xx (xx.x)xx (xx.x)xx (xx.x)Low, Normal and High are relative to the normal ranges for the respective laboratory tests.
-[a] At a post-baseline time point, N = number of subjects with a baseline value and a post-baseline value at the time point. At the end of period, N = number of subjects with a baseline value and at least one post-baseline value. Percentages are based on Baseline N.
-[b] The Both Low and High category includes subjects with at least one value that was low relative to the normal range and at least one value that was high relative to the normal range in the period.
-
-Program Path: S:\DEV\projects\...\Tables\XXXXXXX.sas 
-Data Source: 							Data extract Date:					RunTime: DDMONYYYY:HH:MM
-Note to programming: Repeat for Hematology if deemed necessary by the study team. 
-Allowable modifications: Refer to allowable modifications at top of document for more guidance. May drop "Both Low and High" Category if not needed.
-Celgene 		                                                                  		                                Page X of Y
-Study/Protocol: XXX-XXX-XXX                                                              		            Database Cutoff Date: DDMONYYYY
-Table 14.3.4.5
-Laboratory Marked Abnormalities by Treatment 
-Safety Population 
-HematologyTrt1Trt2TotalLaboratory Test(N=xxx)(N=xxx)(N=xxx)   Criterian/m (%)n/m (%)n/m (%)   Test #1 (unit)      Criteria #1 (eg HGB <9.0 g/dL)xx/xxx (xx.x)xx/xxx (xx.x)xx/xxx (xx.x)   Test #2 (unit)      Criteria #1xx/xxx (xx.x)xx/xxx (xx.x)xx/xxx (xx.x)   Test #3 (unit)      Criteria #1xx/xxx (xx.x)xx/xxx (xx.x)xx/xxx (xx.x)   Test #4 (unit)      Criteria #1xx/xxx (xx.x)xx/xxx (xx.x)xx/xxx (xx.x)   Test #5 (unit)      Criteria #1xx/xxx (xx.x)xx/xxx (xx.x)xx/xxx (xx.x)      Criteria #2xx/xxx (xx.x)xx/xxx (xx.x)xx/xxx (xx.x)n/m = Number of subjects with at least one occurrence of the abnormality/Number of subjects with a baseline value and at least one post-baseline value for criteria requiring baseline or number of subjects with at least one post-baseline value for criteria not requiring baseline. Percentage is 100 times n divided by m.
-
-Program Path: S:\DEV\projects\...\Tables\XXXXXXX.sas 
-Data Source: 							Data extract Date:					RunTime: DDMONYYYY:HH:MM
-
-Allowable modifications: Marked abnormality criteria may be compound and/or indication specific, as determined by the study team (for example HGB< 9 g/dL may be needed by a Hem/Onc study). The criteria must be defined in the datasets. Refer to allowable modifications at top of document for more guidance.
-
-Celgene 		                                                                  		                                Page X of Y
-Study/Protocol: XXX-XXX-XXX                                                              		            Database Cutoff Date: DDMONYYYY
-Table 14.3.4.6
-Laboratory Marked Abnormalities by Baseline Laboratory Category and Treatment 
-Safety Population 
-Hematology Trt1Trt2(N=xxx)(N=xxx)BaselineBaselineBaselineBaselineLaboratory TestNormalAbnormalNormalAbnormal   Criterian/m (%)n/m (%)n/m (%)n/m (%)   Test #1 (unit)      Criteria #1xx/xxx (xx.x)xx/xxx (xx.x)xx/xxx (xx.x)xx/xxx (xx.x)   Test #2 (unit)      Criteria #1xx/xxx (xx.x)xx/xxx (xx.x)xx/xxx (xx.x)xx/xxx (xx.x)   Test #3 (unit)      Criteria #1xx/xxx (xx.x)xx/xxx (xx.x)xx/xxx (xx.x)xx/xxx (xx.x)   Test #4 (unit)      Criteria #1xx/xxx (xx.x)xx/xxx (xx.x)xx/xxx (xx.x)xx/xxx (xx.x)   Test #5 (unit)      Criteria #1xx/xxx (xx.x)xx/xxx (xx.x)xx/xxx (xx.x)xx/xxx (xx.x)      Criteria #2xx/xxx (xx.x)xx/xxx (xx.x)xx/xxx (xx.x)xx/xxx (xx.x)   Etc.n/m = Number of subjects with at least one occurrence of the abnormality/Number of subjects with a baseline value and at least one post-baseline value for criteria requiring baseline or number of subjects with at least one post-baseline value for criteria not requiring baseline. For hematology and serum chemistry, the Baseline Abnormal (Normal) category consists of subjects whose baseline value is low (not low) for criteria concerning low values and of subjects whose baseline value is high (not high) for criteria concerning high values; both low and high are relative to the laboratory normal range. For urinalysis, Baseline Normal and Abnormal categories are relative to the laboratory normal ranges. Percentage is 100 times n divided by m.
-
-Program Path: S:\DEV\projects\...\Tables\XXXXXXX.sas 
-Data Source: 							Data extract Date:					RunTime: DDMONYYYY:HH:MM
-
-Allowable modifications: Marked abnormality criteria may be compound and/or indication specific, as determined by the study team (for example HGB< 9 g/dL may be needed by a Hem/Onc study). The criteria must be defined in the datasets. Refer to allowable modifications at top of document for more guidance.
-
-Note: Use table for Serum Chemistry and Urinalysis as necessary. 
-
-Celgene                                                                             		                                Page X of Y
-Study/Protocol: XXX-XXX-XXX                                                              		            Database Cutoff Date: DDMONYYYY
-Table 14.3.5.1
-Vital Signs - Change from Baseline by Treatment and Timepoint
-Safety Population
-Trt1
-(N=XXX)Trt2
-(N=XXX)BaselineValueChange from BaselineBaselineValueChange from BaselineVital Sign #1 (units)                        Baseline                n                xx xx)     Mean             xx.xxx.x     SD               xx.xxxx.xx     Median           xx.xxx.x     Q1, Q3           xx.x, xx.xxx.x, xx.x     Min, Max         xx, xxxx, xx                        Timepoint 1                  n                xx xx xx xx xx xx      Mean             xx.xxx.xxx.xxx.xxx.xxx.x     SD               xx.xxxx.xxxx.xxxx.xxxx.xxxx.xx     Median           xx.xxx.xxx.xxx.xxx.xxx.x     Q1, Q3           xx.x, xx.xxx.x, xx.xxx.x, xx.xxx.x, xx.xxx.x, xx.xxx.x, xx.x     Min, Max         xx, xxxx, xxxx, xxxx, xxxx, xxxx, xx                      ...                                           End of Study             n                xx xx xx xx xx xx      Mean             xx.xxx.xxx.xxx.xxx.xxx.x     SD               xx.xxxx.xxxx.xxxx.xxxx.xxxx.xx     Median           xx.xxx.xxx.xxx.xxx.xxx.x     Q1, Q3           xx.x, xx.xxx.x, xx.xxx.x, xx.xxx.x, xx.xxx.x, xx.xxx.x, xx.x     Min, Max         xx, xxxx, xxxx, xxxx, xxxx, xxxx, xxSD=Standard Deviation, Q1=First Quartile, Q3=Third Quartile, Min=Minimum, Max=Maximum.
-
-Program Path: S:\DEV\projects\...\Tables\XXXXXXX.sas 
-Data Source: 							Data extract Date:					RunTime: DDMONYYYY:HH:MM
-
-Allowable modifications: Refer to allowable modifications at top of document for more guidance.
-
-Celgene 		                                                                  		                                Page X of Y
-Study/Protocol: XXX-XXX-XXX                                                              		            Database Cutoff Date: DDMONYYYY
-Table 14.3.5.1A
-Vital Signs - Change from Baseline by Treatment and Timepoint 
-Safety Population
-Paramter: Vital Sign #1 (Normal range: xx - xx units)                      BaselinePost-Baseline
-TimepointChange from Baselinen [a]Mean (SD)Mean (SD)Mean (SD)MedianQ1, Q3Min, Max  Baseline      Trt1          xx xx.x (xx.xx)     Trt2  xxxx.x (xx.xx)  Timepoint #1                Trt1               xxxx.x (xx.xx)xx.x (xx.xx)xx.x (xx.xx)xx.xxx.x, xx.xxx.x, xx.x     Trt2             xxxx.x (xx.xx)xx.x (xx.xx)xx.x (xx.xx)xx.xxx.x, xx.xxx.x, xx.x  Timepoint #2                Trt1               xxxx.x (xx.xx)xx.x (xx.xx)xx.x (xx.xx)xx.xxx.x, xx.xxx.x, xx.x     Trt2             xxxx.x (xx.xx)xx.x (xx.xx)xx.x (xx.xx)xx.xxx.x, xx.xxx.x, xx.x  Timepoint #3                Trt1               xxxx.x (xx.xx)xx.x (xx.xx)xx.x (xx.xx)xx.xxx.x, xx.xxx.x, xx.x     Trt2             xxxx.x (xx.xx)xx.x (xx.xx)xx.x (xx.xx)xx.xxx.x, xx.xxx.x, xx.x  Timepoint #4                Trt1               xxxx.x (xx.xx)xx.x (xx.xx)xx.x (xx.xx)xx.xxx.x, xx.xxx.x, xx.x     Trt2             xxxx.x (xx.xx)xx.x (xx.xx)xx.x (xx.xx)xx.xxx.x, xx.xxx.x, xx.xSD=Standard Deviation, Q1=First Quartile, Q3=Third Quartile, Min=Minimum, Max=Maximum.
-<Description of how normal range was obtained if local labs are used.>
-
-Program Path: S:\DEV\projects\...\Tables\XXXXXXX.sas
-Data Source: 							Data extract Date:					RunTime: DDMONYYYY:HH:MM
-
-Allowable modification: Normal Range may be dropped as deemed necessary by the study team. Refer to allowable modifications at top of document for more guidance.
-
-Celgene 		                                                                 		                                Page X of Y
-Study/Protocol: XXX-XXX-XXX                                                              		            Database Cutoff Date: DDMONYYYY
-Table 14.3.5.2
-Vital Signs Marked Abnormalities by Treatment
-Safety Population
- Trt1Trt2TotalVital Sign(N=xxx)(N=xxx)(N=xxx)   Criterian/m (%)n/m (%)n/m (%)Systolic Blood Pressure (mmHg)   Criteria #1 (eg Sys BP > 140 mmHG)xx/xxx (xx.x)xx/xxx (xx.x)xx/xxx (xx.x)   Criteria #2xx/xxx (xx.x)xx/xxx (xx.x)xx/xxx (xx.x)   Criteria #3xx/xxx (xx.x)xx/xxx (xx.x)xx/xxx (xx.x)Diastolic Blood Pressure (mmHg)   Criteria #1xx/xxx (xx.x)xx/xxx (xx.x)xx/xxx (xx.x)   Criteria #2xx/xxx (xx.x)xx/xxx (xx.x)xx/xxx (xx.x)   Criteria #3xx/xxx (xx.x)xx/xxx (xx.x)xx/xxx (xx.x)Etc.n/m = Number of subjects with at least one occurrence of the abnormality/Number of subjects with a baseline value and at least one post-baseline value for criteria requiring baseline or number of subjects with at least one post-baseline value for criteria not requiring baseline. Percentage is calculated as 100 times n divided by m.
-
-Program Path: S:\DEV\projects\...\Tables\XXXXXXX.sas 
-Data Source: 							Data extract Date:					RunTime: DDMONYYYY:HH:MM
-
-Allowable modifications: Marked abnormality criteria may be compound and/or indication specific, as determined by the study team (for example Systolic BP > 140 may be needed by a study). The criteria must be defined in the datasets. Refer to allowable modifications at top of document for more guidance.
-
-Celgene                                                                             		                                Page X of Y
-Study/Protocol: XXX-XXX-XXX                                                              		            Database Cutoff Date: DDMONYYYY
-Table 14.3.5.3
-ECG - Shift in Overall Interpretation by Treatment and Cycle
-Safety Population
-Post-Baseline ResultsTreatment CycleECG InterpretationBaseline
-nNormal
-n (%)Abnormal, NCS 
-n (%)Abnormal, CS 
-n (%)Missing
-n (%)Total 
-n (%)Trt1Cycle 1         Normal           xxxx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)Abnormal, NCS           xxxx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)Abnormal, CS          xxxx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)Missing        xxxx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)Total        xxxx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)                ...                             End of Study    Normal           xxxx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)Abnormal, NCS           xxxx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)Abnormal, CS          xxxx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)Missing        xxxx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)Total        xxxx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)NCS=Not Clinically Significant, CS=Clinically Significant.
-[a] Number of subjects by baseline interpretation for subjects with both a baseline evaluation and an evaluation during the given time period which is used as the denominator for percentage calculations.
-
-Program Path: S:\DEV\projects\...\Tables\XXXXXXX.sas 
-Data Source: 							Data extract Date:					RunTime: DDMONYYYY:HH:MM
-
-Allowable modifications: Refer to allowable modifications at top of document for more guidance.
-
-Celgene                                                                             		                                Page X of Y
-Study/Protocol: XXX-XXX-XXX                                                              		            Database Cutoff Date: DDMONYYYY
-Table 14.3.5.5
-ECOG - Shift from Baseline by Treatment and Cycle 
-Safety Population
-Post-Baseline ResultsTreatmentCycleECOG GradeBaseline
-nGrade 0
-n (%)Grade 1
-n (%)Grade 2
-n (%)Grade 3
-n (%)Grade 4
-n (%)Trt1All Cycles  Grade 0 xxxx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)Grade 1 xxxx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)Grade 2 xxxx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)Grade 3 xxxx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)Grade 4 xxxx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)Total   xxxx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)Cycle 1Grade 0 xxxx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)Grade 1 xxxx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)Grade 2 xxxx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)Grade 3 xxxx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)Grade 4 xxxx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)Total   xxxx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)...Last availableGrade 0 xxxx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)Grade 1 xxxx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)Grade 2 xxxx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)Grade 3 xxxx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)Grade 4 xxxx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)Total   xxxx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)ECOG Grade: 0 = Fully Active, 1 = Restricted Activity but Ambulatory, 2 = Ambulatory but unable to carry out work activities, 3 = Capable of Only Limited Self-care, 4 = Completely Disabled 
-For baseline, each subject was summarized by the maximum ECOG grade obtained up to and including the date of the first dose of study medication in subjects randomized to active treatment.
-The baseline n for each treatment group is the number of subjects with a baseline and at least one post-baseline ECOG score.
-Percentages are based on the baseline n.
-
-Program Path: S:\DEV\projects\...\Tables\XXXXXXX.sas
-Data Source: 							Data extract Date:					RunTime: DDMONYYYY:HH:MM
-Allowable modification: May be also moved to the efficacy table under 14.2.x. Refer to allowable modifications at top of document for more guidance.
-
-Module #4 Adverse Events of Special Interest (AESI) 
-Points to Consider: Adverse Events of Special Interest (AESI)Table number 
-(with brief description)Points to considerAdverse events of special interest (AESI))*  AESIs refer to a group of terms/PTs from one or more SOC relating to a defined medical condition or area of interest based on risk definitions (search criteria). AESIs are defined by Safety and may be based on common co- morbidities of the disease being treated, animal tox findings, class effect based on publications and what has been observed in human studies, and should be closely aligned with important, identified or potential risks within the product-specific RMP. 
-* Wherever possible, standardized search strategies should be used for the same event within a given drug development program to establish consistency of analysis.
-*  The list for AESI Categories and the preferred terms (which may encompass a Standard MedDRA Query (SMQ), System Organ Class, High Level Group Term, High Level Term, or an ad-hoc list of PTs) that fall under the AESI Category should be requested from Safety for each study.
-* AESIs, including SMQs, are MedDRA dictionary version specific, and the MedDRA version should be noted in the table footnotes. 
-
-Celgene                                                                             		                                Page X of Y
-Study/Protocol: XXX-XXX-XXX                                                              		            Database Cutoff Date: DDMONYYYY
-Table 14.3.2.8.1
-Summary of Treatment-emergent Adverse Events of Special Interest (AESI) by Treatment and AESI Category
-Safety Population
-Trt1Trt2(N=XXX)(N=XXX)AESI Category [a]n (%)n (%)Subjects with at Least One AESIxx ( xx.x)xx ( xx.x)                               Neutropeniaxx ( xx.x)xx ( xx.x)Infectionxx ( xx.x)xx ( xx.x)Thrombocytopeniaxx ( xx.x)xx ( xx.x)Bleedingxx ( xx.x)xx ( xx.x)Cardiac Arrhythmiasxx ( xx.x)xx ( xx.x)Cardiac Failurexx ( xx.x)xx ( xx.x)Ischaemic Heart Disease (including Myocardial Infarction)xx ( xx.x)xx ( xx.x)ATE   xx ( xx.x)xx ( xx.x)VTExx ( xx.x)xx ( xx.x)Renal Failurexx ( xx.x)xx ( xx.x)Peripheral Neuropathyxx ( xx.x)xx ( xx.x)Diarrheaxx ( xx.x)xx ( xx.x)Constipation xx ( xx.x)xx ( xx.x)Cutaneous Reactionsxx ( xx.x)xx ( xx.x)Hypersensitivity and Angioedemaxx ( xx.x)xx ( xx.x)Hepatic Disordersxx ( xx.x)xx ( xx.x)Tumor Lysis Syndromexx ( xx.x)xx ( xx.x)Tumor Flare Reactionxx ( xx.x)xx ( xx.x)Teratogenicityxx ( xx.x)xx ( xx.x)Interstitial Lung Disease (Interstitial pneumonitis)xx ( xx.x)xx ( xx.x)Mixed Thromboembolismxx ( xx.x)xx ( xx.x)Treatment-emergent adverse events include adverse events that started between the date of first dose and xx days after the date of last dose.  
-[a] AESI categories used either MedDRA vxx.x SMQ or sub-SMQ or SOC or HLT or list of preferred terms. A subject is counted only once for multiple events within each AESI category. AESI categories are listed in descending order of frequency in the experimental arm.   
-
-Program Path: S:\DEV\projects\...\Tables\XXXXXXX.sas 
-Data Source: 							Data extract Date:					RunTime: DDMONYYYY:HH:MM
-
-Allowable modifications: Refer to allowable modifications at top of document for more guidance.
-
-Celgene                                                                             		                                Page X of Y        
-Study/Protocol: XXX-XXX-XXX                                                              		            Database Cutoff Date: DDMONYYYY                      
-Table 14.3.2.8.2
-Treatment-emergent Adverse Events of Special Interest (AESI)by Treatment, AESI Category and Preferred Term
-Safety Population
-Trt1Trt2AESI Category [a](N=XXX)(N=XXX)  Preferred Term [b]n (%)n (%)Subjects With at Least One AESIxx ( xx.x)xx ( xx.x)                               AESI Category Name #1          xx ( xx.x)xx ( xx.x)  Preferred Term #1            xx ( xx.x)xx ( xx.x)  Preferred Term #2            xx ( xx.x)xx ( xx.x)AESI Category Name #2          xx ( xx.x)xx ( xx.x)  Preferred Term #1            xx ( xx.x)xx ( xx.x)  Preferred Term #2            xx ( xx.x)xx ( xx.x)AESI Category Name #3          xx ( xx.x)xx ( xx.x)  Preferred Term #1            xx ( xx.x)xx ( xx.x)  Preferred Term #2            xx ( xx.x)xx ( xx.x)AESI Category Name #4          xx ( xx.x)xx ( xx.x)  Preferred Term #1            xx ( xx.x)xx ( xx.x)  Preferred Term #2            xx ( xx.x)xx ( xx.x)Treatment-emergent adverse events include adverse events that started between the date of first dose and xx days after the date of last dose.  A preferred term may be seen in multiple AESI categories. 
-[a] AESI categories used either MedDRA vxx.x SMQ or sub-SMQ or SOC or HLT or list of preferred terms. A subject is counted only once for multiple events within each AESI category.
-[b] Coded using MedDRA version xx.x.  A subject is counted only once for multiple events within preferred term/AESI.                              
-
-Program Path: S:\DEV\projects\...\Tables\XXXXXXX.sas                                         
-Data Source: 							Data extract Date:					RunTime: DDMONYYYY:HH:MM
-Note: Only non-zero PTs will be displayed.  
-Allowable modifications: Refer to allowable modifications at top of document for more guidance.
-
-Celgene 		                                                                  		                                Page X of Y        
-Study/Protocol: XXX-XXX-XXX                                                              		            Database Cutoff Date: DDMONYYYY                      
-Table 14.3.2.8.3
-Duration of Selected Treatment-emergent Adverse Events of Special Interest (AESI) by Treatment
-Safety Population
-Trt1Trt2AESI Category [a](N=XXX)(N=XXX)  Preferred Term [b]n (%)n (%)AESI Category #1            Total Number of Events, n
-  Number (%) of Events by Length of Duration[c]     Length 1 (eg 1-30 days)xx ( xx.x)xx ( xx.x)       Sub-length #1 (eg 1-7 days)xx ( xx.x)xx ( xx.x)       Sub-length #2xx ( xx.x)xx ( xx.x)     Length 2xx ( xx.x)xx ( xx.x)     Length xxx ( xx.x)xx ( xx.x)     Ongoingxx ( xx.x)xx ( xx.x)  Overall Duration [d]     Mean xx.xxx.x     Median xx.xxx.x  Preferred Term #1                Total Number of Events, n
-    Number (%) of Events by Length of Duration [c]     Length 1xx ( xx.x)xx ( xx.x)       Sub-length #1xx ( xx.x)xx ( xx.x)       Sub-length #2xx ( xx.x)xx ( xx.x)     Length 2xx ( xx.x)xx ( xx.x)     Length xxx ( xx.x)xx ( xx.x)     Ongoingxx ( xx.x)xx ( xx.x)    Overall duration [d]     Mean [d]xx.xxx.x     Median [d]xx.xxx.x  Preferred Term #2 ...            Treatment-emergent adverse events (TEAE) include adverse events that started between the date of first dose and xx days after the date of last dose.  
-[a] AESI categories used either MedDRA vxx.x SMQ or sub-SMQ or SOC or HLT or list of preferred terms. 
-[b] Coded using MedDRA version xx.x.                                
-[c] A subject could contribute multiple events. Percentages are based on number of events within each AESI category or preferred term as the numerator.
-[d] Duration of each event is based on event start and stop dates based on the the TEAE definition and data cutoff algorithm, as defined in the SAP.
-Program Path: S:\DEV\projects\...\Tables\XXXXXXX.sas                                         
-Data Source: 							Data extract Date:					RunTime: DDMONYYYY:HH:MM
-Note: Only non-zero PTs will be displayed.  
-Allowable modifications: Refer to allowable modifications at top of document for more guidance.
- 
-Celgene 		                                                                  		                                Page X of Y        
-Study/Protocol: XXX-XXX-XXX                                                              		            Database Cutoff Date: DDMONYYYY                      
-Table 14.3.2.8.4
-Time to Onset of Treatment-emergent Adverse Event of Special Interest (AESI) by Treatment
-Safety Population
-Trt1Trt2AESI Category [a](N=XXX)(N=XXX)  Preferred Term [b]n (%)n (%)AESI Category #1             Total Number of Events, n
-   Number (%) of Events by Time to Onset Interval[c]     Interval 1 (eg 1-30 days)xx ( xx.x)xx ( xx.x)       Subinterval #1 (eg 1-7 days)xx ( xx.x)xx ( xx.x)       Subinterval #2xx ( xx.x)xx ( xx.x)     Interval 2xx ( xx.x)xx ( xx.x)     Interval xxx ( xx.x)xx ( xx.x)   Overall Time to Onset     Mean xx.xxx.x     Median xx.xxx.x  Preferred Term #1               Total Number of Events, n
-   Number (%) of Events by Time to Onset Interval[c]     Interval 1xx ( xx.x)xx ( xx.x)       Subinterval #1xx ( xx.x)xx ( xx.x)       Subinterval #2xx ( xx.x)xx ( xx.x)     Interval 2xx ( xx.x)xx ( xx.x)     Interval xxx ( xx.x)xx ( xx.x)   Overall Time to Onset     Mean xx.xxx.x     Median xx.xxx.xAESI Category #2 ...          Treatment-emergent adverse events (TEAE) include adverse events that started between the date of first dose and xx days after the date of last dose.  
-[a] AESI categories used either MedDRA vxx.x SMQ or sub-SMQ or SOC or HLT or list of preferred terms 
-[b] Coded using MedDRA version xx.x.                                
-[c] A subject could contribute multiple events. Percentages are based on number of events within each AESI category or preferred term as the numerator.
-
-Program Path: S:\DEV\projects\...\Tables\XXXXXXX.sas                                         
-Data Source: 							Data extract Date:					RunTime: DDMONYYYY:HH:MM
-Note: Only non-zero PTs will be displayed.  
-Allowable modifications: Refer to allowable modifications at top of document for more guidance.
-
-
-Module #5 Second Primary Malignancies (SPM)
-Points to Consider: Second Primary Malignancy Tables Table number 
-(with brief description)Points to considerSPM tables* The second primary malignancies will be handled by the SPM team within BDO. The contact is Qiang "Casey" Xu.
-* This module currently applies to only Revlimid and Pomalidomide studies.
-
-Celgene                                                                             		                                Page X of Y
-Study/Protocol: XXX-XXX-XXX                                                              		            Database Cutoff Date: DDMONYYYY
-
-Table 14.3.1.14.1
-Summary of Second Primary Malignancies (SPM)- Frequency 
-Safety Population
-Trt1Trt2Overall(N=XXX)(N=XXX)(N=XXX)SPM Categories, Subcategories, and Preferred Termsn (%)n (%)n (%)All SPMsxx ( xx.x)xx ( xx.x)xx ( xx.x)                               Invasive SPMsxx ( xx.x)xx ( xx.x)xx ( xx.x)    Hematologic Malignanciesxx ( xx.x)xx ( xx.x)xx ( xx.x)        ALLxx ( xx.x)xx ( xx.x)xx ( xx.x)            Preferred Term #1xx ( xx.x)xx ( xx.x)xx ( xx.x)            Preferred Term #2xx ( xx.x)xx ( xx.x)xx ( xx.x)        AMLxx ( xx.x)xx ( xx.x)xx ( xx.x)            Preferred Term #1xx ( xx.x)xx ( xx.x)xx ( xx.x)        CLLxx ( xx.x)xx ( xx.x)xx ( xx.x)            Preferred Term #1xx ( xx.x)xx ( xx.x)xx ( xx.x)     ...    Solid Tumorxx ( xx.x)xx ( xx.x)xx ( xx.x)            Preferred Term #1xx ( xx.x)xx ( xx.x)xx ( xx.x)            Preferred Term #2xx ( xx.x)xx ( xx.x)xx ( xx.x)            Preferred Term #3xx ( xx.x)xx ( xx.x)xx ( xx.x)            Preferred Term #4xx ( xx.x)xx ( xx.x)xx ( xx.x)Non-invasive SPMs (Non-melanoma Skin Cancer)xx ( xx.x)xx ( xx.x)xx ( xx.x)            Preferred Term #1xx ( xx.x)xx ( xx.x)xx ( xx.x)            Preferred Term #2xx ( xx.x)xx ( xx.x)xx ( xx.x)            Preferred Term #3xx ( xx.x)xx ( xx.x)xx ( xx.x)
-Program Path: S:\DEV\projects\...\Tables\XXXXXXX.sas 
-Data Source: 							Data extract Date:					RunTime: DDMONYYYY:HH:MM
-
-Allowable modifications: Refer to allowable modifications at top of document for more guidance.
-
-Celgene                                                                             		                                Page X of Y
-Study/Protocol: XXX-XXX-XXX                                                              		            Database Cutoff Date: DDMONYYYY
-Table 14.3.1.14.2
-Summary of Second Primary Malignancies (SPM)- Frequency Among Subjects Who Died 
-Safety Population
-Trt1Trt2Overall(N=XXX)(N=XXX)(N=XXX)SPM Categories, Subcategories, and Preferred Termsn (%)n (%)n (%)All SPMsxx ( xx.x)xx ( xx.x)xx ( xx.x)                               Invasive SPMsxx ( xx.x)xx ( xx.x)xx ( xx.x)    Hematologic Malignanciesxx ( xx.x)xx ( xx.x)xx ( xx.x)        ALLxx ( xx.x)xx ( xx.x)xx ( xx.x)            Preferred Term #1xx ( xx.x)xx ( xx.x)xx ( xx.x)            Preferred Term #2xx ( xx.x)xx ( xx.x)xx ( xx.x)        AMLxx ( xx.x)xx ( xx.x)xx ( xx.x)            Preferred Term #1xx ( xx.x)xx ( xx.x)xx ( xx.x)        CLLxx ( xx.x)xx ( xx.x)xx ( xx.x)            Preferred Term #1xx ( xx.x)xx ( xx.x)xx ( xx.x)     ...    Solid Tumorxx ( xx.x)xx ( xx.x)xx ( xx.x)            Preferred Term #1xx ( xx.x)xx ( xx.x)xx ( xx.x)            Preferred Term #2xx ( xx.x)xx ( xx.x)xx ( xx.x)            Preferred Term #3xx ( xx.x)xx ( xx.x)xx ( xx.x)            Preferred Term #4xx ( xx.x)xx ( xx.x)xx ( xx.x)Non-invasive SPMs (Non-melanoma Skin Cancer)xx ( xx.x)xx ( xx.x)xx ( xx.x)            Preferred Term #1xx ( xx.x)xx ( xx.x)xx ( xx.x)            Preferred Term #2xx ( xx.x)xx ( xx.x)xx ( xx.x)            Preferred Term #3xx ( xx.x)xx ( xx.x)xx ( xx.x)
-Program Path: S:\DEV\projects\...\Tables\XXXXXXX.sas 
-Data Source: 							Data extract Date:					RunTime: DDMONYYYY:HH:MM
-
-Allowable modifications: Refer to allowable modifications at top of document for more guidance.
-
-Celgene                                                                             		                                Page X of Y
-Study/Protocol: XXX-XXX-XXX                                                              		            Database Cutoff Date: DDMONYYYY
-Table 14.3.1.14.3
-Summary of Second Primary Malignancies (SPM)- Frequency Among Subjects Who Did Not Die 
-Safety Population
-Trt1Trt2Overall(N=XXX)(N=XXX)(N=XXX)SPM Categories, Subcategories, and Preferred Termsn (%)n (%)n (%)All SPMsxx ( xx.x)xx ( xx.x)xx ( xx.x)                               Invasive SPMsxx ( xx.x)xx ( xx.x)xx ( xx.x)    Hematologic Malignanciesxx ( xx.x)xx ( xx.x)xx ( xx.x)        ALLxx ( xx.x)xx ( xx.x)xx ( xx.x)            Preferred Term #1xx ( xx.x)xx ( xx.x)xx ( xx.x)            Preferred Term #2xx ( xx.x)xx ( xx.x)xx ( xx.x)        AMLxx ( xx.x)xx ( xx.x)xx ( xx.x)            Preferred Term #1xx ( xx.x)xx ( xx.x)xx ( xx.x)        CLLxx ( xx.x)xx ( xx.x)xx ( xx.x)            Preferred Term #1xx ( xx.x)xx ( xx.x)xx ( xx.x)     ...    Solid Tumorxx ( xx.x)xx ( xx.x)xx ( xx.x)            Preferred Term #1xx ( xx.x)xx ( xx.x)xx ( xx.x)            Preferred Term #2xx ( xx.x)xx ( xx.x)xx ( xx.x)            Preferred Term #3xx ( xx.x)xx ( xx.x)xx ( xx.x)            Preferred Term #4xx ( xx.x)xx ( xx.x)xx ( xx.x)Non-invasive SPMs (Non-melanoma Skin Cancer)xx ( xx.x)xx ( xx.x)xx ( xx.x)            Preferred Term #1xx ( xx.x)xx ( xx.x)xx ( xx.x)            Preferred Term #2xx ( xx.x)xx ( xx.x)xx ( xx.x)            Preferred Term #3xx ( xx.x)xx ( xx.x)xx ( xx.x)Program Path: S:\DEV\projects\...\Tables\XXXXXXX.sas 
-Data Source: 							Data extract Date:					RunTime: DDMONYYYY:HH:MM
-
-Allowable modifications: Refer to allowable modifications at top of document for more guidance.
-
-
-Celgene                                                                             		                                Page X of Y
-Study/Protocol: XXX-XXX-XXX                                                              		            Database Cutoff Date: DDMONYYYY
-Table 14.3.1.14.4
-Summary of Second Primary Malignancies (SPM)- Incidence Rate per 100 Person-years 
-Safety Population
-Trt1Trt2Overall(N=XXX)(N=XXX)(N=XXX)All Subjects with SPMs    Time to SPM Onset (months)        nxxxxxx        Meanxx.xxx.xxx.x        SDxx.xxxx.xxxx.xx        Medianxx.xxx.xxx.x        Min, Maxxx.x, xx.xxx.x, xx.xxx.x, xx.x    Number of Subjects with SPMxxxxxx    Total Person-years [a]xxx.xxxxx.xxxxx.xx    Incidence Rate per 100 Person-years [b]xx.xxxx.xxxx.xx        95% CI [c](xx.xx, xx.xx)(xx.xx, xx.xx)(xx.xx, xx.xx)       All Subjects with Invasive SPMs    Time to SPM Onset (months)        nxxxxxx        Meanxx.xxx.xxx.x        SDxx.xxxx.xxxx.xx        Medianxx.xxx.xxx.x        Min, Maxxx.x, xx.xxx.x, xx.xxx.x, xx.x    Number of Subjects with SPMxxxxxx    Total Person-years [a]xxx.xxxxx.xxxxx.xx    Incidence Rate per 100 Person-years [b]xx.xxxx.xxxx.xx        95% CI [c](xx.xx, xx.xx)(xx.xx, xx.xx)(xx.xx, xx.xx)SD=Standard deviation; Min=Minimum; Max=Maximum. 
-[a] Person-years are calculated as the time from the first dose date to the first onset date of the specified SPM for subjects with the specified SPM, and to the date of the last follow-up for subjects without the specified SPM.
-[b] Incidence rate (IR) per 100 person-years is calculated as 100*n/T, where n = # of subjects with the specified SPM and T = total person-years.
-[c] 95% CI for IR per 100 person-years is calculated using the method by RG Miller: IR*exp{±1.96/square root of n}. 
-
-Program Path: S:\DEV\projects\...\Tables\XXXXXXX.sas 
-Data Source: 							Data extract Date:					RunTime: DDMONYYYY:HH:MM
-
-Allowable modifications: Refer to allowable modifications at top of document for more guidance.
-
-
-Celgene                                                                             		                                Page X of Y
-Study/Protocol: XXX-XXX-XXX                                                              		            Database Cutoff Date: DDMONYYYY
-Table 14.3.1.14.4
-Summary of Second Primary Malignancies (SPM)- Incidence Rate per 100 Person-years 
-Safety Population
-Trt1Trt2Overall(N=XXX)(N=XXX)(N=XXX)All Subjects with Hematological Malignancies     Time to SPM Onset (months)        nxxxxxx        Meanxx.xxx.xxx.x        SDxx.xxxx.xxxx.xx        Medianxx.xxx.xxx.x        Min, Maxxx.x, xx.xxx.x, xx.xxx.x, xx.x    Number of Subjects with SPMxxxxxx    Total Person-years [a]xxx.xxxxx.xxxxx.xx    Incidence Rate per 100 Person-years [b]xx.xxxx.xxxx.xx        95% CI [c](xx.xx, xx.xx)(xx.xx, xx.xx)(xx.xx, xx.xx)       All Subjects with Solid Tumor     Time to SPM Onset (months)        nxxxxxx        Meanxx.xxx.xxx.x        SDxx.xxxx.xxxx.xx        Medianxx.xxx.xxx.x        Min, Maxxx.x, xx.xxx.x, xx.xxx.x, xx.x    Number of Subjects with SPMxxxxxx    Total Person-years [a]xxx.xxxxx.xxxxx.xx    Incidence Rate per 100 Person-years [b]xx.xxxx.xxxx.xx        95% CI [c](xx.xx, xx.xx)(xx.xx, xx.xx)(xx.xx, xx.xx)SD=Standard deviation; Min=Minimum; Max=Maximum. 
-[a] Person-years are calculated as the time from the first dose date to the first onset date of the specified SPM for subjects with the specified SPM, and to the date of the last follow-up for subjects without the specified SPM.
-[b] Incidence rate (IR) per 100 person-years is calculated as 100*n/T, where n = # of subjects with the specified SPM and T = total person-years.
-[c] 95% CI for IR per 100 person-years is calculated using the method by RG Miller: IR*exp{±1.96/square root of n}. 
-
-
-Program Path: S:\DEV\projects\...\Tables\XXXXXXX.sas 
-Data Source: 							Data extract Date:					RunTime: DDMONYYYY:HH:MM
-
-Allowable modifications: Refer to allowable modifications at top of document for more guidance.
-
-Celgene                                                                             		                                Page X of Y
-Study/Protocol: XXX-XXX-XXX                                                              		            Database Cutoff Date: DDMONYYYY
-Table 14.3.1.14.4
-Summary of Second Primary Malignancies (SPM)- Incidence Rate per 100 Person-years 
-Safety Population
-Trt1Trt2Overall(N=XXX)(N=XXX)(N=XXX)All Subjects with Non-invasive SPMs (Non-melanoma Skin Cancer)     Time to SPM Onset (months)        nxxxxxx        Meanxx.xxx.xxx.x        SDxx.xxxx.xxxx.xx        Medianxx.xxx.xxx.x        Min, Maxxx.x, xx.xxx.x, xx.xxx.x, xx.x    Number of Subjects with SPMxxxxxx    Total Person-years [a]xxx.xxxxx.xxxxx.xx    Incidence Rate per 100 Person-years [b]xx.xxxx.xxxx.xx        95% CI [c](xx.xx, xx.xx)(xx.xx, xx.xx)(xx.xx, xx.xx)       SD=Standard deviation; Min=Minimum; Max=Maximum. 
-[a] Person-years are calculated as the time from the first dose date to the first onset date of the specified SPM for subjects with the specified SPM, and to the date of the last follow-up for subjects without the specified SPM.
-[b] Incidence rate (IR) per 100 person-years is calculated as 100*n/T, where n = # of subjects with the specified SPM and T = total person-years.
-[c] 95% CI for IR per 100 person-years is calculated using the method by RG Miller: IR*exp{±1.96/square root of n}. 
- 
-
-Program Path: S:\DEV\projects\...\Tables\XXXXXXX.sas 
-Data Source: 							Data extract Date:					RunTime: DDMONYYYY:HH:MM
-
-Allowable modifications: Refer to allowable modifications at top of document for more guidance.
-
-21
-
-

@@ -1,332 +1,0 @@
-
-
-
-
-
-Standard Efficacy Table Shells
-General Points to Consider 
-General Points to Consider (applies to all Tables, Listings and Graphs in this package)Column Ordering * The general principles for ordering treatment group columns is as follows:
-* Columns are displayed in the order of dose escalation.
-* Active treatment is first, and placebo/control is last.
-o  In general, the active treatment should be placed in columns prior to the
- comparator/placebo arms, except for, e.g., dose-ranging or titration studies. 
-* Total column for AE tables is optional. If included, the total should only include the active arms of the study, and not be a total of active and control/placebo.  If included, the total column should be placed immediately after the right-most active treatment column.Allowable Modifications* The recommended populations and subsets for the TLGs are seen in this document, but there are allowable modifications.  Allowable modifications are changes to the TLGs that can be made within the standard TLG macros. 
-* The  modifications given below are allowed for all TLGs. In addition, there may be allowable modifications stated under the TLGs that applies directly to that TLG.
-1.) Change of population
-2.) Change in the treatment groups displayed including subtotal and total columns 
-3.) Displaying a subset of events (for example adverse event of special interest or adverse event leading to discontinuation), provided the subsetting is indicated in the title or footnote.
-4.) Change of title or footnote, provided the change properly reflects what is being displayed in the TLG.  
-5.) May modify categorical variables as determined necessary by study team. For example, age categories may deviate from <65 and >=65 as long as the categories are inclusive of all subjects. 
-6.) May modify the sort order of tables, be sure to specify sort order in footnotes. Dose Interruption * Dose interruption may be defined differently, depending on the drug/compound formulation (eg, oral  versus injectable), therefore may require  team  agreement.Footnote in TLG* Do not use the word "Note" at the beginning of the footnote section.
-* Use alphabetic order such as [a], [b], ..., etc. and not numeric order such as [1], [2], ..., etc.Celgene convention* Use "Subject" instead of "Patient" in all TLGs.Treatment order* The treatments/treatment groups will be displayed as "XXXXX", "XXXXX" and "XXXXX". For the TLGs, unless otherwise specified, the treatments/treatment groups will appear from left to right (and top to bottom) in the order of "XXXXX", "XXXXX" and "XXXXX", as applicable.Spanning headers* While spanning headers may be necessary in some cases, it is recommended that they only be used when necessary. TLG not included in this package* The Table of Contents of this package only includes the most commonly used TLG for study reports (hence, "Standard"). 
-* Variations of the TLG herein, such as subgroups by sex, age, time-period-of-interest, population-of-interest, etc., are recommended to use the same TLG formats to streamline the creations of the variations.Formatting issues* Use :  (xxx.x) , where the left and right parenthesis are in a consistent location in the column.  One hundred percent would include the decimal, i.e. (100.0).
-* If the numerator is '0' then show '0'. If the denominator is '0', then show 'NA' - apply this logic for descriptive stats
-* Do the rounding for the percentages before displaying in report.
-* For tables that have a mix of continuous and categorical summaries (e.g. Demographics), the summary statistics should be centered
-* Display as <= or >=, instead of = or =.
-* Use superscripts to denote a value raised to a power (eg X2 instead of X^2).Tables, listings and graphs  numbering 
-The following guidelines should be used for all  TLGs in the CSR. 
-
-Types of tables and graphs                                           Starting numbers
-Demographic data summary tables and figures                          14.1
-Efficacy data summary tables and figures (including PK/PD)           14.2
-Displays of Adverse Events and Dosing/Exposure                       14.3.1
-Deaths, Other Serious and Significant Adverse Events                 14.3.2
-Abnormal Laboratory value                                            14.3.4
-Tables and figures of vital signs, physical findings and other 
-observations related to safety tables                                14.3.5
-
-Subject data listings
-Discontinued Subjects                                                16.2.1
-Protocol Deviations                                                  16.2.2
-Subjects excluded from efficacy analysis                             16.2.3 
-Demographics and other baseline data                                 16.2.4  
-Compliance and/or drug concentration data                            16.2.5
-Individual efficacy response and PK/PD data                          16.2.6
-Adverse events listings                                              16.2.7
-Individual Laboratory measurements by subject                        16.2.8
- 
-* It is recommended that another level be used when using the same TLGs for differing populations.  For example, if your normal AE Summary table is 14.3.1.2 and you have two summary tables for the efficacy evaluable and safety populations, then they should be given the numbering 14.3.1.2.1 and 14.3.1.2.2. 
-* It is recommended to have no more than 6 levels of numbers, for example 14.3.1.2.1.2 would be considered 6 levels.  Clearly studies with a large number of TLGs may require more 6 levels. In this case, the numbering should be reviewed with medical writing.
-Table of Contents for Tables
-Table Number NamePopulationTable 14.2.1.1Time to Event ITT PopulationTable 14.2.1.2Event-Free Statistical Inference with Summarization by Timepoints ITT PopulationTable 14.2.1.3Follow-up Time for All Subjects and for Surviving SubjectsITT PopulationTable 14.2.1.4Events and Censoring for <Time to Event>ITT PopulationTable 14.2.2.1<Ordinal and Binary Response> ITT PopulationTable 14.2.2.2<Categorical/Binary/Multinomial> by TimepointITT PopulationTable 14.2.2.3Binomial Response by Timepoint ITT PopulationTable 14.2.2.4Binomial Response with Confidence Intervals by Timepoint ITT PopulationTable 14.2.2.5<Ordinal Response> by <Subgroup or Timepoint>ITT PopulationTable 14.2.2.6Responder Analysis ITT PopulationTable 14.2.3.1Efficacy Results and Change from Baseline by TimepointITT PopulationTable 14.2.3.2Change from Baseline in <Continuous Endpoint> by TimepointITT PopulationTable 14.2.3.3<Continuous Variable> Change from Baseline at <Timepoint x> ITT PopulationTable 14.2.3.4Shifts in <Categorical efficacy parameter> by TimepointITT PopulationTable 14.2.3.5.1Time to Loss of ResponseITT PopulationTable 14.2.3.5.2Time to ResponseITT PopulationTable 14.2.4.1Bayesian Analyses for Events of Interest ITT Population
-Celgene 		                                                                  		                                Page X of Y
-Study/Protocol: XXX-XXX-XXX                                                              		            Database Cutoff Date: DDMONYYYY
-Table 14.2.1.1
-Time to Event 
-ITT Population 
-Experiment ControlParameter(N=xx)(N=xx)Time to Event   Events (n (%))xx ( xx.x)xx ( xx.x)   Censored (n (%))xx ( xx.x)xx ( xx.x)Time to Event (time unit)   25th Percentile (95% CI) [a]xx.x (xx.x, xx.x)xx.x (xx.x, xx.x)   Median (95% CI)[a]xx.x (xx.x, xx.x)xx.x (xx.x, xx.x)   75th Percentile (95% CI) [a]xx.x (xx.x, xx.x)xx.x (xx.x, xx.x)Difference (optional) (Experiment - Control)   25th Percentile (95% CI) [b]xx.x (xx.x, xx.x)   Median (95% CI)[b]xx.x (xx.x, xx.x)   75th Percentile (95% CI) [b]xx.x (xx.x, xx.x)Event-free Rate    Timepoint 0xxxx   Event-free at Timepoint X % (SE)xxx ( xxx)xxx ( xxx)   Event-free at Timepoint Y % (SE)xxx ( xxx)xxx ( xxx)   Event-free at Timepoint Z % (SE)xxx ( xxx)xxx ( xxx)        .   Event-free at Timepoint ZZ % (SE)xxx ( xxx)xxx ( xxx)Log-Rank Test   Two sided p-value [c]0.xxxHazard Ratio (95% CI) [d] (Experiment vs. Control)xx.xxx (xx.xxx, xx.xxx)Stratified Log-Rank Test (optional)   Two sided p-value [e] (optional)0.xxxStratified Hazard Ratio (95% CI) [f] (optional)	xx.xxx (xx.xxx, xx.xxx)CI=Confidence Interval, SE=Standard error. 
-[a] Median, 25th, and 75th percentile estimates of time to event are from Kaplan-Meier product-limit estimates.
-[b] The CIs for the differences were derived using Kosorok's method (1999). 
-[c] Based upon the log rank test. 
-[d] Based on Cox proportional hazards model (use unadjusted hazard ratio). 
-
-Program Path: S:\DEV\projects\AZA\AZA-MDS-003\Programs\Tables\XXXXXXX.sas                                         
-Data Source: 							Data extract Date:					RunTime: DDMONYYYY:HH:MM
- Allowable modifications: Refer to allowable modifications at top of document for more guidance.
-Celgene 		                                                                  		                                Page X of Y
-Study/Protocol: XXX-XXX-XXX                                                              		            Database Cutoff Date: DDMONYYYY
-Table 14.2.1.2
-Event-Free Statistical Inference with Summarization by Timepoints 
-ITT Population
-ExperimentControl     Experiment ControlComparator(N=XXX)(N=XXX)Percent [a]Percent [a]Difference 
-Experiment-Control[b]Test Statistic
-(p-value)  Parameter Cum. Events 
-(# at Risk)Cum. Events 
-(# at Risk)% (SE)% (SE)(95% CIs)<Strata 1>   Time Point 00 ( xxx)0 ( xxx)   Event-free at Timepoint Xxxx ( xxx)xxx ( xxx)xx.x (xx.x)xx.x (xx.x)xx.x (xx.x, xx.x)   Event-free at Timepoint Yxxx ( xxx)xxx ( xxx)xx.x (xx.x)xx.x (xx.x)xx.x (xx.x, xx.x)   Event-free at Timepoint Zxxx ( xxx)xxx ( xxx)xx.x (xx.x)xx.x (xx.x)xx.x (xx.x, xx.x)        .        .        .       Event-free at Timepoint ZZxxx ( xxx)xxx ( xxx)xx.x (xx.x)xx.x (xx.x)xx.x (xx.x, xx.x)<Strata 2>   Time Point 00 ( xxx)0 ( xxx)    Event-free at Timepoint Xxxx ( xxx)xxx ( xxx)xx.x (xx.x)xx.x (xx.x)xx.x (xx.x, xx.x)   Event-free at Timepoint Yxxx ( xxx)xxx ( xxx)xx.x (xx.x)xx.x (xx.x)xx.x (xx.x, xx.x)   Event-free at Timepoint Zxxx ( xxx)xxx ( xxx)xx.x (xx.x)xx.x (xx.x)xx.x (xx.x, xx.x)        .         .        .   Event-free at Timepoint ZZxxx ( xxx)xxx ( xxx)xx.x (xx.x)xx.x (xx.x)xx.x (xx.x, xx.x)Log-rank Test [c]: xx.x (0.xxx)Weighted Log-rank Test [d]:xx.x (0.xxx)CI=confidence interval, SE=standard error. 
-[a] Kaplan-Meier product limit estimates with approximate SE expressed as a percent between 0% and 100%. <Current default in SAS Lifetest utilizes the log-log transformation with the delta method to approximate the SE?> 
-[b] <Describe CI calculation method> <Wald based CI using approximate standard errors obtained via the delta method?> 
-[c] <Chi-square test statistic and corresponding p-value (also include whether it is the primary test or a prespecified secondary test) for comparing the survival distributions> 
-[d] <Short description of the weighted log-rank test, if selected as an option (also include whether it is the primary test or a prespecified secondary test) > 
-
-Program Path: S:\DEV\projects\AZA\AZA-MDS-003\Programs\Tables\XXXXXXX.sas                                         
-Data Source: 							Data extract Date:					RunTime: DDMONYYYY:HH:MM
-Allowable Modification: Optional <strata> summaries if needed. Refer to allowable modifications at top of document for more guidance. 
-
-Celgene 		                                                                  		                                Page X of Y
-Study/Protocol: XXX-XXX-XXX                                                              		            Database Cutoff Date: DDMONYYYY
-Table 14.2.1.3
-Follow-up Time for All Subjects and for Surviving Subjects
-ITT Population
-Experiment ControlTotalParameter(N=XXX)(N=XXX)(N=XXX)Follow-up time for all subjects (units)   n                                                   xx xx xx   Mean                                      xx.x xx.x xx.x    SD                                        xx.xxxx.xxxx.xx   Median                                    xx.xxx.xxx.x   Q1, Q3                                    xx.x, xx.xxx.x, xx.xxx.x, xx.x   Min, Max                                  xx, xx  xx, xx  xx, xx                                               Follow-up time for surviving subjects (units)   n                                                   xx xx xx   Mean                                      xx.x xx.x xx.x    SD                                        xx.xxxx.xxxx.xx   Median                                    xx.xxx.xxx.x   Q1, Q3                                    xx.x, xx.xxx.x, xx.xxx.x, xx.x   Min, Max                                  xx, xx  xx, xx  xx, xx  Max=Maximum; Min=Minimum; Q1=First quartile; Q3=Third quartile; SD=Standard deviation.
-
-Program Path: S:\DEV\projects\...\Tables\XXXXXXX.sas
-Data Source: 							Data extract Date:					RunTime: DDMONYYYY:HH:MM
-
-Allowable modifications: Refer to allowable modifications at top of document for more guidance.
-
-Celgene 		                                                                  		                                Page X of Y
-Study/Protocol: XXX-XXX-XXX                                                              		            Database Cutoff Date: DDMONYYYY
-Table 14.2.1.4
-Events and Censoring for <Time to Event>
-ITT Population
-Experiment ControlTotalParameter(N=XXX)(N=XXX)(N=XXX)Number of Subjects (n (%))xxx (100.0)xxx (100.0)xxx (100.0)Events (n (%))xxx ( xx.x)xxx ( xx.x)xxx ( xx.x)   Event Type #1 (n (%))xxx ( xx.x)xxx ( xx.x)xxx ( xx.x)   Event Type #2 (n (%))xxx ( xx.x)xxx ( xx.x)xxx ( xx.x)   ...Censored (n (%))xxx ( xx.x) xxx ( xx.x) xxx ( xx.x) Censor Reason [a]   Censor Reason #1xxx ( xx.x)xxx ( xx.x)xxx ( xx.x)   Censor Reason #2xxx ( xx.x) xxx ( xx.x) xxx ( xx.x)    Censor Reason #3xxx ( xx.x)xxx ( xx.x)xxx ( xx.x)   Censor Reason #4xxx ( xx.x) xxx ( xx.x) xxx ( xx.x)    Censor Reason #5xxx ( xx.x)xxx ( xx.x)xxx ( xx.x)Event types and censoring reasons should be mutually exclusive.
-[a] Percentages are based upon number of subjects censored. 
-
-Program Path: S:\DEV\projects\...\Tables\XXXXXXX.sas
-Data Source: 							Data extract Date:					RunTime: DDMONYYYY:HH:MM
-
-Allowable modifications: Refer to allowable modifications at top of document for more guidance.
-
-Celgene 		                                                                  		                                Page X of Y
-Study/Protocol: XXX-XXX-XXX                                                              		            Database Cutoff Date: DDMONYYYY
-Table 14.2.2.1
-<Ordinal and Binary Response> 
-ITT Population
-ExperimentControl (N=XXX)(N=XXX)   Parametern/m (%) [a]n/m (%) [a]Ordinal Response [b]xx/xx ( xx.x)xx/xx ( xx.x)   Response Type #1xx/xx ( xx.x)xx/xx ( xx.x)   Response Type #2xx/xx ( xx.x)xx/xx ( xx.x)   Response Type #3xx/xx ( xx.x)xx/xx ( xx.x)   Response Type #4xx/xx ( xx.x)xx/xx ( xx.x)   Non-evaluablexx/xx ( xx.x)xx/xx ( xx.x)   p-value [c]0.xxxDichotomized Response [b]xx/xx ( xx.x)xx/xx ( xx.x)   Response Type #1xx/xx ( xx.x)xx/xx ( xx.x)   Response Type #2xx/xx ( xx.x)xx/xx ( xx.x)   p-value [d]0.xxx   Odds Ratio (2-sided 95% CI)x.xxx (x.xxx, x.xxx)CI=confidence interval.
-[a] n represent the number of subjects with a response and m represents the number of subjects eligible to have a response 
-[b] <Types of response listed from best to worst response>
-[c] Probability from Wilcoxon rank sum test with normal approximation. Non-evaluable subjects are not included. 
-[d] Fisher's exact. 
-
-Program Path: S:\DEV\projects\AZA\AZA-MDS-003\Programs\Tables\XXXXXXX.sas                                         
-Data Source: 							Data extract Date:					RunTime: DDMONYYYY:HH:MM
-
-Allowable modifications: Refer to allowable modifications at top of document for more guidance.
-
-Celgene 		                                                                  		                                Page X of Y
-Study/Protocol: XXX-XXX-XXX                                                              		            Database Cutoff Date: DDMONYYYY
-Table 14.2.2.2
-<Categorical/Binary/Multinomial> by Timepoint
-ITT Population
-Experiment ControlTimepoint(N=XXX)(N=XXX)   Parametern/m (%) [a]n/m (%) [a]Timepoint #1   Response [b]xx/xx ( xx.x)xx/xx ( xx.x)      Response Type #1xx/xx ( xx.x)xx/xx ( xx.x)      Response Type #2xx/xx ( xx.x)xx/xx ( xx.x)      Response Type #3xx/xx ( xx.x)xx/xx ( xx.x)      Response Type #4xx/xx ( xx.x)xx/xx ( xx.x)Timepoint #2   Response [b]xx/xx ( xx.x)xx/xx ( xx.x)      Response Type #1xx/xx ( xx.x)xx/xx ( xx.x)      Response Type #2xx/xx ( xx.x)xx/xx ( xx.x)      Response Type #3xx/xx ( xx.x)xx/xx ( xx.x)      Response Type #4xx/xx ( xx.x)xx/xx ( xx.x)[a] n represent the number of subjects with a response and m represents the number of subjects eligible to have a response 
-[b] <Types of response included>
-
-Program Path: S:\DEV\projects\AZA\AZA-MDS-003\Programs\Tables\XXXXXXX.sas                                         
-Data Source: 							Data extract Date:					RunTime: DDMONYYYY:HH:MM
-
-Allowable modifications: Refer to allowable modifications at top of document for more guidance.
-
-Celgene 		                                                                  		                                Page X of Y
-Study/Protocol: XXX-XXX-XXX                                                              		            Database Cutoff Date: DDMONYYYY
-Table 14.2.2.3
-Binomial Response by Timepoint 
-ITT Population
-Experiment ControlDifference 
-Timepoint(N=XXX)(N=XXX)Experiment-Control[b]    Parametern/m (%) [a]n/m (%) [a](95% CIs)Timepoint #1   Binomial Response xx/xx ( xx.x)xx/xx ( xx.x)xx.x (xx.x, xx.x)     Binomial Response Subtype #1xx/xx ( xx.x)xx/xx ( xx.x)xx.x (xx.x, xx.x)     Binomial Response Subtype #2xx/xx ( xx.x)xx/xx ( xx.x)xx.x (xx.x, xx.x)     Binomial Response Subtype #3xx/xx ( xx.x)xx/xx ( xx.x)xx.x (xx.x, xx.x)     Binomial Response Subtype #4xx/xx ( xx.x)xx/xx ( xx.x)xx.x (xx.x, xx.x)CI=confidence interval.
-[a] n represent the number of subjects with a response and m represents the number of subjects eligible to have a response 
-[b] <Description of method used to obtain CI>
-
-Program Path: S:\DEV\projects\AZA\AZA-MDS-003\Programs\Tables\XXXXXXX.sas                                         
-Data Source: 							Data extract Date:					RunTime: DDMONYYYY:HH:MM
-
-Note to stats: this is only useful for no imputation or single imputation methods. 
-Allowable modifications: Refer to allowable modifications at top of document for more guidance.
-
-
-
-Celgene 		                                                                  		                                Page X of Y
-Study/Protocol: XXX-XXX-XXX                                                              		            Database Cutoff Date: DDMONYYYY
-Table 14.2.2.4
-Binomial Response with Confidence Intervals by Timepoint 
-ITT Population
-Experiment ControlDifference Timepoint(N=XXX)(N=XXX)Experiment-Control   Parametern/m (%) [a]95% CI [b]n/m (%) [a]95% CI [b] Diff (95% CIs) [c]Timepoint #1   Binomial Response xx/xx ( xx.x)xx.x, xx.xxx/xx ( xx.x)xx.x, xx.xxx.x (xx.x, xx.x)     Binomial Response Subtype #1xx/xx ( xx.x)xx.x, xx.xxx/xx ( xx.x)xx.x, xx.xxx.x (xx.x, xx.x)     Binomial Response Subtype #2xx/xx ( xx.x)xx.x, xx.xxx/xx ( xx.x)xx.x, xx.xxx.x (xx.x, xx.x)     Binomial Response Subtype #3xx/xx ( xx.x)xx.x, xx.xxx/xx ( xx.x)xx.x, xx.xxx.x (xx.x, xx.x)     Binomial Response Subtype #4xx/xx ( xx.x)xx.x, xx.xxx/xx ( xx.x)xx.x, xx.xxx.x (xx.x, xx.x)CI=confidence interval.
-[a] n represent the number of subjects with a response and m represents the number of subjects eligible to have a response 
-[b] <Description of method used to obtain CI>
-[c] <Description of method used to obtain CI if different than [b]>
-Program Path: S:\DEV\projects\AZA\AZA-MDS-003\Programs\Tables\XXXXXXX.sas                                         
-Data Source: 							Data extract Date:					RunTime: DDMONYYYY:HH:MM
-
-Note to stats: this is only useful for no imputation or single imputation methods. 
-Allowable modifications: Refer to allowable modifications at top of document for more guidance.
-
-
-Celgene 		                                                                  		                                Page X of Y
-Study/Protocol: XXX-XXX-XXX                                                              		            Database Cutoff Date: DDMONYYYY
-Table 14.2.2.5
-<Ordinal Response> by <Subgroup or Timepoint>
-ITT Population
-Experiment ControlSubgroup or Timepoint(N=XXX)(N=XXX)   Parametern/m (%) [a](Cum %) [b]n/m (%)[a](Cum %) [b]Subgroup #1 or Timepoint #1   Response [c]xx/xx ( xx.x)xx.xxx/xx ( xx.x)xx.x      Response Category #1xx/xx ( xx.x)xx.xxx/xx ( xx.x)xx.x      Response Category #2xx/xx ( xx.x)xx.xxx/xx ( xx.x)xx.x      Response Category #3xx/xx ( xx.x)xx.xxx/xx ( xx.x)xx.x      Response Category #4xx/xx ( xx.x)xx.xxx/xx ( xx.x)xx.xSubgroup #2 or Timepoint #2   Response [c]xx/xx ( xx.x)xx.xxx/xx ( xx.x)xx.x      Response Category #1xx/xx ( xx.x)xx.xxx/xx ( xx.x)xx.x      Response Category #2xx/xx ( xx.x)xx.xxx/xx ( xx.x)xx.x      Response Category #3xx/xx ( xx.x)xx.xxx/xx ( xx.x)xx.x      Response Category #4xx/xx ( xx.x)xx.xxx/xx ( xx.x)xx.xCum=Cumulative.
-[a] n represent the number of subjects with a response and m represents the number of subjects eligible to have a response 
-[b] Cumulative percentage is calculated by adding up percentages of the current category and all previous categories.
-[c] <Categories of response included>
-
-Program Path: S:\DEV\projects\AZA\AZA-MDS-003\Programs\Tables\XXXXXXX.sas                                         
-Data Source: 							Data extract Date:					RunTime: DDMONYYYY:HH:MM
-
-Allowable modifications: Refer to allowable modifications at top of document for more guidance.
-
-
-Celgene 		                                                                  		                                Page X of Y
-Study/Protocol: XXX-XXX-XXX                                                              		            Database Cutoff Date: DDMONYYYY
-Table 14.2.2.6
-Responder Analysis 
-ITT Population
-ExperimentControl Parameter(N=XXX)(N=XXX)Number (%) of Responders n/m (%)[a]xx/xx (xx.x)xx/xx (xx.x)
-Strata 1 <Optional> Responders n/m (%)[a]
-xx/xx (xx.x)
-xx/xx (xx.x)Strata 2 <Optional> Responders n/m (%)[a]xx/xx (xx.x)xx/xx (xx.x)... Strata s <Optional> Responders n/m (%)[a]xx/xx (xx.x)xx/xx (xx.x)Difference [<Unadjusted> 95% CI] [b]xx.x (xx.x, xx.x)Difference [<Adjusted> 95% CI] [b]xx.x (xx.x, xx.x)Two-sided p-value [c]0.xxxCI=confidence interval
-[a] n represent the number of subjects with a response and m represents the number of subjects eligible to have a response. 
-[b] <Describe difference <eg, Experiment - Control > and 95% CI (and any adjustments made along with methodology description)> 
-[c] <Describe p-value (eg, unadjusted for multiple testing)> 
-
-Program Path: S:\DEV\projects\AZA\AZA-MDS-003\Programs\Tables\XXXXXXX.sas                                         
-Data Source: 							Data extract Date:					RunTime: DDMONYYYY:HH:MM
-
-Note to programming: Drop adjusted in CIs and adjusted differences if no strata. Can use ordinal scores in place of strata in a similar manner.
-Allowable modifications: Refer to allowable modifications at top of document for more guidance.
-
-
-Celgene 		                                                                  		                                Page X of Y
-Study/Protocol: XXX-XXX-XXX                                                              		            Database Cutoff Date: DDMONYYYY
-Table 14.2.3.1
-Efficacy Results and Change from Baseline by Timepoint
-ITT Population
-Trt1
-(N=XXX)Trt2
-(N=XXX)ParameterBaselineValue at TimepointChange from BaselineBaselineValue at TimepointChange from BaselineEfficacy Result #1 (units)                        Baseline                n                xx xx      Mean             xx.xxx.x     SD               xx.xxxx.xx     Median           xx.xxx.x     Q1, Q3           xx.x, xx.xxx.x, xx.x     Min, Max         xx, xxxx, xx                        Timepoint 1                  n                xx xx xx xx xx xx      Mean             xx.xxx.xxx.xxx.xxx.xxx.x     SD               xx.xxxx.xxxx.xxxx.xxxx.xxxx.xx     Median           xx.xxx.xxx.xxx.xxx.xxx.x     Q1, Q3           xx.x, xx.xxx.x, xx.xxx.x, xx.xxx.x, xx.xxx.x, xx.xxx.x, xx.x     Min, Max         xx, xxxx, xxxx, xxxx, xxxx, xxxx, xx     95% CI on Meanxx.x, xx.xxx.x, xx.x                      ...                                           End of Study             n                xx xx xx xx xx xx      Mean             xx.xxx.xxx.xxx.xxx.xxx.x     SD               xx.xxxx.xxxx.xxxx.xxxx.xxxx.xx     Median           xx.xxx.xxx.xxx.xxx.xxx.x     Q1, Q3           xx.x, xx.xxx.x, xx.xxx.x, xx.xxx.x, xx.xxx.x, xx.xxx.x, xx.x     Min, Max         xx, xxxx, xxxx, xxxx, xxxx, xxxx, xx     95% CI on Meanxx.x, xx.xxx.x, xx.xCI=confidence interval, SD=Standard Deviation, Q1=First Quartile, Q3=Third Quartile, Min=Minimum, Max=Maximum.
-
-Program Path: S:\DEV\projects\...\Tables\XXXXXXX.sas
-Data Source: 							Data extract Date:					RunTime: DDMONYYYY:HH:MM
-
-Allowable modification: A separate table can be made for percent change from baseline using this shell. Refer to allowable modifications at top of document for more guidance.
-Celgene 		                                                                  		                                Page X of Y
-Study/Protocol: XXX-XXX-XXX                                                              		            Database Cutoff Date: DDMONYYYY
-Table 14.2.3.2
-Change from Baseline in <Continuous Endpoint> by Timepoint
-ITT Population
-BaselineValue at TimepointChange from Baselinen MeanSDMeanSDMeanSDMedianMinQ1Q3Max95% CI for MeanEfficacy measure (units)   Timepoint #1                Trt1               xx xx.xxx.xxxx.xxx.xxxx.xxx.xxxx.xxx.xxx.xxx.xxx.x(xx.x, xx.x)     Trt2             xxxx.xxx.xxxx.xxx.xxxx.xxx.xxxx.xxx.xxx.xxx.xxx.x(xx.x, xx.x)     Totalxxxx.xxx.xxxx.xxx.xxxx.xxx.xxxx.xxx.xxx.xxx.xxx.x(xx.x, xx.x)  Timepoint #2                Trt1               xxxx.xxx.xxxx.xxx.xxxx.xxx.xxxx.xxx.xxx.xxx.xxx.x(xx.x, xx.x)     Trt2             xxxx.xxx.xxxx.xxx.xxxx.xxx.xxxx.xxx.xxx.xxx.xxx.x(xx.x, xx.x)     Totalxxxx.xxx.xxxx.xxx.xxxx.xxx.xxxx.xxx.xxx.xxx.xxx.x(xx.x, xx.x)  Timepoint #3                Trt1               xxxx.xxx.xxxx.xxx.xxxx.xxx.xxxx.xxx.xxx.xxx.xxx.x(xx.x, xx.x)     Trt2             xxxx.xxx.xxxx.xxx.xxxx.xxx.xxxx.xxx.xxx.xxx.xxx.x(xx.x, xx.x)     Totalxxxx.xxx.xxxx.xxx.xxxx.xxx.xxxx.xxx.xxx.xxx.xxx.x(xx.x, xx.x)  Timepoint #4                Trt1               xxxx.xxx.xxxx.xxx.xxxx.xxx.xxxx.xxx.xxx.xxx.xxx.x(xx.x, xx.x)     Trt2             xxxx.xxx.xxxx.xxx.xxxx.xxx.xxxx.xxx.xxx.xxx.xxx.x(xx.x, xx.x)     Totalxxxx.xxx.xxxx.xxx.xxxx.xxx.xxxx.xxx.xxx.xxx.xxx.x(xx.x, xx.x)  Timepoint #5                Trt1               xxxx.xxx.xxxx.xxx.xxxx.xxx.xxxx.xxx.xxx.xxx.xxx.x(xx.x, xx.x)     Trt2             xxxx.xxx.xxxx.xxx.xxxx.xxx.xxxx.xxx.xxx.xxx.xxx.x(xx.x, xx.x)     Totalxxxx.xxx.xxxx.xxx.xxxx.xxx.xxxx.xxx.xxx.xxx.xxx.x(xx.x, xx.x)CI=confidence interval; Max=Maximum; Min=Minimum; Q1=First Quartile; Q3=Third Quartile; SD=Standard Deviation.
-<Description of how normal range was obtained if local labs are used.>
-
-Program Path: S:\DEV\projects\...\Tables\XXXXXXX.sas
-Data Source: 							Data extract Date:					RunTime: DDMONYYYY:HH:MM
-
-Allowable modification: May drop total column if determined unnecessary by the study team. Refer to allowable modifications at top of document for more guidance.
-Celgene 		                                                                  		                                Page X of Y
-Study/Protocol: XXX-XXX-XXX                                                              		            Database Cutoff Date: DDMONYYYY
-Table 14.2.3.3
-<Continuous Variable> Change from Baseline at <Timepoint x> 
-ITT Population
-Experiment ControlParameter (N=XXX)(N=XXX)  Baseline      n                xx xx      Mean             xx.xxx.x     SD               xx.xxxx.xx     Median           xx.xxx.x     Q1, Q3           xx.x, xx.xxx.x, xx.x     Min, Max         xx, xxxx, xx  Timepoint x                n                xx xx      Mean             xx.xxx.x     SD               xx.xxxx.xx     Median           xx.xxx.x     Q1, Q3           xx.x, xx.xxx.x, xx.x     Min, Max         xx, xxxx, xx  Change from Baseline at Timepoint X                n                xx xx      Mean             xx.xxx.x     SD               xx.xxxx.xx     Median           xx.xxx.x     Q1, Q3           xx.x, xx.xxx.x, xx.x     Min, Max         xx, xxxx, xx     LS Mean (SE)xx.x (xx.x)xx.x (xx.x)     95% CI for LS Meanxx.x, xx.xxx.x, xx.x     Treatment Comparison        Difference in LS Mean (SE)xx.x (xx.x)       95% CI of Difference [a] xx.x, xx.x       2-sided p-value [b]0.xxxCI=confidence interval; LS=Least-squares; Max=Maximum; Min=Minimum; Q1=First Quartile; Q3=Third Quartile; SD=Standard Deviation.
-[a] <Describe difference <eg, Experiment - Control > and 95% CI (and any adjustments made along with methodology description)> 
-[b] <Describe p-value > 
-
-Program Path: S:\DEV\projects\AZA\AZA-MDS-003\Programs\Tables\XXXXXXX.sas                                         
-Data Source: 							Data extract Date:					RunTime: DDMONYYYY:HH:MM
-
-Allowable modification: A separate table can be made for percent change from baseline using this shell. Refer to allowable modifications at top of document for more guidance.
-Celgene                                                                             		                                Page X of Y
-Study/Protocol: XXX-XXX-XXX                                                              		            Database Cutoff Date: DDMONYYYY
-Table 14.2.3.4
-Shifts in <Categorical efficacy parameter> by Timepoint
-ITT Population
-Post-baseline ResultsTreatment TimepointBaseline Results
-N [a]Category 1
-n (%)Category 2
-n (%)Category 3
-n (%)Category 4
-n (%)Category 5
-n (%)Category 6
-n (%)Trt1Timepoint 1  Category 1 xxxx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)Category 2 xxxx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)Category 3 xxxx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)Category 4 xxxx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)Category 5 xxxx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)Category 6xxxx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)Total   xxxx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)Timepoint 2Category 1 xxxx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)Category 2 xxxx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)Category 3 xxxx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)Category 4 xxxx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)Category 5 xxxx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)Category 6xxxx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)Total   xxxx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)xx ( xx.x)...[a] Number of subjects with result at both baseline and the post-baseline timepoint. 
-
-Program Path: S:\DEV\projects\...\Tables\XXXXXXX.sas 
-Data Source: 							Data extract Date:					RunTime: DDMONYYYY:HH:MM
-
-Allowable modifications: Refer to allowable modifications at top of document for more guidance.
-
-
-Celgene 		                                                                  		                                Page X of Y
-Study/Protocol: XXX-XXX-XXX                                                              		            Database Cutoff Date: DDMONYYYY
-Table 14.2.3.5.1
-Time to Loss of Response
-ITT Population
-Experiment 
-(N=XXX)Control
-(N=XXX)Time to loss of Response (units)   nxxxx   Number of subjects who lost Responsexx (xx.x)xx (xx.x)   Number of censored subjectsxx (xx.x)xx (xx.x)   Median (2-sided 95% CI) [a]xx (xx.x, xx.x)xx (xx.x, xx.x)   Hazard Ratio (95% CI) [b]x.xxx (x.xxx, x.xxx)   2-sided p-value [c]                 0.xxxTime to loss of Response (units) [d]At risk at
-Beginning (n)Event in
-Interval (n)Responders
-Cum %At risk at
-Beginning (n)Event in
-Interval (n)Responders
-Cum %                         <= 2xxxxxxxxxxxx   > 2 to <= 4xxxxxxxxxxxx   > 4 to <= 8xxxxxxxxxxxx   > 8 to <= 12xxxxxxxxxxxx   > 12 to <= 16xxxxxxxxxxxx   > 16 to <= 20xxxxxxxxxxxx   > 20             xxxxxxxxxxxxCI=Confidence Interval; Cum=Cumulative.
-[a] Median (2-sided 95% CI) are based on Kaplan-Meier (K-M) estimates.
-[b] Hazard ratio (Control/Experiment) (2-sided 95% CI) is based on the Cox model with treatment as the independent variable.
-[c] The 2-sided p-value for the treatment comparison is based on the log-rank test.
-[d] At Risk at Beginning (n) = Number of subjects who are responders at the beginning of the interval. Event in Interval (n) = Number of
-subjects whose response is lost in the interval. Responders Cum % = Cumulative Percent of responders at the end of the interval based
-on K-M estimates.
-Program Path: S:\DEV\projects\...\Tables\XXXXXXX.sas
-Data Source: 							Data extract Date:					RunTime: DDMONYYYY:HH:MM
-
-Allowable modifications: Refer to allowable modifications at top of document for more guidance.
-
-Celgene 		                                                                  		                                Page X of Y
-Study/Protocol: XXX-XXX-XXX                                                              		            Database Cutoff Date: DDMONYYYY
-Table 14.2.3.5.2
-Time to Response
-ITT Population
-Experiment
-(N=XXX)Control 
-(N=XXX)Time to Response (units)  nxxxx  Meanxx.xxx.x  SDxx.xxxx.xx  Median (2-sided 95% CI) [a]xx (xx.x, xx.x)xx (xx.x, xx.x)  Minxx.xxx.x  Maxxx.xxx.xTime to Response (Units) Category, n(%) [b]                         <= 2xx (xx.x)xx (xx.x)   > 2 to <= 4xx (xx.x)xx (xx.x)   > 4 to <= 8xx (xx.x)xx (xx.x)   > 8 to <= 12xx (xx.x)xx (xx.x)   > 12 to <= 16xx (xx.x)xx (xx.x)   > 16 to <= 20xx (xx.x)xx (xx.x)   > 20             xx (xx.x)xx (xx.x)CI=Confidence Interval; Max=Maximum; Min=Minimum; Q1=First Quartile; Q3=Third Quartile; SD=Standard Deviation. 
-[a] The median (2-sided 95% CI) is based on Kaplan-Meier estimate. 
-[b] The percentage for each time interval is based on the number of responders at any time point in each treatment group.
-
-Program Path: S:\DEV\projects\...\Tables\XXXXXXX.sas
-Data Source: 							Data extract Date:					RunTime: DDMONYYYY:HH:MM
-
-Allowable modifications: Refer to allowable modifications at top of document for more guidance.
-
-Celgene 		                                                                  		                                Page X of Y
-Study/Protocol: XXX-XXX-XXX                                                              		            Database Cutoff Date: DDMONYYYY                      
-Table 14.2.4.1
-Bayesian Analyses for Events of Interest 
-ITT Population
-Trt1Trt2(N=XXX)(N=XXX)Events of Interest  n (%)n (%)Events of Interest #1          Number (%) of Events[a]xx ( xx.x)xx ( xx.x)  
-Posterior Distribution [b]   Median Rate (%)0.xxx (xx.x)0.xxx (xx.x)   Pr(Event rate>0.xx) 0.xxx0.xxx   Pr(Event rate>0.xx)  0.xxx0.xxx   
-   Pr(Event rate>0.xx)
- 0.xxx                                        
-0.xxxEvents of Interest #2          Number (%) of Events[a]xx ( xx.x)xx ( xx.x)  
-Posterior Distribution [b]   Median Rate (%)0.xxx (xx.x)0.xxx (xx.x)   Pr(Event rate>0.xx) 0.xxx0.xxx   Pr(Event rate>0.xx)  0.xxx0.xxx   
-   Pr(Event rate>0.xx)
- 0.xxx                                        
-0.xxxEvents of Interest #3 ...          [a] A subject had at least one event (n) with percentages of the event expressed as 100%*n/N.
-[b] Posterior distribution is a beta which assumes a flat conjugate prior beta (1/3, 1/3) with a median rate ranging from (0, 1) and percentages expressed as the median rate*100%. Probabilities for event rates that exceed a clinically relevant rate is based upon the posterior distribution. 
- 
-
-Program Path: S:\DEV\projects\...\Tables\XXXXXXX.sas                                         
-Data Source: 							Data extract Date:					RunTime: DDMONYYY:HH:MM
-Note: Event percentages expressed under a frequentist analysis will be very close to the median rate of the of the posterior beta when using a conjugate beta (1/3, 1/3).  
-Allowable modifications: Refer to allowable modifications at top of document for more guidance.
-
-
-
