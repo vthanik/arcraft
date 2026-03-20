@@ -1,5 +1,5 @@
 test_that("fct_ard_demog produces correct structure", {
-  adsl <- readRDS("/home/vignesh/R_Projects/adam_pilot/data/adsl.rds")
+  adsl <- readRDS(system.file("data", "adsl.rds", package = "arbuilder"))
 
   grouping <- list(
     trt_var = "TRT01P",
@@ -33,7 +33,7 @@ test_that("fct_ard_demog produces correct structure", {
 })
 
 test_that("fct_ard_demog respects decimal config", {
-  adsl <- readRDS("/home/vignesh/R_Projects/adam_pilot/data/adsl.rds")
+  adsl <- readRDS(system.file("data", "adsl.rds", package = "arbuilder"))
 
   grouping <- list(
     trt_var = "TRT01P",
@@ -54,7 +54,7 @@ test_that("fct_ard_demog respects decimal config", {
 })
 
 test_that("fct_ard_demog without total excludes Total column", {
-  adsl <- readRDS("/home/vignesh/R_Projects/adam_pilot/data/adsl.rds")
+  adsl <- readRDS(system.file("data", "adsl.rds", package = "arbuilder"))
 
   grouping <- list(
     trt_var = "TRT01P",

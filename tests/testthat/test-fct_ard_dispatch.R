@@ -1,9 +1,9 @@
 # Tests for dispatch system and new ARD builders
 
-adsl <- readRDS("/home/vignesh/R_Projects/adam_pilot/data/adsl.rds")
-adae <- readRDS("/home/vignesh/R_Projects/adam_pilot/data/adae.rds")
-adtte <- readRDS("/home/vignesh/R_Projects/adam_pilot/data/adtte.rds")
-adlb <- readRDS("/home/vignesh/R_Projects/adam_pilot/data/adlb.rds")
+adsl <- readRDS(system.file("data", "adsl.rds", package = "arbuilder"))
+adae <- readRDS(system.file("data", "adae.rds", package = "arbuilder"))
+adtte <- readRDS(system.file("data", "adtte.rds", package = "arbuilder"))
+adlb <- readRDS(system.file("data", "adlb.rds", package = "arbuilder"))
 
 grouping <- list(
   trt_var = "TRT01P",
