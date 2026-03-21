@@ -2,6 +2,27 @@
 
 `%||%` <- function(x, y) if (is.null(x)) y else x
 
+# Resolve bundled data path — works in dev (app.R) and installed package mode
+data_path <- function(filename) {
+  # Try installed package first
+  p <- system.file("data", filename, package = "arbuilder")
+  if (nzchar(p)) return(p)
+  # Dev mode: inst/data/ relative to working directory
+  p <- file.path("inst", "data", filename)
+  if (file.exists(p)) return(p)
+  ""
+}
+
+# Read bundled data — uses parquet for large files (>500KB), readRDS for small
+read_bundled <- function(path) {
+  size <- file.size(path)
+  if (!is.na(size) && size > 512000L) {
+    pq_path <- sub("[.]rds$", ".parquet", path)
+    if (file.exists(pq_path)) return(arrow::read_parquet(pq_path))
+  }
+  readRDS(path)
+}
+
 coalesce_list <- function(defaults, overrides) {
   out <- defaults
   for (nm in names(overrides)) {

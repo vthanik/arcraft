@@ -130,8 +130,9 @@ app_server <- function(input, output, session) {
 
   # ── 2c. Data Source N display ──
   output$data_source_n <- shiny::renderUI({
-    req(store$datasets)
+    req(length(store$datasets) > 0)
     ds_name <- store$pipeline_filters$dataset %||% names(store$datasets)[1]
+    req(ds_name)
     d <- store$datasets[[ds_name]]
     req(d)
     pop <- store$pipeline_filters$pop_flag
@@ -561,21 +562,21 @@ app_server <- function(input, output, session) {
   })
 
   # ── 12. Export Handlers ──
-  export_filename <- function() {
+  export_filename <- function(fmt = NULL) {
     tmpl <- store$template %||% "table"
-    output_type <- fct_template_output_type(tmpl)
-    prefix <- switch(output_type, figure = "f_", listing = "l_", "t_")
-    out_fmt <- store$fmt$output_format %||% "rtf"
-    ext <- switch(output_type,
-      figure = ".png",
-      switch(out_fmt, pdf = ".pdf", html = ".html", ".rtf"))
-    paste0(prefix, tmpl, "_", format(Sys.time(), "%Y%m%dT%H%M%S"), ext)
+    out_fmt <- fmt %||% store$fmt$output_format %||% "rtf"
+    ext <- switch(out_fmt, pdf = ".pdf", html = ".html", ".rtf")
+    paste0("t_", tmpl, "_", format(Sys.time(), "%Y%m%dT%H%M%S"), ext)
   }
 
-  export_content <- function(file) {
-    # NOTE: figure and listing export branches removed (demographics only)
-    req(store$ard)
-    fct_render_rtf(store$ard, store$fmt, file)
+  export_content <- function(file, fmt = NULL) {
+    if (is.null(store$ard)) {
+      writeLines("Generate preview first (Ctrl+Enter)", file)
+      return()
+    }
+    out_fmt <- fmt %||% store$fmt$output_format %||% "rtf"
+    spec <- fct_build_spec(store$ard, store$fmt)
+    arframe::fr_render(spec, file)
   }
 
   script_filename <- function() {
@@ -583,10 +584,14 @@ app_server <- function(input, output, session) {
     paste0("t_", tmpl, ".R")
   }
   script_content <- function(file) {
-    req(store$code)
+    if (is.null(store$code)) {
+      writeLines("# Generate preview first (Ctrl+Enter)", file)
+      return()
+    }
     writeLines(store$code, file)
   }
 
+  # Top bar buttons — use current output_format
   output$export_rtf <- shiny::downloadHandler(
     filename = export_filename,
     content = function(file) {
@@ -595,10 +600,19 @@ app_server <- function(input, output, session) {
         list(message = "Export complete", type = "success"))
     }
   )
-  output$export_rtf_side <- shiny::downloadHandler(
-    filename = export_filename, content = export_content)
   output$dl_script <- shiny::downloadHandler(
     filename = script_filename, content = script_content)
+
+  # Sidebar buttons — format-specific
+  output$export_rtf_side <- shiny::downloadHandler(
+    filename = function() export_filename("rtf"),
+    content = function(file) export_content(file, "rtf"))
+  output$export_pdf_side <- shiny::downloadHandler(
+    filename = function() export_filename("pdf"),
+    content = function(file) export_content(file, "pdf"))
+  output$export_html_side <- shiny::downloadHandler(
+    filename = function() export_filename("html"),
+    content = function(file) export_content(file, "html"))
   output$dl_script_side <- shiny::downloadHandler(
     filename = script_filename, content = script_content)
 }

@@ -27,9 +27,9 @@ test_that("fct_ard_demog produces correct structure", {
   age_rows <- ard[ard$variable == "AGE", ]
   expect_equal(nrow(age_rows), 3)
 
-  # Check SEX has 2 rows (F, M)
+  # Check SEX has 3 rows (n + F + M, since show_n defaults to TRUE)
   sex_rows <- ard[ard$variable == "SEX", ]
-  expect_equal(nrow(sex_rows), 2)
+  expect_equal(nrow(sex_rows), 3)
 })
 
 test_that("fct_ard_demog respects decimal config", {
@@ -47,8 +47,9 @@ test_that("fct_ard_demog respects decimal config", {
   )
 
   ard <- fct_ard_demog(adsl, grouping, var_configs)
-  # Mean SD should have 2 decimal places
-  val <- ard[["Drug A 200mg"]][1]
+  # Mean SD should have 2 decimal places — use first treatment column
+  trt_col <- grouping$trt_levels[1]
+  val <- ard[[trt_col]][1]
   # Check it has decimals (format like "56.52 (12.34)")
   expect_match(val, "\\d+\\.\\d{2}")
 })

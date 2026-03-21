@@ -15,10 +15,14 @@ Depends:
     R (>= 4.1.0)
 Imports:
     arframe,
+    arrow,
     shiny (>= 1.8.0),
     bslib (>= 0.6.0),
     htmltools,
+    collapse,
+    data.table,
     dplyr,
+    haven,
     tidyr,
     tibble,
     readr,

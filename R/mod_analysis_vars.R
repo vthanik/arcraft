@@ -100,7 +100,7 @@ mod_analysis_vars_server <- function(id, store, grp) {
                 pct_dec = 1,
                 count_dec = 0,
                 levels = if (is.factor(d[[v]])) levels(d[[v]])
-                         else sort(unique(stats::na.omit(d[[v]])))
+                         else sort(unique(d[[v]][!is.na(d[[v]])]))
               )
             }
           }
@@ -411,7 +411,7 @@ mod_analysis_vars_server <- function(id, store, grp) {
             x <- d[[my_var]]
             if (isTRUE(store$var_configs[[my_var]]$sorted_by_freq)) {
               # Toggle OFF — revert to alphabetical
-              store$var_configs[[my_var]]$levels <- sort(unique(stats::na.omit(as.character(x))))
+              store$var_configs[[my_var]]$levels <- sort(unique(as.character(x[!is.na(x)])))
               store$var_configs[[my_var]]$sorted_by_freq <- FALSE
             } else {
               # Toggle ON — sort by frequency
@@ -611,7 +611,7 @@ ui_stat_card_cat <- function(ns, var, config, data, custom_label = NULL, added_l
   added <- added_levels %||% character(0)
 
   x <- data[[var]]
-  obs_levels <- sort(unique(stats::na.omit(as.character(x))))
+  obs_levels <- sort(unique(as.character(x[!is.na(x)])))
   cfg_levels <- config$levels %||% obs_levels
 
   # Level rows with drag handles (SortableJS)

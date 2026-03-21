@@ -78,11 +78,33 @@ mod_treatment_server <- function(id, store, grp) {
       shiny::updateSelectInput(session, "trt_var", choices = choices, selected = sel)
     })
 
-    # ── When treatment var changes, update levels ──
-    shiny::observeEvent(input$trt_var, {
-      req(input$trt_var, store$datasets)
+    # Helper: get filtered dataset (pop_flag + data_filter applied)
+    filtered_data <- shiny::reactive({
+      req(store$datasets)
       ds_name <- names(store$datasets)[1]
+      req(ds_name)
       d <- store$datasets[[ds_name]]
+      # Apply population filter
+      pop <- store$pipeline_filters$pop_flag
+      if (!is.null(pop) && nzchar(pop) && pop %in% names(d)) {
+        d <- d[d[[pop]] == "Y", ]
+      }
+      # Apply data filter expression
+      expr <- store$pipeline_filters$data_filter
+      if (!is.null(expr) && nzchar(expr)) {
+        tryCatch({
+          mask <- eval(parse(text = expr), envir = d)
+          if (is.logical(mask)) d <- d[mask & !is.na(mask), ]
+        }, error = function(e) NULL)
+      }
+      d
+    })
+
+    # ── When treatment var or filters change, update levels ──
+    shiny::observeEvent(list(input$trt_var, store$pipeline_filters), {
+      req(input$trt_var)
+      d <- filtered_data()
+      req(d)
       if (input$trt_var %in% names(d)) {
         new_lvls <- sort(unique(d[[input$trt_var]]))
         prev_var <- grp$trt_var
@@ -105,14 +127,10 @@ mod_treatment_server <- function(id, store, grp) {
     })
 
     output$unassigned_info <- shiny::renderUI({
-      req(grp$trt_var, store$datasets)
-      ds_name <- names(store$datasets)[1]
-      d <- store$datasets[[ds_name]]
+      req(grp$trt_var)
+      d <- filtered_data()
+      req(d)
       trt_var <- grp$trt_var
-      pop <- store$pipeline_filters$pop_flag
-      if (!is.null(pop) && nzchar(pop) && pop %in% names(d)) {
-        d <- d[d[[pop]] == "Y", ]
-      }
       n_unassigned <- sum(is.na(d[[trt_var]]) | !nzchar(as.character(d[[trt_var]])))
       if (n_unassigned > 0) {
         htmltools::tags$div(class = "ar-unassigned-info",
@@ -178,12 +196,7 @@ mod_treatment_server <- function(id, store, grp) {
     shiny::observeEvent(input$by_var, {
       if (nzchar(input$by_var)) {
         grp$by_var <- input$by_var
-        ds_name <- names(store$datasets)[1]
-        d <- store$datasets[[ds_name]]
-        pop <- store$pipeline_filters$pop_flag
-        if (!is.null(pop) && nzchar(pop) && pop %in% names(d)) {
-          d <- d[d[[pop]] == "Y", ]
-        }
+        d <- filtered_data()
         grp$by_levels <- sort(unique(d[[input$by_var]]))
       } else {
         grp$by_var <- NULL
@@ -194,14 +207,9 @@ mod_treatment_server <- function(id, store, grp) {
     # ── Group variable levels — same clean style as treatment ──
     output$by_levels_ui <- shiny::renderUI({
       req(input$by_var, nzchar(input$by_var))
-      req(store$datasets)
-      ds_name <- names(store$datasets)[1]
-      d <- store$datasets[[ds_name]]
+      d <- filtered_data()
+      req(d)
       by_var <- input$by_var
-      pop <- store$pipeline_filters$pop_flag
-      if (!is.null(pop) && nzchar(pop) && pop %in% names(d)) {
-        d <- d[d[[pop]] == "Y", ]
-      }
 
       by_lvls <- grp$by_levels %||% sort(unique(d[[by_var]]))
       n_by <- length(by_lvls)

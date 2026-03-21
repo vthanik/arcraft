@@ -71,7 +71,7 @@ ui_type_badge <- function(type) {
   });
 }")
 
-ar_build_reactable <- function(data, height = "auto") {
+ar_build_reactable <- function(data, height = "auto", row_offset = 0L) {
   wide_data <- ncol(data) > 20
   skip_rownum <- ncol(data) > 30
   measure_cols <- if (wide_data) min(10, ncol(data)) else ncol(data)
@@ -80,7 +80,7 @@ ar_build_reactable <- function(data, height = "auto") {
     d <- data
   } else {
     d <- dplyr::bind_cols(
-      tibble::tibble(`#` = seq_len(nrow(data))),
+      tibble::tibble(`#` = seq_len(nrow(data)) + row_offset),
       data
     )
   }

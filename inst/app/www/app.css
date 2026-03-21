@@ -996,3 +996,23 @@ a.btn.ar-btn-primary:hover { background: var(--accent-hover) !important; }
 .ar-icon-mr-2 { margin-right: 2px; }
 .ar-icon-mr-6 { margin-right: 6px; }
 .ar-icon-hint { opacity: 0.5; }
+
+/* ── Unique Values (data viewer expandable row) ── */
+.ar-unique-values {
+  padding: 8px 12px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+.ar-unique-pill {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 4px;
+  font-size: 10.5px;
+  font-family: var(--font-mono);
+  background: var(--bg-2);
+  color: var(--fg-2);
+  border: 1px solid var(--border);
+  white-space: nowrap;
+}

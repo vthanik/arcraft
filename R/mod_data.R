@@ -148,9 +148,9 @@ mod_data_server <- function(id, store, grp) {
     shiny::observeEvent(input$load_btn, {
       req(input$ds_select)
       for (ds_name in input$ds_select) {
-        path <- system.file("data", paste0(ds_name, ".rds"), package = "arbuilder")
+        path <- data_path(paste0(ds_name, ".rds"))
         if (nzchar(path) && file.exists(path)) {
-          store$datasets[[ds_name]] <- readRDS(path)
+          store$datasets[[ds_name]] <- read_bundled(path)
         }
       }
       session$sendCustomMessage("ar_toast",
@@ -172,9 +172,9 @@ mod_data_server <- function(id, store, grp) {
 
     # ── Load Demo Data (CDISC Pilot — bundled) ──
     shiny::observeEvent(input$load_demo, {
-      path <- system.file("data", "adsl.rds", package = "arbuilder")
+      path <- data_path("adsl.rds")
       if (nzchar(path) && file.exists(path)) {
-        store$datasets[["adsl"]] <- readRDS(path)
+        store$datasets[["adsl"]] <- read_bundled(path)
         store$active_ds <- "adsl"
 
         shiny::updateSelectInput(session, "pipeline_ds", choices = "adsl", selected = "adsl")
@@ -216,8 +216,10 @@ mod_data_server <- function(id, store, grp) {
       tryCatch({
         data <- switch(ext,
           rds = readRDS(f$datapath),
-          csv = readr::read_csv(f$datapath, show_col_types = FALSE),
-          stop("Unsupported format")
+          csv = data.table::fread(f$datapath, data.table = FALSE),
+          sas7bdat = haven::read_sas(f$datapath),
+          xpt = haven::read_xpt(f$datapath),
+          stop("Unsupported format: .", ext)
         )
         store$datasets[[ds_name]] <- data
         ds_names <- names(store$datasets)

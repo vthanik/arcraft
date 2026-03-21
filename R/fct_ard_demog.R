@@ -102,7 +102,7 @@ fct_ard_demog_inner <- function(adsl, grouping, var_configs, added_levels = NULL
       if (length(extra_lvls) > 0) {
         existing <- config$levels %||% {
           if (is.factor(adsl[[var]])) levels(adsl[[var]])
-          else sort(unique(stats::na.omit(adsl[[var]])))
+          else sort(unique(adsl[[var]][!is.na(adsl[[var]])]))
         }
         config$levels <- unique(c(existing, extra_lvls))
       }
@@ -145,7 +145,7 @@ fct_summarize_cont <- function(data, var, trt_var, trt_levels, config, big_n,
           x <- data[[var]][data[[trt_var]] == grp]
         }
       }
-      x <- stats::na.omit(x)
+      x <- x[!is.na(x)]
       n <- length(x)
 
       switch(stat,
@@ -223,7 +223,7 @@ fct_summarize_cat <- function(data, var, trt_var, trt_levels, config, big_n,
   } else if (is.factor(data[[var]])) {
     levels(data[[var]])
   } else {
-    sort(unique(stats::na.omit(data[[var]])))
+    sort(unique(data[[var]][!is.na(data[[var]])]))
   }
 
   groups <- trt_levels

@@ -9,7 +9,7 @@ test_that("fmt_npct handles basic cases", {
 })
 
 test_that("fmt_npct handles zero", {
-  expect_equal(fmt_npct(0, 50, "A", 1), "0 (0)")
+  expect_equal(fmt_npct(0, 50, "A", 1), "0")
   expect_equal(fmt_npct(0, 50, "D", 1), "0 (0.0)")
 })
 

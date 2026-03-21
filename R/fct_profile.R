@@ -14,13 +14,13 @@ fct_profile_column <- function(x, col_name, n_row) {
     label = label,
     format = format_attr,
     r_class = r_class,
-    n_unique = length(unique(stats::na.omit(x))),
+    n_unique = length(unique(x[!is.na(x)])),
     n_missing = n_miss,
     pct_missing = pct_miss
   )
 
   if (is.numeric(x)) {
-    vals <- stats::na.omit(x)
+    vals <- x[!is.na(x)]
     c(base, list(
       type = "NUM",
       badge_class = "ar-type-badge--num",
@@ -34,7 +34,7 @@ fct_profile_column <- function(x, col_name, n_row) {
       ) else NULL
     ))
   } else if (inherits(x, "Date") || inherits(x, "POSIXt")) {
-    vals <- stats::na.omit(x)
+    vals <- x[!is.na(x)]
     c(base, list(
       type = "DATE",
       badge_class = "ar-type-badge--date",
@@ -44,7 +44,7 @@ fct_profile_column <- function(x, col_name, n_row) {
       ) else NULL
     ))
   } else {
-    vals <- stats::na.omit(x)
+    vals <- x[!is.na(x)]
     freq <- if (length(vals) > 0) sort(table(vals), decreasing = TRUE) else integer(0)
     c(base, list(
       type = "CHR",

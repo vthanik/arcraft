@@ -161,6 +161,10 @@ app_ui <- function() {
                 htmltools::tags$div(class = "ar-flex-col ar-gap-8",
                   shiny::downloadButton("export_rtf_side", "Export RTF",
                     class = "ar-btn-primary ar-w-full"),
+                  shiny::downloadButton("export_pdf_side", "Export PDF",
+                    class = "ar-btn-outline ar-w-full"),
+                  shiny::downloadButton("export_html_side", "Export HTML",
+                    class = "ar-btn-outline ar-w-full"),
                   shiny::downloadButton("dl_script_side", "Download R Script",
                     class = "ar-btn-outline ar-w-full")
                 )
