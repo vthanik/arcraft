@@ -18,13 +18,14 @@ mod_treatment_ui <- function(id) {
     # Treatment levels (foldable — clean: just drag dots + label)
     shiny::uiOutput(ns("trt_levels_ui")),
 
-    # Include Total + label
-    htmltools::tags$div(class = "ar-toggle-grid",
-      htmltools::tags$div(class = "ar-toggle-grid__item",
-        htmltools::tags$span(class = "ar-toggle-grid__label", "Total col"),
-        shiny::radioButtons(ns("include_total"), NULL,
-          choices = c("No" = "no", "Yes" = "yes"),
-          selected = "yes", inline = TRUE)
+    # Include Total column
+    htmltools::tags$div(class = "ar-props",
+      htmltools::tags$div(class = "ar-prop",
+        htmltools::tags$span(class = "ar-prop__label", "Total Column"),
+        htmltools::tags$div(class = "ar-prop__value",
+          shiny::radioButtons(ns("include_total"), NULL,
+            choices = c("No" = "no", "Yes" = "yes"),
+            selected = "yes", inline = TRUE))
       )
     ),
     # Include unassigned (dynamic)
@@ -34,7 +35,7 @@ mod_treatment_ui <- function(id) {
     htmltools::tags$div(class = "ar-section-divider"),
     htmltools::tags$div(class = "ar-props",
       htmltools::tags$div(class = "ar-prop",
-        htmltools::tags$span(class = "ar-prop__label", "Group Var"),
+        htmltools::tags$span(class = "ar-prop__label", "Group Variable"),
         htmltools::tags$div(class = "ar-prop__value",
           shiny::selectInput(ns("by_var"), NULL,
             choices = c("None" = ""), width = "100%"))
@@ -86,9 +87,7 @@ mod_treatment_server <- function(id, store, grp) {
       d <- store$datasets[[ds_name]]
       # Apply population filter
       pop <- store$pipeline_filters$pop_flag
-      if (!is.null(pop) && nzchar(pop) && pop %in% names(d)) {
-        d <- d[d[[pop]] == "Y", ]
-      }
+      d <- apply_pop_filter(d, pop)
       # Apply data filter expression
       expr <- store$pipeline_filters$data_filter
       if (!is.null(expr) && nzchar(expr)) {

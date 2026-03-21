@@ -136,9 +136,7 @@ app_server <- function(input, output, session) {
     d <- store$datasets[[ds_name]]
     req(d)
     pop <- store$pipeline_filters$pop_flag
-    if (!is.null(pop) && nzchar(pop) && pop %in% names(d)) {
-      d <- d[d[[pop]] == "Y", ]
-    }
+    d <- apply_pop_filter(d, pop)
     n <- nrow(d)
     pop_label <- if (!is.null(pop) && nzchar(pop)) paste0(" (", pop, " = Y)") else ""
     htmltools::tags$div(class = "ar-data-source-n",
@@ -349,7 +347,12 @@ app_server <- function(input, output, session) {
       treatment = if (has_trt) "done" else if (has_data) "active" else "",
       statistics = if (has_vars) "done" else if (has_trt) "active" else ""
     )
-    session$sendCustomMessage("ar_acc_dots", dots)
+    acc_map <- list(
+      datasets = "DATASETS", summary = "SUMMARY", col_explorer = "COLUMN EXPLORER",
+      filters = "FILTERS", template_info = "TEMPLATE INFO", data_source = "DATA SOURCE",
+      variables = "VARIABLES", treatment = "TREATMENT", statistics = "STATISTICS"
+    )
+    session$sendCustomMessage("ar_acc_dots", list(dots = dots, map = acc_map))
   })
 
   # ── 6. Context Summary Line ──
@@ -364,8 +367,7 @@ app_server <- function(input, output, session) {
     if (length(store$datasets) > 0) {
       ds_n <- store$datasets[[store$pipeline_filters$dataset %||% names(store$datasets)[1]]]
       if (!is.null(ds_n)) {
-        if (!is.null(pop) && nzchar(pop) && pop %in% names(ds_n))
-          ds_n <- ds_n[ds_n[[pop]] == "Y", ]
+        ds_n <- apply_pop_filter(ds_n, pop)
         n_val <- nrow(ds_n)
       }
     }

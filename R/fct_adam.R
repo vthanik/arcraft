@@ -41,8 +41,9 @@ fct_detect_grouping_vars <- function(data) {
 
   # Custom: all other categorical with <50 unique values
   cat_cols <- cols[vapply(data, function(x) {
-    (is.character(x) || is.factor(x)) && length(unique(x[!is.na(x)])) > 1 &&
-      length(unique(x[!is.na(x)])) < 50
+    if (!(is.character(x) || is.factor(x))) return(FALSE)
+    nu <- length(get_unique_levels(x))
+    nu > 1 && nu < 50
   }, logical(1))]
   exclude_patterns <- c("^USUBJID$", "^SUBJID$", "^STUDYID$", "DT$", "DTM$", "DTC$", "FL$", "FN$")
   exclude <- grep(paste(exclude_patterns, collapse = "|"), cat_cols, value = TRUE)

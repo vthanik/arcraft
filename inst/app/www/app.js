@@ -219,20 +219,20 @@ $(document).ready(function() {
   /* Collapse/open variable cards */
   Shiny.addCustomMessageHandler('ar_collapse_card', function(d) {
     var card = document.getElementById(d.card_id);
-    if (card) {
-      card.classList.remove('ar-var-card--open');
-      var v = card.getAttribute('data-var');
-      if (v) { var ns = d.card_id.replace('vcard_' + v, ''); Shiny.setInputValue(ns + 'card_closed', {var: v, ts: Date.now()}, {priority: 'event'}); }
-    }
+    if (!card) return;
+    card.classList.remove('ar-var-card--open');
+    var v = card.getAttribute('data-var');
+    if (v) { var ns = d.card_id.replace('vcard_' + v, ''); Shiny.setInputValue(ns + 'card_closed', {var: v, ts: Date.now()}, {priority: 'event'}); }
   });
   Shiny.addCustomMessageHandler('ar_open_card', function(d) {
-    setTimeout(function() { var c = document.getElementById(d.card_id); if (c) c.classList.add('ar-var-card--open'); }, 150);
+    var c = document.getElementById(d.card_id);
+    if (c) setTimeout(function() { c.classList.add('ar-var-card--open'); }, 150);
   });
 
   /* Accordion status dots */
-  Shiny.addCustomMessageHandler('ar_acc_dots', function(dots) {
-    var map = { datasets:'DATASETS', summary:'SUMMARY', col_explorer:'COLUMN EXPLORER', filters:'FILTERS',
-      template_info:'TEMPLATE INFO', data_source:'DATA SOURCE', variables:'VARIABLES', treatment:'TREATMENT', statistics:'STATISTICS' };
+  Shiny.addCustomMessageHandler('ar_acc_dots', function(d) {
+    var dots = d.dots || d;
+    var map = d.map || {};
     Object.keys(dots).forEach(function(k) {
       var title = map[k]; if (!title) return;
       var btns = document.querySelectorAll('.ar-sidebar .accordion-button');
@@ -303,8 +303,12 @@ document.addEventListener('DOMContentLoaded', function() {
   document.querySelectorAll('.ar-ab-btn').forEach(function(btn) {
     btn.addEventListener('click', function() {
       var now = Date.now();
-      if (lastClick[btn.id] && now - lastClick[btn.id] < 350) { arToggleSidebar(); lastClick[btn.id] = 0; }
-      else { lastClick[btn.id] = now; }
+      if (lastClick[btn.id] && now - lastClick[btn.id] < 350) {
+        arToggleSidebar();
+        delete lastClick[btn.id];
+      } else {
+        lastClick[btn.id] = now;
+      }
     });
   });
 });

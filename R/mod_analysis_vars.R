@@ -58,9 +58,7 @@ mod_analysis_vars_server <- function(id, store, grp) {
 
       # Apply pop filter
       pop <- store$pipeline_filters$pop_flag
-      if (!is.null(pop) && nzchar(pop) && pop %in% names(d)) {
-        d <- d[d[[pop]] == "Y", ]
-      }
+      d <- apply_pop_filter(d, pop)
 
       # Detect if BDS
       is_bds <- "PARAMCD" %in% names(d)
@@ -100,7 +98,7 @@ mod_analysis_vars_server <- function(id, store, grp) {
                 pct_dec = 1,
                 count_dec = 0,
                 levels = if (is.factor(d[[v]])) levels(d[[v]])
-                         else sort(unique(d[[v]][!is.na(d[[v]])]))
+                         else get_unique_levels(d[[v]])
               )
             }
           }
@@ -205,9 +203,7 @@ mod_analysis_vars_server <- function(id, store, grp) {
             req(d, my_var %in% names(d))
 
             pop <- isolate(store$pipeline_filters$pop_flag)
-            if (!is.null(pop) && nzchar(pop) && pop %in% names(d)) {
-              d <- d[d[[pop]] == "Y", ]
-            }
+            d <- apply_pop_filter(d, pop)
 
             config <- isolate(store$var_configs[[my_var]])
             if (is.null(config)) return(NULL)
@@ -405,13 +401,11 @@ mod_analysis_vars_server <- function(id, store, grp) {
             ds_name <- store$pipeline_filters$dataset %||% names(store$datasets)[1]
             d <- store$datasets[[ds_name]]
             pop <- store$pipeline_filters$pop_flag
-            if (!is.null(pop) && nzchar(pop) && pop %in% names(d)) {
-              d <- d[d[[pop]] == "Y", ]
-            }
+            d <- apply_pop_filter(d, pop)
             x <- d[[my_var]]
             if (isTRUE(store$var_configs[[my_var]]$sorted_by_freq)) {
               # Toggle OFF — revert to alphabetical
-              store$var_configs[[my_var]]$levels <- sort(unique(as.character(x[!is.na(x)])))
+              store$var_configs[[my_var]]$levels <- get_unique_levels(as.character(x))
               store$var_configs[[my_var]]$sorted_by_freq <- FALSE
             } else {
               # Toggle ON — sort by frequency
@@ -611,7 +605,7 @@ ui_stat_card_cat <- function(ns, var, config, data, custom_label = NULL, added_l
   added <- added_levels %||% character(0)
 
   x <- data[[var]]
-  obs_levels <- sort(unique(as.character(x[!is.na(x)])))
+  obs_levels <- get_unique_levels(as.character(x))
   cfg_levels <- config$levels %||% obs_levels
 
   # Level rows with drag handles (SortableJS)

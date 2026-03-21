@@ -14,15 +14,21 @@ ar_theme <- function() {
     )
 }
 
+# Design token values (mirrored from app.css :root — R can't use var())
+.ar_bg     <- "#ffffff"
+.ar_border <- "#e2e5ea"
+.ar_border_light <- "#eceef2"
+.ar_fg_2   <- "#4b5563"
+
 ar_grid_theme <- function() {
   reactable::reactableTheme(
-    borderColor = "#e2e5ea",
+    borderColor = .ar_border,
     headerStyle = list(
-      background = "#ffffff",
-      borderBottom = "1px solid #e2e5ea",
+      background = .ar_bg,
+      borderBottom = paste0("1px solid ", .ar_border),
       fontWeight = 600,
       fontSize = "11px",
-      color = "#4b5563",
+      color = .ar_fg_2,
       padding = "4px 8px",
       verticalAlign = "bottom"
     ),
@@ -30,7 +36,7 @@ ar_grid_theme <- function() {
       padding = "2px 8px",
       fontSize = "11.5px",
       lineHeight = "1.3",
-      borderBottom = "1px solid #eceef2",
+      borderBottom = paste0("1px solid ", .ar_border_light),
       verticalAlign = "top"
     ),
     paginationStyle = list(fontSize = "11px")

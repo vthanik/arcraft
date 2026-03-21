@@ -59,7 +59,7 @@ normalize_fmt <- function(fmt) {
                   bg = NULL, fg = NULL, font_size = NULL, repeat_on_page = TRUE),
     spans = list(),
     rows = list(group_by = NULL, group_label = NULL, group_keep = TRUE,
-                blank_after = NULL, page_by = NULL,
+                group_bold = FALSE, blank_after = NULL, page_by = NULL,
                 page_by_bold = FALSE, page_by_align = "left",
                 page_by_visible = TRUE, indent_by = NULL,
                 sort_by = NULL, repeat_cols = NULL, wrap = FALSE),
@@ -128,6 +128,27 @@ read_arframe_yml <- function() {
 resolve_newlines <- function(x) {
   if (is.null(x) || !is.character(x)) return(x)
   gsub("\\\\n", "\n", x)
+}
+
+# Apply population flag filter (SAFFL/ITTFL/etc.)
+apply_pop_filter <- function(d, pop_flag) {
+  if (!is.null(pop_flag) && nzchar(pop_flag) && pop_flag %in% names(d)) {
+    d[d[[pop_flag]] == "Y", ]
+  } else {
+    d
+  }
+}
+
+# Get sorted unique non-NA levels of a column
+get_unique_levels <- function(x) {
+  sort(unique(x[!is.na(x)]))
+}
+
+# Get per-stat decimal from config
+get_stat_dec <- function(config, stat_name, fallback = 1) {
+  decs <- config$decimals
+  if (is.list(decs)) decs[[stat_name]] %||% fallback
+  else decs %||% fallback
 }
 
 # Centralized stat labels — single source of truth

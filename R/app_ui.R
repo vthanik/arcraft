@@ -7,6 +7,7 @@ app_ui <- function() {
     # No shinyjs — all JS via app.js + sendCustomMessage
     htmltools::tags$head(
       htmltools::tags$link(rel = "stylesheet", href = "www/app.css"),
+      htmltools::tags$link(rel = "stylesheet", href = "www/dt-grid.css"),
       # Favicon (prevent 404)
       htmltools::tags$link(rel = "icon", href = "data:,"),
       # highlight.js for R syntax highlighting (local, no CDN)

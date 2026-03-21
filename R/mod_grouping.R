@@ -118,9 +118,7 @@ mod_grouping_server <- function(id, store, grp) {
 
       # Apply pop filter if available
       pop <- store$pipeline_filters$pop_flag
-      if (!is.null(pop) && nzchar(pop) && pop %in% names(d)) {
-        d <- d[d[[pop]] == "Y", ]
-      }
+      d <- apply_pop_filter(d, pop)
 
       counts <- table(d[[trt_var]])
       lvls <- sort(unique(d[[trt_var]]))
@@ -159,9 +157,7 @@ mod_grouping_server <- function(id, store, grp) {
 
       # Apply pop filter for accurate counts
       pop <- store$pipeline_filters$pop_flag
-      if (!is.null(pop) && nzchar(pop) && pop %in% names(d)) {
-        d <- d[d[[pop]] == "Y", ]
-      }
+      d <- apply_pop_filter(d, pop)
 
       # Detect if BDS dataset (has PARAMCD)
       is_bds <- "PARAMCD" %in% names(d)

@@ -55,7 +55,7 @@ mod_columns_ui <- function(id) {
     htmltools::tags$div(class = "ar-section-divider"),
     htmltools::tags$div(class = "ar-props",
       htmltools::tags$div(class = "ar-prop",
-        htmltools::tags$span(class = "ar-prop__label", "N counts"),
+        htmltools::tags$span(class = "ar-prop__label", "N Counts"),
         htmltools::tags$div(class = "ar-prop__value",
           shiny::radioButtons(ns("n_counts"), NULL,
             choices = c("Show" = "show", "Hide" = "hide"),

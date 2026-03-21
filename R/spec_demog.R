@@ -43,7 +43,7 @@ spec_demog <- function(data = NULL) {
         denominator = "big_n",
         levels = if (!is.null(data) && v %in% names(data)) {
           if (is.factor(data[[v]])) levels(data[[v]])
-          else sort(unique(data[[v]][!is.na(data[[v]])]))
+          else get_unique_levels(data[[v]])
         }
       )
     }

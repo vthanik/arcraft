@@ -1,0 +1,304 @@
+/* DT Data Grid — arbuilder theme
+   Pixel-matched to reactable grid + Data Wrangler / SAS Studio aesthetic
+   Uses design tokens from app.css :root */
+
+/* ── Wrapper ── */
+.ar-dv__panel .dataTables_wrapper {
+  font-family: var(--font);
+  font-size: 11.5px;
+  color: var(--fg);
+}
+
+/* Horizontal scroll only on the table area, not bottom bar */
+.ar-dt-top {
+  overflow-x: auto;
+}
+
+/* ── Table reset ── */
+.ar-dv__panel table.dataTable {
+  border-collapse: collapse !important;
+  border-spacing: 0 !important;
+  width: 100% !important;
+}
+.ar-dv__panel table.dataTable.no-footer {
+  border-bottom: none !important;
+}
+
+/* ── Header cells ── */
+.ar-dv__panel table.dataTable thead th {
+  background: var(--bg) !important;
+  padding: 4px 8px !important;
+  border-bottom: 1px solid var(--border) !important;
+  border-top: none !important;
+  white-space: nowrap;
+  vertical-align: bottom;
+}
+
+/* Two-line header: Name + Label */
+.ar-dt-hdr__name {
+  display: block;
+  font-weight: 600;
+  font-size: 11px;
+  color: var(--fg-2);
+  font-family: var(--font);
+  line-height: 1.3;
+}
+.ar-dt-hdr__label {
+  display: block;
+  font-weight: 400;
+  font-size: 10px;
+  color: var(--fg-3);
+  line-height: 1.2;
+  margin-top: 1px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 200px;
+}
+
+/* ── Body cells ── */
+.ar-dt-cell {
+  padding: 2px 8px !important;
+  font-size: 11.5px !important;
+  line-height: 1.3 !important;
+  vertical-align: top !important;
+  color: var(--fg) !important;
+  white-space: nowrap !important;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.ar-dv__panel table.dataTable tbody td {
+  border-bottom: 1px solid var(--border-light) !important;
+  border-top: none !important;
+}
+
+/* ── Row hover (cursor only, no click selection) ── */
+.ar-dv__panel table.dataTable tbody tr:hover td {
+  background: var(--bg-hover) !important;
+}
+
+/* ── Row number column (#) ── */
+.ar-dt-rownum {
+  color: var(--fg-muted) !important;
+  font-size: 11px !important;
+  text-align: right !important;
+  border-right: 1px solid var(--border-light) !important;
+  background: var(--bg) !important;
+  white-space: nowrap !important;
+  padding: 2px 8px !important;
+}
+
+/* ── Numeric columns ── */
+.ar-dt-num {
+  text-align: right !important;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── NA cells ── */
+.ar-dt-na {
+  color: var(--fg-muted);
+  font-style: italic;
+}
+
+/* ── Column filter inputs ── */
+.ar-dv__panel table.dataTable thead input[type="search"],
+.ar-dv__panel table.dataTable thead input[type="text"],
+.ar-dv__panel table.dataTable thead select {
+  width: 100% !important;
+  border: 1px solid var(--border-light);
+  border-radius: 3px;
+  font-family: var(--font);
+  font-size: 10px;
+  padding: 2px 6px;
+  height: 22px;
+  background: var(--bg);
+  color: var(--fg);
+  box-sizing: border-box;
+}
+.ar-dv__panel table.dataTable thead input:focus,
+.ar-dv__panel table.dataTable thead select:focus {
+  border-color: var(--accent);
+  outline: none;
+}
+.ar-dv__panel table.dataTable thead input::placeholder {
+  color: var(--fg-muted);
+}
+
+/* Hide outer glyphicon X but keep native input clear button */
+.ar-dv__panel .glyphicon-remove-circle,
+.ar-dv__panel .form-control-feedback {
+  display: none !important;
+}
+
+/* Ensure filter form group spacing */
+.ar-dv__panel thead .form-group.has-feedback {
+  margin-bottom: 0 !important;
+}
+
+/* ── Pagination ── */
+.ar-dv__panel .dataTables_paginate {
+  font-size: 10px !important;
+  padding: 4px 8px !important;
+  display: flex;
+  align-items: center;
+  gap: 1px;
+}
+.ar-dv__panel .dataTables_paginate .paginate_button {
+  padding: 1px 6px !important;
+  border: 1px solid var(--border-light) !important;
+  border-radius: 3px !important;
+  font-size: 10px !important;
+  color: var(--fg-2) !important;
+  background: var(--bg) !important;
+  cursor: pointer;
+  margin: 0 !important;
+  min-width: 20px;
+  text-align: center;
+  line-height: 1.3;
+  box-shadow: none !important;
+  outline: none !important;
+  transition: none !important;
+}
+.ar-dv__panel .dataTables_paginate .paginate_button:hover {
+  background: var(--bg-hover) !important;
+  color: var(--fg) !important;
+  border-color: var(--border) !important;
+  box-shadow: none !important;
+}
+.ar-dv__panel .dataTables_paginate .paginate_button:active {
+  background: var(--accent-hover) !important;
+  color: #fff !important;
+  border-color: var(--accent-hover) !important;
+  box-shadow: none !important;
+}
+.ar-dv__panel .dataTables_paginate .paginate_button:focus {
+  box-shadow: none !important;
+  outline: none !important;
+}
+.ar-dv__panel .dataTables_paginate .paginate_button.current,
+.ar-dv__panel .dataTables_paginate .paginate_button.current:hover,
+.ar-dv__panel .dataTables_paginate .paginate_button.current:focus {
+  background: var(--accent) !important;
+  color: #fff !important;
+  border-color: var(--accent) !important;
+  font-weight: 500;
+  box-shadow: none !important;
+  outline: none !important;
+}
+.ar-dv__panel .dataTables_paginate .paginate_button.disabled,
+.ar-dv__panel .dataTables_paginate .paginate_button.disabled:hover,
+.ar-dv__panel .dataTables_paginate .paginate_button.disabled:active {
+  opacity: 0.3;
+  cursor: default;
+  background: var(--bg) !important;
+  box-shadow: none !important;
+}
+
+/* ── Info text ── */
+.ar-dv__panel .dataTables_info {
+  font-size: 10px !important;
+  color: var(--fg-3) !important;
+  padding: 4px 8px !important;
+}
+
+/* ── Page length selector ── */
+.ar-dv__panel .dataTables_length {
+  font-size: 10px !important;
+  color: var(--fg-3);
+  padding: 4px 8px !important;
+}
+.ar-dv__panel .dataTables_length select {
+  font-size: 10px;
+  font-family: var(--font);
+  padding: 2px 6px;
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-sm);
+  background: var(--bg);
+  color: var(--fg);
+}
+
+/* ── Bottom bar layout ── */
+.ar-dt-bottom {
+  display: flex;
+  align-items: center;
+  border-top: 1px solid var(--border-light);
+  background: var(--bg);
+  padding: 4px 0;
+  gap: 4px;
+}
+.ar-dt-bottom .dataTables_length {
+  order: 1;
+  margin-right: auto;
+}
+.ar-dt-bottom .dataTables_info {
+  order: 2;
+}
+.ar-dt-bottom .dataTables_paginate {
+  order: 3;
+}
+
+/* ── Sort icons ── */
+.ar-dv__panel table.dataTable thead .sorting::after,
+.ar-dv__panel table.dataTable thead .sorting_asc::after,
+.ar-dv__panel table.dataTable thead .sorting_desc::after {
+  opacity: 0.3 !important;
+  font-size: 10px !important;
+}
+.ar-dv__panel table.dataTable thead .sorting_asc::after,
+.ar-dv__panel table.dataTable thead .sorting_desc::after {
+  opacity: 0.8 !important;
+  color: var(--accent);
+}
+.ar-dv__panel table.dataTable thead .sorting_asc,
+.ar-dv__panel table.dataTable thead .sorting_desc {
+  background-color: var(--bg) !important;
+}
+
+/* ── Processing overlay ── */
+.ar-dv__panel .dataTables_processing {
+  background: rgba(255, 255, 255, 0.9) !important;
+  font-size: 11px;
+  font-family: var(--font);
+  color: var(--fg-2);
+  border: none !important;
+  box-shadow: none !important;
+  z-index: 10;
+}
+
+/* ── Hide default search box ── */
+.ar-dv__panel .dataTables_filter {
+  display: none;
+}
+
+
+/* ── Disable row click selection entirely ── */
+.ar-dv__panel table.dataTable tbody tr {
+  cursor: default;
+}
+.ar-dv__panel table.dataTable tbody > tr.selected td,
+.ar-dv__panel table.dataTable tbody > tr.selected,
+.ar-dv__panel table.dataTable tbody > tr > .selected {
+  background-color: transparent !important;
+  color: var(--fg) !important;
+  box-shadow: none !important;
+}
+.ar-dv__panel table.dataTable tbody > tr.odd.selected td,
+.ar-dv__panel table.dataTable tbody > tr.even.selected td {
+  background-color: transparent !important;
+  box-shadow: none !important;
+}
+
+/* ── Kill DT box-shadows on specific elements ── */
+.ar-dv__panel table.dataTable,
+.ar-dv__panel .dataTables_wrapper,
+.ar-dv__panel .dataTables_paginate .paginate_button,
+.ar-dv__panel table.dataTable tbody td,
+.ar-dv__panel table.dataTable thead th {
+  box-shadow: none !important;
+}
+
+/* ── Override DT blue focus outline → accent ── */
+.ar-dv__panel table.dataTable:focus,
+.ar-dv__panel .dataTables_paginate .paginate_button:focus {
+  outline-color: var(--accent) !important;
+}

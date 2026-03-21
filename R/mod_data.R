@@ -376,10 +376,7 @@ mod_data_server <- function(id, store, grp) {
       n_total <- nrow(adsl)
 
       # Apply pop flag on ADSL
-      pop_d <- adsl
-      if (!is.null(pop) && nzchar(pop) && pop %in% names(pop_d)) {
-        pop_d <- pop_d[pop_d[[pop]] == "Y", ]
-      }
+      pop_d <- apply_pop_filter(adsl, pop)
       # Apply pop_filter on ADSL
       ps <- input$pop_filter
       if (!is.null(ps) && nzchar(ps)) {
@@ -400,9 +397,7 @@ mod_data_server <- function(id, store, grp) {
       primary_d <- if (!is.null(ds_name) && nzchar(ds_name)) store$datasets[[ds_name]] else NULL
       n_data <- if (!is.null(primary_d)) {
         # Apply pop flag on primary too
-        if (!is.null(pop) && nzchar(pop) && pop %in% names(primary_d)) {
-          primary_d <- primary_d[primary_d[[pop]] == "Y", ]
-        }
+        primary_d <- apply_pop_filter(primary_d, pop)
         df <- input$data_filter
         if (!is.null(df) && nzchar(df)) {
           tryCatch({

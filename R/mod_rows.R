@@ -13,24 +13,31 @@ mod_rows_ui <- function(id) {
             choices = c("(none)" = ""), selected = "", width = "100%"))
       ),
       htmltools::tags$div(class = "ar-prop",
-        htmltools::tags$span(class = "ar-prop__label", "Row Label"),
+        htmltools::tags$span(class = "ar-prop__label", "Group Label"),
         htmltools::tags$div(class = "ar-prop__value",
           shiny::selectInput(ns("group_label"), NULL,
             choices = c("(none)" = ""), selected = "", width = "100%"))
-      )
-    ),
-    htmltools::tags$div(class = "ar-toggle-grid",
-      htmltools::tags$div(class = "ar-toggle-grid__item",
-        htmltools::tags$span(class = "ar-toggle-grid__label", "Blank after"),
-        shiny::radioButtons(ns("blank_after"), NULL,
-          choices = c("No" = "no", "Yes" = "yes"),
-          selected = "no", inline = TRUE)
       ),
-      htmltools::tags$div(class = "ar-toggle-grid__item",
-        htmltools::tags$span(class = "ar-toggle-grid__label", "Keep rows"),
-        shiny::radioButtons(ns("group_keep"), NULL,
-          choices = c("No" = "no", "Yes" = "yes"),
-          selected = "yes", inline = TRUE)
+      htmltools::tags$div(class = "ar-prop",
+        htmltools::tags$span(class = "ar-prop__label", "Blank After"),
+        htmltools::tags$div(class = "ar-prop__value",
+          shiny::radioButtons(ns("blank_after"), NULL,
+            choices = c("No" = "no", "Yes" = "yes"),
+            selected = "no", inline = TRUE))
+      ),
+      htmltools::tags$div(class = "ar-prop",
+        htmltools::tags$span(class = "ar-prop__label", "Keep Rows"),
+        htmltools::tags$div(class = "ar-prop__value",
+          shiny::radioButtons(ns("group_keep"), NULL,
+            choices = c("No" = "no", "Yes" = "yes"),
+            selected = "yes", inline = TRUE))
+      ),
+      htmltools::tags$div(class = "ar-prop",
+        htmltools::tags$span(class = "ar-prop__label", "Group Bold"),
+        htmltools::tags$div(class = "ar-prop__value",
+          shiny::radioButtons(ns("group_bold"), NULL,
+            choices = c("No" = "no", "Yes" = "yes"),
+            selected = "no", inline = TRUE))
       )
     ),
 
@@ -44,25 +51,25 @@ mod_rows_ui <- function(id) {
             choices = c("(none)" = ""), selected = "", width = "100%"))
       ),
       htmltools::tags$div(class = "ar-prop",
-        htmltools::tags$span(class = "ar-prop__label", "Align"),
+        htmltools::tags$span(class = "ar-prop__label", "Page Align"),
         htmltools::tags$div(class = "ar-prop__value",
           shiny::selectInput(ns("page_by_align"), NULL,
             choices = c("Left" = "left", "Center" = "center", "Right" = "right"),
             selected = "left", width = "100%"))
-      )
-    ),
-    htmltools::tags$div(class = "ar-toggle-grid",
-      htmltools::tags$div(class = "ar-toggle-grid__item",
-        htmltools::tags$span(class = "ar-toggle-grid__label", "Bold label"),
-        shiny::radioButtons(ns("page_by_bold"), NULL,
-          choices = c("No" = "no", "Yes" = "yes"),
-          selected = "no", inline = TRUE)
       ),
-      htmltools::tags$div(class = "ar-toggle-grid__item",
-        htmltools::tags$span(class = "ar-toggle-grid__label", "Show value"),
-        shiny::radioButtons(ns("page_by_visible"), NULL,
-          choices = c("No" = "no", "Yes" = "yes"),
-          selected = "yes", inline = TRUE)
+      htmltools::tags$div(class = "ar-prop",
+        htmltools::tags$span(class = "ar-prop__label", "Page Bold"),
+        htmltools::tags$div(class = "ar-prop__value",
+          shiny::radioButtons(ns("page_by_bold"), NULL,
+            choices = c("No" = "no", "Yes" = "yes"),
+            selected = "no", inline = TRUE))
+      ),
+      htmltools::tags$div(class = "ar-prop",
+        htmltools::tags$span(class = "ar-prop__label", "Show Value"),
+        htmltools::tags$div(class = "ar-prop__value",
+          shiny::radioButtons(ns("page_by_visible"), NULL,
+            choices = c("No" = "no", "Yes" = "yes"),
+            selected = "yes", inline = TRUE))
       )
     ),
 
@@ -76,7 +83,7 @@ mod_rows_ui <- function(id) {
             choices = c("(none)" = ""), selected = "", width = "100%"))
       ),
       htmltools::tags$div(class = "ar-prop",
-        htmltools::tags$span(class = "ar-prop__label", "Repeat Cols"),
+        htmltools::tags$span(class = "ar-prop__label", "Repeat Columns"),
         htmltools::tags$div(class = "ar-prop__value",
           shiny::selectInput(ns("repeat_cols"), NULL,
             choices = c("(none)" = ""), selected = "",
@@ -145,6 +152,8 @@ mod_rows_server <- function(id, store) {
         selected = if (isTRUE(rows$group_keep %||% TRUE)) "yes" else "no")
       shiny::updateRadioButtons(session, "page_by_visible",
         selected = if (isTRUE(rows$page_by_visible %||% TRUE)) "yes" else "no")
+      shiny::updateRadioButtons(session, "group_bold",
+        selected = if (isTRUE(rows$group_bold)) "yes" else "no")
       if (!is.null(rows$page_by_align)) shiny::updateSelectInput(session, "page_by_align", selected = rows$page_by_align)
     })
 
@@ -162,6 +171,7 @@ mod_rows_server <- function(id, store) {
         group_by = if (nzchar(group_val)) group_val else NULL,
         group_label = if (nzchar(group_label_val)) group_label_val else NULL,
         group_keep = identical(shiny::isolate(input$group_keep), "yes"),
+        group_bold = identical(shiny::isolate(input$group_bold), "yes"),
         blank_after = if (blank_yes && nzchar(group_val)) group_val else NULL,
         page_by = if (nzchar(page_val)) page_val else NULL,
         page_by_bold = identical(shiny::isolate(input$page_by_bold), "yes"),

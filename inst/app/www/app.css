@@ -42,6 +42,14 @@
   --sidebar-w: 25%;
   --sidebar-min: 240px;
   --sidebar-max: 400px;
+  --badge-num-bg: #ede9fe;
+  --badge-num-fg: #6d28d9;
+  --badge-chr-bg: #e0f2fe;
+  --badge-chr-fg: #0369a1;
+  --badge-date-bg: #fef3c7;
+  --badge-date-fg: #92400e;
+  --badge-flag-bg: #dcfce7;
+  --badge-flag-fg: #166534;
 }
 
 /* --- 2. Reset & Base --- */
@@ -314,10 +322,10 @@ body {
   display: inline-flex; align-items: center; padding: 1px 6px; border-radius: 3px;
   font-size: 10px; font-weight: 600; letter-spacing: 0.03em; text-transform: uppercase; flex-shrink: 0;
 
-  &.ar-type-badge--num { background: #ede9fe; color: #6d28d9; }
-  &.ar-type-badge--chr { background: #e0f2fe; color: #0369a1; }
-  &.ar-type-badge--date { background: #fef3c7; color: #92400e; }
-  &.ar-type-badge--flag { background: #dcfce7; color: #166534; }
+  &.ar-type-badge--num { background: var(--badge-num-bg); color: var(--badge-num-fg); }
+  &.ar-type-badge--chr { background: var(--badge-chr-bg); color: var(--badge-chr-fg); }
+  &.ar-type-badge--date { background: var(--badge-date-bg); color: var(--badge-date-fg); }
+  &.ar-type-badge--flag { background: var(--badge-flag-bg); color: var(--badge-flag-fg); }
 }
 
 /* --- 14. Pills --- */
@@ -448,9 +456,10 @@ body {
 /* --- 20. Variable Cards (analysis sidebar) --- */
 .ar-var-cards-sortable { display: flex; flex-direction: column; min-height: 20px; }
 
-.ar-var-card {
-  border: none !important; background: none !important; border-radius: 0 !important;
-  margin-bottom: 0 !important; box-shadow: none !important;
+.ar-sidebar .ar-var-card,
+.ar-var-card.ar-var-card {
+  border: none; background: none; border-radius: 0;
+  margin-bottom: 0; box-shadow: none;
 
   & .ar-var-card__header {
     display: flex; align-items: center; gap: 6px; padding: 5px 6px;
@@ -997,23 +1006,35 @@ a.btn.ar-btn-primary:hover { background: var(--accent-hover) !important; }
 .ar-icon-mr-6 { margin-right: 6px; }
 .ar-icon-hint { opacity: 0.5; }
 
-/* ── Unique Values (data viewer expandable row) ── */
-.ar-unique-values {
+/* ── Column viewer: expandable unique values ── */
+.ar-w-48 { width: 48px; }
+
+.ar-col-expandable {
+  cursor: pointer;
+  color: var(--accent);
+  text-decoration: underline;
+}
+.ar-val-wrap {
   padding: 8px 12px;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 6px;
+  gap: 3px;
 }
-.ar-unique-pill {
+.ar-val-count {
+  font-size: 11px;
+  color: var(--fg-muted);
+}
+.ar-val-pill {
   display: inline-block;
   padding: 2px 10px;
+  margin: 3px;
   border-radius: 4px;
   font-size: 10.5px;
   font-family: var(--font-mono);
-  background: var(--bg-2);
+  background: var(--bg-muted);
   color: var(--fg-2);
-  border: 1px solid var(--border);
+  border: 1px solid var(--border-light);
   white-space: nowrap;
 }
 

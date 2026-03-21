@@ -31,16 +31,6 @@ mod_data_viewer_ui <- function(id) {
           "Data"
         )
       ),
-      # Clear filters button
-      htmltools::tags$button(
-        class = "ar-btn-ghost ar-btn--xs",
-        onclick = paste0(
-          "if(window.Reactable){Reactable.setAllFilters('", ns("grid"), "',[]);}",
-          "else{document.querySelectorAll('#", ns("grid"), " .rt-th input').forEach(function(i){",
-          "var s=Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,'value').set;",
-          "s.call(i,'');i.dispatchEvent(new Event('input',{bubbles:true}));});}"),
-        "Clear Filters"
-      ),
       htmltools::tags$div(class = "ar-dv__dims",
         shiny::textOutput(ns("viewer_dims"), inline = TRUE)
       ),
@@ -56,8 +46,7 @@ mod_data_viewer_ui <- function(id) {
     ),
     # Data panel (visually hidden by default, still renders)
     htmltools::tags$div(id = ns("panel_data"), class = "ar-dv__panel ar-dv__hide",
-      shiny::uiOutput(ns("grid_pager")),
-      reactable::reactableOutput(ns("grid"))
+      DT::dataTableOutput(ns("grid"))
     )
   )
 }
@@ -101,7 +90,7 @@ mod_data_viewer_server <- function(id, store) {
       if (type != "CHR" || n_unique > 50L) return(NULL)
       d <- store$datasets[[ds_name]]
       if (is.null(d) || !col_name %in% names(d)) return(NULL)
-      sort(unique(d[[col_name]][!is.na(d[[col_name]])]))
+      get_unique_levels(d[[col_name]])
     }
 
     output$active_ds_name <- shiny::renderText({
@@ -164,8 +153,7 @@ mod_data_viewer_server <- function(id, store) {
           "\u2190"
         ),
         htmltools::tags$input(
-          type = "number", class = "ar-input ar-input--xs ar-text-center",
-          style = "width:48px;",
+          type = "number", class = "ar-input ar-input--xs ar-text-center ar-w-48",
           value = pg, min = 1L, max = total_pages,
           onchange = paste0("Shiny.setInputValue('", ns("col_page_jump"),
             "', this.value, {priority:'event'})")
@@ -213,7 +201,7 @@ mod_data_viewer_server <- function(id, store) {
               expandable <- col_type == "CHR" && value <= 50L
               if (expandable) {
                 htmltools::tags$span(
-                  style = "cursor: pointer; color: var(--accent); text-decoration: underline;",
+                  class = "ar-col-expandable",
                   title = "Click row to expand values",
                   as.character(value))
               } else {
@@ -230,14 +218,11 @@ mod_data_viewer_server <- function(id, store) {
           vals <- get_col_uniques(ds, col_name, page_attrs$Type[index], page_attrs$Unique[index])
           if (is.null(vals)) return(NULL)
           pill_tags <- lapply(vals, function(v) {
-            htmltools::tags$span(
-              style = "display:inline-block;padding:2px 10px;margin:3px;border-radius:4px;font-size:10.5px;font-family:var(--font-mono);background:var(--bg-2);color:var(--fg-2);border:1px solid #ddd;white-space:nowrap;",
-              v)
+            htmltools::tags$span(class = "ar-val-pill", v)
           })
           args <- c(
-            list(style = "padding:8px 12px;"),
-            list(htmltools::tags$span(
-              style = "font-size:11px;color:var(--fg-muted);",
+            list(class = "ar-val-wrap"),
+            list(htmltools::tags$span(class = "ar-val-count",
               paste0(length(vals), " values: "))),
             pill_tags
           )
@@ -249,71 +234,91 @@ mod_data_viewer_server <- function(id, store) {
       )
     })
 
-    # ── Data (server-side pagination) ──
-    page_size <- 100L
-    current_page <- shiny::reactiveVal(1L)
-
-    # Reset to page 1 when dataset changes
-    shiny::observeEvent(viewer_data(), { current_page(1L) })
-
-    shiny::observeEvent(input$page_prev, {
-      current_page(max(1L, current_page() - 1L))
-    })
-    shiny::observeEvent(input$page_next, {
-      total <- ceiling(nrow(viewer_data()) / page_size)
-      current_page(min(total, current_page() + 1L))
-    })
-    shiny::observeEvent(input$page_jump, {
-      pg <- suppressWarnings(as.integer(input$page_jump))
-      if (is.na(pg)) return()
-      total <- ceiling(nrow(viewer_data()) / page_size)
-      current_page(max(1L, min(total, pg)))
-    })
-
-    output$grid_pager <- shiny::renderUI({
-      d <- viewer_data()
-      n <- nrow(d)
-      total_pages <- ceiling(n / page_size)
-      if (total_pages <= 1L) return(NULL)
-      pg <- current_page()
-
-      htmltools::tags$div(class = "ar-flex ar-items-center ar-gap-8 ar-py-4 ar-px-8",
-        htmltools::tags$button(
-          class = "ar-btn-ghost ar-btn--xs",
-          disabled = if (pg <= 1L) "" else NULL,
-          onclick = paste0("Shiny.setInputValue('", ns("page_prev"),
-            "', Math.random(), {priority:'event'})"),
-          "\u2190"
-        ),
-        htmltools::tags$input(
-          type = "number", class = "ar-input ar-input--xs ar-text-center",
-          style = "width:48px;",
-          value = pg, min = 1L, max = total_pages,
-          onchange = paste0("Shiny.setInputValue('", ns("page_jump"),
-            "', this.value, {priority:'event'})")
-        ),
-        htmltools::tags$span(class = "ar-text-xs ar-text-muted",
-          paste0("of ", format(total_pages, big.mark = ","),
-                 " \u00b7 ", format(n, big.mark = ","), " rows")),
-        htmltools::tags$button(
-          class = "ar-btn-ghost ar-btn--xs",
-          disabled = if (pg >= total_pages) "" else NULL,
-          onclick = paste0("Shiny.setInputValue('", ns("page_next"),
-            "', Math.random(), {priority:'event'})"),
-          "\u2192"
-        )
-      )
-    })
-
-    output$grid <- reactable::renderReactable({
+    # ── Data (DT server-side) ──
+    output$grid <- DT::renderDataTable({
       d <- viewer_data()
       shiny::req(nrow(d) > 0)
-      pg <- current_page()
-      start <- (pg - 1L) * page_size + 1L
-      end <- min(pg * page_size, nrow(d))
-      page_data <- d[start:end, , drop = FALSE]
-      ar_build_reactable(page_data, row_offset = start - 1L)
-    })
+
+      # Build column names + labels for headerCallback
+      col_names <- names(d)
+      col_labels <- vapply(col_names, function(nm) {
+        lbl <- attr(d[[nm]], "label")
+        if (!is.null(lbl) && nzchar(lbl)) lbl else ""
+      }, character(1), USE.NAMES = FALSE)
+      names_json <- jsonlite::toJSON(col_names, auto_unbox = FALSE)
+      labels_json <- jsonlite::toJSON(col_labels, auto_unbox = FALSE)
+
+      # Detect numeric columns for right-alignment (0-indexed, +1 for rownames col)
+      num_idx <- which(vapply(d, is.numeric, logical(1)))
+
+      # Build columnDefs
+      col_defs <- list(
+        list(targets = 0, className = "ar-dt-rownum", orderable = FALSE,
+             searchable = FALSE, width = "50px"),
+        list(targets = "_all", className = "ar-dt-cell")
+      )
+      if (length(num_idx) > 0) {
+        col_defs <- c(col_defs, list(
+          list(targets = as.list(num_idx), className = "ar-dt-cell ar-dt-num")
+        ))
+      }
+
+      # NA rendering
+      na_render <- DT::JS(
+        "function(data, type, row, meta) {",
+        "  if (data === null || data === 'NA' || data === '') {",
+        "    return type === 'display' ? '<span class=\"ar-dt-na\">NA</span>' : '';",
+        "  }",
+        "  return data;",
+        "}"
+      )
+
+      # Header callback: inject two-line headers (Name + Label)
+      # Uses stored names[] array to avoid re-reading mutated DOM text
+      header_cb <- DT::JS(paste0(
+        "function(thead, data, start, end, display) {",
+        "  var names = ", names_json, ";",
+        "  var labels = ", labels_json, ";",
+        "  $(thead).find('th').each(function(i) {",
+        "    if (i === 0) { $(this).text('#'); return; }",
+        "    var nm = names[i - 1] || '';",
+        "    var lbl = labels[i - 1] || '';",
+        "    var html = '<span class=\"ar-dt-hdr__name\">' + $('<span>').text(nm).html() + '</span>';",
+        "    if (lbl) html += '<span class=\"ar-dt-hdr__label\">' + $('<span>').text(lbl).html() + '</span>';",
+        "    $(this).html(html);",
+        "  });",
+        "}"
+      ))
+
+      # Convert numeric/Date columns to character so DT uses text filters (no sliders)
+      d_display <- d
+      for (j in seq_along(d_display)) {
+        if (is.numeric(d_display[[j]]) || inherits(d_display[[j]], "Date") ||
+            inherits(d_display[[j]], "POSIXt")) {
+          d_display[[j]] <- as.character(d_display[[j]])
+        }
+      }
+
+      DT::datatable(
+        d_display,
+        rownames = TRUE,
+        filter = "top",
+        options = list(
+          pageLength = 50L,
+          lengthMenu = c(50, 100, 250, 500),
+          processing = TRUE,
+          autoWidth = FALSE,
+          dom = '<"ar-dt-top"rt><"ar-dt-bottom"lip>',
+          headerCallback = header_cb,
+          columnDefs = c(
+            col_defs,
+            list(list(targets = "_all", render = na_render))
+          )
+        ),
+        class = "compact hover nowrap",
+        selection = "none"
+      )
+    }, server = TRUE)
 
     output$csv_download <- shiny::downloadHandler(
       filename = function() paste0(store$active_ds %||% "data", "_", Sys.Date(), ".csv"),

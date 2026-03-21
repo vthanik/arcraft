@@ -14,7 +14,7 @@ fct_profile_column <- function(x, col_name, n_row) {
     label = label,
     format = format_attr,
     r_class = r_class,
-    n_unique = length(unique(x[!is.na(x)])),
+    n_unique = length(get_unique_levels(x)),
     n_missing = n_miss,
     pct_missing = pct_miss
   )

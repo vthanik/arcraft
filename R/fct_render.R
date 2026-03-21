@@ -143,6 +143,9 @@ fct_build_spec <- function(tbl_data, format_cfg, combined_groups = NULL) {
   if (!is.null(ra$group_by) && isFALSE(rw$group_keep)) {
     ra$group_keep <- FALSE; hr <- TRUE
   }
+  if (!is.null(ra$group_label) && isTRUE(rw$group_bold)) {
+    ra$group_bold <- TRUE; hr <- TRUE
+  }
   if (isTRUE(rw$wrap)) { ra$wrap <- TRUE; hr <- TRUE }
   if (hr) spec <- do.call(arframe::fr_rows, ra)
 

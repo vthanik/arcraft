@@ -25,9 +25,7 @@ n_counts_server <- function(id, store, grp) {
 
       # Apply pop filter
       pop <- store$pipeline_filters$pop_flag
-      if (!is.null(pop) && nzchar(pop) && pop %in% names(d)) {
-        d <- d[d[[pop]] == "Y", ]
-      }
+      d <- apply_pop_filter(d, pop)
 
       trt_lvls <- grp$trt_levels %||% sort(unique(d[[trt_var]]))
       counts <- table(d[[trt_var]])

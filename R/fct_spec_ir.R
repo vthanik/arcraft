@@ -107,6 +107,7 @@ fct_build_ir <- function(format_cfg, combined_groups = NULL) {
     group_by       = rows_cfg$group_by,
     group_label    = rows_cfg$group_label,
     group_keep     = rows_cfg$group_keep,
+    group_bold     = rows_cfg$group_bold %||% FALSE,
     blank_after    = rows_cfg$blank_after,
     page_by        = rows_cfg$page_by,
     page_by_bold   = rows_cfg$page_by_bold %||% FALSE,

@@ -109,10 +109,7 @@ fct_codegen_ard <- function(grouping, var_configs) {
       decs <- cfg$decimals
       stat_list <- cfg$stats %||% c("n", "mean_sd", "median", "q1_q3", "min_max")
 
-      get_d <- function(stat_name, fallback) {
-        if (is.list(decs)) decs[[stat_name]] %||% fallback
-        else decs %||% fallback
-      }
+      get_d <- function(stat_name, fallback) get_stat_dec(cfg, stat_name, fallback)
 
       # Build stat computation strings
       stat_exprs <- vapply(stat_list, function(s) {
@@ -687,6 +684,7 @@ fct_codegen_format <- function(ir, ard_cols = NULL) {
     row_args <- c(row_args, paste0('page_by = "', rows$page_by, '"'))
   has_page_by <- !is.null(rows$page_by) && col_exists(rows$page_by)
   has_group_by <- !is.null(rows$group_by) && col_exists(rows$group_by)
+  has_group_label <- !is.null(rows$group_label) && col_exists(rows$group_label)
   if (isTRUE(rows$page_by_bold) && has_page_by)
     row_args <- c(row_args, "page_by_bold = TRUE")
   if (has_page_by && !is.null(rows$page_by_align) && rows$page_by_align != "left")
@@ -695,6 +693,8 @@ fct_codegen_format <- function(ir, ard_cols = NULL) {
     row_args <- c(row_args, "page_by_visible = FALSE")
   if (has_group_by && isFALSE(rows$group_keep))
     row_args <- c(row_args, "group_keep = FALSE")
+  if (has_group_label && isTRUE(rows$group_bold))
+    row_args <- c(row_args, "group_bold = TRUE")
   if (!is.null(rows$indent_by) && col_exists(rows$indent_by))
     row_args <- c(row_args, paste0('indent_by = "', rows$indent_by, '"'))
   if (!is.null(rows$sort_by)) {
