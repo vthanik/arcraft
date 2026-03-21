@@ -114,6 +114,8 @@ mod_data_viewer_server <- function(id, store) {
       paste0(format(nrow(d), big.mark = ","), " rows \u00d7 ", ncol(d), " cols")
     })
 
+
+
     # ── Columns (server-side pagination) ──
     col_page_size <- 200L
     col_current_page <- shiny::reactiveVal(1L)
