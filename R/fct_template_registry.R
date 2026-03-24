@@ -3,6 +3,7 @@
 
 template_registry <- function() {
   list(
+    # ── Study Information ──
     list(
       id = "demog",
       name = "Demographics",
@@ -12,6 +13,131 @@ template_registry <- function() {
       adam_required = "adsl",
       spec_fn = "spec_demog",
       phase = 1,
+      enabled = TRUE
+    ),
+    list(
+      id = "disposition",
+      name = "Disposition",
+      category = "Study Information",
+      icon = "fa-right-from-bracket",
+      description = "Subject disposition and completion status",
+      adam_required = "adsl",
+      spec_fn = NULL,
+      phase = 2,
+      enabled = TRUE
+    ),
+    list(
+      id = "protocol_dev",
+      name = "Protocol Deviations",
+      category = "Study Information",
+      icon = "fa-triangle-exclamation",
+      description = "Summary of important protocol deviations",
+      adam_required = "adsl",
+      spec_fn = NULL,
+      phase = 2,
+      enabled = TRUE
+    ),
+    # ── Safety ──
+    list(
+      id = "ae_overview",
+      name = "AE Overview",
+      category = "Safety",
+      icon = "fa-shield-halved",
+      description = "Overall adverse event summary by treatment",
+      adam_required = c("adsl", "adae"),
+      spec_fn = NULL,
+      phase = 2,
+      enabled = TRUE
+    ),
+    list(
+      id = "ae_soc_pt",
+      name = "AE by SOC/PT",
+      category = "Safety",
+      icon = "fa-list-tree",
+      description = "Adverse events by system organ class and preferred term",
+      adam_required = c("adsl", "adae"),
+      spec_fn = NULL,
+      phase = 2,
+      enabled = TRUE
+    ),
+    list(
+      id = "ae_severity",
+      name = "AE by Severity",
+      category = "Safety",
+      icon = "fa-gauge-high",
+      description = "Adverse events by maximum severity grade",
+      adam_required = c("adsl", "adae"),
+      spec_fn = NULL,
+      phase = 2,
+      enabled = TRUE
+    ),
+    # ── Laboratory ──
+    list(
+      id = "lab_summary",
+      name = "Lab Summary",
+      category = "Laboratory",
+      icon = "fa-flask",
+      description = "Laboratory results summary by visit and treatment",
+      adam_required = c("adsl", "adlb"),
+      spec_fn = NULL,
+      phase = 2,
+      enabled = TRUE
+    ),
+    list(
+      id = "lab_shift",
+      name = "Lab Shift Table",
+      category = "Laboratory",
+      icon = "fa-arrow-right-arrow-left",
+      description = "Baseline to post-baseline shift in lab parameters",
+      adam_required = c("adsl", "adlb"),
+      spec_fn = NULL,
+      phase = 2,
+      enabled = TRUE
+    ),
+    # ── Efficacy ──
+    list(
+      id = "tte_km",
+      name = "Time-to-Event",
+      category = "Efficacy",
+      icon = "fa-chart-line",
+      description = "Kaplan-Meier estimates and log-rank test",
+      adam_required = c("adsl", "adtte"),
+      spec_fn = NULL,
+      phase = 2,
+      enabled = TRUE
+    ),
+    list(
+      id = "resp_summary",
+      name = "Response Summary",
+      category = "Efficacy",
+      icon = "fa-chart-pie",
+      description = "Best overall response and response rates",
+      adam_required = c("adsl", "adrs"),
+      spec_fn = NULL,
+      phase = 2,
+      enabled = TRUE
+    ),
+    # ── Listings ──
+    list(
+      id = "listing_ae",
+      name = "AE Listing",
+      category = "Listings",
+      icon = "fa-table-list",
+      description = "Patient-level adverse event listing",
+      adam_required = c("adsl", "adae"),
+      spec_fn = NULL,
+      phase = 2,
+      enabled = TRUE
+    ),
+    list(
+      id = "listing_conmed",
+      name = "Concomitant Meds",
+      category = "Listings",
+      icon = "fa-pills",
+      description = "Concomitant medications listing",
+      adam_required = c("adsl", "adcm"),
+      spec_fn = NULL,
+      phase = 2,
       enabled = TRUE
     )
   )

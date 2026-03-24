@@ -21,10 +21,9 @@ mod_styles_server <- function(id, store) {
       styles <- list()
       if (isTRUE(shiny::isolate(input$pill_bold_groups))) {
         styles$bold_groups <- list(
-          type = "conditional",
-          condition = "~ !grepl('^\\\\s', .x)",
-          cols = "stat_label",
-          apply_to = "row",
+          type = "row_match",
+          col = "stat_label",
+          pattern = "^\\S",
           bold = TRUE
         )
       }

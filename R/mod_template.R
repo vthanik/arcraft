@@ -49,8 +49,10 @@ mod_template_server <- function(id, store, grp) {
           output_type <- fct_template_output_type(t$id)
           type_label <- tools::toTitleCase(output_type)
 
+          is_placeholder <- is.null(t$spec_fn)
           cls <- paste0("ar-tmpl-card--canvas",
-                        if (is_active) " active" else "")
+                        if (is_active) " active" else "",
+                        if (is_placeholder) " ar-tmpl-card--canvas--placeholder" else "")
 
           htmltools::tags$div(
             class = cls,
@@ -104,6 +106,13 @@ mod_template_server <- function(id, store, grp) {
 
       # Look up spec function from registry
       tmpl_def <- get_template_def(tmpl_id)
+      if (!is.null(tmpl_def) && is.null(tmpl_def$spec_fn)) {
+        store$template <- tmpl_id
+        store$pipeline_state$template <- TRUE
+        session$sendCustomMessage("ar_toast",
+          list(message = paste0(tmpl_def$name, " \u2014 coming soon"), type = "info"))
+        return()
+      }
       if (!is.null(tmpl_def) && !is.null(tmpl_def$spec_fn)) {
         spec_fn <- tryCatch(get(tmpl_def$spec_fn), error = function(e) NULL)
         if (!is.null(spec_fn)) {

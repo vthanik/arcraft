@@ -48,7 +48,7 @@ fct_build_spec <- function(tbl_data, format_cfg, combined_groups = NULL) {
   ca <- c(list(spec), col_specs)
   if (!is.null(g$width_mode) && g$width_mode != "auto") ca$.width    <- g$width_mode
   if (!is.null(g$align))                                ca$.align    <- g$align
-  if (!is.null(g$spaces) && g$spaces != "indent")       ca$.spaces   <- g$spaces
+  if (!is.null(g$space_mode) && g$space_mode != "indent") ca$.space_mode <- g$space_mode
   if (isTRUE(g$split))                                  ca$.split    <- TRUE
   if (isTRUE(g$n_counts) && length(g$n_values) > 0)     ca$.n        <- g$n_values
   if (!is.null(g$n_format))                              ca$.n_format <- resolve_newlines(g$n_format)
@@ -85,6 +85,8 @@ fct_build_spec <- function(tbl_data, format_cfg, combined_groups = NULL) {
   if (!is.null(h$valign))                ha$valign <- h$valign
   if (!is.null(h$background) && nzchar(h$background)) ha$background <- h$background
   if (!is.null(h$color) && nzchar(h$color))           ha$color      <- h$color
+  if (!is.null(h$font_size))                           ha$font_size  <- h$font_size
+  if (!is.null(h$repeat_on_page))                      ha$repeat_on_page <- h$repeat_on_page
   spec <- do.call(arframe::fr_header, ha)
 
   # ── Spans ──
@@ -164,6 +166,7 @@ fct_build_spec <- function(tbl_data, format_cfg, combined_groups = NULL) {
   if (s$footnotes_before != 1L) { sa$footnotes_before <- s$footnotes_before; hs <- TRUE }
   if (s$pagehead_after != 0L)   { sa$pagehead_after   <- s$pagehead_after;   hs <- TRUE }
   if (s$pagefoot_before != 0L)  { sa$pagefoot_before  <- s$pagefoot_before;  hs <- TRUE }
+  if (!is.null(s$page_by_after)) { sa$page_by_after  <- s$page_by_after;   hs <- TRUE }
   if (hs) spec <- do.call(arframe::fr_spacing, sa)
 
   # ── Styles ──
@@ -172,7 +175,18 @@ fct_build_spec <- function(tbl_data, format_cfg, combined_groups = NULL) {
     style_objs <- list()
     for (sname in names(stys)) {
       s <- stys[[sname]]
-      if (s$type == "conditional") {
+      if (s$type == "row_match") {
+        # fr_row_style + fr_rows_matches: pattern-based row styling
+        match_args <- list(col = s$col)
+        if (!is.null(s$pattern)) match_args$pattern <- s$pattern
+        if (!is.null(s$value))   match_args$value   <- s$value
+        rs_args <- list(rows = do.call(arframe::fr_rows_matches, match_args))
+        if (isTRUE(s$bold))       rs_args$bold       <- TRUE
+        if (!is.null(s$background)) rs_args$background <- s$background
+        if (!is.null(s$color))     rs_args$color      <- s$color
+        if (!is.null(s$italic))   rs_args$italic     <- s$italic
+        style_objs[[length(style_objs) + 1]] <- do.call(arframe::fr_row_style, rs_args)
+      } else if (s$type == "conditional") {
         # fr_style_if: condition-based styling
         si_args <- list(condition = rlang::as_function(stats::as.formula(s$condition)))
         if (!is.null(s$cols))     si_args$cols     <- s$cols

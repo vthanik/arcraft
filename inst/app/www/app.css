@@ -408,6 +408,9 @@ body {
   &:hover { border-color: var(--accent); box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
   &.active { border-color: var(--accent); background: var(--accent-muted); box-shadow: 0 0 0 2px var(--accent-light); }
   &.disabled { opacity: 0.45; cursor: default; pointer-events: none; }
+  &--placeholder { opacity: 0.55; }
+  &--placeholder:hover { opacity: 0.8; }
+  &--placeholder .ar-tmpl-card--canvas__name::after { content: "Soon"; font-size: 9px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--fg-muted); background: var(--bg-muted); padding: 1px 6px; border-radius: 8px; margin-left: 8px; vertical-align: middle; }
 
   & .ar-tmpl-card--canvas__icon { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: var(--radius); background: var(--bg-muted); color: var(--fg-3); font-size: 18px; flex-shrink: 0; }
   &.active .ar-tmpl-card--canvas__icon { background: var(--accent-light); color: var(--accent); }

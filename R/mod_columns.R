@@ -87,7 +87,7 @@ mod_columns_server <- function(id, store) {
         shiny::updateRadioButtons(session, "n_counts", selected = if (isTRUE(cols$n_counts)) "show" else "hide")
       }
       if (!is.null(cols$n_format)) shiny::updateTextInput(session, "n_format", value = cols$n_format)
-      if (!is.null(cols$spaces)) shiny::updateRadioButtons(session, "spaces", selected = cols$spaces)
+      if (!is.null(cols$space_mode)) shiny::updateRadioButtons(session, "spaces", selected = cols$space_mode)
       if (!is.null(cols$split)) {
         shiny::updateRadioButtons(session, "split", selected = if (isTRUE(cols$split)) "yes" else "no")
       }
@@ -291,7 +291,7 @@ mod_columns_server <- function(id, store) {
         stub_align = shiny::isolate(input$stub_align) %||% "left",
         n_counts = identical(shiny::isolate(input$n_counts), "show"),
         n_format = shiny::isolate(input$n_format) %||% "{label}\\n(N={n})",
-        spaces = shiny::isolate(input$spaces) %||% "indent",
+        space_mode = shiny::isolate(input$spaces) %||% "indent",
         split = identical(shiny::isolate(input$split), "yes"),
         per_col = per_col
       )

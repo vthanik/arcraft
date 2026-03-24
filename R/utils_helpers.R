@@ -45,7 +45,7 @@ normalize_fmt <- function(fmt) {
     title_defaults = list(align = "center", bold = FALSE),
     fn_separator = FALSE, fn_placement = "every",
     cols = list(width_mode = "auto", default_align = "center",
-                spaces = "indent", split = FALSE,
+                space_mode = "indent", split = FALSE,
                 n_counts = TRUE, n_format = "{label}\\n(N={n})",
                 stub_width = 2.5, stub_align = "left", per_col = list()),
     page = list(orientation = "landscape", paper = "letter",
@@ -73,6 +73,11 @@ normalize_fmt <- function(fmt) {
     output_format = "rtf"
   )
 
+  # Backward compat: spaces → space_mode
+  if (!is.null(fmt$cols$spaces) && is.null(fmt$cols$space_mode)) {
+    fmt$cols$space_mode <- fmt$cols$spaces
+    fmt$cols$spaces <- NULL
+  }
   # Backward compat: body_align → default_align
   if (!is.null(fmt$cols$body_align) && is.null(fmt$cols$default_align)) {
     fmt$cols$default_align <- fmt$cols$body_align
