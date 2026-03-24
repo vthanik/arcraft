@@ -53,8 +53,8 @@ fct_build_ir <- function(format_cfg, combined_groups = NULL) {
     bold           = hdr_cfg$bold %||% TRUE,
     align          = hdr_cfg$align %||% "center",
     valign         = hdr_cfg$valign %||% "bottom",
-    bg             = hdr_cfg$bg,
-    fg             = hdr_cfg$fg,
+    background     = hdr_cfg$background,
+    color          = hdr_cfg$color,
     font_size      = hdr_cfg$font_size,
     repeat_on_page = hdr_cfg$repeat_on_page,
     col_aligns     = hdr_cfg$col_aligns %||% list()
@@ -104,19 +104,16 @@ fct_build_ir <- function(format_cfg, combined_groups = NULL) {
   # ── Rows ──
   rows_cfg <- format_cfg$rows %||% list()
   rows <- list(
-    group_by       = rows_cfg$group_by,
-    group_label    = rows_cfg$group_label,
-    group_keep     = rows_cfg$group_keep,
-    group_bold     = rows_cfg$group_bold %||% FALSE,
-    blank_after    = rows_cfg$blank_after,
-    page_by        = rows_cfg$page_by,
-    page_by_bold   = rows_cfg$page_by_bold %||% FALSE,
-    page_by_align  = rows_cfg$page_by_align,
+    group_by        = rows_cfg$group_by,
+    group_label     = rows_cfg$group_label,
+    group_keep      = rows_cfg$group_keep,
+    blank_after     = rows_cfg$blank_after,
+    page_by         = rows_cfg$page_by,
     page_by_visible = rows_cfg$page_by_visible,
-    indent_by      = rows_cfg$indent_by,
-    sort_by        = rows_cfg$sort_by,
-    repeat_cols    = rows_cfg$repeat_cols,
-    wrap           = rows_cfg$wrap %||% FALSE
+    indent_by       = rows_cfg$indent_by,
+    sort_by         = rows_cfg$sort_by,
+    suppress        = rows_cfg$suppress,
+    wrap            = rows_cfg$wrap %||% FALSE
   )
 
   # ── Page header ──

@@ -83,8 +83,8 @@ fct_build_spec <- function(tbl_data, format_cfg, combined_groups = NULL) {
   if (!is.null(h$bold))                  ha$bold   <- h$bold
   if (!is.null(h$align))                 ha$align  <- h$align
   if (!is.null(h$valign))                ha$valign <- h$valign
-  if (!is.null(h$bg) && nzchar(h$bg))   ha$bg     <- h$bg
-  if (!is.null(h$fg) && nzchar(h$fg))   ha$fg     <- h$fg
+  if (!is.null(h$background) && nzchar(h$background)) ha$background <- h$background
+  if (!is.null(h$color) && nzchar(h$color))           ha$color      <- h$color
   spec <- do.call(arframe::fr_header, ha)
 
   # ── Spans ──
@@ -122,29 +122,27 @@ fct_build_spec <- function(tbl_data, format_cfg, combined_groups = NULL) {
   data_cols <- names(tbl_data)
   rw <- ir$rows; ra <- list(spec); hr <- FALSE
   # Column-reference params: validate they exist in data
-  for (nm in c("group_by","group_label","blank_after","page_by","indent_by"))
+  for (nm in c("group_by","blank_after","page_by","indent_by"))
     if (!is.null(rw[[nm]]) && rw[[nm]] %in% data_cols) { ra[[nm]] <- rw[[nm]]; hr <- TRUE }
   if (!is.null(rw$sort_by)) {
     valid_sort <- rw$sort_by[rw$sort_by %in% data_cols]
     if (length(valid_sort) > 0) { ra$sort_by <- valid_sort; hr <- TRUE }
   }
-  if (!is.null(rw$repeat_cols)) {
-    valid <- rw$repeat_cols[rw$repeat_cols %in% data_cols]
-    if (length(valid) > 0) { ra$repeat_cols <- valid; hr <- TRUE }
+  if (!is.null(rw$suppress)) {
+    valid <- rw$suppress[rw$suppress %in% data_cols]
+    if (length(valid) > 0) { ra$suppress <- valid; hr <- TRUE }
+  }
+  # group_by list form: include label if group_label is set
+  if (!is.null(ra$group_by) && !is.null(rw$group_label) && rw$group_label %in% data_cols) {
+    ra$group_by <- list(cols = ra$group_by, label = rw$group_label); hr <- TRUE
+  }
+  # page_by list form: include visible = FALSE if page_by_visible is FALSE
+  if (!is.null(ra$page_by) && isFALSE(rw$page_by_visible)) {
+    ra$page_by <- list(cols = ra$page_by, visible = FALSE); hr <- TRUE
   }
   # Boolean/scalar params
-  if (isTRUE(rw$page_by_bold) && !is.null(ra$page_by)) { ra$page_by_bold <- TRUE; hr <- TRUE }
-  if (!is.null(ra$page_by) && !is.null(rw$page_by_align) && rw$page_by_align != "left") {
-    ra$page_by_align <- rw$page_by_align; hr <- TRUE
-  }
-  if (!is.null(ra$page_by) && isFALSE(rw$page_by_visible)) {
-    ra$page_by_visible <- FALSE; hr <- TRUE
-  }
   if (!is.null(ra$group_by) && isFALSE(rw$group_keep)) {
     ra$group_keep <- FALSE; hr <- TRUE
-  }
-  if (!is.null(ra$group_label) && isTRUE(rw$group_bold)) {
-    ra$group_bold <- TRUE; hr <- TRUE
   }
   if (isTRUE(rw$wrap)) { ra$wrap <- TRUE; hr <- TRUE }
   if (hr) spec <- do.call(arframe::fr_rows, ra)
@@ -180,16 +178,16 @@ fct_build_spec <- function(tbl_data, format_cfg, combined_groups = NULL) {
         if (!is.null(s$cols))     si_args$cols     <- s$cols
         if (!is.null(s$apply_to)) si_args$apply_to <- s$apply_to
         if (isTRUE(s$bold))       si_args$bold     <- TRUE
-        if (!is.null(s$bg))       si_args$bg       <- s$bg
-        if (!is.null(s$fg))       si_args$fg       <- s$fg
+        if (!is.null(s$background)) si_args$background <- s$background
+        if (!is.null(s$color))     si_args$color      <- s$color
         if (!is.null(s$italic))   si_args$italic   <- s$italic
         style_objs[[length(style_objs) + 1]] <- do.call(arframe::fr_style_if, si_args)
       } else if (s$type == "row") {
         rs_args <- list()
         if (!is.null(s$match))  rs_args$rows   <- s$match
         if (isTRUE(s$bold))     rs_args$bold   <- TRUE
-        if (!is.null(s$bg))     rs_args$bg     <- s$bg
-        if (!is.null(s$fg))     rs_args$fg     <- s$fg
+        if (!is.null(s$background)) rs_args$background <- s$background
+        if (!is.null(s$color))     rs_args$color      <- s$color
         if (!is.null(s$italic)) rs_args$italic <- s$italic
         style_objs[[length(style_objs) + 1]] <- do.call(arframe::fr_row_style, rs_args)
       }

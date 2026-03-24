@@ -32,13 +32,6 @@ mod_rows_ui <- function(id) {
             choices = c("No" = "no", "Yes" = "yes"),
             selected = "yes", inline = TRUE))
       ),
-      htmltools::tags$div(class = "ar-prop",
-        htmltools::tags$span(class = "ar-prop__label", "Group Bold"),
-        htmltools::tags$div(class = "ar-prop__value",
-          shiny::radioButtons(ns("group_bold"), NULL,
-            choices = c("No" = "no", "Yes" = "yes"),
-            selected = "no", inline = TRUE))
-      )
     ),
 
     # Page By
@@ -50,27 +43,6 @@ mod_rows_ui <- function(id) {
           shiny::selectInput(ns("page_by"), NULL,
             choices = c("(none)" = ""), selected = "", width = "100%"))
       ),
-      htmltools::tags$div(class = "ar-prop",
-        htmltools::tags$span(class = "ar-prop__label", "Page Align"),
-        htmltools::tags$div(class = "ar-prop__value",
-          shiny::selectInput(ns("page_by_align"), NULL,
-            choices = c("Left" = "left", "Center" = "center", "Right" = "right"),
-            selected = "left", width = "100%"))
-      ),
-      htmltools::tags$div(class = "ar-prop",
-        htmltools::tags$span(class = "ar-prop__label", "Page Bold"),
-        htmltools::tags$div(class = "ar-prop__value",
-          shiny::radioButtons(ns("page_by_bold"), NULL,
-            choices = c("No" = "no", "Yes" = "yes"),
-            selected = "no", inline = TRUE))
-      ),
-      htmltools::tags$div(class = "ar-prop",
-        htmltools::tags$span(class = "ar-prop__label", "Show Value"),
-        htmltools::tags$div(class = "ar-prop__value",
-          shiny::radioButtons(ns("page_by_visible"), NULL,
-            choices = c("No" = "no", "Yes" = "yes"),
-            selected = "yes", inline = TRUE))
-      )
     ),
 
     # Indent + Repeat
@@ -83,9 +55,9 @@ mod_rows_ui <- function(id) {
             choices = c("(none)" = ""), selected = "", width = "100%"))
       ),
       htmltools::tags$div(class = "ar-prop",
-        htmltools::tags$span(class = "ar-prop__label", "Repeat Columns"),
+        htmltools::tags$span(class = "ar-prop__label", "Suppress Columns"),
         htmltools::tags$div(class = "ar-prop__value",
-          shiny::selectInput(ns("repeat_cols"), NULL,
+          shiny::selectInput(ns("suppress"), NULL,
             choices = c("(none)" = ""), selected = "",
             multiple = TRUE, width = "100%"))
       )
@@ -133,8 +105,8 @@ mod_rows_server <- function(id, store) {
         selected = store$fmt$rows$page_by %||% "")
       shiny::updateSelectInput(session, "indent_by", choices = col_choices,
         selected = store$fmt$rows$indent_by %||% "")
-      shiny::updateSelectInput(session, "repeat_cols", choices = col_choices,
-        selected = store$fmt$rows$repeat_cols %||% "")
+      shiny::updateSelectInput(session, "suppress", choices = col_choices,
+        selected = store$fmt$rows$suppress %||% "")
       shiny::updateSelectInput(session, "sort_by", choices = col_choices,
         selected = store$fmt$rows$sort_by %||% "")
     })
@@ -146,15 +118,8 @@ mod_rows_server <- function(id, store) {
         selected = if (!is.null(rows$blank_after)) "yes" else "no")
       shiny::updateRadioButtons(session, "wrap",
         selected = if (isTRUE(rows$wrap)) "yes" else "no")
-      shiny::updateRadioButtons(session, "page_by_bold",
-        selected = if (isTRUE(rows$page_by_bold)) "yes" else "no")
       shiny::updateRadioButtons(session, "group_keep",
         selected = if (isTRUE(rows$group_keep %||% TRUE)) "yes" else "no")
-      shiny::updateRadioButtons(session, "page_by_visible",
-        selected = if (isTRUE(rows$page_by_visible %||% TRUE)) "yes" else "no")
-      shiny::updateRadioButtons(session, "group_bold",
-        selected = if (isTRUE(rows$group_bold)) "yes" else "no")
-      if (!is.null(rows$page_by_align)) shiny::updateSelectInput(session, "page_by_align", selected = rows$page_by_align)
     })
 
     # get_draft: return current rows config
@@ -163,7 +128,7 @@ mod_rows_server <- function(id, store) {
       group_label_val <- shiny::isolate(input$group_label) %||% ""
       page_val <- shiny::isolate(input$page_by) %||% ""
       indent_val <- shiny::isolate(input$indent_by) %||% ""
-      repeat_val <- shiny::isolate(input$repeat_cols)
+      suppress_val <- shiny::isolate(input$suppress)
       sort_val <- shiny::isolate(input$sort_by)
       blank_yes <- identical(shiny::isolate(input$blank_after), "yes")
 
@@ -171,16 +136,12 @@ mod_rows_server <- function(id, store) {
         group_by = if (nzchar(group_val)) group_val else NULL,
         group_label = if (nzchar(group_label_val)) group_label_val else NULL,
         group_keep = identical(shiny::isolate(input$group_keep), "yes"),
-        group_bold = identical(shiny::isolate(input$group_bold), "yes"),
         blank_after = if (blank_yes && nzchar(group_val)) group_val else NULL,
         page_by = if (nzchar(page_val)) page_val else NULL,
-        page_by_bold = identical(shiny::isolate(input$page_by_bold), "yes"),
-        page_by_align = shiny::isolate(input$page_by_align) %||% "left",
-        page_by_visible = identical(shiny::isolate(input$page_by_visible) %||% "yes", "yes"),
         indent_by = if (nzchar(indent_val)) indent_val else NULL,
         wrap = identical(shiny::isolate(input$wrap), "yes"),
-        repeat_cols = if (length(repeat_val) > 0 && any(nzchar(repeat_val)))
-          repeat_val[nzchar(repeat_val)] else NULL,
+        suppress = if (length(suppress_val) > 0 && any(nzchar(suppress_val)))
+          suppress_val[nzchar(suppress_val)] else NULL,
         sort_by = if (length(sort_val) > 0 && any(nzchar(sort_val)))
           sort_val[nzchar(sort_val)] else NULL
       )

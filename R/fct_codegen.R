@@ -616,8 +616,8 @@ fct_codegen_format <- function(ir, ard_cols = NULL) {
   hdr_args <- c(hdr_args, paste0("bold = ", if (hdr$bold) "TRUE" else "FALSE"))
   hdr_args <- c(hdr_args, paste0('align = "', hdr$align, '"'))
   if (hdr$valign != "bottom") hdr_args <- c(hdr_args, paste0('valign = "', hdr$valign, '"'))
-  if (!is.null(hdr$bg) && nzchar(hdr$bg)) hdr_args <- c(hdr_args, paste0('bg = "', hdr$bg, '"'))
-  if (!is.null(hdr$fg) && nzchar(hdr$fg)) hdr_args <- c(hdr_args, paste0('fg = "', hdr$fg, '"'))
+  if (!is.null(hdr$background) && nzchar(hdr$background)) hdr_args <- c(hdr_args, paste0('background = "', hdr$background, '"'))
+  if (!is.null(hdr$color) && nzchar(hdr$color)) hdr_args <- c(hdr_args, paste0('color = "', hdr$color, '"'))
   lines <- c(lines, paste0("  fr_header(", paste(hdr_args, collapse = ", "), ") |>"))
 
   # ── Spans (ir$spans) ──
@@ -674,27 +674,25 @@ fct_codegen_format <- function(ir, ard_cols = NULL) {
   rows <- ir$rows
   col_exists <- function(col) is.null(ard_cols) || col %in% ard_cols
   row_args <- c()
-  if (!is.null(rows$group_by) && col_exists(rows$group_by))
-    row_args <- c(row_args, paste0('group_by = "', rows$group_by, '"'))
-  if (!is.null(rows$group_label) && col_exists(rows$group_label))
-    row_args <- c(row_args, paste0('group_label = "', rows$group_label, '"'))
-  if (!is.null(rows$blank_after) && col_exists(rows$blank_after))
-    row_args <- c(row_args, paste0('blank_after = "', rows$blank_after, '"'))
-  if (!is.null(rows$page_by) && col_exists(rows$page_by))
-    row_args <- c(row_args, paste0('page_by = "', rows$page_by, '"'))
-  has_page_by <- !is.null(rows$page_by) && col_exists(rows$page_by)
   has_group_by <- !is.null(rows$group_by) && col_exists(rows$group_by)
   has_group_label <- !is.null(rows$group_label) && col_exists(rows$group_label)
-  if (isTRUE(rows$page_by_bold) && has_page_by)
-    row_args <- c(row_args, "page_by_bold = TRUE")
-  if (has_page_by && !is.null(rows$page_by_align) && rows$page_by_align != "left")
-    row_args <- c(row_args, paste0('page_by_align = "', rows$page_by_align, '"'))
-  if (has_page_by && isFALSE(rows$page_by_visible))
-    row_args <- c(row_args, "page_by_visible = FALSE")
+  has_page_by <- !is.null(rows$page_by) && col_exists(rows$page_by)
+  # group_by: list form if group_label is set, otherwise simple string
+  if (has_group_by && has_group_label) {
+    row_args <- c(row_args, paste0('group_by = list(cols = "', rows$group_by, '", label = "', rows$group_label, '")'))
+  } else if (has_group_by) {
+    row_args <- c(row_args, paste0('group_by = "', rows$group_by, '"'))
+  }
+  if (!is.null(rows$blank_after) && col_exists(rows$blank_after))
+    row_args <- c(row_args, paste0('blank_after = "', rows$blank_after, '"'))
+  # page_by: list form if page_by_visible is FALSE, otherwise simple string
+  if (has_page_by && isFALSE(rows$page_by_visible)) {
+    row_args <- c(row_args, paste0('page_by = list(cols = "', rows$page_by, '", visible = FALSE)'))
+  } else if (has_page_by) {
+    row_args <- c(row_args, paste0('page_by = "', rows$page_by, '"'))
+  }
   if (has_group_by && isFALSE(rows$group_keep))
     row_args <- c(row_args, "group_keep = FALSE")
-  if (has_group_label && isTRUE(rows$group_bold))
-    row_args <- c(row_args, "group_bold = TRUE")
   if (!is.null(rows$indent_by) && col_exists(rows$indent_by))
     row_args <- c(row_args, paste0('indent_by = "', rows$indent_by, '"'))
   if (!is.null(rows$sort_by)) {
@@ -702,10 +700,10 @@ fct_codegen_format <- function(ir, ard_cols = NULL) {
     if (length(valid_sort) > 0)
       row_args <- c(row_args, paste0('sort_by = c("', paste(valid_sort, collapse = '", "'), '")'))
   }
-  if (!is.null(rows$repeat_cols)) {
-    valid_cols <- rows$repeat_cols[vapply(rows$repeat_cols, col_exists, logical(1))]
+  if (!is.null(rows$suppress)) {
+    valid_cols <- rows$suppress[vapply(rows$suppress, col_exists, logical(1))]
     if (length(valid_cols) > 0)
-      row_args <- c(row_args, paste0('repeat_cols = c("', paste(valid_cols, collapse = '", "'), '")'))
+      row_args <- c(row_args, paste0('suppress = c("', paste(valid_cols, collapse = '", "'), '")'))
   }
   if (isTRUE(rows$wrap)) row_args <- c(row_args, "wrap = TRUE")
   if (length(row_args) > 0) {
@@ -753,16 +751,16 @@ fct_codegen_format <- function(ir, ard_cols = NULL) {
         if (!is.null(s$cols))     si_args <- c(si_args, paste0('cols = "', s$cols, '"'))
         if (!is.null(s$apply_to)) si_args <- c(si_args, paste0('apply_to = "', s$apply_to, '"'))
         if (isTRUE(s$bold))       si_args <- c(si_args, "bold = TRUE")
-        if (!is.null(s$bg))       si_args <- c(si_args, paste0('bg = "', s$bg, '"'))
-        if (!is.null(s$fg))       si_args <- c(si_args, paste0('fg = "', s$fg, '"'))
+        if (!is.null(s$background)) si_args <- c(si_args, paste0('background = "', s$background, '"'))
+        if (!is.null(s$color))     si_args <- c(si_args, paste0('color = "', s$color, '"'))
         style_items <- c(style_items,
           paste0("    fr_style_if(", paste(si_args, collapse = ", "), ")"))
       } else if (s$type == "row") {
         rs_args <- c()
         if (!is.null(s$match))  rs_args <- c(rs_args, paste0('rows = "', s$match, '"'))
         if (isTRUE(s$bold))     rs_args <- c(rs_args, "bold = TRUE")
-        if (!is.null(s$bg))     rs_args <- c(rs_args, paste0('bg = "', s$bg, '"'))
-        if (!is.null(s$fg))     rs_args <- c(rs_args, paste0('fg = "', s$fg, '"'))
+        if (!is.null(s$background)) rs_args <- c(rs_args, paste0('background = "', s$background, '"'))
+        if (!is.null(s$color))     rs_args <- c(rs_args, paste0('color = "', s$color, '"'))
         style_items <- c(style_items,
           paste0("    fr_row_style(", paste(rs_args, collapse = ", "), ")"))
       }

@@ -131,8 +131,8 @@ mod_header_spans_server <- function(id, store) {
           selected = if (isTRUE(hdr$bold)) "yes" else "no")
       }
       if (!is.null(hdr$valign)) shiny::updateSelectInput(session, "header_valign", selected = hdr$valign)
-      if (!is.null(hdr$bg) && nzchar(hdr$bg)) shiny::updateTextInput(session, "header_bg", value = hdr$bg)
-      if (!is.null(hdr$fg) && nzchar(hdr$fg)) shiny::updateTextInput(session, "header_fg", value = hdr$fg)
+      if (!is.null(hdr$background) && nzchar(hdr$background)) shiny::updateTextInput(session, "header_bg", value = hdr$background)
+      if (!is.null(hdr$color) && nzchar(hdr$color)) shiny::updateTextInput(session, "header_fg", value = hdr$color)
 
       spans <- store$fmt$spans
       if (length(spans) > 0) {
@@ -292,8 +292,8 @@ mod_header_spans_server <- function(id, store) {
           bold = identical(shiny::isolate(input$header_bold), "yes"),
           align = shiny::isolate(input$header_align) %||% "center",
           valign = shiny::isolate(input$header_valign) %||% "bottom",
-          bg = if (nzchar(bg_val)) bg_val else NULL,
-          fg = if (nzchar(fg_val)) fg_val else NULL
+          background = if (nzchar(bg_val)) bg_val else NULL,
+          color = if (nzchar(fg_val)) fg_val else NULL
         ),
         spans = spans,
         col_aligns = col_aligns
