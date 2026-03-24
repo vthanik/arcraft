@@ -10,7 +10,7 @@ Local Shiny app for building submission-ready TFLs from ADaM data. Uses `arframe
 
 ## Phase 1: Demographics Only
 
-Demographics template is the ONLY active template. All other templates (AE, lab, TTE, figures, listings) are backed up in `_backup_templates/R/`. Do NOT add new templates until demographics is bulletproof.
+Demographics template is the ONLY active template. All other templates (AE, lab, TTE, figures, listings) are backed up in `.local/backup_templates/R/`. Do NOT add new templates until demographics is bulletproof.
 
 Quality gate: `devtools::check()`, end-to-end test, generated script runs standalone, `/simplify` audit.
 
@@ -33,7 +33,7 @@ Quality gate: `devtools::check()`, end-to-end test, generated script runs standa
 - No shadows, no gradients, no animations except toast slide-in and chevron rotate
 - Inter font, 11-12px body, 4px spacing grid
 - Progressive disclosure — accordion panels, expandable cards, empty states with CTAs
-- See `DESIGN-SPEC.md` for full pixel-level specification
+- See `.local/design/DESIGN-SPEC.md` for full pixel-level specification
 
 ## Commands
 
@@ -187,9 +187,9 @@ observeEvent(input$my_input, { ... })
 
 ### Learning Resources (bundled in this project)
 
-- `CSS-BASICS.md` — CSS foundations, written for R programmers
-- `CSS-NESTING-GUIDE.md` — modern nesting syntax with arbuilder examples
-- `DESIGN-SPEC.md` — full visual design specification (colors, spacing, components)
+- `.local/docs/CSS-BASICS.md` — CSS foundations, written for R programmers
+- `.local/docs/CSS-NESTING-GUIDE.md` — modern nesting syntax with arbuilder examples
+- `.local/design/DESIGN-SPEC.md` — full visual design specification (colors, spacing, components)
 
 ## Generated R Code Standards
 
@@ -258,7 +258,21 @@ inst/app/www/
   Sortable.min.js       # Drag reorder library
 ```
 
-## Backup Locations
+## `.local/` — Non-Package Files
 
-- `_backup_templates/R/` — 34 files for non-demographics templates (AE, lab, TTE, figures, listings)
-- `_archive/` — Full pre-rebuild snapshot of all 69 files
+All non-R-package files live in `.local/` (gitignored). Any temp files, scratch work, design docs, or generated output should go here too.
+
+```
+.local/
+  archive/              # Full pre-rebuild snapshot of all 69 files
+  backup_templates/R/   # 34 files for non-demographics templates (AE, lab, TTE, figures, listings)
+  design/               # DESIGN.md, DESIGN-SPEC.md, LAYOUT-ALTERNATIVES.md
+  plans/                # PLAN.md, ARFRAME-PLAN.txt
+  docs/                 # CSS-BASICS.md, CSS-NESTING-GUIDE.md, DATA-WRANGLER-UX-REFERENCE.md
+    notes/              # Book notes, research notes, viewer spec
+    references/         # CDISC, CSR formats, GSK macros, standard TFL specs
+  screenshots/          # Dev screenshots
+  output/               # Generated RTF/PDF/HTML output files
+```
+
+When creating temp files (scratch scripts, test output, debug logs), put them in `.local/` — never in the package root.

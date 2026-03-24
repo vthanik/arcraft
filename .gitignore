@@ -19,31 +19,13 @@ output.html
 *.swp
 *~
 
-# Archives (kept locally, not in repo)
-_archive/
-_backup_templates/
-
-# Design/plan docs (local reference only)
-CSS-BASICS.md
-CSS-NESTING-GUIDE.md
-DESIGN-SPEC.md
-DESIGN.md
-LAYOUT-ALTERNATIVES.md
-DATA-WRANGLER-UX-REFERENCE.md
-PLAN.md
-ARFRAME-PLAN.txt
-CLAUDE.md
-
-# Screenshots (local dev only)
-screenshots/
-
-# Notes & references (local only)
-notes/
-references/
+# Local dev files (design docs, plans, notes, references, screenshots, archives)
+.local/
 
 # OS files
 .DS_Store
 Thumbs.db
 
 # Claude
+CLAUDE.md
 .claude/
