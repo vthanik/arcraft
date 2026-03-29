@@ -2,6 +2,20 @@
 
 `%||%` <- function(x, y) if (is.null(x)) y else x
 
+# Safe evaluation of user-typed filter expressions.
+# Uses rlang::eval_tidy with a data mask only — no parent env access,
+# preventing system(), source(), etc.
+safe_eval_filter <- function(expr_str, data) {
+  if (is.null(expr_str) || !nzchar(expr_str)) return(rep(TRUE, nrow(data)))
+  parsed <- tryCatch(rlang::parse_expr(expr_str), error = function(e) NULL)
+  if (is.null(parsed)) return(rep(TRUE, nrow(data)))
+  mask <- rlang::as_data_mask(data)
+  tryCatch(
+    rlang::eval_tidy(parsed, data = mask),
+    error = function(e) rep(TRUE, nrow(data))
+  )
+}
+
 # Resolve bundled data path — works in dev (app.R) and installed package mode
 data_path <- function(filename) {
   # Try installed package first
@@ -153,6 +167,75 @@ get_stat_dec <- function(config, stat_name, fallback = 1) {
   decs <- config$decimals
   if (is.list(decs)) decs[[stat_name]] %||% fallback
   else decs %||% fallback
+}
+
+# Cards stat format mapping (arbuilder stat name -> fr_wide_ard format string)
+CARDS_STAT_FORMAT_MAP <- list(
+  n = "{N}", mean = "{mean}", sd = "{sd}",
+  mean_sd = "{mean} ({sd})", median = "{median}",
+  q1 = "{p25}", q3 = "{p75}", q1_q3 = "{p25}, {p75}",
+  min = "{min}", max = "{max}", min_max = "{min}, {max}",
+  geo_mean = "{mean}", cv = "{sd}", geo_mean_cv = "{mean} ({sd})"
+)
+
+# Cards decimal name mapping (arbuilder stat name -> cards stat name)
+CARDS_DECIMAL_MAP <- list(
+  mean = "mean", sd = "sd", median = "median",
+  q1 = "p25", q3 = "p75", min = "min", max = "max",
+  geo_mean = "mean", cv = "sd", n = "N"
+)
+
+# ── Shared stat-format and decimals builders ──
+# Used by both fct_ard_demog_cards.R (runtime) and fct_codegen.R (code generation)
+
+# Build statistic format list for fr_wide_ard from var_configs
+build_stat_format_from_config <- function(var_configs, analysis_vars) {
+  fmt <- list()
+  for (v in analysis_vars) {
+    cfg <- var_configs[[v]] %||% list()
+    vtype <- cfg$type %||% "categorical"
+
+    if (vtype == "continuous") {
+      stats <- cfg$stats %||% c("n", "mean_sd", "median", "q1_q3", "min_max")
+      stat_labels <- cfg$stat_labels %||% list()
+      spec <- character(0)
+      for (s in stats) {
+        lbl <- stat_labels[[s]] %||% STAT_LABELS[[s]] %||% s
+        fs <- CARDS_STAT_FORMAT_MAP[[s]] %||% "{N}"
+        spec[[lbl]] <- fs
+      }
+      fmt[[v]] <- spec
+    } else {
+      cat_format <- cfg$cat_format %||% "npct"
+      fmt[[v]] <- switch(cat_format,
+        npct = "{n} ({p}%)",
+        n = "{n}",
+        nn_pct = "{n}/{N} ({p}%)",
+        "{n} ({p}%)"
+      )
+    }
+  }
+  fmt
+}
+
+# Build decimals map for fr_wide_ard from var_configs
+build_decimals_from_config <- function(var_configs, analysis_vars) {
+  dec <- list()
+  for (v in analysis_vars) {
+    cfg <- var_configs[[v]] %||% list()
+    if (!is.null(cfg$decimals) && is.list(cfg$decimals)) {
+      d <- list()
+      for (nm in names(cfg$decimals)) {
+        cards_nm <- CARDS_DECIMAL_MAP[[nm]] %||% nm
+        d[[cards_nm]] <- cfg$decimals[[nm]]
+      }
+      if (length(d) > 0) dec[[v]] <- d
+    }
+    if (!is.null(cfg$pct_dec)) {
+      dec[[v]] <- c(dec[[v]] %||% list(), list(p = cfg$pct_dec))
+    }
+  }
+  dec
 }
 
 # Centralized stat labels — single source of truth

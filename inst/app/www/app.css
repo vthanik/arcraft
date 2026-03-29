@@ -181,7 +181,7 @@ body {
 
 /* --- 9. Canvas --- */
 .ar-canvas {
-  flex: 1; background: var(--bg-canvas);
+  flex: 1; background: var(--bg-canvas); position: relative;
   display: flex; flex-direction: column; overflow: hidden; min-width: 0; min-height: 0;
 
   & > .tabbable { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-height: 0; }
@@ -1041,3 +1041,60 @@ a.btn.ar-btn-primary:hover { background: var(--accent-hover) !important; }
   white-space: nowrap;
 }
 
+/* ── 46. Saved Outputs ── */
+
+/* Canvas overlay */
+.ar-saved-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  background: #fff;
+  overflow-y: auto;
+}
+.ar-saved-grid-wrap {
+  padding: 32px 48px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+.ar-saved-grid__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 20px;
+}
+.ar-saved-grid__title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--fg-1);
+  margin: 0;
+}
+.ar-saved-grid__count {
+  font-size: 11px;
+  color: var(--fg-muted);
+}
+.ar-saved-grid__toolbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.ar-saved-grid__dir {
+  font-size: 10px;
+  color: var(--fg-muted);
+  font-family: var(--font-mono);
+}
+.ar-saved-card__badge {
+  font-size: 9px; text-transform: uppercase; letter-spacing: 0.5px;
+  padding: 1px 6px; border-radius: 3px;
+  background: var(--bg-muted); color: var(--fg-2);
+  display: inline-block;
+}
+.ar-saved-tbl__name--active { color: var(--accent); }
+.ar-dirty-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--accent); display: inline-block;
+  margin-left: 4px; vertical-align: middle;
+}
+.ar-topbar__output-name {
+  font-size: 11px; color: var(--fg-2);
+  margin-right: 8px; white-space: nowrap;
+}

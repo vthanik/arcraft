@@ -16,6 +16,7 @@ Depends:
 Imports:
     arframe,
     arrow,
+    cards,
     shiny (>= 1.8.0),
     bslib (>= 0.6.0),
     htmltools,
@@ -31,4 +32,5 @@ Imports:
     reactable,
     rlang,
     stats,
-    tools
+    tools,
+    yaml

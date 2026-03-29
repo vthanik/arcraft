@@ -2,16 +2,6 @@
 # Non-reactive draft architecture: modules don't sync to store on every keystroke.
 # Format drafts are collected into store$fmt only on Generate Preview.
 
-# ── Preset Pill Helper ──
-preset_pill <- function(id, label) {
-  htmltools::tags$button(
-    class = "ar-pill",
-    onclick = sprintf(
-      "Shiny.setInputValue('%s', Math.random(), {priority: 'event'}); arFmtPresetActive(this);", id),
-    label
-  )
-}
-
 # ── Preset Definitions ──
 fmt_preset_values <- function(preset_name) {
   presets <- list(
@@ -86,10 +76,9 @@ collect_format_drafts <- function(titles, cols, header_spans, rows,
 }
 
 # ── Apply Preset to Store ──
-apply_fmt_preset <- function(store, preset_name) {
+apply_fmt_preset <- function(current_fmt, preset_name) {
   vals <- fmt_preset_values(preset_name)
-  if (is.null(vals)) return(invisible())
-  current <- shiny::isolate(store$fmt)
+  if (is.null(vals)) return(current_fmt)
   base <- normalize_fmt(list())
   # Merge preset over base
   for (section in names(vals)) {
@@ -100,43 +89,13 @@ apply_fmt_preset <- function(store, preset_name) {
     }
   }
   # Preserve user content (titles, footnotes, spans, rows, chrome)
-  base$titles <- current$titles
-  base$footnotes <- current$footnotes
-  base$fn_separator <- current$fn_separator
-  base$fn_placement <- current$fn_placement
-  base$spans <- current$spans
-  base$rows <- current$rows
-  base$pagehead <- current$pagehead
-  base$pagefoot <- current$pagefoot
-  store$fmt <- base
-}
-
-# ── Format Panel UI: Single flat scrollable panel ──
-format_panel_ui <- function() {
-  htmltools::tags$div(class = "ar-fmt",
-    # Preset pills — always visible at top
-    htmltools::tags$div(class = "ar-fmt-presets",
-      htmltools::tags$span(class = "ar-form-label", "PRESET"),
-      htmltools::tags$div(class = "ar-fmt-preset-pills",
-        preset_pill("fmt_preset_fda", "FDA"),
-        preset_pill("fmt_preset_booktabs", "Booktabs"),
-        preset_pill("fmt_preset_minimal", "Minimal"),
-        preset_pill("fmt_preset_company", "Company")
-      )
-    ),
-    # All sections in one accordion (5 panels, merged from 7)
-    bslib::accordion(id = "acc_fmt",
-      open = "TITLES & FOOTNOTES", multiple = TRUE,
-      bslib::accordion_panel("TITLES & FOOTNOTES",
-        mod_titles_ui("titles")),
-      bslib::accordion_panel("COLUMNS",
-        mod_columns_ui("cols")),
-      bslib::accordion_panel("HEADER & SPANS",
-        mod_header_spans_ui("header_spans")),
-      bslib::accordion_panel("ROW STRUCTURE",
-        mod_rows_ui("rows")),
-      bslib::accordion_panel("PAGE & OUTPUT",
-        mod_page_output_ui("page_output"))
-    )
-  )
+  base$titles <- current_fmt$titles
+  base$footnotes <- current_fmt$footnotes
+  base$fn_separator <- current_fmt$fn_separator
+  base$fn_placement <- current_fmt$fn_placement
+  base$spans <- current_fmt$spans
+  base$rows <- current_fmt$rows
+  base$pagehead <- current_fmt$pagehead
+  base$pagefoot <- current_fmt$pagefoot
+  base
 }

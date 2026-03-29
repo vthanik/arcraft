@@ -8,10 +8,10 @@ fct_ard_dispatch <- function(template, datasets, grouping, var_configs,
   cgs <- combined_groups %||% grouping$combined_groups %||% list()
 
   switch(template,
-    demog = fct_ard_demog(adsl, grouping, var_configs,
+    demog = fct_ard_demog_cards(adsl, grouping, var_configs,
               added_levels = added_levels, combined_groups = cgs,
               var_labels = var_labels),
-    stop("Template '", template, "' not yet implemented", call. = FALSE)
+    cli::cli_abort("Template {.val {template}} not yet implemented", call = NULL)
   )
 }
 

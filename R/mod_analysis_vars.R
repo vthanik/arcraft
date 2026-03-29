@@ -183,12 +183,12 @@ mod_analysis_vars_server <- function(id, store, grp) {
     })
 
     # ── Per-variable body rendering + observers ──
-    observed_vars <- character(0)
+    observed_vars <- shiny::reactiveVal(character(0))
     shiny::observe({
       vars <- grp$analysis_vars
-      new_vars <- setdiff(vars, observed_vars)
+      new_vars <- setdiff(vars, observed_vars())
       if (length(new_vars) == 0) return()
-      observed_vars <<- union(observed_vars, new_vars)
+      observed_vars(union(observed_vars(), new_vars))
       for (v in new_vars) {
         local({
           my_var <- v

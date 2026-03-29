@@ -67,10 +67,10 @@ spec_demog <- function(data = NULL) {
       ),
       population = "Safety Analysis Set",
       source = "Source: ADSL",
-      title_align = "center",
+      title_defaults = list(align = "center", bold = FALSE),
       cols = list(
         stub_width = 2.5,
-        body_align = "center",
+        default_align = "center",
         n_counts = TRUE,
         n_format = "{label}\\n(N={n})"
       ),

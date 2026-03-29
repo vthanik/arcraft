@@ -150,3 +150,43 @@ ar_build_reactable <- function(data, height = "auto", row_offset = 0L) {
   )
 }
 
+# ── Preset Pill Helper ──
+preset_pill <- function(id, label) {
+  htmltools::tags$button(
+    class = "ar-pill",
+    onclick = sprintf(
+      "Shiny.setInputValue('%s', Math.random(), {priority: 'event'}); arFmtPresetActive(this);", id),
+    label
+  )
+}
+
+# ── Format Panel UI: Single flat scrollable panel ──
+format_panel_ui <- function() {
+  htmltools::tags$div(class = "ar-fmt",
+    # Preset pills — always visible at top
+    htmltools::tags$div(class = "ar-fmt-presets",
+      htmltools::tags$span(class = "ar-form-label", "PRESET"),
+      htmltools::tags$div(class = "ar-fmt-preset-pills",
+        preset_pill("fmt_preset_fda", "FDA"),
+        preset_pill("fmt_preset_booktabs", "Booktabs"),
+        preset_pill("fmt_preset_minimal", "Minimal"),
+        preset_pill("fmt_preset_company", "Company")
+      )
+    ),
+    # All sections in one accordion (5 panels, merged from 7)
+    bslib::accordion(id = "acc_fmt",
+      open = "TITLES & FOOTNOTES", multiple = TRUE,
+      bslib::accordion_panel("TITLES & FOOTNOTES",
+        mod_titles_ui("titles")),
+      bslib::accordion_panel("COLUMNS",
+        mod_columns_ui("cols")),
+      bslib::accordion_panel("HEADER & SPANS",
+        mod_header_spans_ui("header_spans")),
+      bslib::accordion_panel("ROW STRUCTURE",
+        mod_rows_ui("rows")),
+      bslib::accordion_panel("PAGE & OUTPUT",
+        mod_page_output_ui("page_output"))
+    )
+  )
+}
+

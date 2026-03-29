@@ -115,8 +115,13 @@ validate_filter_expr <- function(expr, data, label = "rows") {
   if (is.null(data)) {
     return(htmltools::tags$div(class = "ar-filter-status ar-filter-status--error", "No dataset loaded"))
   }
+  parsed <- tryCatch(rlang::parse_expr(expr), error = function(e) NULL)
+  if (is.null(parsed)) {
+    return(htmltools::tags$div(class = "ar-filter-status ar-filter-status--error",
+      "\u2717 Invalid expression syntax"))
+  }
   tryCatch({
-    mask <- eval(parse(text = expr), envir = data)
+    mask <- rlang::eval_tidy(parsed, data = rlang::as_data_mask(data))
     if (!is.logical(mask)) {
       return(htmltools::tags$div(class = "ar-filter-status ar-filter-status--error",
         "Expression must return logical (TRUE/FALSE)"))
@@ -189,9 +194,18 @@ mod_data_server <- function(id, store, grp) {
         defaults <- spec_demog(adsl)
 
         trt_var <- defaults$grouping$trt_var
-        trt_levels <- sort(unique(adsl[[trt_var]]))
+        # Apply default pop_flag (SAFFL) before extracting treatment levels
+        adsl_filtered <- apply_pop_filter(adsl, "SAFFL")
+        trt_levels <- sort(unique(adsl_filtered[[trt_var]]))
+        trt_levels <- trt_levels[!is.na(trt_levels) & nzchar(trt_levels)]
         grp$trt_var <- trt_var
         grp$trt_levels <- trt_levels
+
+        # Set pipeline_filters so treatment module uses filtered data
+        store$pipeline_filters <- list(
+          dataset = "adsl", pop_flag = "SAFFL",
+          data_filter = "", pop_filter = "", n = nrow(adsl_filtered)
+        )
         grp$include_total <- TRUE
         grp$analysis_vars <- defaults$grouping$analysis_vars
         store$var_configs <- defaults$var_configs
@@ -219,7 +233,7 @@ mod_data_server <- function(id, store, grp) {
           csv = data.table::fread(f$datapath, data.table = FALSE),
           sas7bdat = haven::read_sas(f$datapath),
           xpt = haven::read_xpt(f$datapath),
-          stop("Unsupported format: .", ext)
+          cli::cli_abort("Unsupported file format: {.val {ext}}", call = NULL)
         )
         store$datasets[[ds_name]] <- data
         ds_names <- names(store$datasets)
@@ -380,10 +394,8 @@ mod_data_server <- function(id, store, grp) {
       # Apply pop_filter on ADSL
       ps <- input$pop_filter
       if (!is.null(ps) && nzchar(ps)) {
-        tryCatch({
-          mask <- eval(parse(text = ps), envir = pop_d)
-          if (is.logical(mask)) pop_d <- pop_d[mask & !is.na(mask), ]
-        }, error = function(e) NULL)
+        mask <- safe_eval_filter(ps, pop_d)
+        if (is.logical(mask)) pop_d <- pop_d[mask & !is.na(mask), ]
       }
 
       n_pop <- nrow(pop_d)
@@ -400,10 +412,8 @@ mod_data_server <- function(id, store, grp) {
         primary_d <- apply_pop_filter(primary_d, pop)
         df <- input$data_filter
         if (!is.null(df) && nzchar(df)) {
-          tryCatch({
-            mask <- eval(parse(text = df), envir = primary_d)
-            if (is.logical(mask)) primary_d <- primary_d[mask & !is.na(mask), ]
-          }, error = function(e) NULL)
+          mask <- safe_eval_filter(df, primary_d)
+          if (is.logical(mask)) primary_d <- primary_d[mask & !is.na(mask), ]
         }
         nrow(primary_d)
       } else n_pop

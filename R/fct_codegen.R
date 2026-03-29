@@ -21,7 +21,7 @@ fct_codegen_header <- function() {
     "# =============================================================================\n",
     "\n",
     "library(dplyr)\n",
-    "library(tidyr)\n",
+    "library(cards)\n",
     "library(arframe)\n",
     "\n"
   )
@@ -54,423 +54,288 @@ fct_codegen_ard <- function(grouping, var_configs) {
   total_label <- grouping$total_label %||% "Total"
   analysis_vars <- grouping$analysis_vars
   combined_groups <- grouping$combined_groups %||% list()
-
-  # All treatment group columns in final wide output
-  all_groups <- trt_levels
-  if (include_total) all_groups <- c(all_groups, total_label)
-  for (cg in combined_groups) all_groups <- c(all_groups, cg$label)
-  groups_str <- paste0('"', all_groups, '"', collapse = ", ")
-
-  lines <- c("# --- ARD Construction (wide format) ---", "")
-
-  # Big N
-  lines <- c(lines,
-    paste0("big_n <- adsl |> count(", trt_var, ', name = "N")'),
-    ""
-  )
-
-  # Total row for big_n
-  if (include_total) {
-    lines <- c(lines,
-      paste0('big_n <- bind_rows(big_n, tibble(', trt_var, ' = "', total_label, '", N = nrow(adsl)))'),
-      ""
-    )
-  }
-
-  # Combined groups for big_n
-  for (cg in combined_groups) {
-    arms_str <- paste0('"', cg$arms, '"', collapse = ", ")
-    lines <- c(lines,
-      paste0('big_n <- bind_rows(big_n, tibble(', trt_var, ' = "', cg$label,
-        '", N = sum(adsl$', trt_var, ' %in% c(', arms_str, '))))'),
-      ""
-    )
-  }
-
-  # Helper function definition in generated code
-  lines <- c(lines,
-    "# Helper: format n (pct)",
-    'fmt_npct <- function(n, N, dec = 1) {',
-    '  if (N == 0) return("0")',
-    '  pct <- n / N * 100',
-    '  if (n == 0) return("0")',
-    '  paste0(n, " (", formatC(pct, format = "f", digits = dec), ")")',
-    '}',
-    ""
-  )
-
-  # Per-variable blocks — each produces a wide tibble
-  for (var in analysis_vars) {
-    cfg <- var_configs[[var]] %||% list()
-    var_type <- cfg$type %||% "categorical"
-    var_label <- cfg$label %||% var
-
-    if (var_type == "continuous") {
-      decs <- cfg$decimals
-      stat_list <- cfg$stats %||% c("n", "mean_sd", "median", "q1_q3", "min_max")
-
-      get_d <- function(stat_name, fallback) get_stat_dec(cfg, stat_name, fallback)
-
-      # Build stat computation strings
-      stat_exprs <- vapply(stat_list, function(s) {
-        switch(s,
-          n = 'n = as.character(length(na.omit(x)))',
-          mean = paste0('mean = formatC(mean(x, na.rm = TRUE), format = "f", digits = ', get_d("mean", 1), ')'),
-          sd = paste0('sd = formatC(sd(x, na.rm = TRUE), format = "f", digits = ', get_d("sd", 2), ')'),
-          mean_sd = paste0('`mean_sd` = if (length(na.omit(x)) > 0) paste0(formatC(mean(x, na.rm = TRUE), format = "f", digits = ', get_d("mean", 1), '), " (", formatC(sd(x, na.rm = TRUE), format = "f", digits = ', get_d("sd", 2), '), ")") else ""'),
-          median = paste0('median = formatC(median(x, na.rm = TRUE), format = "f", digits = ', get_d("median", 1), ')'),
-          q1 = paste0('q1 = formatC(quantile(x, 0.25, na.rm = TRUE), format = "f", digits = ', get_d("q1", 1), ')'),
-          q3 = paste0('q3 = formatC(quantile(x, 0.75, na.rm = TRUE), format = "f", digits = ', get_d("q3", 1), ')'),
-          q1_q3 = paste0('`q1_q3` = if (length(na.omit(x)) > 0) paste0(formatC(quantile(x, 0.25, na.rm = TRUE), format = "f", digits = ', get_d("q1", 1), '), ", ", formatC(quantile(x, 0.75, na.rm = TRUE), format = "f", digits = ', get_d("q3", 1), ')) else ""'),
-          min = paste0('min = formatC(min(x, na.rm = TRUE), format = "f", digits = ', get_d("min", 0), ')'),
-          max = paste0('max = formatC(max(x, na.rm = TRUE), format = "f", digits = ', get_d("max", 0), ')'),
-          min_max = paste0('`min_max` = if (length(na.omit(x)) > 0) paste0(formatC(min(x, na.rm = TRUE), format = "f", digits = ', get_d("min", 0), '), ", ", formatC(max(x, na.rm = TRUE), format = "f", digits = ', get_d("max", 0), ')) else ""'),
-          ""
-        )
-      }, character(1))
-      stat_exprs <- stat_exprs[nzchar(stat_exprs)]
-
-      # Stat labels mapping (from shared STAT_LABELS constant)
-      stat_labels <- vapply(stat_list, function(s) STAT_LABELS[[s]] %||% s, character(1))
-      labels_str <- paste0('"', stat_labels, '"', collapse = ", ")
-
-      lines <- c(lines,
-        paste0("# ", var, " (continuous)"),
-        paste0("ard_", tolower(var), " <- {"),
-        paste0("  # Compute stats per treatment group"),
-        paste0("  groups <- c(", groups_str, ")"),
-        paste0("  stat_names <- c(", paste0('"', stat_list, '"', collapse = ", "), ")"),
-        paste0("  stat_labels <- c(", labels_str, ")")
-      )
-
-      # Build the computation — one column per group
-      lines <- c(lines,
-        "  result_list <- lapply(groups, function(grp) {"
-      )
-
-      # Handle total and combined groups
-      if (include_total) {
-        lines <- c(lines,
-          paste0('    if (grp == "', total_label, '") {'),
-          paste0('      x <- adsl$', var),
-          "    } else {"
-        )
-      } else {
-        lines <- c(lines, "    {")
-      }
-
-      if (length(combined_groups) > 0) {
-        for (i in seq_along(combined_groups)) {
-          cg <- combined_groups[[i]]
-          arms_str <- paste0('"', cg$arms, '"', collapse = ", ")
-          prefix <- if (i == 1) "      if" else "      } else if"
-          lines <- c(lines,
-            paste0(prefix, ' (grp == "', cg$label, '") {'),
-            paste0('        x <- adsl$', var, '[adsl$', trt_var, ' %in% c(', arms_str, ')]')
-          )
-        }
-        lines <- c(lines,
-          "      } else {",
-          paste0('        x <- adsl$', var, '[adsl$', trt_var, ' == grp]'),
-          "      }"
-        )
-      } else {
-        lines <- c(lines,
-          paste0('      x <- adsl$', var, '[adsl$', trt_var, ' == grp]')
-        )
-      }
-
-      if (include_total) {
-        lines <- c(lines, "    }")
-      } else {
-        lines <- c(lines, "    }")
-      }
-
-      # Compute each stat as a character value
-      lines <- c(lines,
-        "    tibble(",
-        paste0("      ", stat_exprs, ",")[seq_along(stat_exprs)]
-      )
-      # Fix trailing comma on last line
-      last_idx <- length(lines)
-      lines[last_idx] <- sub(",$", "", lines[last_idx])
-      lines <- c(lines,
-        "    ) |> pivot_longer(everything(), names_to = \"stat\", values_to = grp)",
-        "  })",
-        "  # Merge all groups into wide format",
-        "  wide <- result_list[[1]]",
-        "  if (length(result_list) > 1) {",
-        "    for (i in 2:length(result_list)) {",
-        "      wide <- left_join(wide, result_list[[i]], by = \"stat\")",
-        "    }",
-        "  }",
-        "  wide |>",
-        paste0("    mutate(variable = \"", var, "\","),
-        paste0("           var_label = \"", gsub('"', '\\\\"', var_label), "\","),
-        "           var_type = \"continuous\",",
-        "           stat_label = paste0(\"  \", stat_labels[match(stat, stat_names)])) |>",
-        "    select(variable, var_label, var_type, stat_label, all_of(groups)) |>",
-        "    mutate(across(all_of(groups), as.character))",
-        "}",
-        ""
-      )
-    } else {
-      # Categorical variable
-      dec <- cfg$pct_dec %||% 1
-
-      lines <- c(lines,
-        paste0("# ", var, " (categorical)"),
-        paste0("ard_", tolower(var), " <- {"),
-        paste0("  groups <- c(", groups_str, ")"),
-        paste0("  lvls <- ", if (!is.null(cfg$levels)) {
-          paste0("c(", paste0('"', cfg$levels, '"', collapse = ", "), ")")
-        } else {
-          paste0("sort(unique(na.omit(adsl$", var, ")))")
-        }),
-        paste0("  N_vec <- setNames(big_n$N, big_n$", trt_var, ")")
-      )
-
-      lines <- c(lines,
-        "  result_list <- lapply(groups, function(grp) {"
-      )
-
-      if (include_total) {
-        lines <- c(lines,
-          paste0('    if (grp == "', total_label, '") {'),
-          paste0('      x <- adsl$', var),
-          paste0('      N <- N_vec["', total_label, '"]'),
-          "    } else {"
-        )
-      } else {
-        lines <- c(lines, "    {")
-      }
-
-      if (length(combined_groups) > 0) {
-        for (i in seq_along(combined_groups)) {
-          cg <- combined_groups[[i]]
-          arms_str <- paste0('"', cg$arms, '"', collapse = ", ")
-          prefix <- if (i == 1) "      if" else "      } else if"
-          lines <- c(lines,
-            paste0(prefix, ' (grp == "', cg$label, '") {'),
-            paste0('        x <- adsl$', var, '[adsl$', trt_var, ' %in% c(', arms_str, ')]'),
-            paste0('        N <- N_vec["', cg$label, '"]')
-          )
-        }
-        lines <- c(lines,
-          "      } else {",
-          paste0('        x <- adsl$', var, '[adsl$', trt_var, ' == grp]'),
-          "        N <- N_vec[grp]",
-          "      }"
-        )
-      } else {
-        lines <- c(lines,
-          paste0('      x <- adsl$', var, '[adsl$', trt_var, ' == grp]'),
-          "      N <- N_vec[grp]"
-        )
-      }
-
-      if (include_total) {
-        lines <- c(lines, "    }")
-      } else {
-        lines <- c(lines, "    }")
-      }
-
-      show_n <- cfg$show_n %||% TRUE
-      if (isTRUE(show_n)) {
-        lines <- c(lines,
-          "    # N row (non-missing count)",
-          "    n_total <- sum(!is.na(x))",
-          "    n_row <- tibble(stat_label = \"  n\", !!grp := as.character(n_total))")
-      }
-      lines <- c(lines,
-        "    # Level rows",
-        "    vals <- vapply(lvls, function(lev) {",
-        "      n <- sum(x == lev, na.rm = TRUE)",
-        paste0("      fmt_npct(n, N, dec = ", dec, ")"),
-        "    }, character(1))",
-        if (isTRUE(show_n))
-          "    bind_rows(n_row, tibble(stat_label = paste0(\"  \", lvls), !!grp := vals))"
-        else
-          "    tibble(stat_label = paste0(\"  \", lvls), !!grp := vals)",
-        "  })",
-        "  wide <- result_list[[1]]",
-        "  if (length(result_list) > 1) {",
-        "    for (i in 2:length(result_list)) {",
-        "      wide <- left_join(wide, result_list[[i]], by = \"stat_label\")",
-        "    }",
-        "  }",
-        "  wide |>",
-        paste0("    mutate(variable = \"", var, "\","),
-        paste0("           var_label = \"", gsub('"', '\\\\"', var_label), "\","),
-        "           var_type = \"categorical\") |>",
-        "    select(variable, var_label, var_type, stat_label, all_of(groups))",
-        "}",
-        ""
-      )
-    }
-  }
-
-  # Bind all per-variable ARDs into tbl_data
-  ard_names <- paste0("ard_", tolower(analysis_vars))
   by_var <- grouping$by_var
   has_by <- !is.null(by_var) && nzchar(by_var %||% "")
 
-  if (!has_by) {
+  # Classify variables
+  cont_vars <- character(0)
+  cat_vars <- character(0)
+  for (v in analysis_vars) {
+    cfg <- var_configs[[v]] %||% list()
+    vtype <- cfg$type %||% "categorical"
+    if (vtype == "continuous") cont_vars <- c(cont_vars, v)
+    else cat_vars <- c(cat_vars, v)
+  }
+
+  lines <- c("# --- ARD Construction ---", "")
+
+  # Pre-factor categoricals if levels are specified
+  for (v in cat_vars) {
+    cfg <- var_configs[[v]] %||% list()
+    if (!is.null(cfg$levels)) {
+      lvls_str <- paste0('"', cfg$levels, '"', collapse = ", ")
+      lines <- c(lines,
+        paste0("adsl$", v, " <- factor(adsl$", v, ", levels = c(", lvls_str, "))"))
+    }
+  }
+  if (length(cat_vars) > 0 && any(vapply(cat_vars, function(v) !is.null(var_configs[[v]]$levels), logical(1)))) {
+    lines <- c(lines, "")
+  }
+
+  # Build ard_stack call
+  lines <- c(lines, "raw_ard <- ard_stack(")
+  lines <- c(lines, "  adsl,")
+
+  if (length(cont_vars) > 0) {
+    cont_str <- paste0(cont_vars, collapse = ", ")
+    lines <- c(lines, paste0("  ard_continuous(variables = c(", cont_str, ")),"))
+  }
+  if (length(cat_vars) > 0) {
+    cat_str <- paste0(cat_vars, collapse = ", ")
+    lines <- c(lines, paste0("  ard_categorical(variables = c(", cat_str, ")),"))
+  }
+
+  lines <- c(lines, paste0("  .by = ", trt_var, ","))
+  lines <- c(lines, paste0("  .overall = ", if (include_total) "TRUE" else "FALSE", ","))
+  lines <- c(lines, "  .total_n = TRUE")
+  lines <- c(lines, ")", "")
+
+  # Combined groups: pool arms and bind
+  for (cg in combined_groups) {
+    arms_str <- paste0('"', cg$arms, '"', collapse = ", ")
     lines <- c(lines,
-      "# --- Combine ARDs ---",
-      paste0("tbl_data <- bind_rows(", paste(ard_names, collapse = ", "), ")"),
+      paste0("# Combined group: ", cg$label),
+      paste0("pooled <- adsl |> filter(", trt_var, " %in% c(", arms_str, ")) |>"),
+      paste0('  mutate(', trt_var, ' = "', cg$label, '")'),
       ""
     )
-  } else {
-    # The per-variable ARDs above were computed on the full dataset.
-    # For group variable support, we need to recompute per group level.
-    # Strategy: use the same code structure but wrap in a by-level function.
+
+    lines <- c(lines, "cg_ard <- ard_stack(")
+    lines <- c(lines, "  pooled,")
+    if (length(cont_vars) > 0) {
+      lines <- c(lines, paste0("  ard_continuous(variables = c(", cont_str, ")),"))
+    }
+    if (length(cat_vars) > 0) {
+      lines <- c(lines, paste0("  ard_categorical(variables = c(", cat_str, ")),"))
+    }
+    lines <- c(lines, paste0("  .by = ", trt_var, ","))
+    lines <- c(lines, "  .total_n = TRUE")
+    lines <- c(lines, ")")
+    lines <- c(lines, "raw_ard <- bind_ard(raw_ard, cg_ard, .distinct = TRUE)", "")
+  }
+
+  # Build statistic format list for fr_wide_ard
+  stat_lines <- codegen_build_stat_format(var_configs, analysis_vars, cont_vars, cat_vars)
+  lines <- c(lines, stat_lines, "")
+
+  # Build decimals list
+  dec_lines <- codegen_build_decimals(var_configs, cont_vars, cat_vars)
+  if (length(dec_lines) > 0) {
+    lines <- c(lines, dec_lines, "")
+  }
+
+  # fr_wide_ard call
+  overall_str <- if (include_total) paste0('"', total_label, '"') else "NULL"
+  lines <- c(lines, "tbl_data <- arframe::fr_wide_ard(raw_ard,")
+  lines <- c(lines, "  statistic = stat_fmt,")
+  lines <- c(lines, paste0("  column = \"", trt_var, "\","))
+  lines <- c(lines, paste0("  overall = ", overall_str))
+  if (length(dec_lines) > 0) {
+    # Replace the closing paren line to add decimals
+    lines[length(lines)] <- paste0(lines[length(lines)], ",")
+    lines <- c(lines, "  decimals = dec_map")
+  }
+  lines <- c(lines, ")", "")
+
+  # Add var_label and var_type meta columns for downstream formatting
+  lines <- c(lines,
+    "# Add meta columns for formatting",
+    "tbl_data$var_label <- NA_character_",
+    "tbl_data$var_type <- NA_character_"
+  )
+  for (v in analysis_vars) {
+    cfg <- var_configs[[v]] %||% list()
+    vtype <- cfg$type %||% "categorical"
+    var_label <- gsub('"', '\\\\"', cfg$label %||% v, fixed = TRUE)
+    lines <- c(lines,
+      paste0('tbl_data$var_label[tbl_data$variable == "', v, '"] <- "', var_label, '"'),
+      paste0('tbl_data$var_type[tbl_data$variable == "', v, '"] <- "', vtype, '"'))
+  }
+  lines <- c(lines, "")
+
+  # Reorder columns: meta first, then treatment columns
+  lines <- c(lines,
+    "# Reorder columns",
+    'meta_cols <- c("variable", "var_label", "var_type", "stat_label")',
+    "tbl_data <- tbl_data[, c(meta_cols, setdiff(names(tbl_data), meta_cols))]",
+    ""
+  )
+
+  # BY variable: wrap the whole pipeline in a loop
+
+  if (has_by) {
     by_levels <- grouping$by_levels
-    by_lvls_str <- paste0('"', by_levels, '"', collapse = ", ")
 
+    # BY variable: wrap the full ard_stack in a lapply over by_levels
+    lines <- c("# --- ARD Construction (by group: ", by_var, ") ---", "")
+
+    # Pre-factor categoricals
+    for (v in cat_vars) {
+      cfg <- var_configs[[v]] %||% list()
+      if (!is.null(cfg$levels)) {
+        lvls_str <- paste0('"', cfg$levels, '"', collapse = ", ")
+        lines <- c(lines,
+          paste0("adsl$", v, " <- factor(adsl$", v, ", levels = c(", lvls_str, "))"))
+      }
+    }
+    if (length(cat_vars) > 0 && any(vapply(cat_vars, function(v) !is.null(var_configs[[v]]$levels), logical(1)))) {
+      lines <- c(lines, "")
+    }
+
+    lines <- c(lines, stat_lines, "")
+    if (length(dec_lines) > 0) {
+      lines <- c(lines, dec_lines, "")
+    }
+
+    by_lvls_str <- paste0('"', by_levels, '"', collapse = ", ")
     lines <- c(lines,
-      "# --- Combine ARDs by group variable ---",
-      paste0('by_levels <- c(', by_lvls_str, ')'),
+      paste0("by_levels <- c(", by_lvls_str, ")"),
       "",
-      "# Note: The ARDs above were computed on full data.",
-      "# For by-group analysis, we add group_value to indicate the subgroup.",
-      "# Each by-level gets the same variables re-summarised on the subset.",
-      paste0('build_ard_for_group <- function(sub_data, groups, N_vec, lvls_list) {'),
-      "  ard_list <- list()",
+      "tbl_data <- lapply(by_levels, function(bv) {",
+      paste0("  sub <- adsl[adsl$", by_var, " == bv, , drop = FALSE]"),
+      "",
+      "  raw_ard <- ard_stack(",
+      "    sub,"
+    )
+    if (length(cont_vars) > 0) {
+      lines <- c(lines, paste0("    ard_continuous(variables = c(", paste0(cont_vars, collapse = ", "), ")),"))
+    }
+    if (length(cat_vars) > 0) {
+      lines <- c(lines, paste0("    ard_categorical(variables = c(", paste0(cat_vars, collapse = ", "), ")),"))
+    }
+    lines <- c(lines,
+      paste0("    .by = ", trt_var, ","),
+      paste0("    .overall = ", if (include_total) "TRUE" else "FALSE", ","),
+      "    .total_n = TRUE",
+      "  )",
       ""
     )
 
-    # Re-emit simplified per-variable blocks inside the function
-    for (var in analysis_vars) {
-      cfg <- var_configs[[var]] %||% list()
-      var_type <- cfg$type %||% "categorical"
-      var_label <- cfg$label %||% var
-
-      if (var_type == "continuous") {
-        stat_list <- cfg$stats %||% c("n", "mean_sd", "median", "q1_q3", "min_max")
-        stat_labels <- vapply(stat_list, function(s) STAT_LABELS[[s]] %||% s, character(1))
-
-        lines <- c(lines,
-          paste0("  # ", var, " (continuous)"),
-          paste0("  ard_list[[\"", var, "\"]] <- {"),
-          paste0("    x_by_grp <- lapply(groups, function(grp) {"),
-          paste0("      x <- if (grp == \"", total_label, "\") sub_data$", var),
-          paste0("           else sub_data$", var, "[sub_data$", trt_var, " == grp]"),
-          "      x <- na.omit(x); n <- length(x)",
-          paste0("      tibble(stat = c(", paste0('"', stat_list, '"', collapse = ", "), "),"),
-          "             value = c("
-        )
-
-        # Build value expressions for each stat
-        val_exprs <- vapply(stat_list, function(s) {
-          switch(s,
-            n = "as.character(n)",
-            mean_sd = paste0('if (n>0) paste0(formatC(mean(x),format="f",digits=',
-              get_stat_dec(cfg,"mean",1), ')," (",formatC(sd(x),format="f",digits=',
-              get_stat_dec(cfg,"sd",2), '),")") else ""'),
-            median = paste0('if (n>0) formatC(median(x),format="f",digits=', get_stat_dec(cfg,"median",1), ') else ""'),
-            q1_q3 = paste0('if (n>0) paste0(formatC(quantile(x,0.25),format="f",digits=', get_stat_dec(cfg,"q1",1),
-              '),", ",formatC(quantile(x,0.75),format="f",digits=', get_stat_dec(cfg,"q3",1), ')) else ""'),
-            min_max = paste0('if (n>0) paste0(formatC(min(x),format="f",digits=', get_stat_dec(cfg,"min",0),
-              '),", ",formatC(max(x),format="f",digits=', get_stat_dec(cfg,"max",0), ')) else ""'),
-            "as.character(n)"
-          )
-        }, character(1))
-        lines <- c(lines, paste0("               ", val_exprs, ",")[seq_along(val_exprs)])
-        # Fix trailing comma
-        last_idx <- length(lines)
-        lines[last_idx] <- sub(",$", "", lines[last_idx])
-        lines <- c(lines,
-          "      )) |> pivot_longer(-stat, names_to = \"dummy\", values_to = grp) |> select(-dummy)",
-          "    })",
-          "    wide <- x_by_grp[[1]][, c(\"stat\")]",
-          "    for (i in seq_along(groups)) wide[[groups[i]]] <- x_by_grp[[i]][[groups[i]]]",
-          paste0("    wide |> mutate(variable = \"", var, "\", var_label = \"", gsub('"', '\\\\"', var_label),
-            "\", var_type = \"continuous\","),
-          paste0("      stat_label = paste0(\"  \", c(", paste0('"', stat_labels, '"', collapse=", "), "))) |>"),
-          "      select(variable, var_label, var_type, stat_label, all_of(groups))",
-          "  }",
-          ""
-        )
-      } else {
-        # Categorical — simpler
-        dec <- cfg$pct_dec %||% 1
-        show_n <- cfg$show_n %||% TRUE
-        lvls_str <- if (!is.null(cfg$levels)) {
-          paste0("c(", paste0('"', cfg$levels, '"', collapse = ", "), ")")
-        } else {
-          paste0("lvls_list[[\"", var, "\"]]")
-        }
-
-        lines <- c(lines,
-          paste0("  # ", var, " (categorical)"),
-          paste0("  ard_list[[\"", var, "\"]] <- {"),
-          paste0("    lvls <- ", lvls_str),
-          "    rows <- lapply(groups, function(grp) {",
-          paste0("      x <- if (grp == \"", total_label, "\") sub_data$", var),
-          paste0("           else sub_data$", var, "[sub_data$", trt_var, " == grp]"),
-          "      N <- N_vec[grp]"
-        )
-
-        if (isTRUE(show_n)) {
-          lines <- c(lines,
-            "      n_row <- tibble(stat_label = \"  n\", !!grp := as.character(sum(!is.na(x))))")
-        }
-
-        lines <- c(lines,
-          "      vals <- vapply(lvls, function(lev) {",
-          "        n <- sum(x == lev, na.rm = TRUE)",
-          paste0("        fmt_npct(n, N, dec = ", dec, ")"),
-          "      }, character(1))",
-          if (isTRUE(show_n))
-            "      bind_rows(n_row, tibble(stat_label = paste0(\"  \", lvls), !!grp := vals))"
-          else
-            "      tibble(stat_label = paste0(\"  \", lvls), !!grp := vals)",
-          "    })",
-          "    wide <- rows[[1]]",
-          "    if (length(rows) > 1) for (i in 2:length(rows)) wide <- left_join(wide, rows[[i]], by = \"stat_label\")",
-          paste0("    wide |> mutate(variable = \"", var, "\", var_label = \"", gsub('"', '\\\\"', var_label), "\", var_type = \"categorical\") |>"),
-          "      select(variable, var_label, var_type, stat_label, all_of(groups))",
-          "  }",
-          ""
-        )
+    # Combined groups inside the loop
+    for (cg in combined_groups) {
+      arms_str <- paste0('"', cg$arms, '"', collapse = ", ")
+      lines <- c(lines,
+        paste0("  pooled <- sub |> filter(", trt_var, " %in% c(", arms_str, ")) |>"),
+        paste0('    mutate(', trt_var, ' = "', cg$label, '")'),
+        "  cg_ard <- ard_stack(",
+        "    pooled,"
+      )
+      if (length(cont_vars) > 0) {
+        lines <- c(lines, paste0("    ard_continuous(variables = c(", paste0(cont_vars, collapse = ", "), ")),"))
       }
+      if (length(cat_vars) > 0) {
+        lines <- c(lines, paste0("    ard_categorical(variables = c(", paste0(cat_vars, collapse = ", "), ")),"))
+      }
+      lines <- c(lines,
+        paste0("    .by = ", trt_var, ","),
+        "    .total_n = TRUE",
+        "  )",
+        "  raw_ard <- bind_ard(raw_ard, cg_ard, .distinct = TRUE)",
+        ""
+      )
     }
 
     lines <- c(lines,
-      "  bind_rows(ard_list)",
-      "}",
-      "",
-      "# Build ARD per group level",
-      "tbl_data <- lapply(by_levels, function(bv) {",
-      paste0("  sub <- adsl[adsl$", by_var, " == bv, ]"),
-      paste0("  sub_n <- sub |> count(", trt_var, ", name = \"N\")"),
-      if (include_total) paste0("  sub_n <- bind_rows(sub_n, tibble(", trt_var, " = \"", total_label, "\", N = nrow(sub)))"),
-      paste0("  N_vec <- setNames(sub_n$N, sub_n$", trt_var, ")"),
-      paste0("  groups <- c(", groups_str, ")"),
-      "  # Categorical level lists for this subset",
-      "  lvls_list <- list()"
+      "  wide <- arframe::fr_wide_ard(raw_ard,",
+      "    statistic = stat_fmt,",
+      paste0("    column = \"", trt_var, "\","),
+      paste0("    overall = ", overall_str)
     )
+    if (length(dec_lines) > 0) {
+      lines[length(lines)] <- paste0(lines[length(lines)], ",")
+      lines <- c(lines, "    decimals = dec_map")
+    }
+    lines <- c(lines, "  )", "")
 
-    # Add level detection for categorical vars without explicit levels
-    for (var in analysis_vars) {
-      cfg <- var_configs[[var]] %||% list()
-      if ((cfg$type %||% "categorical") == "categorical" && is.null(cfg$levels)) {
-        lines <- c(lines, paste0("  lvls_list[[\"", var, "\"]] <- sort(unique(na.omit(sub$", var, ")))"))
-      }
+    # Add meta columns inside the loop
+    lines <- c(lines,
+      "  wide$var_label <- NA_character_",
+      "  wide$var_type <- NA_character_"
+    )
+    for (v in analysis_vars) {
+      cfg <- var_configs[[v]] %||% list()
+      vtype <- cfg$type %||% "categorical"
+      var_label <- gsub('"', '\\\\"', cfg$label %||% v, fixed = TRUE)
+      lines <- c(lines,
+        paste0('  wide$var_label[wide$variable == "', v, '"] <- "', var_label, '"'),
+        paste0('  wide$var_type[wide$variable == "', v, '"] <- "', vtype, '"'))
     }
 
     lines <- c(lines,
-      "  ard <- build_ard_for_group(sub, groups, N_vec, lvls_list)",
-      "  ard$group_value <- bv",
-      "  ard",
+      "  wide$group_value <- bv",
+      "  wide",
       "}) |> bind_rows()",
-      "tbl_data <- tbl_data |> select(group_value, everything())",
+      "",
+      "# Reorder columns",
+      'meta_cols <- c("group_value", "variable", "var_label", "var_type", "stat_label")',
+      "tbl_data <- tbl_data[, c(meta_cols, setdiff(names(tbl_data), meta_cols))]",
       ""
     )
   }
 
   paste(lines, collapse = "\n")
+}
+
+# ── Codegen helpers for statistic format and decimals ──
+
+codegen_build_stat_format <- function(var_configs, analysis_vars, cont_vars, cat_vars) {
+  # Use shared builder to get the runtime list, then serialize to code
+  fmt <- build_stat_format_from_config(var_configs, analysis_vars)
+  var_entries <- character(0)
+
+  for (v in analysis_vars) {
+    val <- fmt[[v]]
+    if (is.character(val) && length(val) > 1 && !is.null(names(val))) {
+      # Named vector (continuous stats)
+      parts <- vapply(names(val), function(lbl) {
+        paste0('    `', lbl, '` = "', val[[lbl]], '"')
+      }, character(1))
+      entry <- paste0("  ", v, " = c(\n",
+        paste(parts, collapse = ",\n"),
+        "\n  )")
+      var_entries <- c(var_entries, entry)
+    } else {
+      # Single string (categorical)
+      var_entries <- c(var_entries, paste0('  ', v, ' = "', val, '"'))
+    }
+  }
+
+  c(
+    "stat_fmt <- list(",
+    paste(var_entries, collapse = ",\n"),
+    ")"
+  )
+}
+
+codegen_build_decimals <- function(var_configs, cont_vars, cat_vars) {
+  # Use shared builder to get the runtime list, then serialize to code
+  all_vars <- c(cont_vars, cat_vars)
+  dec <- build_decimals_from_config(var_configs, all_vars)
+
+  if (length(dec) == 0) return(character(0))
+
+  entries <- vapply(names(dec), function(v) {
+    parts <- vapply(names(dec[[v]]), function(nm) {
+      paste0(nm, " = ", dec[[v]][[nm]])
+    }, character(1))
+    paste0("  ", v, " = list(", paste(parts, collapse = ", "), ")")
+  }, character(1))
+
+  c(
+    "dec_map <- list(",
+    paste(entries, collapse = ",\n"),
+    ")"
+  )
 }
 
 fct_codegen_format <- function(ir, ard_cols = NULL) {
@@ -524,7 +389,7 @@ fct_codegen_format <- function(ir, ard_cols = NULL) {
     if (!is.null(pc$align) && nzchar(pc$align)) fc_args <- c(fc_args, paste0('align = "', pc$align, '"'))
     if (!is.null(ha)) fc_args <- c(fc_args, paste0('header_align = "', ha, '"'))
     if (length(fc_args) > 0) {
-      cn_safe <- if (grepl(" ", cn)) paste0("`", cn, "`") else cn
+      cn_safe <- if (grepl(" ", cn, fixed = TRUE)) paste0("`", cn, "`") else cn
       col_spec_lines <- c(col_spec_lines,
         paste0("    ", cn_safe, " = fr_col(", paste(fc_args, collapse = ", "), ")"))
     }
@@ -546,7 +411,7 @@ fct_codegen_format <- function(ir, ard_cols = NULL) {
   if (!is.null(gl$n_format)) {
     # Keep literal \n in generated code
     fmt_str <- gl$n_format
-    col_args <- c(col_args, paste0('.n_format = "', gsub('"', '\\\\"', fmt_str), '"'))
+    col_args <- c(col_args, paste0('.n_format = "', gsub('"', '\\\\"', fmt_str, fixed = TRUE), '"'))
   }
 
   if (length(col_spec_lines) > 0 || length(col_args) > 0) {
@@ -563,7 +428,7 @@ fct_codegen_format <- function(ir, ard_cols = NULL) {
   title_defaults <- ir$titles$defaults
   if (length(titles) > 0) {
     title_items <- vapply(titles, function(t) {
-      text <- gsub('"', '\\\\"', t$text %||% as.character(t))
+      text <- gsub('"', '\\\\"', t$text %||% as.character(t), fixed = TRUE)
       bold <- isTRUE(t$bold)
       align <- t$align %||% "center"
       if (bold || align != "center") {
@@ -594,7 +459,7 @@ fct_codegen_format <- function(ir, ard_cols = NULL) {
   fn_texts <- list()
   if (length(fn_items) > 0) {
     fn_texts <- vapply(fn_items, function(f) {
-      paste0('    "', gsub('"', '\\\\"', f$text %||% as.character(f)), '"')
+      paste0('    "', gsub('"', '\\\\"', f$text %||% as.character(f), fixed = TRUE), '"')
     }, character(1))
   }
   if (length(fn_texts) > 0) {

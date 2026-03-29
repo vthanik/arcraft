@@ -34,8 +34,23 @@ app_ui <- function() {
 
       htmltools::tags$div(class = "ar-topbar__spacer"),
 
+      # Output name + dirty indicator
+      shiny::uiOutput("output_name_display", inline = TRUE),
+
       # Actions
       htmltools::tags$div(class = "ar-topbar__actions",
+        shiny::actionButton("new_output_btn", label = NULL,
+          class = "ar-btn-outline", title = "New Output",
+          icon = shiny::icon("plus")
+        ),
+        shiny::actionButton("open_outputs_btn", label = NULL,
+          class = "ar-btn-outline", title = "Open Saved (Ctrl+O)",
+          icon = shiny::icon("folder-open")
+        ),
+        shiny::actionButton("save_output_btn", label = NULL,
+          class = "ar-btn-outline", title = "Save (Ctrl+S)",
+          icon = shiny::icon("floppy-disk")
+        ),
         shiny::actionButton("preview_btn",
           label = htmltools::tagList(shiny::icon("play"), "Generate Preview"),
           class = "ar-btn-primary"
@@ -141,7 +156,7 @@ app_ui <- function() {
                 # N counts — separated from treatment config
                 htmltools::tags$div(class = "ar-section-divider"),
                 htmltools::tags$div(class = "ar-form-label", "N COUNTS"),
-                n_counts_ui("n_counts")
+                mod_n_counts_ui("n_counts")
               ),
               bslib::accordion_panel("STATISTICS", value = "STATISTICS",
                 mod_analysis_vars_ui("analysis_vars")
@@ -185,6 +200,8 @@ app_ui <- function() {
 
       # Canvas — navset_hidden switches content, navset_tab for inner tabs
       htmltools::tags$div(class = "ar-canvas",
+        # Saved outputs overlay (shows on top of any canvas panel)
+        shiny::uiOutput("saved_grid_overlay"),
         bslib::navset_hidden(id = "canvas_panels",
 
           # DATA canvas — direct viewer, no tabs

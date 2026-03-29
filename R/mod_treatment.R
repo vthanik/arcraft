@@ -88,13 +88,11 @@ mod_treatment_server <- function(id, store, grp) {
       # Apply population filter
       pop <- store$pipeline_filters$pop_flag
       d <- apply_pop_filter(d, pop)
-      # Apply data filter expression
+      # Apply data filter expression (safe evaluation — data mask only)
       expr <- store$pipeline_filters$data_filter
       if (!is.null(expr) && nzchar(expr)) {
-        tryCatch({
-          mask <- eval(parse(text = expr), envir = d)
-          if (is.logical(mask)) d <- d[mask & !is.na(mask), ]
-        }, error = function(e) NULL)
+        mask <- safe_eval_filter(expr, d)
+        if (is.logical(mask)) d <- d[mask & !is.na(mask), ]
       }
       d
     })
@@ -106,6 +104,7 @@ mod_treatment_server <- function(id, store, grp) {
       req(d)
       if (input$trt_var %in% names(d)) {
         new_lvls <- sort(unique(d[[input$trt_var]]))
+        new_lvls <- new_lvls[!is.na(new_lvls) & nzchar(new_lvls)]
         prev_var <- grp$trt_var
         grp$trt_var <- input$trt_var
         if (is.null(prev_var) || prev_var != input$trt_var ||

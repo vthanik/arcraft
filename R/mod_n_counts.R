@@ -1,14 +1,14 @@
 # Module: N Counts — Foldable treatment + group variable counts
 # Both sections are collapsible <details> disclosures.
 
-n_counts_ui <- function(id) {
+mod_n_counts_ui <- function(id) {
   ns <- shiny::NS(id)
   htmltools::tags$div(class = "ar-n-counts-wrap",
     shiny::uiOutput(ns("n_counts_display"))
   )
 }
 
-n_counts_server <- function(id, store, grp) {
+mod_n_counts_server <- function(id, store, grp) {
   shiny::moduleServer(id, function(input, output, session) {
 
     output$n_counts_display <- shiny::renderUI({

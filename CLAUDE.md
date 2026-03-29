@@ -35,6 +35,21 @@ Quality gate: `devtools::check()`, end-to-end test, generated script runs standa
 - Progressive disclosure — accordion panels, expandable cards, empty states with CTAs
 - See `.local/design/DESIGN-SPEC.md` for full pixel-level specification
 
+## Verify After Every Change (MUST FOLLOW)
+
+After ANY bug fix, feature, or code change:
+1. Run `Rscript -e "devtools::load_all('.'); app <- shiny::shinyApp(app_ui(), app_server); cat('OK')"` to verify the app creates without error
+2. If UI was changed, run the app (`shiny::runApp('.')`) and manually test the affected flow
+3. Confirm to the user that verification passed before marking done
+
+## Reference TFL Materials
+
+Regulatory TFL shell specs are at `../references/TFL_Materials/`:
+- `FDA-2022-N-1961-0046_attachment_1.pdf` — FDA Standard Safety Tables (60+ table types)
+- `Standard Safety TFLs.pdf` — Safety TFL shells by module (AE, lab, vitals, AESI)
+- `Standard Efficacy Tables.pdf` — Efficacy endpoint table shells
+- `Global Clinical Study Report DPP.pdf` — CSR data presentation plan template
+
 ## Commands
 
 ```bash
@@ -267,7 +282,7 @@ All non-R-package files live in `.local/` (gitignored). Any temp files, scratch 
   archive/              # Full pre-rebuild snapshot of all 69 files
   backup_templates/R/   # 34 files for non-demographics templates (AE, lab, TTE, figures, listings)
   design/               # DESIGN.md, DESIGN-SPEC.md, LAYOUT-ALTERNATIVES.md
-  plans/                # PLAN.md, ARFRAME-PLAN.txt
+  plans/                # PLAN.md, ARFRAME-PLAN.txt, PLAN-SAVE-CARDS.md
   docs/                 # CSS-BASICS.md, CSS-NESTING-GUIDE.md, DATA-WRANGLER-UX-REFERENCE.md
     notes/              # Book notes, research notes, viewer spec
     references/         # CDISC, CSR formats, GSK macros, standard TFL specs

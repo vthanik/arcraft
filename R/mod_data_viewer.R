@@ -134,15 +134,23 @@ mod_data_viewer_server <- function(id, store) {
       col_current_page(max(1L, min(total, pg)))
     })
 
-    output$col_pager <- shiny::renderUI({
+    # Debounced pager to avoid double-render race condition when dataset changes
+    col_pager_data <- shiny::reactive({
       ds <- store$active_ds
       shiny::req(ds)
       attrs <- get_col_attrs(ds)
       shiny::req(attrs)
-      n <- nrow(attrs)
+      pg <- col_current_page()
+      list(attrs = attrs, pg = pg)
+    }) |> shiny::debounce(100)
+
+    output$col_pager <- shiny::renderUI({
+      pd <- col_pager_data()
+      shiny::req(pd)
+      n <- nrow(pd$attrs)
       total_pages <- ceiling(n / col_page_size)
       if (total_pages <= 1L) return(NULL)
-      pg <- col_current_page()
+      pg <- pd$pg
 
       htmltools::tags$div(class = "ar-flex ar-items-center ar-gap-8 ar-py-4 ar-px-8",
         htmltools::tags$button(

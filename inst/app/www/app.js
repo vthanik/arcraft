@@ -57,8 +57,12 @@ document.addEventListener('keydown', function(e) {
   }
   /* Ctrl+Enter: generate preview */
   if (e.ctrlKey && e.key === 'Enter') { e.preventDefault(); var btn = document.getElementById('preview_btn'); if (btn) btn.click(); }
-  /* Ctrl+S: export RTF */
-  if (e.ctrlKey && !e.shiftKey && e.key === 's') { e.preventDefault(); var dl = document.getElementById('export_rtf'); if (dl) dl.click(); }
+  /* Ctrl+S: save output */
+  if (e.ctrlKey && !e.shiftKey && e.key === 's') { e.preventDefault(); var btn = document.getElementById('save_output_btn'); if (btn) btn.click(); }
+  /* Ctrl+O: open saved outputs */
+  if (e.ctrlKey && !e.shiftKey && e.key === 'o') { e.preventDefault(); var btn = document.getElementById('open_outputs_btn'); if (btn) btn.click(); }
+  /* Ctrl+E: export RTF */
+  if (e.ctrlKey && !e.shiftKey && e.key === 'e') { e.preventDefault(); var dl = document.getElementById('export_rtf'); if (dl) dl.click(); }
   /* Ctrl+Shift+S: download R script */
   if (e.ctrlKey && e.shiftKey && e.key === 'S') { e.preventDefault(); var dl = document.getElementById('dl_script'); if (dl) dl.click(); }
   /* Escape: collapse all open cards */

@@ -16,13 +16,26 @@ app_server <- function(input, output, session) {
     fig_configs = list(),
     fmt = normalize_fmt(list()),
     ard = NULL,
+    raw_ard = NULL,
     figure = NULL,
     listing = NULL,
     code = "",
     pipeline_state = list(
       data = FALSE, template = FALSE,
       analysis = FALSE, format = FALSE, output = FALSE
-    )
+    ),
+    # Save/restore state
+    show_saved_grid = FALSE,
+    saved_outputs = data.frame(
+      table_id = character(0), template = character(0),
+      dataset = character(0), created = character(0),
+      modified = character(0), dir_path = character(0),
+      stringsAsFactors = FALSE
+    ),
+    current_output_id = NULL,
+    current_output_dir = NULL,
+    output_dir = NULL,
+    dirty = FALSE
   )
 
   # ── 1b. Independent Grouping ReactiveValues ──
@@ -53,7 +66,7 @@ app_server <- function(input, output, session) {
   page_output_draft <- mod_page_output_server("page_output", store)
   styles_draft <- mod_styles_server("styles", store)
 
-  n_counts_server("n_counts", store, grp)
+  mod_n_counts_server("n_counts", store, grp)
   mod_validation_server("validation", store, grp)
   mod_code_server("code", store)
 
@@ -87,16 +100,16 @@ app_server <- function(input, output, session) {
 
   # ── 2b. Preset Handlers ──
   shiny::observeEvent(input$fmt_preset_fda, {
-    apply_fmt_preset(store, "fda")
+    store$fmt <- apply_fmt_preset(shiny::isolate(store$fmt), "fda")
   })
   shiny::observeEvent(input$fmt_preset_booktabs, {
-    apply_fmt_preset(store, "booktabs")
+    store$fmt <- apply_fmt_preset(shiny::isolate(store$fmt), "booktabs")
   })
   shiny::observeEvent(input$fmt_preset_minimal, {
-    apply_fmt_preset(store, "minimal")
+    store$fmt <- apply_fmt_preset(shiny::isolate(store$fmt), "minimal")
   })
   shiny::observeEvent(input$fmt_preset_company, {
-    apply_fmt_preset(store, "company")
+    store$fmt <- apply_fmt_preset(shiny::isolate(store$fmt), "company")
   })
 
   # ── 2b. Template Info Display ──
@@ -217,6 +230,7 @@ app_server <- function(input, output, session) {
         titles_draft(), cols_draft(), header_spans_draft(),
         rows_draft(), page_output_draft(), styles_draft()
       )
+      store$dirty <- TRUE
 
       template <- store$template
       output_type <- fct_template_output_type(template)
@@ -256,6 +270,7 @@ app_server <- function(input, output, session) {
                                       added_levels = store$added_levels,
                                       combined_groups = grp_list$combined_groups,
                                       var_labels = store$var_labels)
+        store$raw_ard <- attr(store$ard, "raw_ard")
         store$figure <- NULL
         store$listing <- NULL
       }
@@ -306,6 +321,7 @@ app_server <- function(input, output, session) {
       store$pipeline_state$analysis <- TRUE
       store$pipeline_state$format <- TRUE
       store$pipeline_state$output <- TRUE
+      store$show_saved_grid <- FALSE
 
       session$sendCustomMessage("ar_toast",
         list(message = "Preview generated", type = "success"))
@@ -617,4 +633,147 @@ app_server <- function(input, output, session) {
     content = function(file) export_content(file, "html"))
   output$dl_script_side <- shiny::downloadHandler(
     filename = script_filename, content = script_content)
+
+  # ── 13. Save/Load Workflow ──
+  # Logic extracted to fct_save_workflow.R; observers stay here (non-namespaced inputs).
+
+  # Mark dirty on ARD/fmt changes
+  shiny::observeEvent(store$ard, { store$dirty <- TRUE }, ignoreInit = TRUE)
+
+  # ── Startup: load prefs or show folder setup ──
+  startup_done <- shiny::reactiveVal(FALSE)
+  shiny::observe({
+    if (startup_done()) return()
+    startup_done(TRUE)
+    load_startup_prefs(store)
+  })
+
+  # Show folder setup modal on first click if no prefs
+  shiny::observeEvent(input$change_output_dir, {
+    shiny::showModal(shiny::modalDialog(
+      title = "Output Directory",
+      htmltools::tags$p(class = "ar-text-sm",
+        "Choose where arbuilder saves your outputs (config.yaml, ard.parquet, script.R)."
+      ),
+      shiny::textInput("new_output_dir", "Directory Path",
+        value = store$output_dir %||% file.path(getwd(), ".local", "output"),
+        width = "100%",
+        placeholder = "/path/to/your/outputs"),
+      footer = htmltools::tagList(
+        shiny::modalButton("Cancel"),
+        shiny::actionButton("confirm_output_dir", "Set Directory",
+          class = "btn-primary")
+      ),
+      easyClose = TRUE
+    ))
+  })
+
+  shiny::observeEvent(input$confirm_output_dir, {
+    shiny::removeModal()
+    new_dir <- trimws(input$new_output_dir)
+    if (!nzchar(new_dir)) return()
+
+    if (!dir.exists(new_dir)) {
+      tryCatch(
+        dir.create(new_dir, recursive = TRUE),
+        error = function(e) {
+          session$sendCustomMessage("ar_toast",
+            list(message = paste0("Cannot create: ", e$message), type = "error"))
+          return()
+        }
+      )
+    }
+
+    store$output_dir <- new_dir
+    dir.create(".local", showWarnings = FALSE)
+    tryCatch(
+      yaml::write_yaml(list(output_dir = new_dir), file.path(getwd(), ".local", "arbuilder_prefs.yaml")),
+      error = function(e) NULL
+    )
+
+    store$saved_outputs <- scan_outputs(new_dir)
+    session$sendCustomMessage("ar_toast",
+      list(message = paste0("Output directory: ", new_dir), type = "success"))
+  })
+
+  # Topbar output name + dirty indicator
+  output$output_name_display <- shiny::renderUI({
+    name <- store$current_output_id %||% "Untitled"
+    dirty <- isTRUE(store$dirty)
+    htmltools::tags$span(
+      class = "ar-topbar__output-name",
+      name,
+      if (dirty) htmltools::tags$span(class = "ar-dirty-dot")
+    )
+  })
+
+  # Saved outputs overlay — delegates to render_saved_grid()
+  output$saved_grid_overlay <- shiny::renderUI({
+    render_saved_grid(store)
+  })
+
+  # Close saved grid
+  shiny::observeEvent(input$close_saved_grid, {
+    store$show_saved_grid <- FALSE
+  })
+
+  # Save button — delegates to save_current_output()
+  shiny::observeEvent(input$save_output_btn, {
+    tryCatch({
+      result <- save_current_output(store, grp)
+      msg_type <- if (result$success) "success" else "error"
+      if (!result$success && is.null(store$ard)) msg_type <- "warning"
+      session$sendCustomMessage("ar_toast",
+        list(message = result$message, type = msg_type))
+    }, error = function(e) {
+      session$sendCustomMessage("ar_toast",
+        list(message = paste0("Save error: ", e$message), type = "error"))
+    })
+  })
+
+  # Load output — delegates to load_saved_output()
+  shiny::observeEvent(input$load_output, {
+    tryCatch({
+      result <- load_saved_output(input$load_output, store, grp)
+      session$sendCustomMessage("ar_toast",
+        list(message = result$message, type = "success"))
+    }, error = function(e) {
+      session$sendCustomMessage("ar_toast",
+        list(message = paste0("Load failed: ", e$message), type = "error"))
+    })
+  })
+
+  # Open saved outputs grid
+  shiny::observeEvent(input$open_outputs_btn, {
+    store$show_saved_grid <- TRUE
+    if (!is.null(store$output_dir) && dir.exists(store$output_dir))
+      store$saved_outputs <- scan_outputs(store$output_dir)
+  })
+
+  # New Output — delegates to reset_for_new_output()
+  shiny::observeEvent(input$new_output_btn, {
+    reset_for_new_output(store, grp)
+    session$sendCustomMessage("ar_toast",
+      list(message = "Ready for new output", type = "info"))
+  })
+
+  # Delete output
+  shiny::observeEvent(input$delete_output, {
+    dir_path <- input$delete_output
+    table_id <- basename(dir_path)
+
+    if (delete_output(dir_path)) {
+      if (identical(store$current_output_dir, dir_path)) {
+        store$current_output_id <- NULL
+        store$current_output_dir <- NULL
+      }
+      if (!is.null(store$output_dir))
+        store$saved_outputs <- scan_outputs(store$output_dir)
+      session$sendCustomMessage("ar_toast",
+        list(message = paste0("Deleted: ", table_id), type = "info"))
+    } else {
+      session$sendCustomMessage("ar_toast",
+        list(message = "Delete failed", type = "error"))
+    }
+  })
 }
