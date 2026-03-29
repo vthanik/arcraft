@@ -39,25 +39,25 @@ template_registry <- function() {
     ),
     # ── Safety ──
     list(
-      id = "ae_overview",
-      name = "AE Overview",
+      id = "ae_overall",
+      name = "AE Overall Summary",
       category = "Safety",
       icon = "fa-shield-halved",
-      description = "Overall adverse event summary by treatment",
+      description = "Overview of adverse events \u2014 flag counts and severity breakdown",
       adam_required = c("adsl", "adae"),
-      spec_fn = NULL,
-      phase = 2,
+      spec_fn = "spec_ae_overall",
+      phase = 1,
       enabled = TRUE
     ),
     list(
-      id = "ae_soc_pt",
+      id = "ae_socpt",
       name = "AE by SOC/PT",
       category = "Safety",
       icon = "fa-list-tree",
-      description = "Adverse events by system organ class and preferred term",
+      description = "TEAEs by System Organ Class and Preferred Term hierarchy",
       adam_required = c("adsl", "adae"),
-      spec_fn = NULL,
-      phase = 2,
+      spec_fn = "spec_ae_socpt",
+      phase = 1,
       enabled = TRUE
     ),
     list(

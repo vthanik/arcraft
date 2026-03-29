@@ -25,12 +25,13 @@ fct_build_ir <- function(format_cfg, combined_groups = NULL) {
       n_format   = cols_cfg$n_format
     ),
     stub = list(
-      col   = "stat_label",
+      col   = cols_cfg$stub_col %||% "stat_label",
       width = cols_cfg$stub_width,
       align = cols_cfg$stub_align %||% "left"
     ),
     per_col     = cols_cfg$per_col %||% list(),
     meta_hidden = c("variable", "var_label", "var_type", "row_type",
+                    "category", "soc",
                     "timepoint", "baseline_category", "post_category")
   )
 

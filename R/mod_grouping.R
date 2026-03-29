@@ -305,6 +305,8 @@ mod_grouping_server <- function(id, store, grp) {
         # Use the spec function to get original selected vars (not fct_suggest_vars which returns ALL candidates)
         spec_fn <- switch(tmpl,
           demog = spec_demog,
+          ae_overall = spec_ae_overall,
+          ae_socpt = spec_ae_socpt,
           NULL
         )
         if (!is.null(spec_fn)) {

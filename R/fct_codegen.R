@@ -351,8 +351,14 @@ fct_codegen_format <- function(ir, ard_cols = NULL) {
   col_spec_lines <- c()
 
   # Hidden meta columns — always invisible
-  # Only emit for columns that exist in demographics ARD output
-  meta_cols <- intersect(ir$cols$meta_hidden, c("variable", "var_label", "var_type"))
+  # Use ard_cols to determine which meta columns exist, exclude the stub col
+  stub_col <- ir$cols$stub$col %||% "stat_label"
+  if (!is.null(ard_cols)) {
+    meta_cols <- intersect(ir$cols$meta_hidden, ard_cols)
+  } else {
+    meta_cols <- intersect(ir$cols$meta_hidden, c("variable", "var_label", "var_type"))
+  }
+  meta_cols <- setdiff(meta_cols, stub_col)
   for (mc in meta_cols) {
     col_spec_lines <- c(col_spec_lines,
       paste0("    ", mc, " = fr_col(visible = FALSE)")
@@ -657,6 +663,178 @@ fct_codegen_format <- function(ir, ard_cols = NULL) {
 
   # Strip trailing |> from last line and close
   lines[length(lines)] <- gsub(" \\|>$", "", lines[length(lines)])
+
+  paste(lines, collapse = "\n")
+}
+
+# ── AE data loading codegen ──
+fct_codegen_data_ae <- function(data_cfg) {
+  pop_flag <- data_cfg$pop_flag
+  pop_cond <- data_cfg$pop_condition
+  adsl_path <- data_cfg$path %||% "data/adsl.rds"
+  adae_path <- gsub("adsl", "adae", adsl_path, fixed = TRUE)
+
+  lines <- c(
+    "# --- Data ---",
+    paste0('adsl <- readRDS("', adsl_path, '")'),
+    paste0('adae <- readRDS("', adae_path, '")')
+  )
+
+  if (!is.null(pop_flag) && nzchar(pop_flag)) {
+    lines <- c(lines,
+      paste0('adsl <- adsl |> filter(', pop_flag, ' == "Y")'),
+      paste0('adae <- adae |> filter(', pop_flag, ' == "Y")')
+    )
+  } else if (!is.null(pop_cond) && nzchar(pop_cond)) {
+    lines <- c(lines,
+      paste0("adsl <- adsl |> filter(", pop_cond, ")"),
+      paste0("adae <- adae |> filter(", pop_cond, ")")
+    )
+  }
+
+  paste(c(lines, ""), collapse = "\n")
+}
+
+# ── AE Overall codegen ──
+fct_codegen_ard_ae_overall <- function(grouping, var_configs) {
+  trt_var <- grouping$trt_var
+  trt_levels <- grouping$trt_levels
+  include_total <- grouping$include_total %||% TRUE
+  total_label <- grouping$total_label %||% "Total"
+  filter_flag <- var_configs$filter_flag %||% "TRTEMFL"
+
+  lines <- c(
+    "# --- ARD Construction: AE Overall Summary ---",
+    "",
+    "# Build subject-level flag dataset",
+    paste0('adae_teae <- adae |> filter(', filter_flag, ' == "Y")'),
+    "",
+    "ae_subj <- adsl |>",
+    paste0("  select(USUBJID, ", trt_var, ") |>"),
+    "  left_join(",
+    "    adae_teae |>",
+    "      group_by(USUBJID) |>",
+    "      summarise(",
+    '        any_teae    = any(TRTEMFL == "Y", na.rm = TRUE),',
+    '        any_sae     = any(AESER == "Y", na.rm = TRUE),',
+    '        any_death   = any(AESDTH == "Y", na.rm = TRUE),',
+    '        any_related = any(AEREL %in% c("POSSIBLE", "PROBABLE"), na.rm = TRUE),',
+    "        max_sev     = if (all(is.na(AESEV))) NA_character_",
+    '                      else c("MILD", "MODERATE", "SEVERE")[',
+    '                        max(match(AESEV, c("MILD", "MODERATE", "SEVERE")),',
+    "                            na.rm = TRUE)],",
+    "        .groups = \"drop\"",
+    "      ),",
+    '    by = "USUBJID"',
+    "  ) |>",
+    "  mutate(",
+    "    across(c(any_teae, any_sae, any_death, any_related),",
+    "           ~ replace_na(.x, FALSE)),",
+    '    max_sev = factor(max_sev, levels = c("MILD", "MODERATE", "SEVERE"))',
+    "  )",
+    "",
+    "ae_ard <- ard_stack(",
+    "  data = ae_subj,",
+    paste0("  .by = ", trt_var, ","),
+    "  ard_dichotomous(",
+    "    variables = c(any_teae, any_sae, any_death, any_related),",
+    "    value = list(",
+    "      any_teae = TRUE, any_sae = TRUE,",
+    "      any_death = TRUE, any_related = TRUE",
+    "    )",
+    "  ),",
+    '  ard_categorical(variables = "max_sev"),',
+    paste0("  .overall = ", if (include_total) "TRUE" else "FALSE"),
+    ")",
+    "",
+    "tbl_data <- fr_wide_ard(",
+    "  ae_ard,",
+    "  statistic = list(",
+    '    dichotomous = "{n} ({p}%)",',
+    '    categorical = "{n} ({p}%)"',
+    "  ),",
+    paste0('  column = "', trt_var, '",'),
+    "  decimals = c(p = 1),",
+    paste0("  overall = ", if (include_total) paste0('"', total_label, '"') else "NULL", ","),
+    "  label = c(",
+    '    any_teae    = "Any TEAE",',
+    '    any_sae     = "Any Serious AE (SAE)",',
+    '    any_death   = "Any AE Leading to Death",',
+    '    any_related = "Any AE Related to Study Drug",',
+    '    max_sev     = "Maximum Severity"',
+    "  )",
+    ")",
+    "",
+    "# Add category column for grouping",
+    "flag_labels <- c(\"Any TEAE\", \"Any Serious AE (SAE)\",",
+    "                  \"Any AE Leading to Death\", \"Any AE Related to Study Drug\")",
+    "tbl_data$category <- ifelse(",
+    "  tbl_data$variable %in% c(\"any_teae\", \"any_sae\", \"any_death\", \"any_related\") |",
+    "    tbl_data$stat_label %in% flag_labels,",
+    '  "",',
+    '  "Maximum Severity"',
+    ")",
+    ""
+  )
+
+  paste(lines, collapse = "\n")
+}
+
+# ── AE SOC/PT codegen ──
+fct_codegen_ard_ae_socpt <- function(grouping, var_configs) {
+  trt_var <- grouping$trt_var
+  include_total <- grouping$include_total %||% TRUE
+  total_label <- grouping$total_label %||% "Total"
+  filter_flag <- var_configs$filter_flag %||% "TRTEMFL"
+  soc_var <- var_configs$soc_var %||% "AEBODSYS"
+  pt_var <- var_configs$pt_var %||% "AEDECOD"
+  sort_order <- var_configs$sort_order %||% "frequency"
+  overall_label <- var_configs$overall_label %||% "Subjects with at Least One TEAE"
+
+  sort_line <- if (sort_order == "frequency") {
+    '  sort_ard_hierarchical(sort = "descending")'
+  } else if (sort_order == "alpha_freq") {
+    '  sort_ard_hierarchical(sort = "alphanumeric")'
+  } else {
+    NULL
+  }
+
+  lines <- c(
+    "# --- ARD Construction: AE by SOC/PT ---",
+    "",
+    paste0('adae_teae <- adae |> filter(', filter_flag, ' == "Y")'),
+    "",
+    "ae_ard <- ard_stack_hierarchical(",
+    "  data = adae_teae,",
+    paste0("  variables = c(", soc_var, ", ", pt_var, "),"),
+    paste0("  by = ", trt_var, ","),
+    "  denominator = adsl,",
+    "  id = USUBJID,",
+    paste0("  overall = ", if (include_total) "TRUE" else "FALSE", ","),
+    "  over_variables = TRUE",
+    ")"
+  )
+
+  if (!is.null(sort_line)) {
+    # Replace closing paren with pipe
+    lines[length(lines)] <- sub("\\)$", ") |>", lines[length(lines)])
+    lines <- c(lines, sort_line)
+  }
+
+  lines <- c(lines,
+    "",
+    "tbl_data <- fr_wide_ard(",
+    "  ae_ard,",
+    '  statistic = "{n} ({p}%)",',
+    paste0('  column = "', trt_var, '",'),
+    "  decimals = c(p = 1),",
+    paste0("  overall = ", if (include_total) paste0('"', total_label, '"') else "NULL", ","),
+    "  label = c(",
+    paste0('    "..ard_hierarchical_overall.." = "', overall_label, '"'),
+    "  )",
+    ")",
+    ""
+  )
 
   paste(lines, collapse = "\n")
 }
