@@ -10,6 +10,11 @@ spec_ae_overall <- function(data = NULL) {
       analysis_vars = c("any_teae", "any_sae", "any_related", "any_death", "max_sev")
     ),
     var_configs = list(
+      any_teae = list(type = "flag", label = "Any TEAE", pct_dec = 1),
+      any_sae = list(type = "flag", label = "Serious AE (SAE)", pct_dec = 1),
+      any_related = list(type = "flag", label = "Related AE", pct_dec = 1),
+      any_death = list(type = "flag", label = "AE Leading to Death", pct_dec = 1),
+      max_sev = list(type = "flag", label = "Maximum Severity", pct_dec = 1),
       filter_flag = "TRTEMFL",
       flag_vars = c("any_teae", "any_sae", "any_related", "any_death"),
       severity_var = "max_sev"
@@ -69,10 +74,11 @@ spec_ae_socpt <- function(data = NULL) {
       analysis_vars = c("AEBODSYS", "AEDECOD")
     ),
     var_configs = list(
-      soc_var = "AEBODSYS",
-      pt_var = "AEDECOD",
+      AEBODSYS = list(type = "hierarchy", label = "System Organ Class", pct_dec = 1),
+      AEDECOD = list(type = "hierarchy", label = "Preferred Term", pct_dec = 1),
       sort_order = "frequency",
       filter_flag = "TRTEMFL",
+      include_overall = TRUE,
       overall_label = "Subjects with at Least One TEAE"
     ),
     fmt = list(
@@ -102,8 +108,7 @@ spec_ae_socpt <- function(data = NULL) {
         font_family = "Courier New",
         font_size = 9,
         margins = c(1, 1, 1, 1),
-        col_gap = 4L,
-        continuation = "(continued)"
+        col_gap = 4L
       ),
       rules = list(
         hline_preset = "header",

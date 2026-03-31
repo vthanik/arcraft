@@ -473,6 +473,7 @@ body {
   & .ar-var-card__name { font-weight: 600; color: var(--fg); white-space: nowrap; }
   & .ar-var-card__drag { color: var(--fg-muted); font-size: 10px; cursor: grab; flex-shrink: 0; opacity: 0.5; &:hover { opacity: 1; } }
   & .ar-var-card__modified { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); flex-shrink: 0; }
+  & .ar-var-card__remove { margin-left: auto; background: none; border: none; color: var(--fg-muted); font-size: 12px; cursor: pointer; padding: 2px 6px; border-radius: var(--radius-sm); line-height: 1; &:hover { color: var(--danger, #dc3545); background: rgba(220,53,69,0.08); } }
   & .ar-var-card__body { max-height: 0; overflow: hidden; transition: max-height var(--ease-slow) ease-out; }
 
   & .ar-var-card__content {
@@ -688,6 +689,7 @@ body {
   & .ar-trt-row__btns { display: flex; gap: 2px; min-width: 40px; justify-content: flex-end; }
   &.ar-trt-row--added { background: var(--accent-muted); border-radius: var(--radius-sm); padding: 3px 6px; }
   & .ar-trt-row__badge { font-size: 9px; color: var(--accent); font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em; }
+  & .ar-trt-row__count { font-size: 10px; color: var(--fg-muted); text-align: right; font-family: var(--font-mono); min-width: 32px; }
 }
 
 /* --- 32. N Counts --- */
@@ -1098,3 +1100,55 @@ a.btn.ar-btn-primary:hover { background: var(--accent-hover) !important; }
   font-size: 11px; color: var(--fg-2);
   margin-right: 8px; white-space: nowrap;
 }
+
+/* ── 47. Hierarchy Order (drag-to-reorder) ── */
+.ar-hierarchy-order {
+  padding: 8px 12px;
+  margin-bottom: 8px;
+  border-bottom: 1px solid var(--border-light);
+}
+.ar-hierarchy-list {
+  display: flex; flex-direction: column; gap: 4px;
+  margin-top: 6px;
+}
+.ar-hierarchy-item {
+  display: flex; align-items: center; gap: 8px;
+  padding: 6px 10px;
+  border: 1px solid var(--border-light);
+  border-radius: 4px;
+  background: #fff;
+  cursor: grab;
+  &__grip { color: var(--fg-muted); font-size: 12px; cursor: grab; }
+  &__name { font-weight: 500; font-size: 11px; font-family: var(--font-mono); }
+  &__level { font-size: 10px; color: var(--fg-muted); margin-left: auto; }
+}
+.ar-hierarchy-item.sortable-ghost {
+  opacity: 0.4; border-style: dashed;
+}
+
+/* ── 46. Hierarchy Controls (Analysis panel) ── */
+.ar-hier-controls {
+  margin-top: 12px;
+  padding-top: 8px;
+  border-top: 1px solid var(--border-light);
+}
+.ar-generate-ard {
+  margin-top: 12px;
+  padding: 0 2px;
+}
+.ar-btn--full { width: 100%; }
+
+/* ── 47. Loading Overlay ── */
+.ar-loading-overlay {
+  position: absolute; inset: 0; z-index: 100;
+  display: none; align-items: center; justify-content: center;
+  background: rgba(255,255,255,0.7); backdrop-filter: blur(2px);
+}
+.ar-loading-spinner {
+  width: 28px; height: 28px;
+  border: 3px solid var(--border-light);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: ar-spin 0.7s linear infinite;
+}
+@keyframes ar-spin { to { transform: rotate(360deg); } }

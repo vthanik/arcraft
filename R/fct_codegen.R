@@ -780,16 +780,18 @@ fct_codegen_ard_ae_overall <- function(grouping, var_configs) {
   paste(lines, collapse = "\n")
 }
 
-# ── AE SOC/PT codegen ──
-fct_codegen_ard_ae_socpt <- function(grouping, var_configs) {
+# ── AE Hierarchical codegen (dynamic N-level) ──
+fct_codegen_ard_ae_hierarchy <- function(grouping, var_configs) {
   trt_var <- grouping$trt_var
   include_total <- grouping$include_total %||% TRUE
   total_label <- grouping$total_label %||% "Total"
   filter_flag <- var_configs$filter_flag %||% "TRTEMFL"
-  soc_var <- var_configs$soc_var %||% "AEBODSYS"
-  pt_var <- var_configs$pt_var %||% "AEDECOD"
+  hierarchy_vars <- grouping$analysis_vars
   sort_order <- var_configs$sort_order %||% "frequency"
+  include_overall <- var_configs$include_overall %||% TRUE
   overall_label <- var_configs$overall_label %||% "Subjects with at Least One TEAE"
+
+  vars_str <- paste(hierarchy_vars, collapse = ", ")
 
   sort_line <- if (sort_order == "frequency") {
     '  sort_ard_hierarchical(sort = "descending")'
@@ -800,25 +802,34 @@ fct_codegen_ard_ae_socpt <- function(grouping, var_configs) {
   }
 
   lines <- c(
-    "# --- ARD Construction: AE by SOC/PT ---",
+    "# --- ARD Construction: AE Hierarchy ---",
     "",
     paste0('adae_teae <- adae |> filter(', filter_flag, ' == "Y")'),
     "",
     "ae_ard <- ard_stack_hierarchical(",
     "  data = adae_teae,",
-    paste0("  variables = c(", soc_var, ", ", pt_var, "),"),
+    paste0("  variables = c(", vars_str, "),"),
     paste0("  by = ", trt_var, ","),
     "  denominator = adsl,",
     "  id = USUBJID,",
     paste0("  overall = ", if (include_total) "TRUE" else "FALSE", ","),
-    "  over_variables = TRUE",
+    paste0("  over_variables = ", if (include_overall) "TRUE" else "FALSE"),
     ")"
   )
 
   if (!is.null(sort_line)) {
-    # Replace closing paren with pipe
     lines[length(lines)] <- sub("\\)$", ") |>", lines[length(lines)])
     lines <- c(lines, sort_line)
+  }
+
+  label_lines <- if (include_overall) {
+    c(
+      "  label = c(",
+      paste0('    "..ard_hierarchical_overall.." = "', overall_label, '"'),
+      "  )"
+    )
+  } else {
+    NULL
   }
 
   lines <- c(lines,
@@ -828,10 +839,9 @@ fct_codegen_ard_ae_socpt <- function(grouping, var_configs) {
     '  statistic = "{n} ({p}%)",',
     paste0('  column = "', trt_var, '",'),
     "  decimals = c(p = 1),",
-    paste0("  overall = ", if (include_total) paste0('"', total_label, '"') else "NULL", ","),
-    "  label = c(",
-    paste0('    "..ard_hierarchical_overall.." = "', overall_label, '"'),
-    "  )",
+    paste0("  overall = ", if (include_total) paste0('"', total_label, '"') else "NULL",
+      if (!is.null(label_lines)) "," else ""),
+    label_lines,
     ")",
     ""
   )

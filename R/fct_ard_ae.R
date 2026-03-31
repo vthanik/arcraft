@@ -118,19 +118,24 @@ fct_ard_ae_overall <- function(adae, adsl, grouping, var_configs) {
 }
 
 
-# ── AE by SOC/PT ──
+# ── AE Hierarchical (SOC/PT, HLT/PT, or N-level hierarchy) ──
 # Uses cards::ard_stack_hierarchical() for proper hierarchical counting.
-# Output columns: soc, pt, row_type, <trt1>, <trt2>, ..., [Total]
-fct_ard_ae_socpt <- function(adae, adsl, grouping, var_configs) {
+# Hierarchy variables taken from grouping$analysis_vars (user-controlled order).
+# Output columns: <hier_var1>, <hier_var2>, ..., row_type, <trt1>, <trt2>, ..., [Total]
+fct_ard_ae_hierarchy <- function(adae, adsl, grouping, var_configs) {
   trt_var <- grouping$trt_var
   trt_levels <- grouping$trt_levels
   include_total <- grouping$include_total %||% TRUE
   total_label <- grouping$total_label %||% "Total"
   filter_flag <- var_configs$filter_flag %||% "TRTEMFL"
-  soc_var <- var_configs$soc_var %||% "AEBODSYS"
-  pt_var <- var_configs$pt_var %||% "AEDECOD"
+  hierarchy_vars <- grouping$analysis_vars
   sort_order <- var_configs$sort_order %||% "frequency"
+  include_overall <- var_configs$include_overall %||% TRUE
   overall_label <- var_configs$overall_label %||% "Subjects with at Least One TEAE"
+
+  if (length(hierarchy_vars) == 0) {
+    cli::cli_abort("No hierarchy variables selected.", call = NULL)
+  }
 
   # ── Filter ADAE ──
   if (filter_flag %in% names(adae)) {
@@ -141,16 +146,25 @@ fct_ard_ae_socpt <- function(adae, adsl, grouping, var_configs) {
   }
   adsl <- adsl[adsl[[trt_var]] %in% trt_levels, , drop = FALSE]
 
-  # ── Build hierarchical ARD via cards ──
+  # ── Apply per-variable level filtering ──
+  for (v in hierarchy_vars) {
+    cfg <- var_configs[[v]]
+    if (!is.null(cfg$levels) && v %in% names(adae)) {
+      adae <- adae[adae[[v]] %in% cfg$levels, , drop = FALSE]
+    }
+  }
+
+  # ── Build hierarchical ARD via cards (N-level) ──
+  var_syms <- rlang::syms(hierarchy_vars)
   raw_ard <- rlang::eval_tidy(rlang::expr(
     cards::ard_stack_hierarchical(
       data = adae,
-      variables = c(!!rlang::sym(soc_var), !!rlang::sym(pt_var)),
+      variables = c(!!!var_syms),
       by = !!rlang::sym(trt_var),
       denominator = adsl,
       id = USUBJID,
       overall = !!include_total,
-      over_variables = TRUE
+      over_variables = !!include_overall
     )
   ))
 
@@ -160,11 +174,13 @@ fct_ard_ae_socpt <- function(adae, adsl, grouping, var_configs) {
   } else if (sort_order == "alpha_freq") {
     raw_ard <- cards::sort_ard_hierarchical(raw_ard, sort = "alphanumeric")
   }
-  # "alpha" = default cards order (alphanumeric), no sort needed
 
   # ── Convert to wide via arframe ──
   overall_str <- if (include_total) total_label else NULL
-  label_map <- c("..ard_hierarchical_overall.." = overall_label)
+  label_map <- character(0)
+  if (include_overall) {
+    label_map <- c("..ard_hierarchical_overall.." = overall_label)
+  }
 
   wide <- arframe::fr_wide_ard(
     raw_ard,
@@ -179,12 +195,16 @@ fct_ard_ae_socpt <- function(adae, adsl, grouping, var_configs) {
   expected_cols <- trt_levels
   if (include_total) expected_cols <- c(expected_cols, total_label)
   present_cols <- intersect(expected_cols, names(wide))
-  meta <- intersect(c("soc", "pt", "row_type"), names(wide))
+  # fr_wide_ard outputs hierarchy level columns + row_type
+  # For 2-level: soc, pt. For N-level: soc, l2, ..., l(N-1), pt
+  all_cols <- names(wide)
+  meta <- all_cols[!all_cols %in% c(trt_levels, total_label)]
   extra <- setdiff(names(wide), c(meta, present_cols))
   wide <- wide[, c(meta, present_cols, extra), drop = FALSE]
 
-  # ── Attach raw ARD for QC bundle ──
+  # ── Attach metadata for downstream use ──
   attr(wide, "raw_ard") <- raw_ard
+  attr(wide, "hierarchy_vars") <- hierarchy_vars
 
   wide
 }

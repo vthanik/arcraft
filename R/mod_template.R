@@ -101,8 +101,12 @@ mod_template_server <- function(id, store, grp) {
       tmpl_id <- input$select_tmpl
       store$template <- tmpl_id
       store$ard <- NULL
+      store$raw_ard <- NULL
       store$figure <- NULL
       store$listing <- NULL
+      store$added_levels <- list()
+      store$var_labels <- list()
+      store$extra_vars <- character(0)
 
       # Look up spec function from registry
       tmpl_def <- get_template_def(tmpl_id)
@@ -113,10 +117,22 @@ mod_template_server <- function(id, store, grp) {
           list(message = paste0(tmpl_def$name, " \u2014 coming soon"), type = "info"))
         return()
       }
+      # Check if required datasets are loaded — warn if missing
+      if (!is.null(tmpl_def)) {
+        required_ds <- tmpl_def$adam_required %||% "adsl"
+        missing_ds <- setdiff(required_ds, names(store$datasets))
+        if (length(missing_ds) > 0) {
+          session$sendCustomMessage("ar_toast",
+            list(message = paste0("Load dataset: ", paste(toupper(missing_ds), collapse = ", ")),
+                 type = "warning"))
+        }
+      }
+
       if (!is.null(tmpl_def) && !is.null(tmpl_def$spec_fn)) {
         spec_fn <- tryCatch(get(tmpl_def$spec_fn), error = function(e) NULL)
         if (!is.null(spec_fn)) {
-          ds_name <- names(store$datasets)[1] %||% "adsl"
+          var_ds <- fct_template_var_dataset(tmpl_id)
+          ds_name <- if (var_ds %in% names(store$datasets)) var_ds else names(store$datasets)[1] %||% "adsl"
           data <- store$datasets[[ds_name]]
           defaults <- spec_fn(data)
 

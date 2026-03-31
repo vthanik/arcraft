@@ -166,12 +166,28 @@ $(document).ready(function() {
     }
   });
 
-  /* Variable card sortable */
+  /* Variable card sortable (with L-badge update on reorder) */
   Shiny.addCustomMessageHandler('ar_init_var_sortable', function(d) {
     setTimeout(function() {
       var cid = d.container_id;
       var ns = cid.replace('var_cards', '');
-      arInitSortable(cid, '.ar-var-card__drag', '.ar-var-card[data-var]', 'data-var', ns + 'var_order');
+      var el = document.getElementById(cid);
+      if (!el) return;
+      if (el._sortable) el._sortable.destroy();
+      el._sortable = new Sortable(el, {
+        animation: 150, handle: '.ar-var-card__drag',
+        ghostClass: 'ar-sortable-ghost', chosenClass: 'ar-sortable-chosen', dragClass: 'ar-sortable-drag',
+        onEnd: function() {
+          var items = el.querySelectorAll('.ar-var-card[data-var]');
+          var order = Array.from(items).map(function(i) { return i.getAttribute('data-var'); });
+          Shiny.setInputValue(ns + 'var_order', order, {priority: 'event'});
+          /* Update L-badges after reorder */
+          items.forEach(function(card, i) {
+            var badge = card.querySelector('.ar-type-badge');
+            if (badge && /^L\d/.test(badge.textContent)) badge.textContent = 'L' + (i + 1);
+          });
+        }
+      });
     }, 100);
   });
 
@@ -292,6 +308,23 @@ $(document).ready(function() {
       if (btn) btn.click();
       _previewTimer = null;
     }, d.delay || 800);
+  });
+
+  /* Loading spinner overlay */
+  Shiny.addCustomMessageHandler('ar_loading', function(d) {
+    var el = document.getElementById('ar_loading_overlay');
+    if (d.show) {
+      if (!el) {
+        el = document.createElement('div');
+        el.id = 'ar_loading_overlay';
+        el.className = 'ar-loading-overlay';
+        el.innerHTML = '<div class="ar-loading-spinner"></div>';
+        document.querySelector('.ar-canvas') && document.querySelector('.ar-canvas').appendChild(el);
+      }
+      el.style.display = 'flex';
+    } else if (el) {
+      el.style.display = 'none';
+    }
   });
 
 });

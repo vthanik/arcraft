@@ -70,33 +70,9 @@ app_server <- function(input, output, session) {
   mod_validation_server("validation", store, grp)
   mod_code_server("code", store)
 
-  # ── 2a. Auto-Preview (debounced — triggers ONCE when config changes) ──
-  # Uses a fingerprint to detect real changes vs reactive noise.
-  # Only fires when the user actually changes something meaningful.
-  auto_preview_fingerprint <- shiny::reactiveVal("")
-
-  shiny::observe({
-    # Build a fingerprint from key config values
-    vars <- grp$analysis_vars
-    trt <- grp$trt_var
-    total <- grp$include_total
-    tmpl <- store$template
-
-    # Only watch when we have minimum requirements
-    req(length(store$datasets) > 0, !is.null(tmpl), length(vars) > 0)
-
-    fp <- paste(tmpl, trt, total, paste(vars, collapse = ","), sep = "|")
-    old_fp <- shiny::isolate(auto_preview_fingerprint())
-
-    if (nzchar(old_fp) && fp != old_fp) {
-      # Config actually changed — trigger preview via JS after 800ms debounce
-      auto_preview_fingerprint(fp)
-      session$sendCustomMessage("ar_debounce_preview", list(delay = 800))
-    } else if (!nzchar(old_fp)) {
-      # First time — just record the fingerprint, don't trigger
-      auto_preview_fingerprint(fp)
-    }
-  })
+  # ── 2a. Auto-Preview DISABLED ──
+  # User controls when to generate via Ctrl+Enter (Generate Preview).
+  # No auto-trigger on config changes — avoids spinner-hangs and unwanted recomputation.
 
   # ── 2b. Preset Handlers ──
   shiny::observeEvent(input$fmt_preset_fda, {
@@ -224,6 +200,10 @@ app_server <- function(input, output, session) {
       return()
     }
 
+    # Show loading spinner — always hide on exit (even on error)
+    session$sendCustomMessage("ar_loading", list(show = TRUE))
+    on.exit(session$sendCustomMessage("ar_loading", list(show = FALSE)), add = TRUE)
+
     tryCatch({
       # Snapshot format drafts from all modules into store (non-reactive architecture)
       store$fmt <- collect_format_drafts(
@@ -276,6 +256,21 @@ app_server <- function(input, output, session) {
       }
       # NOTE: figure and listing branches removed (demographics only)
 
+      # Auto-populate format defaults for hierarchical templates
+      if (get_sidebar_pattern(template) == "hierarchical" && !is.null(store$ard)) {
+        ard_cols <- names(store$ard)
+        # fr_wide_ard: soc = L1 group, pt = deepest level (last meta col before row_type)
+        if ("soc" %in% ard_cols) store$fmt$rows$group_by <- "soc"
+        # Find the deepest hierarchy column (last non-data column before row_type)
+        meta_cols <- setdiff(ard_cols, c(grp_list$trt_levels,
+          grp_list$total_label %||% "Total", "row_type"))
+        if (length(meta_cols) > 0) {
+          deepest <- meta_cols[length(meta_cols)]
+          store$fmt$rows$indent_by <- deepest
+          store$fmt$cols$stub_col <- deepest
+        }
+      }
+
       # Compute N counts for column headers (reuse same logic as N Counts display)
       if (output_type == "table" && !is.null(trt_var) && !is.null(adsl) && trt_var %in% names(adsl)) {
         trt_lvls <- grp_list$trt_levels %||% sort(unique(adsl[[trt_var]]))
@@ -325,6 +320,7 @@ app_server <- function(input, output, session) {
 
       session$sendCustomMessage("ar_toast",
         list(message = "Preview generated", type = "success"))
+      # No auto-navigation — user moves to Format/Output when ready
     }, error = function(e) {
       session$sendCustomMessage("ar_toast",
         list(message = paste("Error:", e$message), type = "error"))
@@ -373,8 +369,10 @@ app_server <- function(input, output, session) {
 
   # ── 6. Context Summary Line ──
   output$context_line <- shiny::renderUI({
-    ds_name <- store$active_ds %||% "No data"
+    # Show the template's primary dataset (ADAE for AE templates, ADSL for demographics)
     tmpl <- store$template %||% "No template"
+    tmpl_ds <- if (!is.null(store$template)) fct_template_var_dataset(store$template) else NULL
+    ds_name <- tmpl_ds %||% store$active_ds %||% "No data"
     tmpl_def <- get_template_def(tmpl)
     tmpl_label <- if (!is.null(tmpl_def)) tmpl_def$name else tmpl
 

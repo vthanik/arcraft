@@ -63,6 +63,9 @@ mod_rows_ui <- function(id) {
       )
     ),
 
+    # Hierarchy options (dynamic — shown only for hierarchical templates)
+    shiny::uiOutput(ns("hierarchy_opts")),
+
     # Sort & Display
     htmltools::tags$details(class = "ar-disclosure",
       htmltools::tags$summary(class = "ar-disclosure__trigger", "Sort & Display"),
@@ -90,6 +93,10 @@ mod_rows_ui <- function(id) {
 
 mod_rows_server <- function(id, store) {
   shiny::moduleServer(id, function(input, output, session) {
+    ns <- session$ns
+
+    # ── Hierarchy options moved to mod_analysis_vars.R ──
+
     # Update column choices when ARD changes
     shiny::observe({
       ard <- store$ard
@@ -121,6 +128,8 @@ mod_rows_server <- function(id, store) {
       shiny::updateRadioButtons(session, "group_keep",
         selected = if (isTRUE(rows$group_keep %||% TRUE)) "yes" else "no")
     })
+
+    # Hierarchy sync removed — now handled in mod_analysis_vars.R
 
     # get_draft: return current rows config
     get_draft <- function() {

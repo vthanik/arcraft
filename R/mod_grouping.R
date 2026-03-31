@@ -58,11 +58,14 @@ mod_grouping_server <- function(id, store, grp) {
       req(store$datasets)
       # Re-run when var list changes
       var_list_trigger()
-      ds_name <- store$pipeline_filters$dataset %||% names(store$datasets)[1]
+      tmpl <- store$template
+      # Use template-specific dataset (ADAE for AE templates, ADSL for demographics)
+      var_ds <- fct_template_var_dataset(tmpl)
+      ds_name <- if (var_ds %in% names(store$datasets)) var_ds
+                 else store$pipeline_filters$dataset %||% names(store$datasets)[1]
       req(ds_name, store$datasets[[ds_name]])
       d <- store$datasets[[ds_name]]
 
-      tmpl <- store$template
       candidate_vars <- if (!is.null(tmpl)) {
         suggested <- fct_suggest_vars(tmpl, d)
         if (length(suggested) == 0) fct_detect_demog_vars(d) else suggested
@@ -151,7 +154,11 @@ mod_grouping_server <- function(id, store, grp) {
       # Read trigger to force re-render when extra vars change
       var_list_trigger()
       req(store$datasets)
-      ds_name <- store$pipeline_filters$dataset %||% names(store$datasets)[1]
+      tmpl <- store$template
+      # Use template-specific dataset
+      var_ds <- fct_template_var_dataset(tmpl)
+      ds_name <- if (var_ds %in% names(store$datasets)) var_ds
+                 else store$pipeline_filters$dataset %||% names(store$datasets)[1]
       req(ds_name, store$datasets[[ds_name]])
       d <- store$datasets[[ds_name]]
 
@@ -167,7 +174,6 @@ mod_grouping_server <- function(id, store, grp) {
       }
 
       # Template-aware variable suggestions
-      tmpl <- store$template
       candidate_vars <- if (!is.null(tmpl)) {
         suggested <- fct_suggest_vars(tmpl, d)
         if (length(suggested) == 0) fct_detect_demog_vars(d) else suggested
@@ -206,6 +212,10 @@ mod_grouping_server <- function(id, store, grp) {
                 geo_mean = "GeoM", cv = "CV%", geo_mean_cv = "GeoM(CV%)", s)
             }, character(1))
             paste(stat_names, collapse = ",")
+          } else if (cfg$type %in% c("flag", "hierarchy")) {
+            fmt_label <- switch(cfg$cat_format %||% "npct",
+              npct = "n(%)", n = "n", nn_pct = "n/N(%)", "n(%)")
+            paste0(fmt_label, ", ", cfg$label %||% v)
           } else {
             fmt_label <- switch(cfg$cat_format %||% "npct",
               npct = "n(%)", n = "n", nn_pct = "n/N(%)", "n(%)")
@@ -226,6 +236,7 @@ mod_grouping_server <- function(id, store, grp) {
               onchange = paste0(
                 "var checked = document.querySelectorAll('input[id^=\"", ns("avar_"), "\"]:checked');",
                 "var vals = Array.from(checked).map(function(c) { return c.id.replace('", ns("avar_"), "', ''); });",
+                "if(vals.length === 0){ this.checked = true; return; }",
                 "Shiny.setInputValue('", ns("analysis_vars"), "', vals);"
               ),
               class = "ar-accent-check"

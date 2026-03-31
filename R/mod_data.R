@@ -182,7 +182,14 @@ mod_data_server <- function(id, store, grp) {
         store$datasets[["adsl"]] <- read_bundled(path)
         store$active_ds <- "adsl"
 
-        shiny::updateSelectInput(session, "pipeline_ds", choices = "adsl", selected = "adsl")
+        # Also load ADAE so AE templates work immediately
+        adae_path <- data_path("adae.rds")
+        if (nzchar(adae_path) && file.exists(adae_path)) {
+          store$datasets[["adae"]] <- read_bundled(adae_path)
+        }
+
+        ds_names <- names(store$datasets)
+        shiny::updateSelectInput(session, "pipeline_ds", choices = ds_names, selected = "adsl")
 
         flags <- fct_detect_pop_flags(names(store$datasets[["adsl"]]))
         shiny::updateSelectInput(session, "pop_flag",
@@ -215,8 +222,9 @@ mod_data_server <- function(id, store, grp) {
         store$pipeline_state$template <- TRUE
         store$pipeline_state$analysis <- TRUE
 
+        demo_ds <- paste(toupper(names(store$datasets)), collapse = " + ")
         session$sendCustomMessage("ar_toast",
-          list(message = "Demo data loaded: ADSL + Demographics template", type = "success"))
+          list(message = paste0("Demo data loaded: ", demo_ds, " + Demographics template"), type = "success"))
       }
     })
 

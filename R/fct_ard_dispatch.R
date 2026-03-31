@@ -12,13 +12,25 @@ fct_ard_dispatch <- function(template, datasets, grouping, var_configs,
               var_labels = var_labels),
     ae_overall = {
       adae <- datasets[["adae"]]
-      if (is.null(adae)) cli::cli_abort("ADAE dataset required for AE Overall template", call = NULL)
+      if (is.null(adae)) {
+        cli::cli_abort(
+          c("ADAE dataset required for {.val {template}} template.",
+            "i" = "Load ADAE in the DATA tab first."),
+          call = NULL
+        )
+      }
       fct_ard_ae_overall(adae, adsl, grouping, var_configs)
     },
     ae_socpt = {
       adae <- datasets[["adae"]]
-      if (is.null(adae)) cli::cli_abort("ADAE dataset required for AE SOC/PT template", call = NULL)
-      fct_ard_ae_socpt(adae, adsl, grouping, var_configs)
+      if (is.null(adae)) {
+        cli::cli_abort(
+          c("ADAE dataset required for {.val {template}} template.",
+            "i" = "Load ADAE in the DATA tab first."),
+          call = NULL
+        )
+      }
+      fct_ard_ae_hierarchy(adae, adsl, grouping, var_configs)
     },
     cli::cli_abort("Template {.val {template}} not yet implemented", call = NULL)
   )
