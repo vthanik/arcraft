@@ -1,24 +1,83 @@
 # AE template specifications — defaults for AE Overall and AE by SOC/PT
 
 spec_ae_overall <- function(data = NULL) {
+  # All possible AE flag/category configs — keyed by CDISC column name
+  # Includes both AESER and AESERI (some datasets use one or the other)
+  all_ae_configs <- list(
+    AESER = list(
+      type = "categorical", cat_format = "npct", pct_dec = 1,
+      label = "Serious Adverse Event",
+      exclude_levels = "N",
+      level_labels = list("Y" = "Serious AE (SAE)")
+    ),
+    AESERI = list(
+      type = "categorical", cat_format = "npct", pct_dec = 1,
+      label = "Serious Adverse Event",
+      exclude_levels = "N",
+      level_labels = list("Y" = "Serious AE (SAE)")
+    ),
+    AEREL = list(
+      type = "categorical", cat_format = "npct", pct_dec = 1,
+      label = "Relationship to Study Drug",
+      exclude_levels = c("NOT RELATED", "NONE"),
+      level_labels = list("RELATED" = "Related AE",
+                          "POSSIBLE" = "Possibly Related",
+                          "PROBABLE" = "Probably Related")
+    ),
+    AESDTH = list(
+      type = "categorical", cat_format = "npct", pct_dec = 1,
+      label = "AE Leading to Death",
+      exclude_levels = "N",
+      level_labels = list("Y" = "AE Leading to Death")
+    ),
+    AESEV = list(
+      type = "categorical", cat_format = "npct", pct_dec = 1,
+      label = "Maximum Severity"
+    ),
+    AEOUT = list(
+      type = "categorical", cat_format = "npct", pct_dec = 1,
+      label = "Outcome of Adverse Event"
+    )
+  )
+
+  # Candidate columns in priority order (TRTEMFL is a filter, not an analysis var)
+  candidate_cols <- c("AESER", "AESERI", "AEREL", "AESDTH", "AESEV", "AEOUT")
+
+  # Filter to columns that exist in data (prefer AESER over AESERI)
+  if (!is.null(data)) {
+    available <- intersect(candidate_cols, names(data))
+    # If both AESER and AESERI exist, drop AESERI
+    if ("AESER" %in% available && "AESERI" %in% available) {
+      available <- setdiff(available, "AESERI")
+    }
+  } else {
+    available <- c("AESER", "AEREL", "AESDTH", "AESEV", "AEOUT")
+  }
+
+  # Build configs only for available columns
+  ae_configs <- all_ae_configs[available]
+
+  # Populate levels from data
+  if (!is.null(data)) {
+    for (v in names(ae_configs)) {
+      if (v %in% names(data)) {
+        all_levels <- sort(unique(as.character(data[[v]][!is.na(data[[v]])])))
+        excl <- ae_configs[[v]]$exclude_levels %||% character(0)
+        ae_configs[[v]]$levels <- all_levels
+        ae_configs[[v]]$visible_levels <- setdiff(all_levels, excl)
+      }
+    }
+  }
+
   list(
     template = "ae_overall",
     grouping = list(
       trt_var = "TRT01A",
       include_total = TRUE,
       total_label = "Total",
-      analysis_vars = c("any_teae", "any_sae", "any_related", "any_death", "max_sev")
+      analysis_vars = available
     ),
-    var_configs = list(
-      any_teae = list(type = "flag", label = "Any TEAE", pct_dec = 1),
-      any_sae = list(type = "flag", label = "Serious AE (SAE)", pct_dec = 1),
-      any_related = list(type = "flag", label = "Related AE", pct_dec = 1),
-      any_death = list(type = "flag", label = "AE Leading to Death", pct_dec = 1),
-      max_sev = list(type = "flag", label = "Maximum Severity", pct_dec = 1),
-      filter_flag = "TRTEMFL",
-      flag_vars = c("any_teae", "any_sae", "any_related", "any_death"),
-      severity_var = "max_sev"
-    ),
+    var_configs = ae_configs,
     fmt = list(
       titles = list(
         list(text = "Table 14.3.1", bold = FALSE),

@@ -1,5 +1,5 @@
 # Dev entry point — shiny::runApp('.')
-# In production use arbuilder::launch()
+# In production use arcraft::launch()
 for (.f in list.files("R", pattern = "^[^_].*\\.R$", full.names = TRUE)) source(.f, local = TRUE)
 rm(.f)
 shiny::addResourcePath("www", file.path(getwd(), "inst", "app", "www"))

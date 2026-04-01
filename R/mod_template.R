@@ -136,23 +136,68 @@ mod_template_server <- function(id, store, grp) {
           data <- store$datasets[[ds_name]]
           defaults <- spec_fn(data)
 
-          # Populate grouping if not already set or template changed
+          # Update pipeline dataset to the template's primary dataset
+          store$pipeline_filters$dataset <- ds_name
+
+          # Treatment var lives in ADSL, not necessarily the analysis dataset
+          adsl <- store$datasets[["adsl"]]
+          trt_data <- if (!is.null(adsl)) adsl else data
+
+          # Populate grouping
           if (!is.null(defaults$grouping)) {
             trt_var <- defaults$grouping$trt_var
-            if (!is.null(data) && trt_var %in% names(data)) {
-              trt_levels <- sort(unique(data[[trt_var]]))
+            if (!is.null(trt_data) && trt_var %in% names(trt_data)) {
+              pop_flag <- defaults$grouping$pop_flag %||% "SAFFL"
+              trt_filtered <- apply_pop_filter(trt_data, pop_flag)
+              trt_levels <- sort(unique(trt_filtered[[trt_var]]))
+              trt_levels <- trt_levels[!is.na(trt_levels) & nzchar(trt_levels)]
             } else {
               trt_levels <- character(0)
             }
             grp$trt_var <- trt_var
             grp$trt_levels <- trt_levels
             grp$include_total <- defaults$grouping$include_total %||% TRUE
-            grp$analysis_vars <- defaults$grouping$analysis_vars
+
+            # For BDS/response templates: use selected_params as analysis_vars
+            if (fct_suggests_paramcds(tmpl_id)) {
+              grp$analysis_vars <- defaults$grouping$selected_params %||%
+                                   defaults$grouping$analysis_vars
+            } else {
+              grp$analysis_vars <- defaults$grouping$analysis_vars
+            }
+
+            # Store population flag
+            store$pipeline_filters$pop_flag <- defaults$grouping$pop_flag %||%
+                                                store$pipeline_filters$pop_flag %||% "SAFFL"
           }
 
-          # Populate var_configs
+          # Populate var_configs (demographics/AE) or param_configs (BDS) or category_configs (response)
           if (!is.null(defaults$var_configs)) {
             store$var_configs <- defaults$var_configs
+          }
+          if (!is.null(defaults$param_configs)) {
+            store$param_configs <- defaults$param_configs
+          }
+          if (!is.null(defaults$stat_config)) {
+            store$stat_config <- defaults$stat_config
+          }
+          if (!is.null(defaults$visit_configs)) {
+            store$visit_configs <- defaults$visit_configs
+          }
+          if (!is.null(defaults$analysis_cols)) {
+            store$analysis_cols <- defaults$analysis_cols
+          }
+          if (!is.null(defaults$visit_var)) {
+            store$visit_var <- defaults$visit_var
+          }
+          if (!is.null(defaults$category_configs)) {
+            store$category_configs <- defaults$category_configs
+          }
+          if (!is.null(defaults$format_config)) {
+            store$format_config <- defaults$format_config
+          }
+          if (!is.null(defaults$comparison)) {
+            store$comparison <- defaults$comparison
           }
 
           # Populate fig_configs for figures

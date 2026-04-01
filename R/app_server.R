@@ -14,6 +14,16 @@ app_server <- function(input, output, session) {
     added_levels = list(),
     extra_vars = character(0),
     fig_configs = list(),
+    # BDS template state
+    param_configs = list(),
+    stat_config = list(),
+    visit_configs = list(),
+    analysis_cols = list(),
+    visit_var = list(),
+    # Response template state
+    category_configs = list(),
+    format_config = list(),
+    comparison = list(),
     fmt = normalize_fmt(list()),
     ard = NULL,
     raw_ard = NULL,
@@ -651,7 +661,7 @@ app_server <- function(input, output, session) {
     shiny::showModal(shiny::modalDialog(
       title = "Output Directory",
       htmltools::tags$p(class = "ar-text-sm",
-        "Choose where arbuilder saves your outputs (config.yaml, ard.parquet, script.R)."
+        "Choose where arcraft saves your outputs (config.yaml, ard.parquet, script.R)."
       ),
       shiny::textInput("new_output_dir", "Directory Path",
         value = store$output_dir %||% file.path(getwd(), ".local", "output"),
@@ -685,7 +695,7 @@ app_server <- function(input, output, session) {
     store$output_dir <- new_dir
     dir.create(".local", showWarnings = FALSE)
     tryCatch(
-      yaml::write_yaml(list(output_dir = new_dir), file.path(getwd(), ".local", "arbuilder_prefs.yaml")),
+      yaml::write_yaml(list(output_dir = new_dir), file.path(getwd(), ".local", "arcraft_prefs.yaml")),
       error = function(e) NULL
     )
 

@@ -235,6 +235,9 @@ fct_ard_demog_cards_inner <- function(adsl, grouping, var_configs, added_levels 
   dcols <- setdiff(names(wide), meta)
   wide <- wide[, c(meta, dcols), drop = FALSE]
 
+  # ── Apply level exclusions + renames from var_configs ──
+  wide <- apply_level_configs(wide, var_configs, cat_vars)
+
   # ── Attach raw ARD for QC bundle ──
   attr(wide, "raw_ard") <- raw_ard
 

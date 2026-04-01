@@ -1,4 +1,4 @@
-# arbuilder
+# arcraft
 
 Local Shiny app for building submission-ready clinical Tables, Figures & Listings (TFLs) from ADaM data. Point-and-click interface that generates reproducible R scripts using [arframe](https://github.com/vthanik/arframe) as the rendering engine.
 
@@ -7,8 +7,8 @@ No server infrastructure needed — runs entirely on your laptop.
 ## Quick Start
 
 ```bash
-git clone git@github.com:vthanik/arbuilder.git
-cd arbuilder
+git clone git@github.com:vthanik/arcraft.git
+cd arcraft
 Rscript -e "shiny::runApp('.')"
 ```
 
@@ -33,8 +33,8 @@ install.packages(c(
 ### Or Install as R Package
 
 ```r
-remotes::install_github("vthanik/arbuilder")
-arbuilder::launch()
+remotes::install_github("vthanik/arcraft")
+arcraft::launch()
 ```
 
 ## How It Works
@@ -82,7 +82,7 @@ ADaM Data → ARD (wide) → arframe spec → RTF/PDF/HTML
 ```
 
 - **arframe** = rendering engine (pure R, no UI)
-- **arbuilder** = this app (Shiny UI that drives arframe)
+- **arcraft** = this app (Shiny UI that drives arframe)
 - Generated R scripts are standalone — run anywhere with `dplyr` + `arframe`
 
 ## Project Structure

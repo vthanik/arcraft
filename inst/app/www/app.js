@@ -1,4 +1,4 @@
-/* arbuilder — JavaScript (demographics only)
+/* arcraft — JavaScript (demographics only)
    Backup of full version: app.js.bak
 
    Sections:
@@ -233,7 +233,7 @@ $(document).ready(function() {
   });
 
   Shiny.addCustomMessageHandler('ar_init_level_sortable', function(d) {
-    arInitSortableRetry(d.container_id, '.ar-trt-row__drag', '.ar-trt-row[data-level]', 'data-level', d.input_id);
+    arInitSortableRetry(d.container_id, '.ar-level-row__drag', '.ar-level-row[data-level]', 'data-level', d.input_id);
   });
 
   /* Collapse/open variable cards */

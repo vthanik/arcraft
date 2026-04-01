@@ -77,6 +77,30 @@ template_registry <- function() {
       phase = 2,
       enabled = TRUE
     ),
+    list(
+      id = "vitals_summary",
+      name = "Vital Signs Summary",
+      category = "Safety",
+      icon = "fa-heart-pulse",
+      description = "Vital signs results and change from baseline by visit",
+      adam_required = c("adsl", "advs"),
+      spec_fn = "spec_vitals",
+      sidebar_pattern = "parameter_visit",
+      phase = 2,
+      enabled = TRUE
+    ),
+    list(
+      id = "ecg_summary",
+      name = "ECG Summary",
+      category = "Safety",
+      icon = "fa-wave-square",
+      description = "ECG results and change from baseline by visit",
+      adam_required = c("adsl", "adeg"),
+      spec_fn = "spec_ecg",
+      sidebar_pattern = "parameter_visit",
+      phase = 2,
+      enabled = TRUE
+    ),
     # ── Laboratory ──
     list(
       id = "lab_summary",
@@ -85,7 +109,7 @@ template_registry <- function() {
       icon = "fa-flask",
       description = "Laboratory results summary by visit and treatment",
       adam_required = c("adsl", "adlb"),
-      spec_fn = NULL,
+      spec_fn = "spec_lab",
       sidebar_pattern = "parameter_visit",
       phase = 2,
       enabled = TRUE
@@ -122,8 +146,8 @@ template_registry <- function() {
       icon = "fa-chart-pie",
       description = "Best overall response and response rates",
       adam_required = c("adsl", "adrs"),
-      spec_fn = NULL,
-      sidebar_pattern = "variable_stat",
+      spec_fn = "spec_response",
+      sidebar_pattern = "response_summary",
       phase = 2,
       enabled = TRUE
     ),

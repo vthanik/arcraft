@@ -19,7 +19,7 @@ safe_eval_filter <- function(expr_str, data) {
 # Resolve bundled data path — works in dev (app.R) and installed package mode
 data_path <- function(filename) {
   # Try installed package first
-  p <- system.file("data", filename, package = "arbuilder")
+  p <- system.file("data", filename, package = "arcraft")
   if (nzchar(p)) return(p)
   # Dev mode: inst/data/ relative to working directory
   p <- file.path("inst", "data", filename)
@@ -170,7 +170,7 @@ get_stat_dec <- function(config, stat_name, fallback = 1) {
   else decs %||% fallback
 }
 
-# Cards stat format mapping (arbuilder stat name -> fr_wide_ard format string)
+# Cards stat format mapping (arcraft stat name -> fr_wide_ard format string)
 CARDS_STAT_FORMAT_MAP <- list(
   n = "{N}", mean = "{mean}", sd = "{sd}",
   mean_sd = "{mean} ({sd})", median = "{median}",
@@ -179,7 +179,7 @@ CARDS_STAT_FORMAT_MAP <- list(
   geo_mean = "{mean}", cv = "{sd}", geo_mean_cv = "{mean} ({sd})"
 )
 
-# Cards decimal name mapping (arbuilder stat name -> cards stat name)
+# Cards decimal name mapping (arcraft stat name -> cards stat name)
 CARDS_DECIMAL_MAP <- list(
   mean = "mean", sd = "sd", median = "median",
   q1 = "p25", q3 = "p75", min = "min", max = "max",
@@ -187,6 +187,45 @@ CARDS_DECIMAL_MAP <- list(
 )
 
 # ── Shared stat-format and decimals builders ──
+# ── Apply level exclusions + renames from var_configs ──
+# Post-processes the wide ARD to:
+# 1. Remove rows for excluded levels (cfg$exclude_levels)
+# 2. Rename stat_label using level labels (cfg$level_labels)
+# 3. Respect level order from cfg$levels
+apply_level_configs <- function(wide, var_configs, cat_vars) {
+  if (length(cat_vars) == 0) return(wide)
+  for (v in cat_vars) {
+    cfg <- var_configs[[v]]
+    if (is.null(cfg)) next
+    mask <- wide$variable == v
+
+    # Filter excluded levels
+    excl <- cfg$exclude_levels
+    if (!is.null(excl) && length(excl) > 0) {
+      # Trim stat_label for comparison (ARD may have leading spaces like "  MILD")
+      sl <- trimws(wide$stat_label)
+      drop <- mask & sl %in% excl & sl != "n"
+      if (any(drop)) wide <- wide[!drop, , drop = FALSE]
+      mask <- wide$variable == v
+    }
+
+    # Rename levels using level_labels
+    ll <- cfg$level_labels
+    if (!is.null(ll) && length(ll) > 0) {
+      for (orig in names(ll)) {
+        sl <- trimws(wide$stat_label)
+        hit <- mask & sl == orig
+        if (any(hit)) {
+          # Preserve leading whitespace pattern from original
+          prefix <- sub("\\S.*$", "", wide$stat_label[hit][1])
+          wide$stat_label[hit] <- paste0(prefix, ll[[orig]])
+        }
+      }
+    }
+  }
+  wide
+}
+
 # Used by both fct_ard_demog_cards.R (runtime) and fct_codegen.R (code generation)
 
 # Build statistic format list for fr_wide_ard from var_configs

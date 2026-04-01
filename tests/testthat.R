@@ -1,4 +1,4 @@
 library(testthat)
-library(arbuilder)
+library(arcraft)
 
-test_check("arbuilder")
+test_check("arcraft")

@@ -11,7 +11,8 @@ mod_analysis_vars_ui <- function(id) {
   ns <- shiny::NS(id)
   htmltools::tagList(
     # Dynamic variable cards (sortable container)
-    htmltools::tags$div(id = ns("var_cards_sortable"),
+    htmltools::tags$div(
+      id = ns("var_cards_sortable"),
       class = "ar-var-cards-sortable",
       shiny::uiOutput(ns("var_cards"))
     )
@@ -55,8 +56,11 @@ mod_analysis_vars_server <- function(id, store, grp) {
       # Use template-specific dataset (ADAE for AE, ADSL for demographics)
       tmpl <- store$template
       var_ds <- fct_template_var_dataset(tmpl)
-      ds_name <- if (var_ds %in% names(store$datasets)) var_ds
-                 else store$pipeline_filters$dataset %||% names(store$datasets)[1]
+      ds_name <- if (var_ds %in% names(store$datasets)) {
+        var_ds
+      } else {
+        store$pipeline_filters$dataset %||% names(store$datasets)[1]
+      }
       req(ds_name, store$datasets[[ds_name]])
       d <- store$datasets[[ds_name]]
 
@@ -64,24 +68,32 @@ mod_analysis_vars_server <- function(id, store, grp) {
       pop <- store$pipeline_filters$pop_flag
       d <- apply_pop_filter(d, pop)
 
-      # Detect if BDS
-      is_bds <- "PARAMCD" %in% names(d)
-      if (is_bds) {
-        return(render_bds_params(d, ns, store, grp))
+      # BDS templates use parameter_visit pattern — render analysis config, not var cards
+      pattern <- get_sidebar_pattern(tmpl)
+      if (pattern == "parameter_visit") {
+        return(render_bds_analysis(d, ns, store, grp, session))
       }
 
       # Get analysis vars from store (isolated — var_list_trigger handles add/remove)
       analysis_vars <- isolate(grp$analysis_vars)
       if (length(analysis_vars) == 0) {
-        return(htmltools::tags$div(class = "ar-text-sm ar-text-muted ar-py-8",
-          "No variables selected. Select variables in the Template panel."))
+        return(htmltools::tags$div(
+          class = "ar-text-sm ar-text-muted ar-py-8",
+          "No variables selected. Select variables in the Template panel."
+        ))
       }
 
       # Filter to vars that exist in data OR have pre-defined var_configs
       # (AE overall uses computed vars like any_teae that aren't dataset columns)
-      has_config <- vapply(analysis_vars, function(v) !is.null(isolate(store$var_configs[[v]])), logical(1))
+      has_config <- vapply(
+        analysis_vars,
+        function(v) !is.null(isolate(store$var_configs[[v]])),
+        logical(1)
+      )
       analysis_vars <- analysis_vars[analysis_vars %in% names(d) | has_config]
-      if (length(analysis_vars) == 0) return(NULL)
+      if (length(analysis_vars) == 0) {
+        return(NULL)
+      }
 
       # Determine card mode per template pattern
       pattern <- get_sidebar_pattern(tmpl)
@@ -91,13 +103,28 @@ mod_analysis_vars_server <- function(id, store, grp) {
         for (v in analysis_vars) {
           if (is.null(store$var_configs[[v]])) {
             card_mode <- determine_card_mode(pattern, d, v)
-            store$var_configs[[v]] <- switch(card_mode,
+            store$var_configs[[v]] <- switch(
+              card_mode,
               continuous = list(
                 type = "continuous",
                 stats = c("n", "mean_sd", "median", "q1_q3", "min_max"),
-                decimals = list(n = 0, mean = 1, sd = 2, median = 1, q1 = 1, q3 = 1, min = 0, max = 0),
-                stat_labels = list(n = "n", mean_sd = "Mean (SD)", median = "Median",
-                                   q1_q3 = "Q1, Q3", min_max = "Min, Max")
+                decimals = list(
+                  n = 0,
+                  mean = 1,
+                  sd = 2,
+                  median = 1,
+                  q1 = 1,
+                  q3 = 1,
+                  min = 0,
+                  max = 0
+                ),
+                stat_labels = list(
+                  n = "n",
+                  mean_sd = "Mean (SD)",
+                  median = "Median",
+                  q1_q3 = "Q1, Q3",
+                  min_max = "Min, Max"
+                )
               ),
               hierarchy = list(
                 type = "hierarchy",
@@ -106,15 +133,7 @@ mod_analysis_vars_server <- function(id, store, grp) {
               ),
               flag = list(
                 type = "flag",
-                label = switch(v,
-                  AESER = "Serious AE (SAE)", AEREL = "Related AE",
-                  AESDTH = "AE Leading to Death", AEACN = "AE Leading to Action",
-                  TRTEMFL = "Treatment-Emergent", AESEV = "Maximum Severity",
-                  AEOUT = "AE Outcome",
-                  any_teae = "Any TEAE", any_sae = "Serious AE (SAE)",
-                  any_related = "Related AE", any_death = "AE Leading to Death",
-                  max_sev = "Maximum Severity",
-                  fct_get_var_label(d, v) %||% v),
+                label = fct_get_var_label(d, v) %||% v,
                 pct_dec = 1
               ),
               # categorical (default)
@@ -124,8 +143,11 @@ mod_analysis_vars_server <- function(id, store, grp) {
                 zero_style = "A",
                 pct_dec = 1,
                 count_dec = 0,
-                levels = if (is.factor(d[[v]])) levels(d[[v]])
-                         else get_unique_levels(d[[v]])
+                levels = if (is.factor(d[[v]])) {
+                  levels(d[[v]])
+                } else {
+                  get_unique_levels(d[[v]])
+                }
               )
             )
           }
@@ -136,7 +158,8 @@ mod_analysis_vars_server <- function(id, store, grp) {
       cards <- lapply(analysis_vars, function(v) {
         config <- isolate(store$var_configs[[v]])
         card_mode <- config$type %||% determine_card_mode(pattern, d, v)
-        badge_type <- switch(card_mode,
+        badge_type <- switch(
+          card_mode,
           continuous = "NUM",
           hierarchy = paste0("L", match(v, analysis_vars)),
           flag = "FLAG",
@@ -158,8 +181,14 @@ mod_analysis_vars_server <- function(id, store, grp) {
           htmltools::tags$div(
             class = "ar-var-card__header",
             onclick = paste0("arToggleVarCard('", card_id, "')"),
-            htmltools::tags$span(class = "ar-var-card__drag", htmltools::tags$i(class = "fa fa-grip-vertical")),
-            htmltools::tags$span(class = "ar-var-card__chevron", htmltools::HTML("&#9656;")),
+            htmltools::tags$span(
+              class = "ar-var-card__drag",
+              htmltools::tags$i(class = "fa fa-grip-vertical")
+            ),
+            htmltools::tags$span(
+              class = "ar-var-card__chevron",
+              htmltools::HTML("&#9656;")
+            ),
             htmltools::tags$span(class = "ar-var-card__name", v),
             ui_type_badge(badge_type),
             # Remove variable (X button) — only if more than 1 var
@@ -169,15 +198,20 @@ mod_analysis_vars_server <- function(id, store, grp) {
                 title = paste0("Remove ", v),
                 onclick = paste0(
                   "event.stopPropagation();",
-                  "Shiny.setInputValue('", ns("remove_var"), "',",
-                  "  {var: '", v, "', ts: Date.now()}, {priority: 'event'})"
+                  "Shiny.setInputValue('",
+                  ns("remove_var"),
+                  "',",
+                  "  {var: '",
+                  v,
+                  "', ts: Date.now()}, {priority: 'event'})"
                 ),
                 htmltools::HTML("&#10005;")
               )
             }
           ),
           # Body — per-variable uiOutput (isolated re-renders)
-          htmltools::tags$div(class = "ar-var-card__body",
+          htmltools::tags$div(
+            class = "ar-var-card__body",
             shiny::uiOutput(ns(paste0("vcard_body_", v)))
           )
         )
@@ -187,41 +221,72 @@ mod_analysis_vars_server <- function(id, store, grp) {
       hier_controls <- NULL
       if (pattern == "hierarchical") {
         cfg <- isolate(store$var_configs) %||% list()
-        hier_controls <- htmltools::tags$div(class = "ar-hier-controls",
+        hier_controls <- htmltools::tags$div(
+          class = "ar-hier-controls",
           # Overall row toggle
-          htmltools::tags$div(class = "ar-section-divider-labeled",
+          htmltools::tags$div(
+            class = "ar-section-divider-labeled",
             htmltools::tags$div(class = "ar-form-label", "OVERALL ROW")
           ),
-          htmltools::tags$div(class = "ar-props",
-            htmltools::tags$div(class = "ar-prop",
+          htmltools::tags$div(
+            class = "ar-props",
+            htmltools::tags$div(
+              class = "ar-prop",
               htmltools::tags$span(class = "ar-prop__label", "Include"),
-              htmltools::tags$div(class = "ar-prop__value",
-                shiny::radioButtons(ns("hier_include_overall"), NULL,
+              htmltools::tags$div(
+                class = "ar-prop__value",
+                shiny::radioButtons(
+                  ns("hier_include_overall"),
+                  NULL,
                   choices = c("Yes" = "yes", "No" = "no"),
-                  selected = if (isTRUE(cfg$include_overall %||% TRUE)) "yes" else "no",
-                  inline = TRUE))
+                  selected = if (isTRUE(cfg$include_overall %||% TRUE)) {
+                    "yes"
+                  } else {
+                    "no"
+                  },
+                  inline = TRUE
+                )
+              )
             ),
-            htmltools::tags$div(class = "ar-prop",
+            htmltools::tags$div(
+              class = "ar-prop",
               htmltools::tags$span(class = "ar-prop__label", "Label"),
-              htmltools::tags$div(class = "ar-prop__value",
-                shiny::textInput(ns("hier_overall_label"), NULL,
-                  value = cfg$overall_label %||% "Subjects with at Least One TEAE",
-                  width = "100%"))
+              htmltools::tags$div(
+                class = "ar-prop__value",
+                shiny::textInput(
+                  ns("hier_overall_label"),
+                  NULL,
+                  value = cfg$overall_label %||%
+                    "Subjects with at Least One TEAE",
+                  width = "100%"
+                )
+              )
             )
           ),
           # Sort order
-          htmltools::tags$div(class = "ar-section-divider-labeled",
+          htmltools::tags$div(
+            class = "ar-section-divider-labeled",
             htmltools::tags$div(class = "ar-form-label", "SORT ORDER")
           ),
-          htmltools::tags$div(class = "ar-props",
-            htmltools::tags$div(class = "ar-prop",
+          htmltools::tags$div(
+            class = "ar-props",
+            htmltools::tags$div(
+              class = "ar-prop",
               htmltools::tags$span(class = "ar-prop__label", "Sort"),
-              htmltools::tags$div(class = "ar-prop__value",
-                shiny::selectInput(ns("hier_sort"), NULL,
-                  choices = c("By frequency" = "frequency",
-                              "Alpha + Freq" = "alpha_freq",
-                              "Alphabetical" = "alpha"),
-                  selected = cfg$sort_order %||% "frequency", width = "100%"))
+              htmltools::tags$div(
+                class = "ar-prop__value",
+                shiny::selectInput(
+                  ns("hier_sort"),
+                  NULL,
+                  choices = c(
+                    "By frequency" = "frequency",
+                    "Alpha + Freq" = "alpha_freq",
+                    "Alphabetical" = "alpha"
+                  ),
+                  selected = cfg$sort_order %||% "frequency",
+                  width = "100%"
+                )
+              )
             )
           ),
           # No separate Generate ARD button — use Ctrl+Enter (Generate Preview)
@@ -231,8 +296,10 @@ mod_analysis_vars_server <- function(id, store, grp) {
       ui <- htmltools::tagList(cards, hier_controls)
 
       # Tell JS to init sortable after render
-      session$sendCustomMessage("ar_init_var_sortable",
-        list(container_id = ns("var_cards")))
+      session$sendCustomMessage(
+        "ar_init_var_sortable",
+        list(container_id = ns("var_cards"))
+      )
 
       # Restore open card after re-render (isolate to avoid dependency)
       oc <- isolate(open_card())
@@ -243,6 +310,20 @@ mod_analysis_vars_server <- function(id, store, grp) {
 
       ui
     })
+
+    # ── BDS: Analysis columns selectize → update store ──
+    shiny::observeEvent(
+      input$analysis_cols_select,
+      {
+        new_cols <- input$analysis_cols_select
+        if (!is.null(new_cols)) {
+          store$analysis_cols$selected <- new_cols
+          var_list_trigger(var_list_trigger() + 1L)
+        }
+      },
+      ignoreNULL = FALSE,
+      ignoreInit = TRUE
+    )
 
     # ── Variable order from SortableJS ──
     shiny::observeEvent(input$var_order, {
@@ -257,7 +338,9 @@ mod_analysis_vars_server <- function(id, store, grp) {
       req(input$remove_var)
       v <- input$remove_var$var
       current <- grp$analysis_vars
-      if (length(current) <= 1) return()  # keep at least 1
+      if (length(current) <= 1) {
+        return()
+      } # keep at least 1
       grp$analysis_vars <- setdiff(current, v)
       var_list_trigger(var_list_trigger() + 1L)
     })
@@ -292,7 +375,9 @@ mod_analysis_vars_server <- function(id, store, grp) {
     shiny::observe({
       vars <- grp$analysis_vars
       new_vars <- setdiff(vars, observed_vars())
-      if (length(new_vars) == 0) return()
+      if (length(new_vars) == 0) {
+        return()
+      }
       observed_vars(union(observed_vars(), new_vars))
       for (v in new_vars) {
         local({
@@ -300,47 +385,83 @@ mod_analysis_vars_server <- function(id, store, grp) {
 
           # ── Per-variable body renderUI ──
           output[[paste0("vcard_body_", my_var)]] <- shiny::renderUI({
-            var_render[[my_var]]  # per-var trigger dependency
+            var_render[[my_var]] # per-var trigger dependency
 
             req(store$datasets)
             tmpl <- isolate(store$template)
             var_ds <- fct_template_var_dataset(tmpl)
-            ds_name <- if (var_ds %in% names(store$datasets)) var_ds
-                       else isolate(store$pipeline_filters$dataset) %||% names(store$datasets)[1]
+            ds_name <- if (var_ds %in% names(store$datasets)) {
+              var_ds
+            } else {
+              isolate(store$pipeline_filters$dataset) %||%
+                names(store$datasets)[1]
+            }
             d <- store$datasets[[ds_name]]
             # Allow rendering even if var not in data (use config only)
-            if (is.null(d)) return(NULL)
+            if (is.null(d)) {
+              return(NULL)
+            }
 
             pop <- isolate(store$pipeline_filters$pop_flag)
             d <- apply_pop_filter(d, pop)
 
             config <- isolate(store$var_configs[[my_var]])
-            if (is.null(config)) return(NULL)
+            if (is.null(config)) {
+              return(NULL)
+            }
             card_mode <- config$type %||% "categorical"
 
             custom_label <- isolate(store$var_labels[[my_var]])
             avars <- isolate(grp$analysis_vars)
 
-            body <- switch(card_mode,
-              continuous = ui_stat_card_cont(ns, my_var, config, d, custom_label = custom_label),
-              hierarchy = ui_stat_card_hierarchy(ns, my_var, config, match(my_var, avars),
-                data = d, added_levels = isolate(store$added_levels[[my_var]])),
+            body <- switch(
+              card_mode,
+              continuous = ui_stat_card_cont(
+                ns,
+                my_var,
+                config,
+                d,
+                custom_label = custom_label
+              ),
+              hierarchy = ui_stat_card_hierarchy(
+                ns,
+                my_var,
+                config,
+                match(my_var, avars),
+                data = d,
+                added_levels = isolate(store$added_levels[[my_var]])
+              ),
               flag = ui_stat_card_flag(ns, my_var, config),
-              ui_stat_card_cat(ns, my_var, config, d, custom_label = custom_label,
-                added_levels = isolate(store$added_levels[[my_var]]))
+              ui_stat_card_cat(
+                ns,
+                my_var,
+                config,
+                d,
+                custom_label = custom_label,
+                added_levels = isolate(store$added_levels[[my_var]])
+              )
             )
 
             # Init stat grid sortable for continuous vars only
             if (card_mode == "continuous") {
-              session$sendCustomMessage("ar_init_stat_sortable",
-                list(container_id = ns(paste0("stat_grid_", my_var)),
-                     var_name = my_var, ns_prefix = ns("")))
+              session$sendCustomMessage(
+                "ar_init_stat_sortable",
+                list(
+                  container_id = ns(paste0("stat_grid_", my_var)),
+                  var_name = my_var,
+                  ns_prefix = ns("")
+                )
+              )
             }
             # Init level sortable for categorical vars only (not hierarchy — no level list)
             if (card_mode == "categorical") {
-              session$sendCustomMessage("ar_init_level_sortable",
-                list(container_id = ns(paste0("level_sortable_", my_var)),
-                     input_id = ns(paste0("level_order_", my_var))))
+              session$sendCustomMessage(
+                "ar_init_level_sortable",
+                list(
+                  container_id = ns(paste0("level_sortable_", my_var)),
+                  input_id = ns(paste0("level_order_", my_var))
+                )
+              )
             }
 
             body
@@ -350,9 +471,14 @@ mod_analysis_vars_server <- function(id, store, grp) {
           shiny::observeEvent(input[[paste0("apply_", my_var)]], {
             card_id <- ns(paste0("vcard_", my_var))
             open_card(NULL)
-            session$sendCustomMessage("ar_collapse_card", list(card_id = card_id))
-            session$sendCustomMessage("ar_toast",
-              list(message = paste0(my_var, " saved"), type = "success"))
+            session$sendCustomMessage(
+              "ar_collapse_card",
+              list(card_id = card_id)
+            )
+            session$sendCustomMessage(
+              "ar_toast",
+              list(message = paste0(my_var, " saved"), type = "success")
+            )
             pending[[my_var]] <- NULL
           })
 
@@ -361,106 +487,162 @@ mod_analysis_vars_server <- function(id, store, grp) {
             if (!is.null(pending[[my_var]])) {
               store$var_configs[[my_var]] <- pending[[my_var]]
               pending[[my_var]] <- NULL
-              bump_var(my_var)  # only re-render THIS card
-              session$sendCustomMessage("ar_toast",
-                list(message = paste0(my_var, " reverted"), type = "warning"))
+              bump_var(my_var) # only re-render THIS card
+              session$sendCustomMessage(
+                "ar_toast",
+                list(message = paste0(my_var, " reverted"), type = "warning")
+              )
             }
           })
 
           # Stat checkbox changes — update config + re-render THIS card only
-          shiny::observeEvent(input[[paste0("stats_", my_var)]], {
-            val <- input[[paste0("stats_", my_var)]]
-            if (is.character(val)) {
-              cfg <- isolate(store$var_configs[[my_var]])
-              old <- if (!is.null(cfg)) cfg$stats else NULL
-              if (!identical(sort(val), sort(old))) {
-                store$var_configs[[my_var]]$stats <- val
-                open_card(my_var)
-                bump_var(my_var)  # only re-render THIS card
+          shiny::observeEvent(
+            input[[paste0("stats_", my_var)]],
+            {
+              val <- input[[paste0("stats_", my_var)]]
+              if (is.character(val)) {
+                cfg <- isolate(store$var_configs[[my_var]])
+                old <- if (!is.null(cfg)) cfg$stats else NULL
+                if (!identical(sort(val), sort(old))) {
+                  store$var_configs[[my_var]]$stats <- val
+                  open_card(my_var)
+                  bump_var(my_var) # only re-render THIS card
+                }
               }
-            }
-          }, ignoreNULL = FALSE, ignoreInit = TRUE)
+            },
+            ignoreNULL = FALSE,
+            ignoreInit = TRUE
+          )
 
           # Per-stat decimals
-          for (stat_key in c("n", "mean", "sd", "median", "q1", "q3", "min", "max",
-                             "geo_mean", "cv")) {
+          for (stat_key in c(
+            "n",
+            "mean",
+            "sd",
+            "median",
+            "q1",
+            "q3",
+            "min",
+            "max",
+            "geo_mean",
+            "cv"
+          )) {
             local({
               my_stat <- stat_key
               input_id <- paste0("dec_", my_var, "_", my_stat)
-              shiny::observeEvent(input[[input_id]], {
-                val <- input[[input_id]]
-                if (!is.null(val)) {
-                  cfg <- isolate(store$var_configs[[my_var]])
-                  old <- if (!is.null(cfg) && is.list(cfg$decimals)) cfg$decimals[[my_stat]] else NULL
-                  if (!identical(val, old)) {
-                    if (is.null(cfg) || !is.list(cfg$decimals)) {
-                      store$var_configs[[my_var]]$decimals <- list(
-                        n = 0, mean = 1, sd = 2, median = 1, q1 = 1, q3 = 1, min = 0, max = 0
-                      )
+              shiny::observeEvent(
+                input[[input_id]],
+                {
+                  val <- input[[input_id]]
+                  if (!is.null(val)) {
+                    cfg <- isolate(store$var_configs[[my_var]])
+                    old <- if (!is.null(cfg) && is.list(cfg$decimals)) {
+                      cfg$decimals[[my_stat]]
+                    } else {
+                      NULL
                     }
-                    store$var_configs[[my_var]]$decimals[[my_stat]] <- val
+                    if (!identical(val, old)) {
+                      if (is.null(cfg) || !is.list(cfg$decimals)) {
+                        store$var_configs[[my_var]]$decimals <- list(
+                          n = 0,
+                          mean = 1,
+                          sd = 2,
+                          median = 1,
+                          q1 = 1,
+                          q3 = 1,
+                          min = 0,
+                          max = 0
+                        )
+                      }
+                      store$var_configs[[my_var]]$decimals[[my_stat]] <- val
+                    }
                   }
-                }
-              }, ignoreInit = TRUE)
+                },
+                ignoreInit = TRUE
+              )
             })
           }
 
           # Stat labels
-          shiny::observeEvent(input[[paste0("statlabel_", my_var)]], {
-            val <- input[[paste0("statlabel_", my_var)]]
-            if (!is.null(val)) {
-              if (!is.list(store$var_configs[[my_var]]$stat_labels)) {
-                store$var_configs[[my_var]]$stat_labels <- list()
+          shiny::observeEvent(
+            input[[paste0("statlabel_", my_var)]],
+            {
+              val <- input[[paste0("statlabel_", my_var)]]
+              if (!is.null(val)) {
+                if (!is.list(store$var_configs[[my_var]]$stat_labels)) {
+                  store$var_configs[[my_var]]$stat_labels <- list()
+                }
+                for (nm in names(val)) {
+                  store$var_configs[[my_var]]$stat_labels[[nm]] <- val[[nm]]
+                }
               }
-              for (nm in names(val)) {
-                store$var_configs[[my_var]]$stat_labels[[nm]] <- val[[nm]]
-              }
-            }
-          }, ignoreInit = TRUE)
+            },
+            ignoreInit = TRUE
+          )
 
           # Categorical format
-          shiny::observeEvent(input[[paste0("catfmt_", my_var)]], {
-            val <- input[[paste0("catfmt_", my_var)]]
-            cfg <- isolate(store$var_configs[[my_var]])
-            old <- if (!is.null(cfg)) cfg$cat_format else NULL
-            if (!identical(val, old)) {
-              store$var_configs[[my_var]]$cat_format <- val
-            }
-          }, ignoreInit = TRUE)
+          shiny::observeEvent(
+            input[[paste0("catfmt_", my_var)]],
+            {
+              val <- input[[paste0("catfmt_", my_var)]]
+              cfg <- isolate(store$var_configs[[my_var]])
+              old <- if (!is.null(cfg)) cfg$cat_format else NULL
+              if (!identical(val, old)) {
+                store$var_configs[[my_var]]$cat_format <- val
+              }
+            },
+            ignoreInit = TRUE
+          )
 
           # Pct decimals
-          shiny::observeEvent(input[[paste0("pct_dec_", my_var)]], {
-            val <- input[[paste0("pct_dec_", my_var)]]
-            cfg <- isolate(store$var_configs[[my_var]])
-            old <- if (!is.null(cfg)) cfg$pct_dec else NULL
-            if (!identical(val, old)) {
-              store$var_configs[[my_var]]$pct_dec <- val
-            }
-          }, ignoreInit = TRUE)
+          shiny::observeEvent(
+            input[[paste0("pct_dec_", my_var)]],
+            {
+              val <- input[[paste0("pct_dec_", my_var)]]
+              cfg <- isolate(store$var_configs[[my_var]])
+              old <- if (!is.null(cfg)) cfg$pct_dec else NULL
+              if (!identical(val, old)) {
+                store$var_configs[[my_var]]$pct_dec <- val
+              }
+            },
+            ignoreInit = TRUE
+          )
 
           # Zero style
-          shiny::observeEvent(input[[paste0("zero_", my_var)]], {
-            val <- input[[paste0("zero_", my_var)]]
-            cfg <- isolate(store$var_configs[[my_var]])
-            old <- if (!is.null(cfg)) cfg$zero_style else NULL
-            if (!identical(val, old)) {
-              store$var_configs[[my_var]]$zero_style <- val
-            }
-          }, ignoreInit = TRUE)
+          shiny::observeEvent(
+            input[[paste0("zero_", my_var)]],
+            {
+              val <- input[[paste0("zero_", my_var)]]
+              cfg <- isolate(store$var_configs[[my_var]])
+              old <- if (!is.null(cfg)) cfg$zero_style else NULL
+              if (!identical(val, old)) {
+                store$var_configs[[my_var]]$zero_style <- val
+              }
+            },
+            ignoreInit = TRUE
+          )
 
           # Show n toggle (categorical)
-          shiny::observeEvent(input[[paste0("show_n_", my_var)]], {
-            val <- identical(input[[paste0("show_n_", my_var)]], "yes")
-            store$var_configs[[my_var]]$show_n <- val
-          }, ignoreInit = TRUE)
+          shiny::observeEvent(
+            input[[paste0("show_n_", my_var)]],
+            {
+              val <- identical(input[[paste0("show_n_", my_var)]], "yes")
+              store$var_configs[[my_var]]$show_n <- val
+            },
+            ignoreInit = TRUE
+          )
 
           # Variable label
-          shiny::observeEvent(input[[paste0("vlabel_", my_var)]], {
-            lbl <- input[[paste0("vlabel_", my_var)]]
-            if (!is.null(lbl) && nzchar(lbl)) {
-              store$var_labels[[my_var]] <- lbl
-            }
-          }, ignoreInit = TRUE)
+          shiny::observeEvent(
+            input[[paste0("vlabel_", my_var)]],
+            {
+              lbl <- input[[paste0("vlabel_", my_var)]]
+              if (!is.null(lbl) && nzchar(lbl)) {
+                store$var_labels[[my_var]] <- lbl
+              }
+            },
+            ignoreInit = TRUE
+          )
 
           # Move level up/down
           # Level reorder via SortableJS drag
@@ -477,19 +659,33 @@ mod_analysis_vars_server <- function(id, store, grp) {
             info <- input[[paste0("add_level_", my_var)]]
             req(info, info$level)
             lv <- trimws(info$level)
-            if (!nzchar(lv)) return()
-            existing <- store$var_configs[[my_var]]$levels %||% character(0)
-            if (lv %in% existing) {
-              session$sendCustomMessage("ar_toast",
-                list(message = paste0("\"", lv, "\" already exists"), type = "warning"))
+            if (!nzchar(lv)) {
               return()
             }
-            if (is.null(store$added_levels)) store$added_levels <- list()
-            store$added_levels[[my_var]] <- unique(c(store$added_levels[[my_var]], lv))
+            existing <- store$var_configs[[my_var]]$levels %||% character(0)
+            if (lv %in% existing) {
+              session$sendCustomMessage(
+                "ar_toast",
+                list(
+                  message = paste0("\"", lv, "\" already exists"),
+                  type = "warning"
+                )
+              )
+              return()
+            }
+            if (is.null(store$added_levels)) {
+              store$added_levels <- list()
+            }
+            store$added_levels[[my_var]] <- unique(c(
+              store$added_levels[[my_var]],
+              lv
+            ))
             store$var_configs[[my_var]]$levels <- c(existing, lv)
-            bump_var(my_var)  # only re-render THIS card
-            session$sendCustomMessage("ar_toast",
-              list(message = paste0("Added \"", lv, "\""), type = "success"))
+            bump_var(my_var) # only re-render THIS card
+            session$sendCustomMessage(
+              "ar_toast",
+              list(message = paste0("Added \"", lv, "\""), type = "success")
+            )
           })
 
           # Remove added level
@@ -498,26 +694,91 @@ mod_analysis_vars_server <- function(id, store, grp) {
             req(info, info$level)
             lv <- info$level
             if (!is.null(store$added_levels[[my_var]])) {
-              store$added_levels[[my_var]] <- setdiff(store$added_levels[[my_var]], lv)
+              store$added_levels[[my_var]] <- setdiff(
+                store$added_levels[[my_var]],
+                lv
+              )
             }
             store$var_configs[[my_var]]$levels <- setdiff(
-              store$var_configs[[my_var]]$levels, lv)
-            bump_var(my_var)  # only re-render THIS card
-            session$sendCustomMessage("ar_toast",
-              list(message = paste0("Removed \"", lv, "\""), type = "warning"))
+              store$var_configs[[my_var]]$levels,
+              lv
+            )
+            bump_var(my_var) # only re-render THIS card
+            session$sendCustomMessage(
+              "ar_toast",
+              list(message = paste0("Removed \"", lv, "\""), type = "warning")
+            )
+          })
+
+          # Toggle level exclusion (checkbox in categorical card)
+          shiny::observeEvent(input[[paste0("toggle_level_", my_var)]], {
+            info <- input[[paste0("toggle_level_", my_var)]]
+            req(info, info$level)
+            lv <- info$level
+            excluded <- store$var_configs[[my_var]]$exclude_levels %||%
+              character(0)
+            if (isTRUE(info$include)) {
+              store$var_configs[[my_var]]$exclude_levels <- setdiff(
+                excluded,
+                lv
+              )
+            } else {
+              # Don't allow excluding ALL levels — keep at least one
+              all_levels <- store$var_configs[[my_var]]$levels %||% character(0)
+              visible <- setdiff(all_levels, c(excluded, lv))
+              if (length(visible) == 0) {
+                session$sendCustomMessage(
+                  "ar_toast",
+                  list(
+                    message = "At least one level must remain",
+                    type = "warning"
+                  )
+                )
+                bump_var(my_var)
+                return()
+              }
+              store$var_configs[[my_var]]$exclude_levels <- unique(c(
+                excluded,
+                lv
+              ))
+            }
+            store$var_configs[[my_var]]$visible_levels <- setdiff(
+              store$var_configs[[my_var]]$levels %||% character(0),
+              store$var_configs[[my_var]]$exclude_levels %||% character(0)
+            )
+            bump_var(my_var)
+          })
+
+          # Rename level label
+          shiny::observeEvent(input[[paste0("rename_level_", my_var)]], {
+            info <- input[[paste0("rename_level_", my_var)]]
+            req(info, info$level)
+            lv <- info$level
+            label <- info$label %||% ""
+            if (is.null(store$var_configs[[my_var]]$level_labels)) {
+              store$var_configs[[my_var]]$level_labels <- list()
+            }
+            if (nchar(label) == 0) {
+              store$var_configs[[my_var]]$level_labels[[lv]] <- NULL
+            } else {
+              store$var_configs[[my_var]]$level_labels[[lv]] <- label
+            }
           })
 
           # Sort by frequency
           shiny::observeEvent(input[[paste0("sort_freq_", my_var)]], {
             req(store$datasets)
-            ds_name <- store$pipeline_filters$dataset %||% names(store$datasets)[1]
+            ds_name <- store$pipeline_filters$dataset %||%
+              names(store$datasets)[1]
             d <- store$datasets[[ds_name]]
             pop <- store$pipeline_filters$pop_flag
             d <- apply_pop_filter(d, pop)
             x <- d[[my_var]]
             if (isTRUE(store$var_configs[[my_var]]$sorted_by_freq)) {
               # Toggle OFF — revert to alphabetical
-              store$var_configs[[my_var]]$levels <- get_unique_levels(as.character(x))
+              store$var_configs[[
+                my_var
+              ]]$levels <- get_unique_levels(as.character(x))
               store$var_configs[[my_var]]$sorted_by_freq <- FALSE
             } else {
               # Toggle ON — sort by frequency
@@ -525,22 +786,33 @@ mod_analysis_vars_server <- function(id, store, grp) {
               store$var_configs[[my_var]]$levels <- names(freq)
               store$var_configs[[my_var]]$sorted_by_freq <- TRUE
             }
-            bump_var(my_var)  # only re-render THIS card
+            bump_var(my_var) # only re-render THIS card
           })
 
           # Reset to defaults
           shiny::observeEvent(input[[paste0("reset_", my_var)]], {
-            tmpl_spec_fn <- tryCatch({
-              tmpl_def <- get_template_def(store$template)
-              if (!is.null(tmpl_def)) get(tmpl_def$spec_fn) else spec_demog
-            }, error = function(e) spec_demog)
-            defaults <- tryCatch(tmpl_spec_fn()$var_configs[[my_var]], error = function(e) NULL)
+            tmpl_spec_fn <- tryCatch(
+              {
+                tmpl_def <- get_template_def(store$template)
+                if (!is.null(tmpl_def)) get(tmpl_def$spec_fn) else spec_demog
+              },
+              error = function(e) spec_demog
+            )
+            defaults <- tryCatch(
+              tmpl_spec_fn()$var_configs[[my_var]],
+              error = function(e) NULL
+            )
             if (!is.null(defaults)) {
               store$var_configs[[my_var]] <- defaults
               store$var_labels[[my_var]] <- NULL
-              bump_var(my_var)  # only re-render THIS card
-              session$sendCustomMessage("ar_toast",
-                list(message = paste0(my_var, " reset to defaults"), type = "success"))
+              bump_var(my_var) # only re-render THIS card
+              session$sendCustomMessage(
+                "ar_toast",
+                list(
+                  message = paste0(my_var, " reset to defaults"),
+                  type = "success"
+                )
+              )
             }
           })
         })
@@ -550,15 +822,20 @@ mod_analysis_vars_server <- function(id, store, grp) {
     # ── Hierarchy controls sync to store$var_configs ──
     shiny::observe({
       pattern <- get_sidebar_pattern(store$template)
-      if (pattern != "hierarchical") return()
+      if (pattern != "hierarchical") {
+        return()
+      }
       incl <- input$hier_include_overall
       lbl <- input$hier_overall_label
       sort_val <- input$hier_sort
-      if (is.null(incl)) return()
+      if (is.null(incl)) {
+        return()
+      }
 
       shiny::isolate({
         store$var_configs$include_overall <- identical(incl, "yes")
-        store$var_configs$overall_label <- lbl %||% "Subjects with at Least One TEAE"
+        store$var_configs$overall_label <- lbl %||%
+          "Subjects with at Least One TEAE"
         store$var_configs$sort_order <- sort_val %||% "frequency"
       })
     })
@@ -576,13 +853,40 @@ mod_analysis_vars_server <- function(id, store, grp) {
 # ── UI Helper: Continuous stat card body ──
 ui_stat_card_cont <- function(ns, var, config, data, custom_label = NULL) {
   # Full stat vocabulary
-  stats_all <- c("n", "mean", "sd", "mean_sd", "median",
-                 "q1", "q3", "q1_q3", "min", "max", "min_max",
-                 "geo_mean", "cv", "geo_mean_cv")
-  stats_labels <- c("N", "Mean", "SD", "Mean (SD)", "Median",
-                     "Q1", "Q3", "Q1, Q3", "Min", "Max", "Min, Max",
-                     "GeoMean", "CV%", "GeoMean (CV%)")
-  selected_stats <- config$stats %||% c("n", "mean_sd", "median", "q1_q3", "min_max")
+  stats_all <- c(
+    "n",
+    "mean",
+    "sd",
+    "mean_sd",
+    "median",
+    "q1",
+    "q3",
+    "q1_q3",
+    "min",
+    "max",
+    "min_max",
+    "geo_mean",
+    "cv",
+    "geo_mean_cv"
+  )
+  stats_labels <- c(
+    "N",
+    "Mean",
+    "SD",
+    "Mean (SD)",
+    "Median",
+    "Q1",
+    "Q3",
+    "Q1, Q3",
+    "Min",
+    "Max",
+    "Min, Max",
+    "GeoMean",
+    "CV%",
+    "GeoMean (CV%)"
+  )
+  selected_stats <- config$stats %||%
+    c("n", "mean_sd", "median", "q1_q3", "min_max")
   decs <- config$decimals
   stat_labels <- config$stat_labels %||% list()
 
@@ -609,51 +913,96 @@ ui_stat_card_cont <- function(ns, var, config, data, custom_label = NULL) {
     # Decimal input(s): plain HTML inputs (no Shiny numericInput)
     if (s %in% names(combined_pairs)) {
       keys <- combined_pairs[[s]]
-      dec1 <- if (is.list(decs)) decs[[keys[1]]] %||% (default_decs[[keys[1]]] %||% 1)
-              else decs %||% (default_decs[[keys[1]]] %||% 1)
-      dec2 <- if (is.list(decs)) decs[[keys[2]]] %||% (default_decs[[keys[2]]] %||% 1)
-              else decs %||% (default_decs[[keys[2]]] %||% 1)
-      dec_ui <- htmltools::tags$div(class = "ar-dec-dual",
-        htmltools::tags$input(type = "number", class = "ar-dec-input",
+      dec1 <- if (is.list(decs)) {
+        decs[[keys[1]]] %||% (default_decs[[keys[1]]] %||% 1)
+      } else {
+        decs %||% (default_decs[[keys[1]]] %||% 1)
+      }
+      dec2 <- if (is.list(decs)) {
+        decs[[keys[2]]] %||% (default_decs[[keys[2]]] %||% 1)
+      } else {
+        decs %||% (default_decs[[keys[2]]] %||% 1)
+      }
+      dec_ui <- htmltools::tags$div(
+        class = "ar-dec-dual",
+        htmltools::tags$input(
+          type = "number",
+          class = "ar-dec-input",
           id = ns(paste0("cdec_", var, "_", s, "_1")),
-          value = dec1, min = 0, max = 6, step = 1,
-          onchange = paste0("Shiny.setInputValue('", ns(paste0("dec_", var, "_", keys[1])),
-            "', parseInt(this.value)||0, {priority:'event'})")),
+          value = dec1,
+          min = 0,
+          max = 6,
+          step = 1,
+          onchange = paste0(
+            "Shiny.setInputValue('",
+            ns(paste0("dec_", var, "_", keys[1])),
+            "', parseInt(this.value)||0, {priority:'event'})"
+          )
+        ),
         htmltools::tags$span(class = "ar-dec-dual__sep", "/"),
-        htmltools::tags$input(type = "number", class = "ar-dec-input",
+        htmltools::tags$input(
+          type = "number",
+          class = "ar-dec-input",
           id = ns(paste0("cdec_", var, "_", s, "_2")),
-          value = dec2, min = 0, max = 6, step = 1,
-          onchange = paste0("Shiny.setInputValue('", ns(paste0("dec_", var, "_", keys[2])),
-            "', parseInt(this.value)||0, {priority:'event'})"))
+          value = dec2,
+          min = 0,
+          max = 6,
+          step = 1,
+          onchange = paste0(
+            "Shiny.setInputValue('",
+            ns(paste0("dec_", var, "_", keys[2])),
+            "', parseInt(this.value)||0, {priority:'event'})"
+          )
+        )
       )
     } else if (s == "n") {
       # N is always integer — no decimal input needed
       dec_ui <- htmltools::tags$span()
     } else {
       dec_key <- s
-      dec_val <- if (is.list(decs)) decs[[dec_key]] %||% (default_decs[[dec_key]] %||% 1)
-                 else decs %||% (default_decs[[dec_key]] %||% 1)
-      dec_ui <- htmltools::tags$input(type = "number", class = "ar-dec-input ar-dec-input--single",
+      dec_val <- if (is.list(decs)) {
+        decs[[dec_key]] %||% (default_decs[[dec_key]] %||% 1)
+      } else {
+        decs %||% (default_decs[[dec_key]] %||% 1)
+      }
+      dec_ui <- htmltools::tags$input(
+        type = "number",
+        class = "ar-dec-input ar-dec-input--single",
         id = ns(paste0("dec_", var, "_", dec_key)),
-        value = dec_val, min = 0, max = 6, step = 1,
-        onchange = paste0("Shiny.setInputValue('", ns(paste0("dec_", var, "_", dec_key)),
-          "', parseInt(this.value)||0, {priority:'event'})"))
+        value = dec_val,
+        min = 0,
+        max = 6,
+        step = 1,
+        onchange = paste0(
+          "Shiny.setInputValue('",
+          ns(paste0("dec_", var, "_", dec_key)),
+          "', parseInt(this.value)||0, {priority:'event'})"
+        )
+      )
     }
 
     htmltools::tags$div(
       class = row_class,
       `data-stat` = s,
-      htmltools::tags$span(class = "ar-stat-grid__drag", htmltools::tags$i(class = "fa fa-grip-vertical")),
-      htmltools::tags$span(class = "ar-stat-grid__name",
+      htmltools::tags$span(
+        class = "ar-stat-grid__drag",
+        htmltools::tags$i(class = "fa fa-grip-vertical")
+      ),
+      htmltools::tags$span(
+        class = "ar-stat-grid__name",
         STAT_LABELS[[s]] %||% s
       ),
       htmltools::tags$input(
-        type = "text", class = "ar-input ar-input--sm ar-stat-grid__label",
+        type = "text",
+        class = "ar-input ar-input--sm ar-stat-grid__label",
         id = ns(paste0("slbl_", var, "_", s)),
         value = lbl,
         onchange = paste0(
-          "Shiny.setInputValue('", ns(paste0("statlabel_", var)),
-          "', {", s, ": this.value}, {priority: 'event'})"
+          "Shiny.setInputValue('",
+          ns(paste0("statlabel_", var)),
+          "', {",
+          s,
+          ": this.value}, {priority: 'event'})"
         )
       ),
       dec_ui
@@ -663,27 +1012,35 @@ ui_stat_card_cont <- function(ns, var, config, data, custom_label = NULL) {
   # Variable label
   label_text <- custom_label %||% fct_get_var_label(data, var)
 
-  htmltools::tags$div(class = "ar-var-card__content",
+  htmltools::tags$div(
+    class = "ar-var-card__content",
     # Variable Label
-    htmltools::tags$div(class = "ar-form-group",
+    htmltools::tags$div(
+      class = "ar-form-group",
       htmltools::tags$label(class = "ar-form-label", "Label"),
       htmltools::tags$input(
-        type = "text", class = "ar-input ar-input--sm",
+        type = "text",
+        class = "ar-input ar-input--sm",
         id = ns(paste0("vlabel_", var)),
-        value = label_text, class = "ar-w-full",
+        value = label_text,
+        class = "ar-w-full",
         onchange = paste0(
-          "Shiny.setInputValue('", ns(paste0("vlabel_", var)),
+          "Shiny.setInputValue('",
+          ns(paste0("vlabel_", var)),
           "', this.value, {priority: 'event'})"
         )
       )
     ),
 
     # Stat chips
-    htmltools::tags$div(class = "ar-form-group",
+    htmltools::tags$div(
+      class = "ar-form-group",
       htmltools::tags$label(class = "ar-form-label", "Statistics"),
-      htmltools::tags$div(class = "ar-stat-chips",
+      htmltools::tags$div(
+        class = "ar-stat-chips",
         shiny::checkboxGroupInput(
-          ns(paste0("stats_", var)), NULL,
+          ns(paste0("stats_", var)),
+          NULL,
           choiceNames = as.list(stats_labels),
           choiceValues = as.list(stats_all),
           selected = selected_stats,
@@ -693,8 +1050,10 @@ ui_stat_card_cont <- function(ns, var, config, data, custom_label = NULL) {
     ),
 
     # Stat-label-decimal grid
-    htmltools::tags$div(class = "ar-form-group",
-      htmltools::tags$div(class = "ar-stat-grid__header",
+    htmltools::tags$div(
+      class = "ar-form-group",
+      htmltools::tags$div(
+        class = "ar-stat-grid__header",
         htmltools::tags$span(""),
         htmltools::tags$span("Stat"),
         htmltools::tags$span("Label"),
@@ -708,23 +1067,33 @@ ui_stat_card_cont <- function(ns, var, config, data, custom_label = NULL) {
     ),
 
     # Actions: Discard | Reset | Apply
-    htmltools::tags$div(class = "ar-var-card__actions",
+    htmltools::tags$div(
+      class = "ar-var-card__actions",
       htmltools::tags$button(
         class = "ar-btn-ghost",
-        onclick = paste0("Shiny.setInputValue('", ns(paste0("discard_", var)),
-          "', Math.random(), {priority: 'event'})"),
+        onclick = paste0(
+          "Shiny.setInputValue('",
+          ns(paste0("discard_", var)),
+          "', Math.random(), {priority: 'event'})"
+        ),
         "Discard"
       ),
       htmltools::tags$button(
         class = "ar-btn-ghost ar-text-muted",
-        onclick = paste0("Shiny.setInputValue('", ns(paste0("reset_", var)),
-          "', Math.random(), {priority: 'event'})"),
+        onclick = paste0(
+          "Shiny.setInputValue('",
+          ns(paste0("reset_", var)),
+          "', Math.random(), {priority: 'event'})"
+        ),
         "Reset"
       ),
       htmltools::tags$button(
         class = "ar-btn-primary ar-btn--sm",
-        onclick = paste0("Shiny.setInputValue('", ns(paste0("apply_", var)),
-          "', Math.random(), {priority: 'event'})"),
+        onclick = paste0(
+          "Shiny.setInputValue('",
+          ns(paste0("apply_", var)),
+          "', Math.random(), {priority: 'event'})"
+        ),
         "Apply"
       )
     )
@@ -732,7 +1101,14 @@ ui_stat_card_cont <- function(ns, var, config, data, custom_label = NULL) {
 }
 
 # ── UI Helper: Categorical stat card body ──
-ui_stat_card_cat <- function(ns, var, config, data, custom_label = NULL, added_levels = NULL) {
+ui_stat_card_cat <- function(
+  ns,
+  var,
+  config,
+  data,
+  custom_label = NULL,
+  added_levels = NULL
+) {
   fmt <- config$cat_format %||% "npct"
   pct_dec <- config$pct_dec %||% 1
   style <- config$zero_style %||% "A"
@@ -743,106 +1119,217 @@ ui_stat_card_cat <- function(ns, var, config, data, custom_label = NULL, added_l
   x <- data[[var]]
   obs_levels <- get_unique_levels(as.character(x))
   cfg_levels <- config$levels %||% obs_levels
+  excluded <- config$exclude_levels %||% character(0)
+  level_labels <- config$level_labels %||% list()
 
-  # Level rows with drag handles (SortableJS)
+  # Level rows — 3-column grid: [drag+eye] [value] [rename]
   level_rows <- lapply(seq_along(cfg_levels), function(i) {
     lv <- cfg_levels[i]
     is_added <- lv %in% added
-    row_class <- paste0("ar-trt-row", if (is_added) " ar-trt-row--added" else "")
+    is_excluded <- lv %in% excluded
+    rename_val <- level_labels[[lv]] %||% ""
+    lv_escaped <- gsub("'", "\\\\'", lv)
+    row_class <- paste0(
+      "ar-level-row",
+      if (is_added) " ar-level-row--added" else "",
+      if (is_excluded) " ar-level-row--hidden" else ""
+    )
 
-    htmltools::tags$div(class = row_class, `data-level` = lv,
-      htmltools::tags$span(class = "ar-trt-row__drag", htmltools::tags$i(class = "fa fa-grip-vertical")),
-      htmltools::tags$span(class = "ar-trt-row__label", lv),
-      if (is_added) htmltools::tags$span(class = "ar-trt-row__badge", "added") else NULL,
-      if (is_added) htmltools::tags$button(
-        class = "ar-btn-icon--xs ar-level-btn--remove",
-        title = "Remove added level",
-        onclick = paste0(
-          "Shiny.setInputValue('", ns(paste0("remove_level_", var)),
-          "', {level: '", gsub("'", "\\\\'", lv), "', ts: Date.now()}, {priority: 'event'})"
+    htmltools::tags$div(
+      class = row_class,
+      `data-level` = lv,
+      # Column 1: drag handle + eye toggle
+      htmltools::tags$div(
+        class = "ar-level-row__controls",
+        htmltools::tags$span(
+          class = "ar-level-row__drag",
+          htmltools::tags$i(class = "fa fa-grip-vertical")
         ),
-        htmltools::HTML("&#10005;")
-      ) else NULL
+        htmltools::tags$button(
+          class = "ar-level-row__eye",
+          title = if (is_excluded) "Show level" else "Hide level",
+          onclick = paste0(
+            "var row=this.closest('.ar-level-row');",
+            "var icon=this.querySelector('i');",
+            "var isHiding=!row.classList.contains('ar-level-row--hidden');",
+            "if(isHiding){row.classList.add('ar-level-row--hidden');icon.className='fa fa-eye-slash';}",
+            "else{row.classList.remove('ar-level-row--hidden');icon.className='fa fa-eye';}",
+            "Shiny.setInputValue('",
+            ns(paste0("toggle_level_", var)),
+            "',{level:'",
+            lv_escaped,
+            "',include:!isHiding,ts:Date.now()},{priority:'event'});"
+          ),
+          htmltools::tags$i(
+            class = if (is_excluded) "fa fa-eye-slash" else "fa fa-eye"
+          )
+        )
+      ),
+      # Column 2: original value
+      htmltools::tags$span(class = "ar-level-row__value", lv),
+      # Column 3: rename input + optional remove
+      htmltools::tags$div(
+        class = "ar-level-row__rename-wrap",
+        htmltools::tags$input(
+          type = "text",
+          class = "ar-level-row__rename",
+          value = rename_val,
+          placeholder = "Rename\u2026",
+          onchange = paste0(
+            "Shiny.setInputValue('",
+            ns(paste0("rename_level_", var)),
+            "',{level:'",
+            lv_escaped,
+            "',label:this.value.trim(),ts:Date.now()},{priority:'event'});"
+          )
+        ),
+        if (is_added) {
+          htmltools::tags$button(
+            class = "ar-level-row__remove",
+            title = "Remove",
+            onclick = paste0(
+              "Shiny.setInputValue('",
+              ns(paste0("remove_level_", var)),
+              "',{level:'",
+              lv_escaped,
+              "',ts:Date.now()},{priority:'event'});"
+            ),
+            htmltools::HTML("&#10005;")
+          )
+        } else {
+          NULL
+        }
+      )
     )
   })
 
-  htmltools::tags$div(class = "ar-var-card__content",
+  htmltools::tags$div(
+    class = "ar-var-card__content",
     # Variable Label
-    htmltools::tags$div(class = "ar-form-group",
+    htmltools::tags$div(
+      class = "ar-form-group",
       htmltools::tags$label(class = "ar-form-label", "Label"),
       htmltools::tags$input(
-        type = "text", class = "ar-input ar-input--sm",
+        type = "text",
+        class = "ar-input ar-input--sm",
         id = ns(paste0("vlabel_", var)),
-        value = label_text, class = "ar-w-full",
+        value = label_text,
+        class = "ar-w-full",
         onchange = paste0(
-          "Shiny.setInputValue('", ns(paste0("vlabel_", var)),
+          "Shiny.setInputValue('",
+          ns(paste0("vlabel_", var)),
           "', this.value, {priority: 'event'})"
         )
       )
     ),
 
     # Format + Pct decimals + Zero display — inline row
-    htmltools::tags$div(class = "ar-var-settings-row",
-      htmltools::tags$div(class = "ar-form-group",
+    htmltools::tags$div(
+      class = "ar-var-settings-row",
+      htmltools::tags$div(
+        class = "ar-form-group",
         htmltools::tags$label(class = "ar-form-label", "Format"),
         shiny::radioButtons(
-          ns(paste0("catfmt_", var)), NULL,
+          ns(paste0("catfmt_", var)),
+          NULL,
           choices = c("n (%)" = "npct", "n" = "n", "n/N (%)" = "nn_pct"),
-          selected = fmt, inline = TRUE
+          selected = fmt,
+          inline = TRUE
         )
       ),
-      htmltools::tags$div(class = "ar-form-group",
+      htmltools::tags$div(
+        class = "ar-form-group",
         htmltools::tags$label(class = "ar-form-label", "Dec %"),
-        htmltools::tags$input(type = "number", class = "ar-dec-input ar-dec-input--single",
+        htmltools::tags$input(
+          type = "number",
+          class = "ar-dec-input ar-dec-input--single",
           id = ns(paste0("pct_dec_", var)),
-          value = pct_dec, min = 0, max = 3, step = 1,
-          onchange = paste0("Shiny.setInputValue('", ns(paste0("pct_dec_", var)),
-            "', parseInt(this.value)||0, {priority:'event'})"))
+          value = pct_dec,
+          min = 0,
+          max = 3,
+          step = 1,
+          onchange = paste0(
+            "Shiny.setInputValue('",
+            ns(paste0("pct_dec_", var)),
+            "', parseInt(this.value)||0, {priority:'event'})"
+          )
+        )
       ),
-      htmltools::tags$div(class = "ar-form-group",
+      htmltools::tags$div(
+        class = "ar-form-group",
         htmltools::tags$label(class = "ar-form-label", "Zero"),
         shiny::radioButtons(
-          ns(paste0("zero_", var)), NULL,
+          ns(paste0("zero_", var)),
+          NULL,
           choices = c("0" = "A", "0 (0.0)" = "D"),
-          selected = style, inline = TRUE
+          selected = style,
+          inline = TRUE
         )
       ),
-      htmltools::tags$div(class = "ar-form-group",
+      htmltools::tags$div(
+        class = "ar-form-group",
         htmltools::tags$label(class = "ar-form-label", "Show n"),
         shiny::radioButtons(
-          ns(paste0("show_n_", var)), NULL,
+          ns(paste0("show_n_", var)),
+          NULL,
           choices = c("Yes" = "yes", "No" = "no"),
-          selected = if (isTRUE(show_n)) "yes" else "no", inline = TRUE
+          selected = if (isTRUE(show_n)) "yes" else "no",
+          inline = TRUE
         )
       )
     ),
 
     # Levels with reorder + Add level
-    htmltools::tags$div(class = "ar-form-group",
-      htmltools::tags$div(class = "ar-flex ar-items-center ar-gap-8",
-        htmltools::tags$label(class = "ar-form-label ar-mb-0",
-          paste0("Levels (", length(cfg_levels), ")")),
+    htmltools::tags$div(
+      class = "ar-form-group",
+      htmltools::tags$div(
+        class = "ar-flex ar-items-center ar-gap-8",
+        htmltools::tags$label(
+          class = "ar-form-label ar-mb-0",
+          paste0("Levels (", length(cfg_levels), ")")
+        ),
         htmltools::tags$button(
           id = ns(paste0("sort_freq_btn_", var)),
-          class = paste0("ar-btn-ghost ar-btn--xs ar-sort-freq-btn ar-ml-auto",
-            if (isTRUE(config$sorted_by_freq)) " ar-sort-freq-btn--active" else ""),
+          class = paste0(
+            "ar-btn-ghost ar-btn--xs ar-sort-freq-btn ar-ml-auto",
+            if (isTRUE(config$sorted_by_freq)) {
+              " ar-sort-freq-btn--active"
+            } else {
+              ""
+            }
+          ),
           onclick = paste0(
             "this.classList.toggle('ar-sort-freq-btn--active');",
-            "Shiny.setInputValue('", ns(paste0("sort_freq_", var)),
-            "', Math.random(), {priority: 'event'})"),
+            "Shiny.setInputValue('",
+            ns(paste0("sort_freq_", var)),
+            "', Math.random(), {priority: 'event'})"
+          ),
           "Sort by frequency"
         )
       ),
-      htmltools::tags$div(class = "ar-level-list", id = ns(paste0("level_sortable_", var)), level_rows),
-      htmltools::tags$div(class = "ar-flex ar-items-center ar-gap-8 ar-mt-4",
+      htmltools::tags$div(
+        class = "ar-level-header",
+        htmltools::tags$span(""),
+        htmltools::tags$span("Value"),
+        htmltools::tags$span("Display As")
+      ),
+      htmltools::tags$div(
+        class = "ar-level-list",
+        id = ns(paste0("level_sortable_", var)),
+        level_rows
+      ),
+      htmltools::tags$div(
+        class = "ar-flex ar-items-center ar-gap-8 ar-mt-4",
         htmltools::tags$input(
-          type = "text", class = "ar-input ar-input--sm ar-flex-1",
+          type = "text",
+          class = "ar-input ar-input--sm ar-flex-1",
           id = ns(paste0("add_level_input_", var)),
           placeholder = "Add level...",
           onkeydown = paste0(
             "if(event.key==='Enter'){event.preventDefault();",
             "var v=this.value.trim();if(v){",
-            "Shiny.setInputValue('", ns(paste0("add_level_", var)),
+            "Shiny.setInputValue('",
+            ns(paste0("add_level_", var)),
             "',{level:v,ts:Date.now()},{priority:'event'});",
             "this.value='';}}"
           )
@@ -850,9 +1337,12 @@ ui_stat_card_cat <- function(ns, var, config, data, custom_label = NULL, added_l
         htmltools::tags$button(
           class = "ar-btn-outline ar-btn--sm ar-flex-shrink-0",
           onclick = paste0(
-            "var inp=document.getElementById('", ns(paste0("add_level_input_", var)), "');",
+            "var inp=document.getElementById('",
+            ns(paste0("add_level_input_", var)),
+            "');",
             "var v=inp.value.trim();if(v){",
-            "Shiny.setInputValue('", ns(paste0("add_level_", var)),
+            "Shiny.setInputValue('",
+            ns(paste0("add_level_", var)),
             "',{level:v,ts:Date.now()},{priority:'event'});",
             "inp.value='';}"
           ),
@@ -862,23 +1352,33 @@ ui_stat_card_cat <- function(ns, var, config, data, custom_label = NULL, added_l
     ),
 
     # Actions: Discard | Reset | Apply
-    htmltools::tags$div(class = "ar-var-card__actions",
+    htmltools::tags$div(
+      class = "ar-var-card__actions",
       htmltools::tags$button(
         class = "ar-btn-ghost",
-        onclick = paste0("Shiny.setInputValue('", ns(paste0("discard_", var)),
-          "', Math.random(), {priority: 'event'})"),
+        onclick = paste0(
+          "Shiny.setInputValue('",
+          ns(paste0("discard_", var)),
+          "', Math.random(), {priority: 'event'})"
+        ),
         "Discard"
       ),
       htmltools::tags$button(
         class = "ar-btn-ghost ar-text-muted",
-        onclick = paste0("Shiny.setInputValue('", ns(paste0("reset_", var)),
-          "', Math.random(), {priority: 'event'})"),
+        onclick = paste0(
+          "Shiny.setInputValue('",
+          ns(paste0("reset_", var)),
+          "', Math.random(), {priority: 'event'})"
+        ),
         "Reset"
       ),
       htmltools::tags$button(
         class = "ar-btn-primary ar-btn--sm",
-        onclick = paste0("Shiny.setInputValue('", ns(paste0("apply_", var)),
-          "', Math.random(), {priority: 'event'})"),
+        onclick = paste0(
+          "Shiny.setInputValue('",
+          ns(paste0("apply_", var)),
+          "', Math.random(), {priority: 'event'})"
+        ),
         "Apply"
       )
     )
@@ -887,19 +1387,35 @@ ui_stat_card_cat <- function(ns, var, config, data, custom_label = NULL, added_l
 
 # ── Helper: determine card mode from template pattern + data ──
 determine_card_mode <- function(pattern, data, var) {
-  if (pattern == "hierarchical") return("hierarchy")
-  if (pattern == "flag_summary") return("flag")
-  if (is.null(data) || !var %in% names(data)) return("categorical")
+  if (pattern == "hierarchical") {
+    return("hierarchy")
+  }
+  if (pattern == "flag_summary") {
+    return("categorical")
+  }
+  if (is.null(data) || !var %in% names(data)) {
+    return("categorical")
+  }
   vtype <- fct_detect_var_type(data, var)
-  if (vtype == "continuous") return("continuous")
+  if (vtype == "continuous") {
+    return("continuous")
+  }
   n_unique <- length(unique(data[[var]][!is.na(data[[var]])]))
-  if (n_unique > 50) return("hierarchy")
+  if (n_unique > 50) {
+    return("hierarchy")
+  }
   "categorical"
 }
 
 # ── UI Helper: Hierarchy stat card body ──
-ui_stat_card_hierarchy <- function(ns, var, config, position, data = NULL,
-                                  added_levels = NULL) {
+ui_stat_card_hierarchy <- function(
+  ns,
+  var,
+  config,
+  position,
+  data = NULL,
+  added_levels = NULL
+) {
   label <- config$label %||% var
   pct_dec <- config$pct_dec %||% 1
   cat_format <- config$cat_format %||% "npct"
@@ -908,22 +1424,29 @@ ui_stat_card_hierarchy <- function(ns, var, config, position, data = NULL,
   level_count_ui <- NULL
   if (!is.null(data) && var %in% names(data)) {
     n_unique <- length(unique(data[[var]][!is.na(data[[var]])]))
-    level_count_ui <- htmltools::tags$div(class = "ar-form-group",
-      htmltools::tags$span(class = "ar-text-sm ar-text-muted",
-        paste0(format(n_unique, big.mark = ","), " unique values"))
+    level_count_ui <- htmltools::tags$div(
+      class = "ar-form-group",
+      htmltools::tags$span(
+        class = "ar-text-sm ar-text-muted",
+        paste0(format(n_unique, big.mark = ","), " unique values")
+      )
     )
   }
 
-  htmltools::tags$div(class = "ar-var-card__content",
+  htmltools::tags$div(
+    class = "ar-var-card__content",
     # Variable Label
-    htmltools::tags$div(class = "ar-form-group",
+    htmltools::tags$div(
+      class = "ar-form-group",
       htmltools::tags$label(class = "ar-form-label", "Label"),
       htmltools::tags$input(
-        type = "text", class = "ar-input ar-input--sm ar-w-full",
+        type = "text",
+        class = "ar-input ar-input--sm ar-w-full",
         id = ns(paste0("vlabel_", var)),
         value = label,
         onchange = paste0(
-          "Shiny.setInputValue('", ns(paste0("vlabel_", var)),
+          "Shiny.setInputValue('",
+          ns(paste0("vlabel_", var)),
           "', this.value, {priority: 'event'})"
         )
       )
@@ -932,22 +1455,36 @@ ui_stat_card_hierarchy <- function(ns, var, config, position, data = NULL,
     # Role shown in header badge (L1/L2/L3) — no duplicate here
 
     # Format + Pct decimals — inline row
-    htmltools::tags$div(class = "ar-var-settings-row",
-      htmltools::tags$div(class = "ar-form-group",
+    htmltools::tags$div(
+      class = "ar-var-settings-row",
+      htmltools::tags$div(
+        class = "ar-form-group",
         htmltools::tags$label(class = "ar-form-label", "Format"),
         shiny::radioButtons(
-          ns(paste0("catfmt_", var)), NULL,
+          ns(paste0("catfmt_", var)),
+          NULL,
           choices = c("n (%)" = "npct", "n" = "n", "n/N (%)" = "nn_pct"),
-          selected = cat_format, inline = TRUE
+          selected = cat_format,
+          inline = TRUE
         )
       ),
-      htmltools::tags$div(class = "ar-form-group",
+      htmltools::tags$div(
+        class = "ar-form-group",
         htmltools::tags$label(class = "ar-form-label", "Dec %"),
-        htmltools::tags$input(type = "number", class = "ar-dec-input ar-dec-input--single",
+        htmltools::tags$input(
+          type = "number",
+          class = "ar-dec-input ar-dec-input--single",
           id = ns(paste0("pct_dec_", var)),
-          value = pct_dec, min = 0, max = 3, step = 1,
-          onchange = paste0("Shiny.setInputValue('", ns(paste0("pct_dec_", var)),
-            "', parseInt(this.value)||0, {priority:'event'})"))
+          value = pct_dec,
+          min = 0,
+          max = 3,
+          step = 1,
+          onchange = paste0(
+            "Shiny.setInputValue('",
+            ns(paste0("pct_dec_", var)),
+            "', parseInt(this.value)||0, {priority:'event'})"
+          )
+        )
       )
     ),
 
@@ -955,23 +1492,33 @@ ui_stat_card_hierarchy <- function(ns, var, config, position, data = NULL,
     level_count_ui,
 
     # Actions: Discard | Reset | Apply
-    htmltools::tags$div(class = "ar-var-card__actions",
+    htmltools::tags$div(
+      class = "ar-var-card__actions",
       htmltools::tags$button(
         class = "ar-btn-ghost",
-        onclick = paste0("Shiny.setInputValue('", ns(paste0("discard_", var)),
-          "', Math.random(), {priority: 'event'})"),
+        onclick = paste0(
+          "Shiny.setInputValue('",
+          ns(paste0("discard_", var)),
+          "', Math.random(), {priority: 'event'})"
+        ),
         "Discard"
       ),
       htmltools::tags$button(
         class = "ar-btn-ghost ar-text-muted",
-        onclick = paste0("Shiny.setInputValue('", ns(paste0("reset_", var)),
-          "', Math.random(), {priority: 'event'})"),
+        onclick = paste0(
+          "Shiny.setInputValue('",
+          ns(paste0("reset_", var)),
+          "', Math.random(), {priority: 'event'})"
+        ),
         "Reset"
       ),
       htmltools::tags$button(
         class = "ar-btn-primary ar-btn--sm",
-        onclick = paste0("Shiny.setInputValue('", ns(paste0("apply_", var)),
-          "', Math.random(), {priority: 'event'})"),
+        onclick = paste0(
+          "Shiny.setInputValue('",
+          ns(paste0("apply_", var)),
+          "', Math.random(), {priority: 'event'})"
+        ),
         "Apply"
       )
     )
@@ -984,61 +1531,355 @@ ui_stat_card_flag <- function(ns, var, config) {
   pct_dec <- config$pct_dec %||% 1
   cat_format <- config$cat_format %||% "npct"
 
-  htmltools::tags$div(class = "ar-var-card__content",
+  htmltools::tags$div(
+    class = "ar-var-card__content",
     # Variable Label
-    htmltools::tags$div(class = "ar-form-group",
+    htmltools::tags$div(
+      class = "ar-form-group",
       htmltools::tags$label(class = "ar-form-label", "Label"),
       htmltools::tags$input(
-        type = "text", class = "ar-input ar-input--sm ar-w-full",
+        type = "text",
+        class = "ar-input ar-input--sm ar-w-full",
         id = ns(paste0("vlabel_", var)),
         value = label,
         onchange = paste0(
-          "Shiny.setInputValue('", ns(paste0("vlabel_", var)),
+          "Shiny.setInputValue('",
+          ns(paste0("vlabel_", var)),
           "', this.value, {priority: 'event'})"
         )
       )
     ),
 
     # Format + Pct decimals — inline row
-    htmltools::tags$div(class = "ar-var-settings-row",
-      htmltools::tags$div(class = "ar-form-group",
+    htmltools::tags$div(
+      class = "ar-var-settings-row",
+      htmltools::tags$div(
+        class = "ar-form-group",
         htmltools::tags$label(class = "ar-form-label", "Format"),
         shiny::radioButtons(
-          ns(paste0("catfmt_", var)), NULL,
+          ns(paste0("catfmt_", var)),
+          NULL,
           choices = c("n (%)" = "npct", "n" = "n", "n/N (%)" = "nn_pct"),
-          selected = cat_format, inline = TRUE
+          selected = cat_format,
+          inline = TRUE
         )
       ),
-      htmltools::tags$div(class = "ar-form-group",
+      htmltools::tags$div(
+        class = "ar-form-group",
         htmltools::tags$label(class = "ar-form-label", "Dec %"),
-        htmltools::tags$input(type = "number", class = "ar-dec-input ar-dec-input--single",
+        htmltools::tags$input(
+          type = "number",
+          class = "ar-dec-input ar-dec-input--single",
           id = ns(paste0("pct_dec_", var)),
-          value = pct_dec, min = 0, max = 3, step = 1,
-          onchange = paste0("Shiny.setInputValue('", ns(paste0("pct_dec_", var)),
-            "', parseInt(this.value)||0, {priority:'event'})"))
+          value = pct_dec,
+          min = 0,
+          max = 3,
+          step = 1,
+          onchange = paste0(
+            "Shiny.setInputValue('",
+            ns(paste0("pct_dec_", var)),
+            "', parseInt(this.value)||0, {priority:'event'})"
+          )
+        )
       )
     ),
 
     # Actions: Discard | Reset | Apply
-    htmltools::tags$div(class = "ar-var-card__actions",
+    htmltools::tags$div(
+      class = "ar-var-card__actions",
       htmltools::tags$button(
         class = "ar-btn-ghost",
-        onclick = paste0("Shiny.setInputValue('", ns(paste0("discard_", var)),
-          "', Math.random(), {priority: 'event'})"),
+        onclick = paste0(
+          "Shiny.setInputValue('",
+          ns(paste0("discard_", var)),
+          "', Math.random(), {priority: 'event'})"
+        ),
         "Discard"
       ),
       htmltools::tags$button(
         class = "ar-btn-ghost ar-text-muted",
-        onclick = paste0("Shiny.setInputValue('", ns(paste0("reset_", var)),
-          "', Math.random(), {priority: 'event'})"),
+        onclick = paste0(
+          "Shiny.setInputValue('",
+          ns(paste0("reset_", var)),
+          "', Math.random(), {priority: 'event'})"
+        ),
         "Reset"
       ),
       htmltools::tags$button(
         class = "ar-btn-primary ar-btn--sm",
-        onclick = paste0("Shiny.setInputValue('", ns(paste0("apply_", var)),
-          "', Math.random(), {priority: 'event'})"),
+        onclick = paste0(
+          "Shiny.setInputValue('",
+          ns(paste0("apply_", var)),
+          "', Math.random(), {priority: 'event'})"
+        ),
         "Apply"
       )
+    )
+  )
+}
+
+# ══════════════════════════════════════════════════════════════
+# BDS ANALYSIS PANEL — bslib accordion: Visits + per-variable config
+# ══════════════════════════════════════════════════════════════
+
+render_bds_analysis <- function(d, ns, store, grp, session) {
+  # nolint
+  # ── Visit data ──
+  visit_var <- store$visit_var
+  available_pairs <- visit_var$available_pairs %||% list()
+  selected_pair <- visit_var$selected %||%
+    list(char = "AVISIT", num = "AVISITN")
+  pair_choices <- vapply(
+    available_pairs,
+    function(p) paste0(p$char, " / ", p$num),
+    character(1)
+  )
+  pair_selected <- paste0(selected_pair$char, " / ", selected_pair$num)
+
+  visit_configs <- store$visit_configs
+  visit_names <- names(visit_configs)
+  n_visits <- length(visit_names)
+  n_sel <- sum(vapply(
+    visit_configs,
+    function(v) isTRUE(v$selected),
+    logical(1)
+  ))
+
+  visit_rows <- lapply(visit_names, function(v) {
+    vcfg <- visit_configs[[v]]
+    checked <- isTRUE(vcfg$selected)
+    htmltools::tags$div(
+      class = "ar-visit-row",
+      `data-visit` = v,
+      htmltools::tags$input(
+        type = "checkbox",
+        id = ns(paste0("visit_", gsub("[^A-Za-z0-9]", "_", v))),
+        checked = if (checked) "checked" else NULL,
+        onchange = paste0(
+          "var rows = this.closest('.ar-visit-list').querySelectorAll('.ar-visit-row');",
+          "var vals = Array.from(rows).filter(function(r){",
+          "  return r.querySelector('input[type=checkbox]').checked;",
+          "}).map(function(r){ return r.getAttribute('data-visit'); });",
+          "Shiny.setInputValue('",
+          ns("selected_visits"),
+          "', vals, {priority: 'event'});"
+        ),
+        class = "ar-accent-check"
+      ),
+      htmltools::tags$span(class = "ar-visit-row__label", vcfg$label %||% v)
+    )
+  })
+
+  # ── Analysis columns ──
+  analysis_cols <- store$analysis_cols
+  available_cols <- analysis_cols$available %||% list()
+  selected_cols <- analysis_cols$selected %||% c("AVAL")
+
+  # Simple name-only choices for clean selectize (no labels in chips)
+  acol_choices <- vapply(available_cols, function(c) c$name, character(1))
+  names(acol_choices) <- acol_choices
+
+  # ── Stat config ──
+  stat_config <- store$stat_config
+  obs_stats <- stat_config$observed %||%
+    c("n", "mean_sd", "median", "q1_q3", "min_max")
+  cfb_stats <- stat_config$cfb %||% c("n", "mean_sd", "median")
+  param_configs <- store$param_configs
+  selected_params <- grp$analysis_vars %||% character(0)
+
+  all_cont_stats <- c(
+    "n",
+    "mean_sd",
+    "median",
+    "q1_q3",
+    "min_max",
+    "ci_mean",
+    "geo_mean",
+    "cv"
+  )
+  stat_labels <- c(
+    n = "n",
+    mean_sd = "Mean (SD)",
+    median = "Median",
+    q1_q3 = "Q1, Q3",
+    min_max = "Min, Max",
+    ci_mean = "95% CI",
+    geo_mean = "Geo. Mean",
+    cv = "CV%"
+  )
+
+  # ── Per-variable accordion panels ──
+  var_panels <- lapply(selected_cols, function(col_name) {
+    col_info <- Filter(function(c) c$name == col_name, available_cols)
+    if (length(col_info) == 0L) {
+      return(NULL)
+    }
+    col_info <- col_info[[1]]
+    is_cont <- col_info$type == "continuous"
+    is_cfb <- col_name %in% c("CHG", "PCHG", "BCHG", "PBCHG")
+    active_stats <- if (is_cfb) cfb_stats else obs_stats
+    type_tag <- if (is_cont) "continuous" else "categorical"
+
+    panel_title <- htmltools::tagList(
+      htmltools::tags$span(class = "ar-bds-var-title__name", col_name),
+      htmltools::tags$span(
+        class = paste0("ar-type-pill ar-type-pill--", type_tag),
+        if (is_cont) "NUM" else "CHR"
+      ),
+      htmltools::tags$span(class = "ar-bds-var-title__desc", col_info$label)
+    )
+
+    panel_body <- if (is_cont) {
+      htmltools::tagList(
+        htmltools::tags$div(
+          class = "ar-stat-grid",
+          lapply(all_cont_stats, function(s) {
+            htmltools::tags$label(
+              class = "ar-stat-check",
+              htmltools::tags$input(
+                type = "checkbox",
+                checked = if (s %in% active_stats) "checked" else NULL,
+                class = "ar-accent-check"
+              ),
+              stat_labels[s]
+            )
+          })
+        ),
+        if (
+          length(selected_params) > 0L &&
+            length(intersect(selected_params, names(param_configs))) > 0L
+        ) {
+          params_here <- intersect(selected_params, names(param_configs))
+          htmltools::tags$div(
+            class = "ar-mt-8",
+            htmltools::tags$div(
+              class = "ar-form-label ar-text-sm",
+              "Decimals by parameter"
+            ),
+            htmltools::tags$div(
+              class = "ar-decimal-list",
+              lapply(params_here, function(pc) {
+                cfg <- param_configs[[pc]]
+                data_dec <- cfg$data_dec %||% 0L
+                # Get decimal for this column (mean+1 as default)
+                dec_section <- if (is_cfb) "cfb" else "observed"
+                dec_val <- if (!is.null(cfg$decimals[[dec_section]])) {
+                  cfg$decimals[[dec_section]]$mean %||% (data_dec + 1L)
+                } else {
+                  data_dec + 1L
+                }
+                htmltools::tags$div(
+                  class = "ar-decimal-row",
+                  htmltools::tags$span(class = "ar-decimal-row__code", pc),
+                  htmltools::tags$input(
+                    type = "number",
+                    class = "ar-dec-input ar-dec-input--single",
+                    value = dec_val,
+                    min = 0,
+                    max = 6,
+                    step = 1,
+                    title = paste0(
+                      "Decimals for ",
+                      pc,
+                      " (auto: ",
+                      data_dec,
+                      "d from data)"
+                    )
+                  )
+                )
+              })
+            )
+          )
+        }
+      )
+    } else {
+      htmltools::tagList(
+        shiny::radioButtons(
+          ns(paste0("cat_fmt_", col_name)),
+          "Format",
+          choices = c("n (%)" = "npct", "n/N (%)" = "nn_pct"),
+          selected = "npct",
+          inline = TRUE
+        ),
+        shiny::numericInput(
+          ns(paste0("cat_dec_", col_name)),
+          "% Decimals",
+          value = 1,
+          min = 0,
+          max = 3,
+          width = "80px"
+        )
+      )
+    }
+
+    bslib::accordion_panel(
+      title = panel_title,
+      value = paste0("bds_var_", col_name),
+      panel_body
+    )
+  })
+  var_panels <- Filter(Negate(is.null), var_panels)
+
+  # ══════ Assemble using bslib::accordion ══════
+  bslib::accordion(
+    id = ns("bds_acc"),
+    open = FALSE,
+    multiple = TRUE,
+
+    # 1. Visits panel (collapsed by default)
+    if (n_visits > 0L) {
+      bslib::accordion_panel(
+        title = htmltools::tagList(
+          paste0("Visits"),
+          htmltools::tags$span(
+            class = "ar-text-sm ar-text-muted ar-ml-auto",
+            paste0(n_visits, " available")
+          )
+        ),
+        value = "bds_visits",
+        # Visit variable selector (only if multiple pairs detected)
+        if (length(available_pairs) > 1L) {
+          shiny::selectInput(
+            ns("visit_var_select"),
+            "Visit variable",
+            choices = pair_choices,
+            selected = pair_selected,
+            width = "100%"
+          )
+        },
+        htmltools::tags$div(
+          class = "ar-visit-list",
+          id = ns("visit_sortable"),
+          visit_rows
+        )
+      )
+    },
+
+    # 2. Analysis Variables panel
+    bslib::accordion_panel(
+      title = "Analysis Variables",
+      value = "bds_analysis_vars",
+      shiny::selectizeInput(
+        ns("analysis_cols_select"),
+        NULL,
+        choices = acol_choices,
+        selected = selected_cols,
+        multiple = TRUE,
+        width = "100%",
+        options = list(
+          plugins = list("remove_button"),
+          placeholder = "Select columns..."
+        )
+      ),
+      # Per-variable sub-accordion
+      if (length(var_panels) > 0L) {
+        bslib::accordion(
+          id = ns("bds_var_acc"),
+          open = selected_cols[1],
+          multiple = TRUE,
+          !!!var_panels
+        )
+      }
     )
   )
 }

@@ -22,25 +22,10 @@ mod_grouping_ui <- function(id) {
 mod_grouping_vars_ui <- function(id) {
   ns <- shiny::NS(id)
   htmltools::tagList(
-    # Variable list container (dynamic)
+    # Variable list container (dynamic — switches based on sidebar_pattern)
     shiny::uiOutput(ns("var_list")),
-    # Static selectize + reset (never destroyed/recreated, avoids auto-add bug)
-    htmltools::tags$div(class = "ar-mt-8",
-      htmltools::tags$label(class = "ar-form-label", "Add Variable"),
-      shiny::selectizeInput(ns("add_extra_var"), NULL,
-        choices = NULL, selected = NULL, width = "100%",
-        options = list(placeholder = "Select column to add...")
-      ),
-      htmltools::tags$div(class = "ar-mt-8",
-        htmltools::tags$button(
-          class = "ar-btn-ghost",
-          onclick = paste0("Shiny.setInputValue('", ns("reset_vars"),
-                           "', Math.random(), {priority: 'event'})"),
-          htmltools::tags$i(class = "fa fa-undo ar-icon-md ar-icon-mr"),
-          "Reset Variables"
-        )
-      )
-    )
+    # Add Variable + Reset (only for column-name templates, hidden for BDS/response)
+    shiny::uiOutput(ns("var_add_controls"))
   )
 }
 
@@ -265,6 +250,29 @@ mod_grouping_server <- function(id, store, grp) {
       htmltools::tags$div(class = "ar-varlist", var_rows)
     })
 
+    # Render Add Variable / Reset controls (hidden for BDS/response templates)
+    output$var_add_controls <- shiny::renderUI({
+      tmpl <- store$template
+      if (fct_suggests_paramcds(tmpl)) return(NULL)
+
+      htmltools::tags$div(class = "ar-mt-8",
+        htmltools::tags$label(class = "ar-form-label", "Add Variable"),
+        shiny::selectizeInput(ns("add_extra_var"), NULL,
+          choices = NULL, selected = NULL, width = "100%",
+          options = list(placeholder = "Select column to add...")
+        ),
+        htmltools::tags$div(class = "ar-mt-8",
+          htmltools::tags$button(
+            class = "ar-btn-ghost",
+            onclick = paste0("Shiny.setInputValue('", ns("reset_vars"),
+                             "', Math.random(), {priority: 'event'})"),
+            htmltools::tags$i(class = "fa fa-undo ar-icon-md ar-icon-mr"),
+            "Reset Variables"
+          )
+        )
+      )
+    })
+
     # Handle analysis vars change
     shiny::observeEvent(input$analysis_vars, {
       grp$analysis_vars <- input$analysis_vars
@@ -310,22 +318,30 @@ mod_grouping_server <- function(id, store, grp) {
       store$var_labels <- list()
 
       tmpl <- store$template
-      ds_name <- store$pipeline_filters$dataset %||% names(store$datasets)[1]
+      # Use template-specific dataset for reset
+      var_ds <- fct_template_var_dataset(tmpl)
+      ds_name <- if (var_ds %in% names(store$datasets)) var_ds
+                 else store$pipeline_filters$dataset %||% names(store$datasets)[1]
       d <- store$datasets[[ds_name]]
       if (!is.null(tmpl) && !is.null(d)) {
-        # Use the spec function to get original selected vars (not fct_suggest_vars which returns ALL candidates)
-        spec_fn <- switch(tmpl,
-          demog = spec_demog,
-          ae_overall = spec_ae_overall,
-          ae_socpt = spec_ae_socpt,
-          NULL
-        )
+        # Look up spec function from registry
+        tmpl_def <- get_template_def(tmpl)
+        spec_fn <- if (!is.null(tmpl_def) && !is.null(tmpl_def$spec_fn)) {
+          tryCatch(get(tmpl_def$spec_fn), error = function(e) NULL)
+        }
         if (!is.null(spec_fn)) {
           defaults <- spec_fn(d)
-          grp$analysis_vars <- defaults$grouping$analysis_vars
-          store$var_configs <- defaults$var_configs
+          if (fct_suggests_paramcds(tmpl)) {
+            grp$analysis_vars <- defaults$grouping$selected_params %||%
+                                  defaults$grouping$analysis_vars
+            store$param_configs <- defaults$param_configs %||% list()
+            store$stat_config <- defaults$stat_config %||% list()
+            store$visit_configs <- defaults$visit_configs %||% list()
+          } else {
+            grp$analysis_vars <- defaults$grouping$analysis_vars
+            store$var_configs <- defaults$var_configs
+          }
         } else {
-          # Fallback: use detect for non-spec templates
           candidate_vars <- fct_suggest_vars(tmpl, d)
           if (length(candidate_vars) == 0) candidate_vars <- fct_detect_demog_vars(d)
           grp$analysis_vars <- candidate_vars
@@ -338,48 +354,121 @@ mod_grouping_server <- function(id, store, grp) {
   })
 }
 
-# ── Helper: Render BDS parameter picker ──
+# ── Helper: Render BDS parameter list (VARIABLES panel — params only) ──
 render_bds_params <- function(d, ns, store, grp) {
-  params <- unique(d[, c("PARAMCD", "PARAM"), drop = FALSE])
-  params <- params[order(params$PARAMCD), ]
+  # Apply dataset filter to subset available parameters
+  filter_expr <- store$pipeline_filters$data_filter
+  if (!is.null(filter_expr) && nzchar(filter_expr)) {
+    mask <- tryCatch(safe_eval_filter(filter_expr, d), error = function(e) NULL)
+    if (is.logical(mask) && length(mask) == nrow(d)) {
+      d <- d[mask, , drop = FALSE]
+    }
+  }
 
-  # Template-aware pre-selection
-  tmpl <- store$template
+  # Extract unique PARAMCD/PARAM from (filtered) data
+  if (!("PARAMCD" %in% names(d))) {
+    return(htmltools::tags$div(class = "ar-text-sm ar-text-muted", "No PARAMCD column found"))
+  }
+
+  params_df <- unique(d[, intersect(c("PARAMCD", "PARAM"), names(d)), drop = FALSE])
+  params_df <- params_df[!is.na(params_df[["PARAMCD"]]) & nzchar(params_df[["PARAMCD"]]), , drop = FALSE]
+  if (nrow(params_df) == 0L) {
+    return(htmltools::tags$div(class = "ar-text-sm ar-text-muted", "No parameters match the current filter"))
+  }
+
+  param_configs <- store$param_configs
   selected_params <- grp$analysis_vars %||% character(0)
+  ds_label <- toupper(store$pipeline_filters$dataset %||% "")
+  all_paramcds <- as.character(params_df[["PARAMCD"]])
 
-  param_rows <- lapply(seq_len(nrow(params)), function(i) {
-    pc <- params$PARAMCD[i]
-    pl <- params$PARAM[i]
+  # Build parameter rows
+
+  param_rows <- lapply(all_paramcds, function(pc) {
+    cfg <- param_configs[[pc]]
+    # PARAM label from data or config
+    param_label <- if ("PARAM" %in% names(params_df)) {
+      row_match <- params_df[params_df[["PARAMCD"]] == pc, , drop = FALSE]
+      if (nrow(row_match) > 0L) as.character(row_match[["PARAM"]][1L]) else pc
+    } else pc
+    # User override
     user_label <- store$var_labels[[pc]]
-    display_label <- if (!is.null(user_label)) user_label else pl
+    if (!is.null(user_label)) param_label <- user_label
+
     checked <- pc %in% selected_params
 
-    htmltools::tags$div(class = "ar-varlist-row",
-      htmltools::tags$div(class = "ar-varlist-row__header",
-        htmltools::tags$input(
-          type = "checkbox",
-          id = ns(paste0("avar_", pc)),
-          checked = if (checked) "checked" else NULL,
-          onchange = paste0(
-            "var checked = document.querySelectorAll('input[id^=\"", ns("avar_"), "\"]:checked');",
-            "var vals = Array.from(checked).map(function(c) { return c.id.replace('", ns("avar_"), "', ''); });",
-            "Shiny.setInputValue('", ns("analysis_vars"), "', vals);"
-          ),
-          class = "ar-accent-check"
+    htmltools::tags$div(
+      class = "ar-param-row",
+      `data-param` = pc,
+      `data-label` = tolower(param_label),
+      htmltools::tags$span(class = "ar-param-row__drag", "\u2630"),
+      htmltools::tags$input(
+        type = "checkbox",
+        id = ns(paste0("avar_", pc)),
+        checked = if (checked) "checked" else NULL,
+        onchange = paste0(
+          "var checked = document.querySelectorAll('input[id^=\"", ns("avar_"), "\"]:checked');",
+          "var vals = Array.from(checked).map(function(c) { return c.id.replace('", ns("avar_"), "', ''); });",
+          "if(vals.length === 0){ this.checked = true; return; }",
+          "Shiny.setInputValue('", ns("analysis_vars"), "', vals);"
         ),
-        htmltools::tags$span(class = "ar-varlist-row__name", pc),
-        htmltools::tags$span(class = "ar-varlist-row__label", display_label)
+        class = "ar-accent-check"
+      ),
+      htmltools::tags$div(class = "ar-param-row__info",
+        htmltools::tags$span(class = "ar-param-row__code", pc),
+        htmltools::tags$span(class = "ar-param-row__label", param_label)
       )
     )
   })
 
+  n_total <- length(all_paramcds)
+  n_selected <- sum(all_paramcds %in% selected_params)
+  show_search <- n_total > 10L
+
   htmltools::tags$div(class = "ar-varlist",
     htmltools::tags$div(class = "ar-varlist__header",
       htmltools::tags$span(class = "ar-form-label",
-        paste0("PARAMETERS (from ", toupper(store$pipeline_filters$dataset %||% ""), ")")),
+        paste0("PARAMETERS (", ds_label, ")")),
       htmltools::tags$span(class = "ar-text-sm ar-text-muted",
-        paste0(nrow(params), " parameters available"))
+        paste0(n_selected, " / ", n_total, " selected"))
     ),
-    param_rows
+    # Search input for large param lists (lab 50+)
+    if (show_search) {
+      htmltools::tags$input(
+        type = "text",
+        class = "ar-input ar-param-search",
+        placeholder = "Filter parameters...",
+        oninput = paste0(
+          "var q = this.value.toLowerCase();",
+          "this.closest('.ar-varlist').querySelectorAll('.ar-param-row').forEach(function(r){",
+          "  var pc = (r.getAttribute('data-param') || '').toLowerCase();",
+          "  var lb = (r.getAttribute('data-label') || '').toLowerCase();",
+          "  r.style.display = (pc.indexOf(q) >= 0 || lb.indexOf(q) >= 0) ? '' : 'none';",
+          "});"
+        )
+      )
+    },
+    # Select All / Deselect All
+    htmltools::tags$div(class = "ar-param-actions",
+      htmltools::tags$button(
+        class = "ar-btn-ghost ar-btn-ghost--xs",
+        onclick = paste0(
+          "document.querySelectorAll('input[id^=\"", ns("avar_"), "\"]').forEach(function(c){ c.checked = true; });",
+          "var vals = Array.from(document.querySelectorAll('input[id^=\"", ns("avar_"), "\"]')).map(function(c){ return c.id.replace('", ns("avar_"), "', ''); });",
+          "Shiny.setInputValue('", ns("analysis_vars"), "', vals);"
+        ),
+        "Select All"
+      ),
+      htmltools::tags$button(
+        class = "ar-btn-ghost ar-btn-ghost--xs",
+        onclick = paste0(
+          "var all = document.querySelectorAll('input[id^=\"", ns("avar_"), "\"]');",
+          "all.forEach(function(c, i){ c.checked = (i === 0); });",
+          "var first = all[0] ? [all[0].id.replace('", ns("avar_"), "', '')] : [];",
+          "Shiny.setInputValue('", ns("analysis_vars"), "', first);"
+        ),
+        "Deselect All"
+      )
+    ),
+    htmltools::tags$div(class = "ar-param-list", id = ns("param_sortable"), param_rows)
   )
 }
