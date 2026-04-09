@@ -36,5 +36,5 @@ test_that("fct_codegen_data includes population filter", {
 test_that("fct_codegen_header includes libraries", {
   code <- fct_codegen_header()
   expect_match(code, "library\\(dplyr\\)")
-  expect_match(code, "library\\(arframe\\)")
+  expect_match(code, "library\\(vellum\\)")
 })

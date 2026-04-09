@@ -19,7 +19,7 @@ safe_eval_filter <- function(expr_str, data) {
 # Resolve bundled data path — works in dev (app.R) and installed package mode
 data_path <- function(filename) {
   # Try installed package first
-  p <- system.file("data", filename, package = "arcraft")
+  p <- system.file("data", filename, package = "loom")
   if (nzchar(p)) return(p)
   # Dev mode: inst/data/ relative to working directory
   p <- file.path("inst", "data", filename)
@@ -126,11 +126,11 @@ normalize_fmt <- function(fmt) {
   out
 }
 
-# Read _arframe.yml company config
+# Read _vellum.yml company config
 # Search order: working directory, then home directory
 # Returns NULL if not found
-read_arframe_yml <- function() {
-  paths <- c("_arframe.yml", file.path(Sys.getenv("HOME"), "_arframe.yml"))
+read_vellum_yml <- function() {
+  paths <- c("_vellum.yml", file.path(Sys.getenv("HOME"), "_vellum.yml"))
   for (p in paths) {
     if (file.exists(p)) {
       tryCatch({
@@ -142,7 +142,7 @@ read_arframe_yml <- function() {
   NULL
 }
 
-# Get format defaults: hardcoded → _arframe.yml overlay
+# Get format defaults: hardcoded → _vellum.yml overlay
 # Convert literal \n (typed by user in text inputs) to actual newline
 resolve_newlines <- function(x) {
   if (is.null(x) || !is.character(x)) return(x)
@@ -170,7 +170,7 @@ get_stat_dec <- function(config, stat_name, fallback = 1) {
   else decs %||% fallback
 }
 
-# Cards stat format mapping (arcraft stat name -> fr_wide_ard format string)
+# Cards stat format mapping (loom stat name -> fr_wide_ard format string)
 CARDS_STAT_FORMAT_MAP <- list(
   n = "{N}", mean = "{mean}", sd = "{sd}",
   mean_sd = "{mean} ({sd})", median = "{median}",
@@ -179,7 +179,7 @@ CARDS_STAT_FORMAT_MAP <- list(
   geo_mean = "{mean}", cv = "{sd}", geo_mean_cv = "{mean} ({sd})"
 )
 
-# Cards decimal name mapping (arcraft stat name -> cards stat name)
+# Cards decimal name mapping (loom stat name -> cards stat name)
 CARDS_DECIMAL_MAP <- list(
   mean = "mean", sd = "sd", median = "median",
   q1 = "p25", q3 = "p75", min = "min", max = "max",

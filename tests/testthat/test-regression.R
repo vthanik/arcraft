@@ -2,7 +2,7 @@
 
 # Helper: load ADSL with SAFFL filter (matches app behavior)
 load_test_adsl <- function() {
-  path <- system.file("data", "adsl.rds", package = "arcraft")
+  path <- system.file("data", "adsl.rds", package = "loom")
   if (!nzchar(path)) path <- file.path("inst", "data", "adsl.rds")
   if (!file.exists(path)) path <- file.path("..", "..", "inst", "data", "adsl.rds")
   if (!file.exists(path)) return(NULL)
@@ -205,7 +205,7 @@ test_that("generated code executes without error (basic)", {
     grp, defaults$var_configs, fmt)
 
   # Fix path for test
-  test_adsl_path <- system.file("data", "adsl.rds", package = "arcraft")
+  test_adsl_path <- system.file("data", "adsl.rds", package = "loom")
   if (!nzchar(test_adsl_path)) test_adsl_path <- file.path("..", "..", "inst", "data", "adsl.rds")
   test_adsl_path <- normalizePath(test_adsl_path, mustWork = FALSE)
   code <- sub('readRDS\\("data/adsl.rds"\\)', paste0('readRDS("', test_adsl_path, '")'), code)
@@ -234,7 +234,7 @@ test_that("generated code executes without error (group var)", {
 
   code <- fct_codegen_dispatch("demog", list(dataset = "adsl", pop_flag = "SAFFL"),
     grp, defaults$var_configs, fmt)
-  test_adsl_path <- system.file("data", "adsl.rds", package = "arcraft")
+  test_adsl_path <- system.file("data", "adsl.rds", package = "loom")
   if (!nzchar(test_adsl_path)) test_adsl_path <- file.path("..", "..", "inst", "data", "adsl.rds")
   test_adsl_path <- normalizePath(test_adsl_path, mustWork = FALSE)
   code <- sub('readRDS\\("data/adsl.rds"\\)', paste0('readRDS("', test_adsl_path, '")'), code)

@@ -1,5 +1,5 @@
-# arframe rendering orchestrator — pure R, no Shiny
-# Consumes IR from fct_build_ir() → walks sections → arframe verbs
+# vellum rendering orchestrator — pure R, no Shiny
+# Consumes IR from fct_build_ir() → walks sections → vellum verbs
 
 # ── Build fr_spec from ARD data + format config ──
 fct_build_spec <- function(tbl_data, format_cfg, combined_groups = NULL) {
@@ -9,12 +9,12 @@ fct_build_spec <- function(tbl_data, format_cfg, combined_groups = NULL) {
   if ("group_value" %in% names(tbl_data) && !"group_value" %in% row_cols) {
     tbl_data$group_value <- NULL
   }
-  spec <- tbl_data |> arframe::fr_table()
+  spec <- tbl_data |> vellum::fr_table()
 
   # ── Columns ──
   col_specs <- list()
   for (mc in intersect(ir$cols$meta_hidden, names(tbl_data)))
-    col_specs[[mc]] <- arframe::fr_col(visible = FALSE)
+    col_specs[[mc]] <- vellum::fr_col(visible = FALSE)
 
   for (cn in names(tbl_data)) {
     a <- list()
@@ -27,7 +27,7 @@ fct_build_spec <- function(tbl_data, format_cfg, combined_groups = NULL) {
       if (cn %in% (sp$cols %||% character(0))) { a$group <- sp$label; break }
     ha <- ir$header$col_aligns[[cn]]
     if (!is.null(ha)) a$header_align <- ha
-    if (length(a) > 0) col_specs[[cn]] <- do.call(arframe::fr_col, a)
+    if (length(a) > 0) col_specs[[cn]] <- do.call(vellum::fr_col, a)
   }
 
   # Stub column
@@ -40,7 +40,7 @@ fct_build_spec <- function(tbl_data, format_cfg, combined_groups = NULL) {
       sa <- c(ex, sa); sa <- sa[!duplicated(names(sa))]
     }
     if (is.null(sa$align)) sa$align <- ir$cols$stub$align
-    col_specs[[sc]] <- do.call(arframe::fr_col, sa)
+    col_specs[[sc]] <- do.call(vellum::fr_col, sa)
   }
 
   # Global column options
@@ -52,7 +52,7 @@ fct_build_spec <- function(tbl_data, format_cfg, combined_groups = NULL) {
   if (isTRUE(g$split))                                  ca$.split    <- TRUE
   if (isTRUE(g$n_counts) && length(g$n_values) > 0)     ca$.n        <- g$n_values
   if (!is.null(g$n_format))                              ca$.n_format <- resolve_newlines(g$n_format)
-  if (length(ca) > 1) spec <- do.call(arframe::fr_cols, ca)
+  if (length(ca) > 1) spec <- do.call(vellum::fr_cols, ca)
 
   # ── Titles ──
   if (length(ir$titles$items) > 0) {
@@ -65,7 +65,7 @@ fct_build_spec <- function(tbl_data, format_cfg, combined_groups = NULL) {
     ta <- c(list(spec), ti)
     if (!is.null(d$align)) ta$.align <- d$align
     if (isTRUE(d$bold))   ta$.bold  <- TRUE
-    spec <- do.call(arframe::fr_titles, ta)
+    spec <- do.call(vellum::fr_titles, ta)
   }
 
   # ── Footnotes ──
@@ -74,7 +74,7 @@ fct_build_spec <- function(tbl_data, format_cfg, combined_groups = NULL) {
     fa <- c(list(spec), ft)
     if (isTRUE(ir$footnotes$separator))    fa$.separator <- TRUE
     if (ir$footnotes$placement != "every") fa$.placement <- ir$footnotes$placement
-    spec <- do.call(arframe::fr_footnotes, fa)
+    spec <- do.call(vellum::fr_footnotes, fa)
   }
 
   # ── Header ──
@@ -87,14 +87,14 @@ fct_build_spec <- function(tbl_data, format_cfg, combined_groups = NULL) {
   if (!is.null(h$color) && nzchar(h$color))           ha$color      <- h$color
   if (!is.null(h$font_size))                           ha$font_size  <- h$font_size
   if (!is.null(h$repeat_on_page))                      ha$repeat_on_page <- h$repeat_on_page
-  spec <- do.call(arframe::fr_header, ha)
+  spec <- do.call(vellum::fr_header, ha)
 
   # ── Spans ──
   for (sp in ir$spans) {
     if (nzchar(sp$label) && length(sp$cols) > 0) {
       sa <- list(spec); sa[[sp$label]] <- sp$cols
       if (!is.null(sp$level) && sp$level > 1) sa$.level <- sp$level
-      spec <- do.call(arframe::fr_spans, sa)
+      spec <- do.call(vellum::fr_spans, sa)
     }
   }
 
@@ -105,7 +105,7 @@ fct_build_spec <- function(tbl_data, format_cfg, combined_groups = NULL) {
       if (!is.null(ir$page[[nm]])) pa[[nm]] <- ir$page[[nm]]
     if (!is.null(ir$page$continuation) && nzchar(ir$page$continuation))
       pa$continuation <- resolve_newlines(ir$page$continuation)
-    spec <- do.call(arframe::fr_page, pa)
+    spec <- do.call(vellum::fr_page, pa)
   }
 
   # ── Rules ──
@@ -115,10 +115,10 @@ fct_build_spec <- function(tbl_data, format_cfg, combined_groups = NULL) {
     if (r$line_width != "thin")    ra$width     <- r$line_width
     if (r$line_color != "#000000") ra$color     <- r$line_color
     if (r$line_style != "solid")   ra$linestyle <- r$line_style
-    spec <- do.call(arframe::fr_hlines, ra)
+    spec <- do.call(vellum::fr_hlines, ra)
   }
   if (!is.null(r$vline_preset) && r$vline_preset != "none")
-    spec <- arframe::fr_vlines(spec, r$vline_preset)
+    spec <- vellum::fr_vlines(spec, r$vline_preset)
 
   # ── Rows — only pass column refs that exist in tbl_data ──
   data_cols <- names(tbl_data)
@@ -147,7 +147,7 @@ fct_build_spec <- function(tbl_data, format_cfg, combined_groups = NULL) {
     ra$group_keep <- FALSE; hr <- TRUE
   }
   if (isTRUE(rw$wrap)) { ra$wrap <- TRUE; hr <- TRUE }
-  if (hr) spec <- do.call(arframe::fr_rows, ra)
+  if (hr) spec <- do.call(vellum::fr_rows, ra)
 
   # ── Page chrome ──
   for (verb in c("pagehead", "pagefoot")) {
@@ -156,7 +156,7 @@ fct_build_spec <- function(tbl_data, format_cfg, combined_groups = NULL) {
       va <- list(spec)
       for (nm in c("left","center","right"))
         if (nzchar(chrome[[nm]])) va[[nm]] <- resolve_newlines(chrome[[nm]])
-      spec <- do.call(getExportedValue("arframe", paste0("fr_", verb)), va)
+      spec <- do.call(getExportedValue("vellum", paste0("fr_", verb)), va)
     }
   }
 
@@ -167,7 +167,7 @@ fct_build_spec <- function(tbl_data, format_cfg, combined_groups = NULL) {
   if (s$pagehead_after != 0L)   { sa$pagehead_after   <- s$pagehead_after;   hs <- TRUE }
   if (s$pagefoot_before != 0L)  { sa$pagefoot_before  <- s$pagefoot_before;  hs <- TRUE }
   if (!is.null(s$page_by_after)) { sa$page_by_after  <- s$page_by_after;   hs <- TRUE }
-  if (hs) spec <- do.call(arframe::fr_spacing, sa)
+  if (hs) spec <- do.call(vellum::fr_spacing, sa)
 
   # ── Styles ──
   stys <- ir$styles
@@ -180,12 +180,12 @@ fct_build_spec <- function(tbl_data, format_cfg, combined_groups = NULL) {
         match_args <- list(col = s$col)
         if (!is.null(s$pattern)) match_args$pattern <- s$pattern
         if (!is.null(s$value))   match_args$value   <- s$value
-        rs_args <- list(rows = do.call(arframe::fr_rows_matches, match_args))
+        rs_args <- list(rows = do.call(vellum::fr_rows_matches, match_args))
         if (isTRUE(s$bold))       rs_args$bold       <- TRUE
         if (!is.null(s$background)) rs_args$background <- s$background
         if (!is.null(s$color))     rs_args$color      <- s$color
         if (!is.null(s$italic))   rs_args$italic     <- s$italic
-        style_objs[[length(style_objs) + 1]] <- do.call(arframe::fr_row_style, rs_args)
+        style_objs[[length(style_objs) + 1]] <- do.call(vellum::fr_row_style, rs_args)
       } else if (s$type == "conditional") {
         # fr_style_if: condition-based styling
         si_args <- list(condition = rlang::as_function(stats::as.formula(s$condition)))
@@ -195,7 +195,7 @@ fct_build_spec <- function(tbl_data, format_cfg, combined_groups = NULL) {
         if (!is.null(s$background)) si_args$background <- s$background
         if (!is.null(s$color))     si_args$color      <- s$color
         if (!is.null(s$italic))   si_args$italic   <- s$italic
-        style_objs[[length(style_objs) + 1]] <- do.call(arframe::fr_style_if, si_args)
+        style_objs[[length(style_objs) + 1]] <- do.call(vellum::fr_style_if, si_args)
       } else if (s$type == "row") {
         rs_args <- list()
         if (!is.null(s$match))  rs_args$rows   <- s$match
@@ -203,11 +203,11 @@ fct_build_spec <- function(tbl_data, format_cfg, combined_groups = NULL) {
         if (!is.null(s$background)) rs_args$background <- s$background
         if (!is.null(s$color))     rs_args$color      <- s$color
         if (!is.null(s$italic)) rs_args$italic <- s$italic
-        style_objs[[length(style_objs) + 1]] <- do.call(arframe::fr_row_style, rs_args)
+        style_objs[[length(style_objs) + 1]] <- do.call(vellum::fr_row_style, rs_args)
       }
     }
     if (length(style_objs) > 0) {
-      spec <- do.call(arframe::fr_styles, c(list(spec), style_objs))
+      spec <- do.call(vellum::fr_styles, c(list(spec), style_objs))
     }
   }
 
@@ -217,7 +217,7 @@ fct_build_spec <- function(tbl_data, format_cfg, combined_groups = NULL) {
 # ── Render to RTF file ──
 fct_render_rtf <- function(tbl_data, format_cfg, path, combined_groups = NULL) {
   spec <- fct_build_spec(tbl_data, format_cfg, combined_groups)
-  arframe::fr_render(spec, path)
+  vellum::fr_render(spec, path)
   path
 }
 
@@ -226,6 +226,6 @@ fct_render_html_preview <- function(tbl_data, format_cfg, combined_groups = NULL
   spec <- fct_build_spec(tbl_data, format_cfg, combined_groups)
   tmp <- tempfile(fileext = ".html")
   on.exit(unlink(tmp), add = TRUE)
-  arframe::fr_render(spec, tmp)
+  vellum::fr_render(spec, tmp)
   paste0(readLines(tmp, warn = FALSE), collapse = "\n")
 }

@@ -32,7 +32,7 @@ fmt_preset_values <- function(preset_name) {
     ),
     company = NULL
   )
-  yml <- read_arframe_yml()
+  yml <- read_vellum_yml()
   if (!is.null(yml)) {
     presets$company <- yml
   }

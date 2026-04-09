@@ -1,0 +1,38 @@
+# arbuilder/.claudeignore
+# Tells Claude Code which files/dirs to skip when reading context.
+# Keeps the context window focused on Shiny app source.
+
+# --- Local working files (never source of truth) ---
+.local/
+.claude/
+.claudeignore
+
+# --- renv (installed packages — massive, never useful as context) ---
+renv/library/
+renv/staging/
+renv/.cache/
+
+# --- Third-party minified JS (unreadable, not authored here) ---
+inst/app/www/Sortable.min.js
+
+# --- Generated output files ---
+.local/output/
+.local/screenshots/
+
+# --- Large reference documents ---
+.local/cdisc/
+.local/iqvia_tfl_tool_sasmacro/
+.local/docs/references/
+
+# --- Archive (pre-rebuild snapshot — historical only) ---
+.local/archive/
+
+# --- Backup templates (not active source) ---
+.local/backup_templates/
+
+# --- adam_pilot data (patient-level data, not code) ---
+../adam_pilot/
+
+# --- Temp / debug ---
+*.log
+debug_*.R

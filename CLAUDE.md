@@ -1,54 +1,192 @@
-# CLAUDE.md — arbuilder
+# CLAUDE.md — loom
 
-Local Shiny app for building submission-ready TFLs from ADaM data. Uses `arframe` (currently `tlframe`) as the rendering engine. No server needed — runs on a laptop.
+Local Shiny app for building submission-ready TFLs from ADaM data. Uses `arframe` as the rendering engine. No server needed — runs on a laptop.
 
 ## Quick Context
 
-- **arframe** (`tlframe`) = the rendering engine (pure R, no UI) — already built at `../tlframe/`
-- **arbuilder** = this project — Shiny app that takes ADaM → ARD wide → arframe → RTF/PDF
+- **arframe** = the rendering engine (pure R, no UI) — already built at `../arframe/`
+- **loom** = this project — Shiny app that takes ADaM → ARD wide → arframe → RTF/PDF
 - **adam_pilot** = test datasets at `../adam_pilot/` — 11 synthetic ADaM datasets, 250 subjects
 
-## Phase 1: Demographics Only
+## Source of Truth
 
-Demographics template is the ONLY active template. All other templates (AE, lab, TTE, figures, listings) are backed up in `.local/backup_templates/R/`. Do NOT add new templates until demographics is bulletproof.
+Session memory is a hint — not ground truth. Always verify against actual source.
 
-Quality gate: `devtools::check()`, end-to-end test, generated script runs standalone, `/simplify` audit.
+| Question | Read this first |
+|---|---|
+| Phase 2 BDS/Response design | `.local/specs/2026-04-01-bds-response-templates-design.md` |
+| Current implementation plan | `.claude/plans/cozy-prancing-hedgehog.md` |
+| Visual design (colors, spacing, components) | `.local/design/DESIGN-SPEC.md` |
+| CSS component rules | `inst/app/www/app.css` — authoritative, not memory |
+| JS message handler names | `inst/app/www/app.js` section 7 — check before adding new handlers |
+| Template registry | `R/fct_template_registry.R` |
+| Sidebar patterns per template | `R/mod_analysis_vars.R` |
+| Backup template implementations | `.local/backup_templates/R/` |
+| ADaM variable reference | `.local/cdisc-reference.md` |
+| CSS/JS rules detail | `.claude/skills/css-js.md` |
+
+Never infer design decisions from context. Read the spec file first.
+
+## Template Inventory (19 total)
+
+### Phase 1 — LIVE
+
+| # | Template | Category | ADaM | sidebar_pattern | Spec | ARD Engine |
+|---|----------|----------|------|----------------|------|------------|
+| 1 | Demographics | Study Info | ADSL | `variable_stat` | `spec_demog.R` | `fct_ard_demog_cards.R` |
+| 2 | AE Overall Summary | Safety | ADAE | `flag_summary` | `spec_ae.R` | `fct_ard_ae.R` |
+| 3 | AE by SOC/PT | Safety | ADAE | `hierarchical` | `spec_ae.R` | `fct_ard_ae.R` |
+
+### Phase 2 — IN PROGRESS (BDS + Response)
+
+Design spec: `.local/specs/2026-04-01-bds-response-templates-design.md`
+Implementation plan: `.claude/plans/cozy-prancing-hedgehog.md`
+
+| # | Template | Category | ADaM | sidebar_pattern | Spec | ARD Engine |
+|---|----------|----------|------|----------------|------|------------|
+| 4 | Vital Signs Summary | Safety | ADVS | `parameter_visit` | `spec_bds.R` | `fct_ard_bds.R` (shared) |
+| 5 | Lab Summary | Laboratory | ADLB | `parameter_visit` | `spec_bds.R` | `fct_ard_bds.R` (shared) |
+| 6 | ECG Summary | Safety | ADEG | `parameter_visit` | `spec_bds.R` | `fct_ard_bds.R` (shared) |
+| 7 | Response Summary | Efficacy | ADRS | `response_summary` | `spec_response.R` | `fct_ard_response.R` |
+
+**Architecture:** Vitals/Lab/ECG share ONE `fct_ard_bds()` engine. Each `spec_vitals()`/`spec_lab()`/`spec_ecg()` is a thin wrapper with domain-specific defaults.
+
+**Before starting any Phase 2 template, read in order:**
+1. `.local/specs/2026-04-01-bds-response-templates-design.md`
+2. `.claude/plans/cozy-prancing-hedgehog.md`
+3. An existing live template as reference (e.g. `spec_ae.R`)
+
+**Phase 2 wiring checklist** — all must be done before marking LIVE:
+- [ ] ARD engine (`fct_ard_bds.R` or `fct_ard_response.R`)
+- [ ] Spec factory (`spec_bds.R` wrapper or `spec_response.R`)
+- [ ] Template registry entry (`fct_template_registry.R`)
+- [ ] Sidebar pattern wired in `mod_analysis_vars.R`
+- [ ] ARD dispatch entry (`fct_ard_dispatch.R`)
+- [ ] Codegen dispatch entry (`fct_codegen_dispatch.R`)
+- [ ] Variable suggestion entry (`fct_suggest_vars.R`)
+- [ ] Tests for ARD engine + spec factory
+- [ ] Example in gallery site
+
+### Backlog (not started)
+
+| # | Template | Category | ADaM | sidebar_pattern |
+|---|----------|----------|------|----------------|
+| 8 | Disposition | Study Info | ADSL | `variable_stat` |
+| 9 | Protocol Deviations | Study Info | ADSL | `variable_stat` |
+| 10 | Analysis Populations | Study Info | ADSL | `variable_stat` |
+| 11 | Enrollment | Study Info | ADSL | `variable_stat` |
+| 12 | Medical History | Study Info | ADSL | `variable_stat` |
+| 13 | Concomitant Meds | Study Info | ADCM | `variable_stat` |
+| 14 | AE by Severity | Safety | ADAE | `hierarchical` |
+| 15 | Lab Shift Table | Laboratory | ADLB | `parameter_visit` |
+| 16 | Continuous Efficacy | Efficacy | ADEFF | `parameter_visit` |
+| 17 | Time-to-Event / KM | Efficacy | ADTTE | `time_to_event` |
+| 18 | AE Listing | Listings | ADAE | `flat_listing` |
+| 19 | ConMed Listing | Listings | ADCM | `flat_listing` |
+
+Backup specs: `.local/backup_templates/R/`
+
+## Sidebar Patterns (6 distinct)
+
+| Pattern | Used By | Key UI Element |
+|---------|---------|---------------|
+| `variable_stat` | Demog, Disposition, Populations, MedHist, ConMed | Per-variable cards with stat/level config |
+| `flag_summary` | AE Overall | Flag variables with exclude/rename levels |
+| `hierarchical` | AE SOC/PT, AE Severity | Drag-reorder hierarchy levels (L1/L2/L3) |
+| `parameter_visit` | Vitals, Lab, ECG, Lab Shift, Continuous Efficacy | Parameter list + Visit list + shared stats + per-param decimals |
+| `response_summary` | Response Summary | Endpoint dropdown + category list + format + comparison tests |
+| `time_to_event` | TTE/KM | Parameter + timepoints + survival stats (future) |
+| `flat_listing` | AE Listing, ConMed Listing | Column selection + sort order (future) |
+
+## BDS Template Design Decisions (2026-04-01)
+
+- **Domain-wise gallery cards, shared engines** — one `fct_ard_bds()` engine, three gallery cards
+- **Parameter list with per-param decimals** — reorderable checkbox list, decimals auto-detected from data
+- **Visit list** — auto-populated from AVISIT sorted by AVISITN. Baseline pinned first
+- **CFB toggle** — Change from Baseline ON by default for BDS
+- **Response template** — single PARAMCD dropdown, category list, format selector, optional comparison panel
+- **`fct_suggest_vars` semantic change** — for BDS/response returns PARAMCDs not column names
+- **Population flag default** — Safety → SAFFL, Efficacy → ITTFL
 
 ## Architecture Principles
 
-- **NOT a dashboard** — elegant focused builder tool (Figma/Linear, not Grafana)
+- **NOT a dashboard** — elegant focused builder (Figma/Linear, not Grafana)
 - **VS Code Activity Bar layout** — 5 icons (DATA, TMPL, ANLYS, FMT, OUT) + sidebar + canvas
-- **25/75 ratio** — sidebar 25%, canvas 75%. Resizable. Collapsible (Ctrl+B / double-click)
-- **Live auto-preview** — config changes auto-trigger preview (800ms debounce)
-- **Non-reactive format drafts** — modules return `get_draft()` functions, collected on Generate Preview
+- **25/75 ratio** — sidebar 25%, canvas 75%. Resizable. Collapsible (Ctrl+B)
+- **Live auto-preview** — config changes trigger preview (800ms debounce)
+- **Non-reactive format drafts** — modules return `get_draft()`, collected on Generate Preview
 - **ARD-centric** — computation (ARD) separated from presentation (arframe spec)
-- **Code is a deliverable** — generated R scripts must be beginner-friendly, pure tidyverse, self-contained
+- **Variables always pre-selected** — `spec_*()` defaults and `fct_suggest_vars()` must agree
+
+## Never Do These
+
+- **Never reference `tlframe`** — the package is `arframe`. Update any occurrence found.
+- **Never add a new JS message handler** without checking section 7 of `app.js` first — duplicates silently overwrite
+- **Never hardcode colors, fonts, or spacing** — use `var(--token)` from `:root`
+- **Never write a new ARD engine for Vitals/Lab/ECG** — they share `fct_ard_bds()`, add a thin wrapper
+- **Never use `library()` inside `R/`** — use `::` operator only
+- **Never use `setwd()`** — use explicit paths
+- **Never add a new sidebar pattern** without updating `mod_analysis_vars.R` and `fct_template_registry.R` in the same commit
+- **Never generate `library()` in `fct_codegen.R`** — generated scripts use `pkg::function()`
+- **Never add CSS outside a component's nested block**
+- **Never use `stop()` / `warning()` / `message()`** — use `cli_abort()` only
+- **Never commit `.local/`** — gitignored for a reason
+- **Never read `../adam_pilot/` into context** — use synthetic summary datasets only
+- **Never use inline `style =` in R** — use CSS classes
+
+## Multi-Agent Guidance
+
+| Task | Approach |
+|---|---|
+| Single new template (spec + ARD + module) | Sequential |
+| All 3 BDS templates in parallel | Sub-agents — one per template, shared engine in main |
+| CSS + JS for a new component | Sequential — CSS first, JS second |
+| Audit entire `R/` layer | Sub-agent per module group |
+| Tests for multiple new functions | Sub-agents — one per function group |
+
+Sub-agents must be independent — never give one a task requiring another's output.
 
 ## Design Standards
 
-- Must make teal/tern/NEST look like dust — categorically superior in every dimension
-- Linear/Notion/Vercel-level polish. Premium typography, refined spacing, subtle interactions
+- Must make teal/tern/NEST look like dust
 - White canvas (`#ffffff`), gray sidebar (`#f7f8fa`), single accent (`#4a6fa5`)
-- Only 3 text colors: `--fg-1` (primary), `--fg-2` (secondary), `--fg-muted` (tertiary)
+- 3 text colors only: `--fg-1`, `--fg-2`, `--fg-muted`
 - No shadows, no gradients, no animations except toast slide-in and chevron rotate
 - Inter font, 11-12px body, 4px spacing grid
-- Progressive disclosure — accordion panels, expandable cards, empty states with CTAs
-- See `.local/design/DESIGN-SPEC.md` for full pixel-level specification
+- Full spec: `.local/design/DESIGN-SPEC.md`
 
 ## Verify After Every Change (MUST FOLLOW)
 
-After ANY bug fix, feature, or code change:
-1. Run `Rscript -e "devtools::load_all('.'); app <- shiny::shinyApp(app_ui(), app_server); cat('OK')"` to verify the app creates without error
-2. If UI was changed, run the app (`shiny::runApp('.')`) and manually test the affected flow
-3. Confirm to the user that verification passed before marking done
+1. `Rscript -e "devtools::load_all('.'); app <- shiny::shinyApp(app_ui(), app_server); cat('OK')"`
+2. If UI changed: run app and manually test the affected flow
+3. Confirm verification passed before marking done
 
-## Reference TFL Materials
+## End-to-End Rule (MUST FOLLOW)
 
-Regulatory TFL shell specs are at `../references/TFL_Materials/`:
-- `FDA-2022-N-1961-0046_attachment_1.pdf` — FDA Standard Safety Tables (60+ table types)
-- `Standard Safety TFLs.pdf` — Safety TFL shells by module (AE, lab, vitals, AESI)
-- `Standard Efficacy Tables.pdf` — Efficacy endpoint table shells
-- `Global Clinical Study Report DPP.pdf` — CSR data presentation plan template
+Every feature/fix must be wired through ALL 5 layers:
+
+1. **UI** (`mod_*.R`) — input control
+2. **Defaults** (`utils_helpers.R` → `normalize_fmt`) — default value
+3. **IR** (`fct_spec_ir.R`) — intermediate representation
+4. **Render** (`fct_render.R`) — wired to `arframe::fr_*()`
+5. **Codegen** (`fct_codegen.R`) — generates argument in standalone R script
+
+Grep the param name across all 5 files before marking done.
+
+## Coding Conventions
+
+- Shiny modules: `mod_*.R` with `*_ui(id)` and `*_server(id, ...)`
+- All reactive outputs are tibbles or lists
+- BEM naming in CSS: `.ar-block__element--modifier`
+- No unused code — if it's not called, delete it
+- CSS detail → see `.claude/skills/css-js.md`
+
+## Generated R Code Standards
+
+- **Beginner-friendly** — pure tidyverse, no base R loops
+- **Self-contained** — helpers defined inline, no Shiny dependencies
+- **Well-commented** — `# --- Data ---`, `# --- ARD ---`, `# --- Formatting ---`
+- **Reproducible** — `readRDS("data/adsl.rds")` + population filter + arframe pipeline
 
 ## Commands
 
@@ -56,16 +194,10 @@ Regulatory TFL shell specs are at `../references/TFL_Materials/`:
 Rscript -e "shiny::runApp('.')"
 ```
 
-## Test Data
-
-```r
-# Quick: load ADSL + auto-configure demographics
-# Click "Demo Data" button in the app
-```
-
 ## Dependencies
 
-shiny, bslib, htmltools, reactable + tidyverse (dplyr, tidyr, tibble, readr, glue) + arframe (tlframe). No shinyjs — all JS via app.js + sendCustomMessage.
+shiny, bslib, htmltools, reactable + tidyverse (dplyr, tidyr, tibble, readr, glue) + arframe.
+No shinyjs — all JS via `app.js` + `sendCustomMessage`.
 
 ## Keyboard Shortcuts
 
@@ -78,216 +210,45 @@ shiny, bslib, htmltools, reactable + tidyverse (dplyr, tidyr, tibble, readr, glu
 | Ctrl+B | Toggle sidebar collapse |
 | Escape | Collapse all open cards |
 
-## End-to-End Rule (MUST FOLLOW)
-
-Every new feature, bugfix, or parameter change MUST be implemented across ALL 5 layers:
-
-1. **UI** (`mod_*.R`) — input control visible to the user
-2. **Defaults** (`utils_helpers.R` → `normalize_fmt`) — default value in schema
-3. **IR** (`fct_spec_ir.R`) — passed through intermediate representation
-4. **Render** (`fct_render.R`) — wired to the `arframe::fr_*()` API call
-5. **Codegen** (`fct_codegen.R`) — generates the argument in the standalone R script
-
-Before marking any change as done, grep the param name across all 5 files and confirm it appears in each. If a layer is missing, the feature is incomplete.
-
-## Coding Conventions
-
-- Shiny modules: `mod_*.R` with `*_ui(id)` and `*_server(id, ...)`
-- ARD builder: `fct_ard_demog.R` — demographics only, plain dplyr
-- Generated scripts: plain tidyverse + arframe, no special packages
-- UI: bslib Bootstrap 5, accordion sidebar, CSS nesting (modern browser-native)
-- All reactive outputs are tibbles or lists
-- BEM naming in CSS: `.ar-block__element--modifier`
-- No unused code — if it's not called, delete it
-
-## CSS/JS Rules — MUST FOLLOW
-
-The frontend is small by design. **Any developer (beginner or senior) must be able to maintain it.**
-
-### Golden Rules (CSS + JS combined)
-
-1. **SMALL IS SACRED** — CSS must stay under 800 lines, JS under 300 lines. If adding a feature pushes past this, refactor first.
-2. **NEVER write CSS/JS without a matching R `class =`** — every CSS rule must have a corresponding `class = "ar-..."` in an R file. Dead CSS = tech debt.
-3. **ALWAYS search before adding** — run `grep "ar-new-class" R/*.R inst/app/www/*` before creating any new class. Reuse existing classes.
-4. **ONE component = ONE nested block** — a component like `.ar-col-item` has ALL its children (header, body, chevron, badge) nested inside it. Never scatter a component's rules across the file.
-5. **NEVER use inline styles in R** — use CSS classes. `style = "color: red;"` in R code is banned. Create a utility class or add to the component.
-6. **NEVER write inline `onclick` JS** longer than one line in R — use `Shiny.addCustomMessageHandler()` in app.js instead.
-7. **Test in DevTools (F12) BEFORE editing the file** — change values live in the browser, confirm it looks right, then update app.css.
-
-### CSS Rules (`inst/app/www/app.css` — ~670 lines)
-
-**Structure:**
-- **Section 1**: Design tokens (`:root` variables) — ALL colors, fonts, sizes defined here
-- **Sections 2-9**: Layout shell (topbar, activity bar, sidebar, canvas)
-- **Sections 10-15**: Generic components (buttons, forms, badges, pills, empty states, toasts)
-- **Sections 16-37**: Feature components (templates, preview, code, variables, columns, titles, etc.)
-- **Sections 38-45**: Framework overrides (scrollbar, accordion, tabs, inputs, utilities)
-
-**Naming (BEM):**
-```
-.ar-block           → the component (e.g., .ar-col-item)
-.ar-block__element  → a part of it (e.g., .ar-col-item__header)
-.ar-block--modifier → a variant (e.g., .ar-col-item__badge--stub)
-```
-
-**Nesting (native CSS, no build step):**
-```css
-.ar-col-item {
-  border-bottom: 1px solid var(--border-light);
-  &__header { display: flex; }    /* becomes .ar-col-item__header */
-  &__badge { font-size: 8px;
-    &--stub { color: green; }     /* becomes .ar-col-item__badge--stub */
-  }
-}
-```
-
-**How to add a new component:**
-1. Pick a name: `.ar-newcomponent`
-2. Add a new section at the bottom: `/* ── 46. New Component ── */`
-3. Write all rules nested inside `.ar-newcomponent { }`
-4. Use design tokens from `:root` — never hardcode colors/fonts
-5. In R, use `class = "ar-newcomponent__child"`
-
-**How to change a color/font/size:**
-1. Check if there's a `--token` in `:root` (e.g., `--accent`, `--fg-2`)
-2. If yes, change the token value — it updates everywhere
-3. If no, add a new token to `:root` and use `var(--new-token)`
-
-### JS Rules (`inst/app/www/app.js` — ~265 lines)
-
-**Structure (8 sections):**
-1. Variable card toggle
-2. Toast notifications
-3. Keyboard shortcuts
-4. Resizable sidebar
-5. Sidebar collapse
-6. SortableJS init (generic)
-7. Shiny message handlers (ALL handlers go here)
-8. DOMContentLoaded setup
-
-**How to add a new feature:**
-- **New keyboard shortcut** → add to section 3
-- **New Shiny→JS communication** → add `Shiny.addCustomMessageHandler('ar_new', ...)` in section 7, call from R with `session$sendCustomMessage("ar_new", data)`
-- **New drag-reorder** → use the generic `arInitSortable()` in section 6 — don't write a new one
-- **New DOM manipulation** → prefer CSS class toggle over JS style changes
-
-**How R talks to JS:**
-```r
-# R sends a message
-session$sendCustomMessage("ar_toast", list(message = "Done", type = "success"))
-```
-```js
-// JS receives it (in section 7)
-Shiny.addCustomMessageHandler('ar_toast', function(d) { arToast(d.message, d.type); });
-```
-
-**How JS talks to R:**
-```js
-// JS sends a value
-Shiny.setInputValue('my_module-my_input', value, {priority: 'event'});
-```
-```r
-# R reads it
-observeEvent(input$my_input, { ... })
-```
-
-### Quality Checklist (before every CSS/JS change)
-
-- [ ] Is this class actually used in an R file? (`grep` it)
-- [ ] Does this duplicate an existing rule? (search the CSS file)
-- [ ] Am I using design tokens, not hardcoded values?
-- [ ] Is the rule inside its component's nested block?
-- [ ] Did I test in DevTools first?
-- [ ] Is the CSS still under 800 lines? JS under 300 lines?
-
-### Learning Resources (bundled in this project)
-
-- `.local/docs/CSS-BASICS.md` — CSS foundations, written for R programmers
-- `.local/docs/CSS-NESTING-GUIDE.md` — modern nesting syntax with arbuilder examples
-- `.local/design/DESIGN-SPEC.md` — full visual design specification (colors, spacing, components)
-
-## Generated R Code Standards
-
-The R code produced by `fct_codegen.R` must be:
-- **Beginner-friendly** — a pharma programmer who knows tidyverse should understand every line
-- **Pure tidyverse** — dplyr, tidyr, tibble pipes (`|>`). No base R loops where dplyr works
-- **Self-contained** — helper functions (fmt_npct, compute_cont) defined inline
-- **Well-commented** — section headers (`# --- Data ---`, `# --- ARD ---`, `# --- Formatting ---`)
-- **Reproducible** — `readRDS("data/adsl.rds")` + population filter + arframe pipeline = run anywhere
-- No Shiny dependencies, no global variables, no side effects
-
-## File Map (35 R files)
+## File Map
 
 ```
 R/
-  # Core
-  app_ui.R              # UI shell — activity bar + sidebar + resize handle + canvas
-  app_server.R          # Server — store + module wiring + auto-preview + export
-
-  # Utilities
-  utils_helpers.R       # %||%, coalesce_list, safe_label, normalize_fmt
-  utils_formats.R       # fmt_npct, fmt_mean_sd, fmt_q1_q3, etc.
-  utils_ui.R            # ar_theme, ui_empty_state, ar_build_reactable
-
-  # Demographics pipeline
-  fct_adam.R            # detect_var_type, detect_trt_vars, detect_pop_flags
-  fct_ard_demog.R       # Demographics ARD builder (continuous + categorical)
-  fct_ard_dispatch.R    # Template → ARD router (demog only)
-  fct_render.R          # arframe spec builder + RTF export + HTML preview
-  fct_preview.R         # HTML preview builder
-  fct_codegen.R         # R script generator
-  fct_codegen_dispatch.R # Template → codegen router (demog only)
-  spec_demog.R          # Demographics defaults
-
-  # Support
-  fct_template_registry.R # Template metadata (demog only)
-  fct_suggest_vars.R    # Variable suggestions (demog only)
-  fct_validate.R        # Pipeline validation checks
-  fct_format_designs.R  # Preset definitions + collect_format_drafts
-  fct_profile.R         # Column profiler for data explorer
-
-  # Modules (17)
-  mod_data.R            # Data upload, load, explore, filter
-  mod_data_viewer.R     # VS Code-style data grid (reactable)
-  mod_template.R        # Template gallery (canvas)
-  mod_grouping.R        # Treatment var + variable list (sidebar)
-  mod_treatment.R       # Treatment levels + total toggle
-  mod_analysis_vars.R   # Per-variable stat config cards (signature feature)
-  mod_titles.R          # Per-title align/bold + footnotes
-  mod_columns.R         # Per-column disclosure with eye toggle
-  mod_header_spans.R    # Header bold/align + column spans
-  mod_page.R            # Page layout (orientation, font, margins)
-  mod_rules.R           # Horizontal/vertical rules
-  mod_rows.R            # Row structure (group_by, page_by, indent)
-  mod_page_chrome.R     # Page header/footer
-  mod_validation.R      # Pipeline validation checklist
-  mod_code.R            # R code viewer
-
-  # Infrastructure
-  launch.R              # Package launcher
-  _disable_autoload.R   # Prevent shiny auto-load
+  app_ui.R, app_server.R               # Core shell + server
+  utils_helpers.R, utils_formats.R, utils_ui.R
+  spec_demog.R, spec_ae.R              # Live template specs
+  spec_bds.R, spec_response.R          # [PLANNED]
+  fct_adam.R                           # ADaM auto-detection
+  fct_ard_demog_cards.R, fct_ard_ae.R  # Live ARD engines
+  fct_ard_bds.R, fct_ard_response.R    # [PLANNED]
+  fct_ard_dispatch.R                   # Template → ARD router
+  fct_render.R, fct_preview.R          # arframe spec builder + preview
+  fct_codegen.R, fct_codegen_dispatch.R
+  fct_template_registry.R, fct_suggest_vars.R
+  fct_validate.R, fct_format_designs.R, fct_profile.R
+  mod_data.R, mod_data_viewer.R, mod_template.R
+  mod_grouping.R, mod_treatment.R, mod_analysis_vars.R
+  mod_titles.R, mod_columns.R, mod_header_spans.R
+  mod_page.R, mod_rules.R, mod_rows.R, mod_page_chrome.R
+  mod_validation.R, mod_code.R
+  launch.R, _disable_autoload.R
 
 inst/app/www/
-  app.css               # Design system + layout
-  app.js                # Keyboard shortcuts, resize, toasts, sortable handlers
-  Sortable.min.js       # Drag reorder library
+  app.css, app.js, Sortable.min.js
 ```
 
-## `.local/` — Non-Package Files
-
-All non-R-package files live in `.local/` (gitignored). Any temp files, scratch work, design docs, or generated output should go here too.
+## `.local/` Structure
 
 ```
 .local/
-  archive/              # Full pre-rebuild snapshot of all 69 files
-  backup_templates/R/   # 34 files for non-demographics templates (AE, lab, TTE, figures, listings)
-  design/               # DESIGN.md, DESIGN-SPEC.md, LAYOUT-ALTERNATIVES.md
-  plans/                # PLAN.md, ARFRAME-PLAN.txt, PLAN-SAVE-CARDS.md
-  docs/                 # CSS-BASICS.md, CSS-NESTING-GUIDE.md, DATA-WRANGLER-UX-REFERENCE.md
-    notes/              # Book notes, research notes, viewer spec
-    references/         # CDISC, CSR formats, GSK macros, standard TFL specs
-  screenshots/          # Dev screenshots
-  output/               # Generated RTF/PDF/HTML output files
+  archive/              # Pre-rebuild snapshot
+  backup_templates/R/   # 34 files for backlog templates
+  design/               # DESIGN-SPEC.md, LAYOUT-ALTERNATIVES.md
+  specs/                # Phase design specs
+  plans/                # Implementation plans
+  docs/                 # CSS-BASICS.md, CSS-NESTING-GUIDE.md
+  cdisc-reference.md    # ADaM variable reference (read on demand)
+  screenshots/, output/
 ```
 
-When creating temp files (scratch scripts, test output, debug logs), put them in `.local/` — never in the package root.
+All temp files, scratch work, and generated output go in `.local/` — never in package root.

@@ -1,6 +1,6 @@
 # Demographics ARD builder using cards package
 # Drop-in replacement for fct_ard_demog() — same signature, same output shape.
-# Pipeline: cards::ard_stack() → arframe::fr_wide_ard() → add meta columns
+# Pipeline: cards::ard_stack() → vellum::fr_wide_ard() → add meta columns
 #
 # Output columns: variable, var_label, var_type, stat_label, <trt1>, <trt2>, ..., [Total]
 # Plus optional group_value column when by_var is set.
@@ -147,10 +147,10 @@ fct_ard_demog_cards_inner <- function(adsl, grouping, var_configs, added_levels 
   dec_map <- build_cards_decimals(var_configs, analysis_vars)
   label_map <- build_cards_labels(adsl, analysis_vars, var_labels)
 
-  # ── Convert to wide via arframe ──
+  # ── Convert to wide via vellum ──
   # Don't pass label= so `variable` keeps original var names (AGE, SEX, etc.)
   overall_label <- if (include_total) total_label else NULL
-  wide <- arframe::fr_wide_ard(
+  wide <- vellum::fr_wide_ard(
     raw_ard,
     statistic = stat_fmt,
     column = trt_var,

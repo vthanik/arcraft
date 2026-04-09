@@ -1,4 +1,4 @@
 library(testthat)
-library(arcraft)
+library(loom)
 
-test_check("arcraft")
+test_check("loom")

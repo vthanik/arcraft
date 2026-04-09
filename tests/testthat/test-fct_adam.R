@@ -33,7 +33,7 @@ test_that("fct_detect_var_type identifies types correctly", {
 })
 
 test_that("fct_detect_demog_vars finds standard demog vars", {
-  adsl <- readRDS(system.file("data", "adsl.rds", package = "arcraft"))
+  adsl <- readRDS(system.file("data", "adsl.rds", package = "loom"))
   result <- fct_detect_demog_vars(adsl)
   expect_true("AGE" %in% result)
   expect_true("SEX" %in% result)

@@ -532,7 +532,7 @@ app_server <- function(input, output, session) {
       ))
     }
 
-    # arframe native HTML preview in full-screen scrollable iframe
+    # vellum native HTML preview in full-screen scrollable iframe
     tryCatch({
       html_string <- fct_render_html_preview(ard, fmt)
       htmltools::tags$iframe(
@@ -602,7 +602,7 @@ app_server <- function(input, output, session) {
     }
     out_fmt <- fmt %||% store$fmt$output_format %||% "rtf"
     spec <- fct_build_spec(store$ard, store$fmt)
-    arframe::fr_render(spec, file)
+    vellum::fr_render(spec, file)
   }
 
   script_filename <- function() {
@@ -661,7 +661,7 @@ app_server <- function(input, output, session) {
     shiny::showModal(shiny::modalDialog(
       title = "Output Directory",
       htmltools::tags$p(class = "ar-text-sm",
-        "Choose where arcraft saves your outputs (config.yaml, ard.parquet, script.R)."
+        "Choose where loom saves your outputs (config.yaml, ard.parquet, script.R)."
       ),
       shiny::textInput("new_output_dir", "Directory Path",
         value = store$output_dir %||% file.path(getwd(), ".local", "output"),
@@ -695,7 +695,7 @@ app_server <- function(input, output, session) {
     store$output_dir <- new_dir
     dir.create(".local", showWarnings = FALSE)
     tryCatch(
-      yaml::write_yaml(list(output_dir = new_dir), file.path(getwd(), ".local", "arcraft_prefs.yaml")),
+      yaml::write_yaml(list(output_dir = new_dir), file.path(getwd(), ".local", "loom_prefs.yaml")),
       error = function(e) NULL
     )
 

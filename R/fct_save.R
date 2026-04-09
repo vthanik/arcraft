@@ -168,7 +168,7 @@ scan_outputs <- function(parent_dir) {
 # ── Delete an output directory ──
 delete_output <- function(dir) {
   dir <- normalizePath(dir, mustWork = FALSE)
-  # Safety: only delete if config.yaml exists (confirms it's an arcraft output)
+  # Safety: only delete if config.yaml exists (confirms it's an loom output)
   if (!file.exists(file.path(dir, "config.yaml"))) {
     return(FALSE)
   }
@@ -229,12 +229,12 @@ build_save_metadata <- function(table_id, template, dataset, pop_flag = NULL) {
     pop_flag = pop_flag %||% "",
     created = format(Sys.time(), "%Y-%m-%dT%H:%M:%S"),
     modified = format(Sys.time(), "%Y-%m-%dT%H:%M:%S"),
-    arcraft_version = tryCatch(
-      as.character(utils::packageVersion("arcraft")),
+    loom_version = tryCatch(
+      as.character(utils::packageVersion("loom")),
       error = function(e) "dev"
     ),
-    arframe_version = tryCatch(
-      as.character(utils::packageVersion("arframe")),
+    vellum_version = tryCatch(
+      as.character(utils::packageVersion("vellum")),
       error = function(e) "dev"
     ),
     cards_version = tryCatch(

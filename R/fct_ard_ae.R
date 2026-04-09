@@ -1,5 +1,5 @@
 # AE ARD builders — pure R, no Shiny
-# Uses cards package for ARD generation, arframe for wide conversion.
+# Uses cards package for ARD generation, vellum for wide conversion.
 # Pipeline: cards::ard_stack() / ard_stack_hierarchical() → fr_wide_ard() → add meta columns
 
 # ── AE Overall Summary ──
@@ -72,9 +72,9 @@ fct_ard_ae_overall <- function(adae, adsl, grouping, var_configs) {
     )
   ))
 
-  # ── Convert to wide via arframe ──
+  # ── Convert to wide via vellum ──
   overall_label <- if (include_total) total_label else NULL
-  wide <- arframe::fr_wide_ard(
+  wide <- vellum::fr_wide_ard(
     raw_ard,
     statistic = list(
       dichotomous = "{n} ({p}%)",
@@ -175,14 +175,14 @@ fct_ard_ae_hierarchy <- function(adae, adsl, grouping, var_configs) {
     raw_ard <- cards::sort_ard_hierarchical(raw_ard, sort = "alphanumeric")
   }
 
-  # ── Convert to wide via arframe ──
+  # ── Convert to wide via vellum ──
   overall_str <- if (include_total) total_label else NULL
   label_map <- character(0)
   if (include_overall) {
     label_map <- c("..ard_hierarchical_overall.." = overall_label)
   }
 
-  wide <- arframe::fr_wide_ard(
+  wide <- vellum::fr_wide_ard(
     raw_ard,
     statistic = "{n} ({p}%)",
     column = trt_var,

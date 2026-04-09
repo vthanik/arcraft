@@ -51,7 +51,7 @@ save_current_output <- function(store, grp) {
 
     tryCatch(
       yaml::write_yaml(list(output_dir = parent_dir),
-                        file.path(getwd(), ".local", "arcraft_prefs.yaml")),
+                        file.path(getwd(), ".local", "loom_prefs.yaml")),
       error = function(e) NULL
     )
   }
@@ -125,7 +125,7 @@ reset_for_new_output <- function(store, grp) {
 
 # ── Load startup preferences ──
 load_startup_prefs <- function(store) {
-  prefs_path <- file.path(getwd(), ".local", "arcraft_prefs.yaml")
+  prefs_path <- file.path(getwd(), ".local", "loom_prefs.yaml")
   if (file.exists(prefs_path)) {
     prefs <- tryCatch(yaml::read_yaml(prefs_path), error = function(e) list())
     if (!is.null(prefs$output_dir) && dir.exists(prefs$output_dir)) {

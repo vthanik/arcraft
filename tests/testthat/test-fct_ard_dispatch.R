@@ -1,6 +1,6 @@
 # Tests for dispatch system — demographics only (Phase 1)
 
-adsl <- readRDS(system.file("data", "adsl.rds", package = "arcraft"))
+adsl <- readRDS(system.file("data", "adsl.rds", package = "loom"))
 
 grouping <- list(
   trt_var = "TRT01P",

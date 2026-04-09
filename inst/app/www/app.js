@@ -1,4 +1,4 @@
-/* arcraft — JavaScript (demographics only)
+/* loom — JavaScript (demographics only)
    Backup of full version: app.js.bak
 
    Sections:
